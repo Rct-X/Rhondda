@@ -1,33 +1,59 @@
-# Rhondda Noticeboard
+# RCTX
 
-Rhondda Noticeboard is a fun, community‑driven digital board for local offers, events, and services in the Rhondda.  
-It’s designed to be simple, engaging, and mobile‑friendly — with ads shown two‑aside and paid business posts breaking out full‑width.
+RCTX is a modern web development studio based in the Rhondda, building fast, affordable websites for local businesses across Rhondda Cynon Taf and South Wales.
 
----
-
-## 🚀 Features
-- Two‑column grid layout (ads side-by-side, business posts full-width)
-- Category filters (Offers, Events, Services, All)
-- Firebase integration for dynamic content
-- Netlify deployment for fast hosting
-- Responsive design for mobile and desktop
+We focus on clean design, strong mobile performance, local branding, and simple monthly website solutions for small businesses.
 
 ---
 
-## 📦 Tech Stack
-- **Frontend:** HTML, CSS, JavaScript
-- **Hosting:** Netlify
-- **Database/Auth:** Firebase
-- **Version Control:** Git + GitHub
+# 🌍 Website
+
+[RCTX](https://rctx.co.uk
 
 ---
 
-## 🛠️ Getting Started
+# 🚀 What We Build
 
-### Prerequisites
-- Node.js and npm installed
-- Git installed
-- Firebase project set up (for dynamic posts)
+We create websites for:
 
-### Installation
-```bash
+- Barbers
+- Cafes
+- Trades
+- Local shops
+- Holiday lets
+- Airbnb hosts
+- Service businesses
+- Startups
+- Independent businesses
+
+---
+
+# ⚡ Features
+
+- Fast-loading modern websites
+- Mobile-first responsive layouts
+- SEO-focused structure
+- Google Business integration
+- Real business imagery
+- Contact forms
+- Hosting included
+- Ongoing support & updates
+- Lightweight, performance-focused builds
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+- HTML5
+- CSS3
+- JavaScript
+
+## Hosting & Deployment
+- Netlify
+- GitHub
+
+## Backend / Integrations
+- Firebase
+- EmailJS
+- Netlify Forms
