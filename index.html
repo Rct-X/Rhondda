@@ -1,600 +1,1528 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RCT-X</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description"
-        content="Local offers, events and services across Rhondda. A community noticeboard for residents and businesses." />
+<title>Web Design Rhondda Cynon Taf – Fast, Affordable Websites from £30/month | RCTX</title>
+<meta name="description" content="RCTX builds fast, modern monthly websites for Rhondda Cynon Taf businesses. From £30/month.">
 
-  <link rel="stylesheet" href="/index/css/main.css">
-<link rel="stylesheet" href="/index/css/index-cards.css">
-<link rel="stylesheet" href="/index/css/modals.css">
-<link rel="stylesheet" href="/views/css/services.css">
-<link rel="stylesheet" href="/views/css/manage-business.css">
+<meta property="og:title" content="RCTX | Monthly Web Design for Rhondda Cynon Taf Businesses">
+<meta property="og:description" content="Fast, modern websites with image gathering included. Built locally in the Rhondda Cynon Taf. From £30/month.">
+<meta name="keywords" content="web design Rhondda Cynon Taf, web designer Treorchy, web design Tonypandy, business websites Rhondda, affordable websites Wales, local web designer RCT">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RCTX">
+<meta name="robots" content="index, follow">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RCTX Web Design">
+<meta name="twitter:description" content="Modern websites for Rhondda businesses from £30/month.">
+<meta name="twitter:image" content="https://rctx.co.uk/og-image.jpg">
+<meta property="og:image" content="https://rctx.co.uk/og-image.jpg">
+<meta property="og:url" content="https://rctx.co.uk/">
+<meta name="theme-color" content="#0b0f19">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="canonical" href="https://rctx.co.uk/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+:root {
+    --bg: #0b0f19;        /* main background */
+    --card: #111827;      /* slightly lighter cards */
+    --accent: #2563eb;
+
+    --text: #f9fafb;
+    --text-dim: #cbd5e1;
+
+    --border: #1f2937;
+    --accent-soft: rgba(37,99,235,0.1);
+}
+a:focus,
+button:focus,
+input:focus,
+textarea:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+a:active,
+button:active {
+    transform: scale(0.97);
+}
+/* UPGRADED LOCAL NOTE */
+.local-note {
+    margin-top: 2rem;
+    font-size: .95rem;
+    color: var(--text);
+    padding: 1rem 1.2rem;
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    line-height: 1.5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html {
+    scroll-behavior: smooth;
+}
+
+.container{max-width:1100px;margin:auto;padding:0 2rem;}
+
+/* NAV */
+.navbar {
+    background: rgba(11,15,25,0.8);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-flex{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position: relative;
+}
+
+/* LOGO */
+.logo {
+    font-size: 2.1rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+
+    /* SILVER EFFECT */
+    background: linear-gradient(145deg, #d1d5db, #9ca3af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* GOLD X */
+.logo span {
+    background: linear-gradient(145deg, #facc15, #b45309);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* TAGLINE */
+.logo-tag {
+    font-size: 0.60rem;
+    color: #ffffff;
+    margin-top: 1px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* NAV LINKS */
+.nav-links {
+    display: flex;
+    gap: 2.2rem;
+    list-style: none;
+    transition: 0.3s ease;
+}
+.nav-links{
+    transform:translateY(-10px);
+}
+
+.nav-links.active{
+    transform:translateY(0);
+}
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+    opacity: 0.9;
+}
+
+.hero .container{
+    opacity:0;
+    transform:translateY(20px);
+    animation:heroFade 2s ease forwards;
+}
+
+@keyframes heroFade{
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* HAMBURGER BUTTON */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger span {
+    width: 26px;
+    height: 3px;
+    background: var(--text);
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 2rem 0;
+    background: radial-gradient(
+        circle at center,
+        #1e293b 10%,
+        #0f172a 50%,
+        #0a0c10 100%
+    );
+    color: white;
+}
+
+.hero h1 span {
+    color: #60a5fa;
+}
+
+.badge {
+    background: #facc15;
+    color: #00008b;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+}
+
+/* BUTTONS */
+.btn-primary{
+    background:var(--accent);
+    padding:1rem 2rem;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+    display:inline-block;
+    margin-top:1rem;
+    font-weight:600;
+    box-shadow:0 4px 12px rgba(37,99,235,0.25);
+    transition:0.2s;
+}
+.btn-secondary{
+    border:1px solid var(--border);
+    padding:1rem 2rem;
+    border-radius:10px;
+    color:var(--text);
+    text-decoration:none;
+    margin-left:1rem;
+    background:transparent;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.btn-secondary:hover{
+    background:var(--accent-soft);
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px rgba(37,99,235,0.35);
+}
+
+/* FEATURES */
+.features{padding:5rem 0;text-align:center;}
+.feature-text{
+    max-width:750px;
+    margin:auto;
+    text-align:left;
+}
+.feature-text p{color:var(--text-dim);margin-bottom:1.5rem;}
+
+/* PRICING */
+.pricing{padding:6rem 0;}
+.pricing-intro{text-align:center;margin-bottom:3rem;}
+.pricing-intro p{color:var(--text-dim);}
+
+.pricing-box{
+    background:var(--card);
+    border-radius:20px;
+    margin-bottom:2.5rem;
+    display:flex;
+    position:relative;
+    flex-wrap:wrap;
+    overflow:hidden;
+    border:1px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.pricing-box::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,0.03),
+        transparent
+    );
+    pointer-events:none;
+}
+.pricing-box:hover {
+    transform: translateY(-5px);
+}
+
+.pricing-box.featured {
+    border: 2px solid var(--accent);
+}
+
+.pricing-box.featured:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+
+.price-info{flex:1;padding:3rem;min-width:280px;}
+.price-tag{
+    background:var(--accent);
+    padding:3rem;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-width:220px;
+    color:white;
+}
+
+.cost{font-size:3rem;font-weight:900;}
+.cost span{font-size:1.1rem;}
+
+.pricing-box ul{list-style:none;margin-top:1.5rem;}
+.pricing-box li{
+    margin-bottom:.8rem;
+    color:var(--text-dim);
+    font-weight:500;
+}
+
+.price-tag .btn-primary {
+    background: white;
+    color: var(--accent);
+}
+
+.price-tag .btn-primary:hover {
+    background: #f1f5f9;
+}
+
+/* FAQ */
+.faq{padding:5rem 0;text-align:center;}
+.faq-wrapper{max-height:0;overflow:hidden;transition:.4s;opacity:0;}
+.faq-wrapper.active{max-height:2000px;opacity:1;margin-top:2rem;}
+
+.faq-item{
+    background:var(--card);
+    margin-bottom:1rem;
+    border-radius:16px;
+    border:1px solid var(--border);
+}
+.faq-question{
+    padding:1.2rem;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    font-weight:600;
+    color:var(--text);
+}
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 500px; /* safer buffer */
+    padding: 1rem;
+}
+
+.faq-icon {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.service .icon {
+    width: 36px;
+    height: 36px;
+    color: #fff;
+}
+
+.faq-item.active .faq-icon{
+    transform: rotate(45deg);
+}
+
+/* FORM */
+.contact{padding:5rem 0;}
+.glass-form{
+    background:var(--card);
+    padding:3rem;
+    border-radius:20px;
+    border:1px solid var(--border);
+}
+input,textarea{
+    width:100%;
+    margin-bottom:1rem;
+    padding:1rem;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background: #fff;
+    color: #111;
+}
+.full-width{width:100%;}
+
+/* FOOTER */
+footer {
+    background: #ffffff;
+    text-align: center;
+    padding: 3rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: .95rem;
+    border-top: 2px solid var(--accent);
+}
+
+/* TIMELINE */
+.timeline {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.step {
+    text-align: left;
+    background: var(--card);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+}
+.step{
+    opacity:0;
+    transform:translateY(25px);
+    transition:.6s ease;
+}
+
+.step.show{
+    opacity:1;
+    transform:translateY(0);
+}
+.step-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.step h3 {
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.step p {
+    color: var(--text-dim);
+}
+
+.cta-block{
+    padding:3rem 0;
+    background:#0f172a;
+    border-top:1px solid rgba(255,255,255,0.05);
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+/* MOBILE */
+@media(max-width: 768px) {
+
+    /* HERO */
+    h1{font-size:2.5rem;}
+    .hero-btns{display:flex;flex-direction:column;gap:1rem;}
+    .btn-secondary{margin-left:0;}
+    /* HAMBURGER */
+    .hamburger {
+        display: flex;
+    }
+
+    /* MOBILE MENU */
+    .nav-links {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        background: rgba(11,15,25,0.98);
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem 0;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .nav-links.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* ANIMATED HAMBURGER */
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+}
+h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+}
+
+
+.step {
+    border-left: 4px solid var(--accent);
+}
+.gold-banner {
+    background: #000;
+    padding: 1rem 1rem;
+    text-align: center;
+}
+
+/* GOLD TEXT */
+.word-reveal span {
+    display: inline-block;
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin: 0 6px;
+
+    background: linear-gradient(135deg, #d4af37, #ffd700, #b8962e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    opacity: 0;
+    transform: translateY(20px);
+    animation: wordFade 0.8s ease forwards;
+}
+
+/* DELAY EACH WORD */
+.word-reveal span:nth-child(1) { animation-delay: 0.2s; }
+.word-reveal span:nth-child(2) { animation-delay: 0.4s; }
+.word-reveal span:nth-child(3) { animation-delay: 0.6s; }
+.word-reveal span:nth-child(4) { animation-delay: 0.8s; }
+
+/* ANIMATION */
+@keyframes wordFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.about-section {
+    background: #000;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.about-inner {
+    max-width: 700px;
+}
+
+/* HEADING — PURE WHITE */
+.about-section h2 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+}
+
+/* TEXT — BRIGHT BUT SLIGHTLY SOFTENED FOR READABILITY */
+.about-section p {
+    color: rgba(255,255,255,0.9); /* not grey, still strong white */
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+}
+.services-section {
+    background: #0b0f19;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.services-section h2 {
+    color: #fff;
+    font-size: 2.3rem;
+    margin-bottom: 3rem;
+    font-weight: 800;
+}
+
+/* GRID */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+}
+
+/* CARD */
+.service {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 2.2rem 1.5rem;
+    transition: transform .4s ease, opacity .4s ease;
+
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.service:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,215,0,0.4);
+}
+
+/* ICON WRAP */
+.icon-wrap {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+}
+
+.service:hover .icon {
+    color: #ffd700;
+    transform: scale(1.1);
+}
+
+/* TEXT */
+.service h3 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.service p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ACTIVE STATE */
+.service.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.who-for {
+    margin-top: 2rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: 14px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(37,99,235,0.08),
+        rgba(255,255,255,0.02)
+    );
+
+    border: 1px solid rgba(37,99,235,0.2);
+    backdrop-filter: blur(6px);
+}
+
+.who-for strong {
+    display: block;
+    color: #93c5fd; /* subtle blue highlight */
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+}
+
+.who-for p {
+    color: var(--text-dim);
+}
+
+.who-sub {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.65);
+}
+.urgency {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #facc15;
+}
+#pricing {
+    scroll-margin-top: 80px;
+}
+
+
+/* LOCAL SEO SECTION */
+.local-seo {
+    position: relative;
+    overflow: hidden;
+    padding: 5rem 2rem;
+    background: #070b14;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ELECTRIC BACKGROUND */
+.electric-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    background:
+        radial-gradient(circle at 20% 30%, rgba(37,99,235,0.25), transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(96,165,250,0.18), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(59,130,246,0.18), transparent 35%);
+
+    filter: blur(40px);
+
+    animation: electricMove 12s ease-in-out infinite alternate;
+}
+
+/* CONTENT */
+.local-seo-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 850px;
+    margin: auto;
+}
+
+.local-seo h2 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    color: #ffffff;
+    letter-spacing: -1px;
+}
+
+.local-seo p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.78);
+}
+
+/* ANIMATION */
+@keyframes electricMove {
+    0% {
+        transform: scale(1) translateY(0px);
+    }
+
+    100% {
+        transform: scale(1.15) translateY(-20px);
+    }
+}
+
+/* =========================
+GLOBAL TEXT READABILITY
+========================= */
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,sans-serif;
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
+
+/* =========================
+HERO IMPROVEMENTS
+========================= */
+
+.hero h1{
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+}
+
+.hero p{
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.88);
+    max-width: 700px;
+    margin: auto;
+}
+
+/* =========================
+SECTION PARAGRAPHS
+========================= */
+
+.about-section p,
+.local-seo p,
+.service p,
+.step p,
+.pricing-intro p,
+.feature-text p{
+    font-size: 1.02rem;
+    line-height: 1.8;
+}
+
+/* =========================
+CARDS
+========================= */
+
+.service,
+.step,
+.pricing-box,
+.glass-form,
+.faq-item{
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* =========================
+FORM READABILITY
+========================= */
+
+input,
+textarea{
+    font-size:16px;
+    line-height:1.5;
+}
+
+textarea{
+    min-height:140px;
+    resize:vertical;
+}
+
+/* =========================
+FAQ READABILITY
+========================= */
+
+.faq-answer p{
+    color: rgba(255,255,255,0.88);
+    line-height: 1.7;
+}
+
+/* =========================
+LOCAL SEO SECTION
+========================= */
+
+/* Tone down blur slightly */
+.electric-bg{
+    filter: blur(70px);
+    opacity: 0.8;
+}
+
+/* =========================
+BUTTONS
+========================= */
+
+.btn-primary,
+.btn-secondary{
+    font-size: 1rem;
+    letter-spacing: 0.2px;
+}
+
+/* =========================
+MOBILE IMPROVEMENTS
+========================= */
+
+@media(max-width:768px){
+
+    body{
+        font-size:17px;
+    }
+
+    .container{
+        padding:0 1.2rem;
+    }
+
+    h2{
+        font-size:1.9rem;
+        line-height:1.2;
+    }
+
+    .hero{
+        padding:4rem 0;
+    }
+
+    .hero p{
+        font-size:1.05rem;
+    }
+
+    .service,
+    .step,
+    .glass-form{
+        padding:1.6rem;
+    }
+
+    .word-reveal span{
+        font-size:1.8rem;
+        margin:0 3px;
+    }
+
+    .pricing-box.featured:hover{
+        transform:none;
+    }
+}
+.hidden {
+  position: absolute !important;
+  left: -9999px !important;
+  visibility: hidden !important;
+}
+button,
+a{
+    -webkit-tap-highlight-color: transparent;
+}
+.service,
+.step,
+.pricing-box,
+.btn-primary,
+.btn-secondary,
+.faq-item{
+    transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease,
+    background .25s ease;
+}
+/* STICKY CONTACT BAR */
+.sticky-contact-bar{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    display:flex;
+    z-index:2000;
+    background:rgba(11,15,25,0.82);
+backdrop-filter:blur(12px);
+    border-top:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 -4px 20px rgba(0,0,0,0.25);
+}
+
+/* BUTTONS */
+.sticky-btn{
+    flex:1;
+    text-align:center;
+    padding:1rem 0;
+    text-decoration:none;
+    color:#fff;
+    font-weight:600;
+    font-size:.95rem;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+
+    transition:0.2s ease;
+}
+
+/* INDIVIDUAL COLORS */
+.call-btn{
+    background:#2563eb;
+}
+
+.whatsapp-btn{
+    background:#16a34a;
+}
+
+.email-btn{
+    background:#111827;
+}
+
+/* HOVER */
+.sticky-btn:hover{
+    opacity:0.92;
+}
+
+/* DESKTOP */
+@media(min-width:769px){
+    .sticky-contact-bar{
+        max-width:500px;
+        left:50%;
+        transform:translateX(-50%);
+        bottom:20px;
+        border-radius:16px;
+        overflow:hidden;
+    }
+}
+@media(min-width:769px){
+    .sticky-contact-bar{
+        display:none;
+    }
+
+    body{
+        padding-bottom:0;
+    }
+}
+@media(max-width:768px){
+    body{
+        padding-bottom:80px;
+    }
+}
+img{
+    max-width:100%;
+    display:block;
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "RCTX",
+  "url": "https://rctx.co.uk",
+  "image": "https://rctx.co.uk/og-image.jpg",
+  "description": "Web design services for Rhondda Cynon Taf businesses.",
+  "areaServed": "Rhondda Cynon Taf",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "High Street",
+    "addressLocality": "Treorchy",
+    "postalCode": "CF42 6AE",
+    "addressRegion": "Wales",
+    "addressCountry": "UK"
+  },
+  "priceRange": "£30-£50",
+"telephone": "+44XXXXXXXXXX",
+"email": "support@rctx.co.uk",
+"sameAs": [
+  "https://facebook.com/RctX"
+]
+}
+</script>
 </head>
-
 <body>
 
-<!-- ================= HEADER ================= -->
-<header class="rctx-header">
-  
-  <!-- TOP ROW -->
-  <div class="top-bar">
-    <div class="rctx-logo">
-      <svg width="110" height="32" viewBox="0 0 110 32">
-        <text x="0" y="24" class="rctx-svg-logo">RCT‑X</text>
-      </svg>
+<nav class="navbar">
+    <div class="container nav-flex">
+
+        <div class="logo-wrap">
+            <div class="logo">RCT<span>X</span></div>
+            <div class="logo-tag">Rhondda Web Design</div>
+        </div>
+
+<button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-links" id="mobileMenu">
+            <li><a href="#features">The Process</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#contact">Start Now</a></li>
+        </ul>
+
     </div>
+</nav>
 
-    <div class="rctx-icons">
-      
-      <!-- 1. POST AN AD -->
-      <div id="post-ad-btn" class="icon-btn" title="Post an Ad">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-          <rect x="3" y="3" width="18" height="18" rx="6" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        </svg>
-        <span class="icon-label">Post Ad</span>
-      </div>
+<main>
 
-      <!-- 2. LOGIN -->
-      <div id="auth-logged-out" class="icon-btn" title="Login or Sign Up">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-        <span class="icon-label">Login</span>
-      </div>
+<header class="hero">
+<div class="container">
+<span class="badge">Built in the Rhondda</span>
+<h1>Affordable Websites for Small Businesses in<br><span>Rhondda Cynon Taf</span></h1>
+<p>We build modern websites for local businesses across Rhondda Cynon Taf — including hosting, support, updates, and setup from just £30/month.</p>
 
-      <!-- 3. INBOX -->
-      <div id="auth-messages" class="icon-btn hidden" title="Inbox">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-          <path d="M7 19C4.2 19 2 16.8 2 14V8C2 5.2 4.2 3 7 3H17C19.8 3 22 5.2 22 8V14C22 16.8 19.8 19 17 19H14.5L10 22V19H7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-          <circle cx="7" cy="11" r="1" fill="currentColor"/>
-          <circle cx="12" cy="11" r="1" fill="currentColor"/>
-          <circle cx="17" cy="11" r="1" fill="currentColor"/>
-        </svg>
-        <span class="icon-label">Inbox</span>
-      </div>
+<div class="who-for">
+  <strong>Perfect for:</strong>
+  <p>Barbers • Cafes • Trades • Local shops</p>
+  <p class="who-sub">
+    Also ideal for holiday lets, Airbnb hosts, and van services wanting more direct bookings
+  </p>
+</div>
 
-      <!-- 4. MENU -->
-      <div class="icon-btn" title="Menu">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-          <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M4 12H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M4 17H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span class="icon-label">Menu</span>
-      </div>
-    </div>
-  </div>
+<div class="hero-btns">
+<a href="#pricing" class="btn-primary">View Plans</a>
+<a href="#contact" class="btn-secondary">Contact</a>
+</div>
 
-  <!-- SEARCH ROW -->
-  <div class="rctx-search">
-    <input type="text" placeholder="Search Rhondda listings…" />
-  </div>
-<button id="openAdminDashboard" style="display:none;">Admin</button>
+<p style="margin-top:1rem;font-size:.9rem;color:rgba(255,255,255,0.6);">
+No contracts • Cancel anytime • Local support
+</p>
+<p style="margin-top:.6rem;font-size:.95rem;color:#93c5fd;font-weight:600;">
+✔ Domain included • ✔ Hosting included
+</p>
+<p style="margin-top:.7rem;font-size:.9rem;color:rgba(255,255,255,0.75);font-weight:600;">
+Based in Treorchy • Serving Rhondda Cynon Taf Businesses
+</p>
+</div>
 </header>
 
-<!-- ACCOUNT HEADER (shows only on account pages) -->
-<div id="accountHeader" class="hidden">
+<section class="gold-banner">
+  <h2 class="word-reveal">
+    <span>Helping</span>
+    <span>you</span>
+    <span>get</span>
+    <span>online</span>
+  </h2>
+</section>
+<section class="cta-block">
+  <div class="container" style="text-align:center;">
+    <a href="#contact" class="btn-primary">Get Your Website Started</a>
+  </div>
+</section>
+<section class="about-section">
+    <div class="container about-inner">
+     <h2>Local Websites Built Properly</h2>
+     <p>
+We are a small local team based in Treorchy, helping businesses across Rhondda Cynon Taf get modern websites that actually make them look professional online.
+</p>
+        <p>
+            We aren't a massive corporation — we're your neighbours. When you call us, you speak to the person actually building your site.
+            We're dedicated to helping local businesses grow and stand out online across the Rhondda and Pontypridd areas.
+        </p>
+    </div>
+</section>
 
-  <div class="account-tabs icon-only">
+<section class="services-section">
+  <div class="container">
 
-    <!-- My Ads -->
-    <button data-view="my-ads" title="My Ads">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-      </svg>
-    </button>
+    <h2>Everything Your Business Needs Online</h2>
 
-    <!-- Favourites -->
-    <button data-view="favourites" title="Favourites">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-      </svg>
-    </button>
+    <div class="services-grid">
 
-    <!-- List My Business -->
-    <button data-view="list-business" title="List My Business">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l1-5h16l1 5" />
-        <path d="M4 9h16v11H4z" />
-        <path d="M10 14h4" />
-      </svg>
-    </button>
+      <div class="service">
+        <div class="icon-wrap">
+          <!-- Monitor SVG -->
+          <svg viewBox="0 0 24 24" class="icon">
+            <rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+            <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>Website Built For You</h3>
+        <p>We design and build your site so your business looks professional and trusted.</p>
+      </div>
 
-    <!-- Messages -->
-    <button data-view="chat-list" title="Messages">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 4h16v12H5l-1 4V4z"/>
-      </svg>
-    </button>
+      <div class="service">
+        <div class="icon-wrap">
+          <!-- Camera SVG -->
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+    <h3>Real Business Imagery</h3>
+<p>We use real images of your business so your website feels authentic and local.</p>
+      </div>
 
-    <!-- Details -->
-    <button data-view="account-details" title="Details">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="8" r="4"/>
-        <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
-      </svg>
-    </button>
+      <div class="service">
+        <div class="icon-wrap">
+          <!-- Map SVG -->
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>Get Found On Google</h3>
+        <p>We set up your business so customers can find you on Google and Maps.</p>
+      </div>
 
-    <!-- Stats -->
-    <button data-view="stats" title="Stats">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 20V10M10 20V4M16 20v-6M22 20v-8"/>
-      </svg>
-    </button>
+      <div class="service">
+        <div class="icon-wrap">
+          <!-- Chat SVG -->
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>We Handle Changes</h3>
+        <p>Need an update? Just message us — no logins, no hassle.</p>
+      </div>
+
+      <div class="service">
+        <div class="icon-wrap">
+          <!-- Cloud SVG -->
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S20 10 17.5 10c-.2 0-.4 0-.6.1C15.8 7.6 13.1 6 10 6 5.6 6 2 9.6 2 14s3.6 8 8 8h7.5c2.5 0 4.5-2 4.5-4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>Hosting Included</h3>
+        <p>Your site stays online, fast, and secure — all taken care of.</p>
+      </div>
+    </div>
 
   </div>
+</section>
 
-</div>
-  
-  <!-- CATEGORY TABS -->
-<nav class="rctx-tabs main-tabs">
-  <button class="category-btn active" data-category="all">All Ads</button>
-  <button class="category-btn" data-category="free">Freebies</button>
-  <button class="category-btn" data-category="jobs">Jobs & Gigs</button>
-  <button class="category-btn" data-category="property">Property</button>
-  <button class="category-btn" data-category="vehicles" id="cat-vehicles">Cars & Vehicles</button>
-  <button class="category-btn" data-category="homegarden">Home & Garden</button>
-  <button class="category-btn" data-category="pets">Pet Supplies</button>
-  <button class="category-btn" data-category="services">Services</button>
-  <button class="category-btn" data-category="community">Community</button>
-</nav>
-
-<!-- SUB‑CATEGORY TABS (Hidden until Cars & Vehicles is selected) -->
-<nav id="sub-vehicles" class="rctx-tabs sub-tabs hidden">
-  <button class="category-btn active" data-category="cars">Cars</button>
-  <button class="category-btn" data-category="vans">Vans</button>
-  <button class="category-btn" data-category="motorbikes">Motorbikes</button>
-  <button class="category-btn" data-category="parts">Parts</button>
-  <button class="category-btn" data-category="othervehicles">Other</button>
-</nav>
-<!-- SUB‑CATEGORY TABS (Hidden until Property is selected) -->
-<nav id="sub-property" class="rctx-tabs sub-tabs hidden">
-  <button class="category-btn active" data-category="property-sale">For Sale</button>
-  <button class="category-btn" data-category="property-rent">To Rent</button>
-</nav>
-  <!-- ================= SIDE MENU ================= -->
-<div id="sideMenu" class="side-menu hidden">
-  <div class="menu-content">
-    <button class="close-menu">&times;</button>
-    <div id="menuOptions"></div>
+<section class="cta-block">
+  <div class="container" style="text-align:center;">
+    <a href="#pricing" class="btn-primary">See Pricing</a>
   </div>
+</section>
+
+<section id="features" class="features container">
+
+<p class="local-note">
+  Based in Treorchy — working across Rhondda Cynon Taf including Tonypandy, Ferndale, Porth, Treherbert, and Pontypridd.
+</p>
+
+  <div class="feature-text">
+    <h2>How It Works</h2>
+
+    <div class="timeline">
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>We Visit You</h3>
+        <p>We come to your business, understand what you do, and take images that show your business properly. No stock images.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>We Build Everything</h3>
+        <p>Your website is designed, written, photographed, and set up on Google — all handled for you.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>You Get Customers</h3>
+        <p>Your site goes live fast, looks professional, and we handle updates and changes whenever you need.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="pricing">
+  <div class="container">
+
+    <div class="pricing-intro">
+      <h2>Simple Monthly Pricing</h2>
+   <p>Everything handled for you — design, hosting, support, updates, and setup in one simple monthly plan.</p>
+
+      <p style="margin-top:1rem;color:var(--text-dim);">
+        Trusted by local businesses across Rhondda Cynon Taf
+      </p>
+    </div>
+
+<p class="urgency">
+We’re currently booking for next week — limited slots due to on-site visits.
+</p>
+<div class="local-note" style="margin-bottom:2rem;">
+  <strong>How pricing works:</strong><br><br>
+
+  The £50 setup payment is paid in advance before we visit your business and covers content gathering, planning, domain setup, and getting your website started.<br><br>
+
+  Your monthly payment does not begin until your website is fully live online.<br><br>
+
+  We also cover your domain name, hosting, support, and ongoing updates.<br><br>
+
+  Already have your own photos you'd like us to use? No problem — we can use those instead of taking new images.
 </div>
-  <!-- ================= MAIN (SPA CONTAINER) ================= -->
-<main id="app">
-  <div id="view-home" class="view"></div>
+
+    <!-- STARTER -->
+    <div class="pricing-box">
+      <div class="price-info">
+        <h2>Starter</h2>
+        <p>For businesses that just need a strong, professional online presence.</p>
+        <ul>
+          <li><i class="fa-solid fa-circle-check"></i> We visit your business and gather real photos and information for your website. The visit only takes around 15 to 30 minutes</li>
+          <li><i class="fa-solid fa-circle-check"></i> 3-page custom website</li>
+          <li><i class="fa-solid fa-circle-check"></i> Google Business Profile setup included</li>
+          <li><i class="fa-solid fa-circle-check"></i> Hosting, updates & support</li>
+        </ul>
+      </div>
+      <div class="price-tag">
+        <div class="cost">£30<span>/mo</span></div>
+     <p>£50 upfront • Monthly starts after launch</p>
+        <a href="#contact" class="btn-primary">Start My Website</a>
+      </div>
+    </div>
+
+    <!-- STANDARD -->
+    <div class="pricing-box featured">
+      <div class="price-info">
+        <h2>Standard</h2>
+        <p>Best for businesses that want to grow and look established online.</p>
+        <ul>
+          <li><i class="fa-solid fa-circle-check"></i> Everything in Starter</li>
+          <li><i class="fa-solid fa-circle-check"></i> Up to 5 pages</li>
+          <li><i class="fa-solid fa-circle-check"></i> Monthly updates included</li>
+          <li><i class="fa-solid fa-circle-check"></i> SEO boost + social links</li>
+        </ul>
+      </div>
+      <div class="price-tag">
+        <div class="cost">£50<span>/mo</span></div>
+   <p>£50 upfront • Monthly starts after launch</p>
+        <a href="#contact" class="btn-primary">Most Popular</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="faq" class="faq container">  
+    <div class="faq-intro">  
+        <h2>Got Questions?</h2>  
+        <p>Most businesses ask the same few things before getting started.</p>  
+        <button type="button" id="faqToggle" class="btn-primary">View FAQs</button>  
+    </div>  
+
+    <div id="faqWrapper" class="faq-wrapper">  
+
+      <div class="faq-item">  
+        <div class="faq-question">  
+            <h3>Do I need to provide anything?</h3>  
+            <span class="faq-icon">+</span>  
+        </div>  
+        <div class="faq-answer">  
+            <p>No. We handle everything — images, content writing, hosting, setup, and Google Business Profile setup. You just tell us about your business.</p>  
+        </div>  
+    </div>  
+    
+    <div class="faq-item">  
+    <div class="faq-question">  
+        <h3>When do monthly payments start?</h3>  
+        <span class="faq-icon">+</span>  
+    </div>  
+    <div class="faq-answer">  
+        <p>Your monthly payment only starts once your website is fully live online.</p>  
+    </div>  
+</div>
+
+<div class="faq-item">  
+    <div class="faq-question">  
+        <h3>What does the £50 setup cover?</h3>  
+        <span class="faq-icon">+</span>  
+    </div>  
+    <div class="faq-answer">  
+        <p>The setup payment covers your business visit, images, planning, domain setup, and getting your website built and ready to launch.</p>  
+    </div>  
+</div>
+
+<div class="faq-item">  
+    <div class="faq-question">  
+        <h3>Do I need to buy hosting or a domain?</h3>  
+        <span class="faq-icon">+</span>  
+    </div>  
+    <div class="faq-answer">  
+        <p>No. We handle your hosting, domain setup, maintenance, and technical side for you.</p>  
+    </div>  
+</div>
+
+    <div class="faq-item">  
+        <div class="faq-question">  
+            <h3>Do you really visit my business?</h3>  
+            <span class="faq-icon">+</span>  
+        </div>  
+        <div class="faq-answer">  
+            <p>Yes. We physically visit your location to capture real photos and understand your business properly.</p>  
+        </div>  
+    </div>  
+
+    <div class="faq-item">  
+        <div class="faq-question">  
+            <h3>How long does the website take?</h3>  
+            <span class="faq-icon">+</span>  
+        </div>  
+        <div class="faq-answer">  
+            <p>Most websites are completed within 2–5 days after your photo visit.</p>  
+        </div>  
+    </div>  
+
+    <div class="faq-item">  
+        <div class="faq-question">  
+            <h3>Is there a contract?</h3>  
+            <span class="faq-icon">+</span>  
+        </div>  
+        <div class="faq-answer">  
+            <p>No contracts. Cancel anytime. We keep clients through results, not lock-ins.</p>  
+        </div>  
+        </div>
+    </div>
+</section>  
+<section class="container" style="padding-bottom:3rem;text-align:center;">
+  <p style="color:var(--text-dim);max-width:700px;margin:auto;">
+    We keep things simple. No confusing tech talk, no hidden fees, and no long-term contracts — just a modern website built properly for your business.
+  </p>
+</section>
+
+<section id="contact" class="contact container">
+
+  <p style="text-align:center;margin-bottom:1.5rem;color:var(--text-dim);">
+    No pressure. Just tell us about your business and we’ll handle the rest.
+  </p>
+
+  <div class="glass-form">
+    <h2>Start Your Website</h2>
+
+<form name="contact"
+method="POST"
+action="/thank-you"
+data-netlify="true"
+netlify-honeypot="bot-field">
+      
+      <!-- NETLIFY FORM NAME -->
+      <input type="hidden" name="form-name" value="contact">
+
+      <!-- EMAIL SUBJECT -->
+      <input type="hidden" name="subject" value="New RCTX Website Enquiry">
+
+      <!-- HONEYPOT FIELD -->
+      <p class="hidden">
+        <label>Don’t fill this out if you’re human:
+          <input name="bot-field" />
+          <input type="hidden" name="_captcha" value="false">
+        </label>
+      </p>
+
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="tel" name="phone" placeholder="Phone Number" required>
+      <input type="text" name="business" placeholder="Business Name" required>
+      <input type="email" name="email" placeholder="Email Address" required>
+      <input type="text" name="location" placeholder="Your Location" required>
+
+      <textarea 
+        name="details" 
+        placeholder="Tell us a bit about what you're looking for" 
+        required
+      ></textarea>
+
+      <p style="text-align:center;margin-top:1rem;color:#22c55e;font-weight:600;">
+        ✔ No contracts<br>
+        ✔ Local support<br>
+        ✔ Cancel anytime
+      </p>
+
+      <button type="submit" class="btn-primary full-width">
+     Get My Website Started
+      </button>
+      <p style="text-align:center;margin-bottom:2rem;">
+  Prefer to talk first?<br>
+  Call or WhatsApp us directly.
+</p>
+    </form>
+
+    <p style="font-size:.9rem;color:var(--text-dim);margin-top:1rem;">
+      We’ll reply within 24 hours.
+    </p>
+
+    <p style="text-align:center;margin-top:1rem;color:var(--text-dim);">
+      We’ll contact you directly after your enquiry
+    </p>
+  </div>
+</section>
 </main>
+<section class="local-seo">
+  <div class="electric-bg"></div>
 
-<!-- ================= LOGIN MODAL ================= -->
-<div id="login" class="modal">
-  <div class="modal-content">
-    <button class="close"
-            aria-label="Close"
-            data-action="close-screens">&times;</button>
+  <div class="local-seo-inner">
+    <h2>Local Web Design in Rhondda Cynon Taf</h2>
 
-    <h2>Log in</h2>
-
-    <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
-    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-
-    <button id="loginSubmit">Log in</button>
-
-    <p id="loginFeedback" class="feedback-text"></p>
-
-    <p class="modal-switch">
-      No account?
-      <span data-action="open-screen" data-value="signup">Create one</span>
-    </p>
- <p class="modal-link"
-       data-action="open-screen"
-       data-value="forgot">
-      Forgot password?
+    <p>
+      We work with businesses in Treorchy, Tonypandy, Pontypridd and across Rhondda Cynon Taf.
+      Helping local companies get modern websites that look professional and bring in customers.
     </p>
   </div>
-</div>
+</section>
 
-<!-- ================= FORGOT PASSWORD MODAL ================= -->
-<div id="forgot" class="modal">
-  <div class="modal-content">
-    <button class="close"
-            aria-label="Close"
-            data-action="close-screens">&times;</button>
-
-    <h2>Reset Password</h2>
-
-    <input type="email" id="forgotEmail" placeholder="Enter your email" autocomplete="email">
-
-    <button id="forgotSubmit">Send Reset Email</button>
-
-    <p class="modal-switch">
-      Remembered your password?
-      <span data-action="open-screen" data-value="login">Back to login</span>
-    </p>
-  </div>
-</div>
-
-<!-- ================= PASSWORD RESET CONFIRMATION MODAL ================= -->
-<div id="resetConfirm" class="modal">
-  <div class="modal-content">
-    <button class="close"
-            aria-label="Close"
-            data-action="close-screens">&times;</button>
-
-    <h2>Email Sent ✅</h2>
-    <p>Check your inbox for a password reset link.</p>
-
-    <button data-action="open-screen" data-value="login">
-      Back to Login
-    </button>
-  </div>
-</div>
-
-<!-- ================= SIGNUP MODAL ================= -->
-<div id="signup" class="modal">
-  <div class="modal-content">
-    <button class="close"
-            aria-label="Close"
-            data-action="close-screens">&times;</button>
-<h2>Create account</h2>
-<input type="email" id="signupEmail" placeholder="Email" autocomplete="email">
-<input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password">
-    <button id="signupSubmit">Create account</button>
-
-    <p id="signupFeedback" class="feedback-text"></p>
-
-    <p class="modal-switch">
-      Already have an account?
-      <span data-action="open-screen" data-value="login">Log in</span>
-    </p>
-  </div>
-</div>
-
-<!-- ================= POST MODAL ================= -->
-<div id="posts-grid" class="modal">
-  <div class="modal-content">
-
-    <!-- Close -->
-    <button class="close" aria-label="Close" data-action="close-screens">&times;</button>
-
-    <!-- Progress dots -->
-    <div class="post-progress">
-      <span class="dot active"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-
-    <div id="postFlow">
-
-<!-- STEP 1: CATEGORY -->
-<div class="post-step active" data-step="1">
-  <h2>What are you posting?</h2>
-
-  <div class="category-grid">
-
-    <!-- Local Deals (General For Sale) -->
-    <button type="button" data-category="localdeals">Local Deals</button>
-
-    <!-- Freebies -->
-    <button type="button" data-category="free">Freebies</button>
-
-    <!-- Jobs & Gigs -->
-    <button type="button" data-category="jobs">Jobs & Gigs</button>
-
-    <!-- Property -->
-    <button type="button" data-category="property">Property</button>
-
-    <!-- Cars & Vehicles -->
-    <button type="button" data-category="vehicles">Cars & Vehicles</button>
-
-    <!-- Home & Garden -->
-    <button type="button" data-category="homegarden">Home & Garden</button>
-
-    <!-- Pet Supplies -->
-    <button type="button" data-category="pets">Pet Supplies</button>
-
-    <!-- Services -->
-    <button type="button" data-category="services">Services</button>
-
-    <!-- Community -->
-    <button type="button" data-category="community">Community</button>
-
-  </div>
-</div>
-
-      <!-- STEP 2: CORE DETAILS -->
-      <div class="post-step" data-step="2">
-        <h2>Tell people about it</h2>
-
-        <input type="text" id="postTitle" placeholder="Ad title" maxlength="70" required>
-        <textarea id="postDescription" rows="5" placeholder="Add a description" required></textarea>
-
-        <!-- PROPERTY ONLY -->
-        <div class="property-options" hidden>
-          <h3>Property details</h3>
-
-          <div class="property-type">
-            <button type="button" data-property-type="sale">For Sale</button>
-            <button type="button" data-property-type="rent">To Rent</button>
-          </div>
-
-          <div class="rent-frequency">
-            <button type="button" data-rent-frequency="pcm">PCM</button>
-            <button type="button" data-rent-frequency="weekly">Weekly</button>
-          </div>
-        </div>
-
-        <div class="post-nav">
-          <button type="button" class="post-prev ghost-btn">Back</button>
-          <button type="button" class="post-next primary-btn" disabled>Continue</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: CONTACT -->
-      <div class="post-step" data-step="3">
-        <h2>How can people reach you?</h2>
-
-        <label for="postContact">Contact (optional)</label>
-<input type="tel" id="postContact" placeholder="Your phone number">
-
-<label class="toggle-row">
-  <input type="checkbox" id="postShowNumber" checked>
-  Show my number on the ad
-</label>
-
-<label class="toggle-row">
-  <input type="checkbox" id="postWhatsApp">
-  Allow WhatsApp contact
-</label>
-
-        <label for="postLocation">Location</label>
-        <input type="text" id="postLocation" placeholder="e.g. Treorchy, Tonypandy">
-
-        <div class="post-nav">
-          <button type="button" class="post-prev ghost-btn">Back</button>
-          <button type="button" class="post-next primary-btn">Continue</button>
-        </div>
-      </div>
-
-      <!-- STEP 4: OPTIONAL DETAILS -->
-      <div class="post-step" data-step="4">
-        <h2>Optional details</h2>
-
-        <!-- PRICE (hidden for free/jobs/community) -->
-        <div class="price-box">
-          <label for="postPrice">Price (£)</label>
-          <input type="number" id="postPrice" placeholder="Price (optional)" min="0" step="0.01">
-        </div>
-
-        <!-- AREA (property only) -->
-        <div class="area-box" hidden>
-          <input type="text" id="postArea" placeholder="Property size / area (optional)">
-        </div>
-
-        <!-- FOR SALE -->
-        <div class="forsale-options" hidden>
-          <h3>Item details</h3>
-
-          <label>Condition</label>
-          <select id="postCondition">
-            <option value="">Select condition</option>
-            <option value="new">New</option>
-            <option value="likenew">Like New</option>
-            <option value="used">Used</option>
-            <option value="needswork">Needs TLC</option>
-          </select>
-
-          <label>Delivery available?</label>
-          <select id="postDelivery">
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-
-        <!-- PROPERTY FEATURES -->
-        <div class="property-features" hidden>
-          <h3>Property features</h3>
-
-          <div class="feature-grid">
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="garden">
-              🌿 Garden access
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="southfacing">
-              🌞 South-facing
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="parking">
-              🚗 Off-road parking
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="offers">
-              💬 Open to offers
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="pets">
-              🐾 Pet friendly
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="renovated">
-              🛠 Newly renovated
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="furnished">
-              🛋 Furnished
-            </label>
-
-            <label class="feature-item">
-              <input type="checkbox" data-feature="unfurnished">
-              🏡 Unfurnished
-            </label>
-
-          </div>
-        </div>
-
-        <!-- JOBS -->
-        <div class="jobs-options" hidden>
-          <h3>Job / Service details</h3>
-
-          <label>Job type</label>
-          <select id="jobType">
-            <option value="">Select</option>
-            <option value="fulltime">Full‑time</option>
-            <option value="parttime">Part‑time</option>
-            <option value="temp">Temporary</option>
-            <option value="selfemployed">Self‑employed / Service</option>
-          </select>
-
-          <label>Salary / Rate</label>
-          <input type="text" id="jobSalary" placeholder="e.g. £12/hr or £24k/year">
-
-          <label>Experience required?</label>
-          <select id="jobExperience">
-            <option value="">Select</option>
-            <option value="none">No experience needed</option>
-            <option value="some">Some experience</option>
-            <option value="experienced">Experienced only</option>
-          </select>
-        </div>
-
-        <!-- EVENTS -->
-        <div class="events-options" hidden>
-          <h3>Event details</h3>
-
-          <label>Date</label>
-          <input type="date" id="eventDate">
-
-          <label>Start time</label>
-          <input type="time" id="eventStart">
-
-          <label>End time</label>
-          <input type="time" id="eventEnd">
-
-          <label>Venue</label>
-          <input type="text" id="eventVenue" placeholder="Where is it happening?">
-        </div>
-
-        <!-- COMMUNITY -->
-        <div class="community-options" hidden>
-          <h3>Community post type</h3>
-
-          <select id="communityType">
-            <option value="">Select</option>
-            <option value="lost">Lost & Found</option>
-            <option value="help">Local Help Needed</option>
-            <option value="announcement">Announcement</option>
-            <option value="volunteer">Volunteers Wanted</option>
-          </select>
-
-          <div id="lostFoundExtra" hidden>
-            <label>Last seen location</label>
-            <input type="text" id="lostLocation" placeholder="Where was it last seen?">
-
-            <label>Reward offered?</label>
-            <input type="text" id="lostReward" placeholder="Optional">
-          </div>
-        </div>
-
-        <!-- Photos -->
-        <div class="photo-uploader">
-          <input type="file" id="postImages" accept="image/*" multiple hidden>
-
-          <button type="button" id="addPhotosBtn" class="ghost-btn">
-            + Add photos
-          </button>
-
-          <small class="hint-text">
-            Add photos. First photo becomes the cover.
-          </small>
-
-          <div id="imagePreview" class="image-preview-grid"></div>
-        </div>
-
-        <div class="post-nav">
-          <button type="button" class="post-prev ghost-btn">Back</button>
-          <button type="button" id="postSubmitBtn" class="primary-btn">Post ad</button>
-        </div>
-      </div>
-
-    </div>
-
-    <p id="postFeedback" class="feedback-text"></p>
-
-  </div>
-</div>
-
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <p class="footer-brand">
-      <strong>RCT-X</strong><br>
-      <span class="footer-tagline">
-        Browse it. Post it. Sell it.
-      </span><br>
-      <span class="footer-subline">
-        All local. All Rhondda.
-      </span>
-    </p>
-
-    <p class="footer-links">
-      <a href="/about.html">About</a>
-      <span>·</span>
-      <a href="/terms.html">Terms</a>
-      <span>·</span>
-      <a href="/contact.html">Contact</a>
-    </p>
-
-    <p class="footer-copy">
-      &copy; 2025 RCT-X · Built for the Rhondda, Powered by Locals
-    </p>
-  </div>
+<footer>
+<p>© 2026 RCTX • Web Design in Rhondda Cynon Taf</p>
 </footer>
 
+<script>
+// =========================
+// MOBILE MENU (Hamburger)
+// =========================
+const btn = document.getElementById("hamburgerBtn");
+const menu = document.getElementById("mobileMenu");
 
-  <!-- Preview Modal -->
-<div id="postPreviewModal" class="preview-modal hidden">
-  <div class="preview-overlay"></div>
+btn.onclick = () => {
+    btn.classList.toggle("active");
+    menu.classList.toggle("active");
+};
 
-  <div class="preview-content">
-    <button class="preview-close">&times;</button>
+// =========================
+// CLOSE MOBILE MENU ON LINK CLICK
+// =========================
+document.querySelectorAll(".nav-links a").forEach(link => {
+    link.onclick = () => {
+        btn.classList.remove("active");
+        menu.classList.remove("active");
+    };
+});
 
-    <div id="postPreview" class="preview-body"></div>
+// =========================
+// FAQ TOGGLE (Show/Hide FAQ Section)
+// =========================
+const faqBtn = document.getElementById("faqToggle");
+const faqWrap = document.getElementById("faqWrapper");
 
-    <button id="confirmPostBtn" class="primary-btn confirm-btn">
-      Confirm & Post
-    </button>
-  </div>
+faqBtn.onclick = () => faqWrap.classList.toggle("active");
+
+// FAQ ACCORDION ITEMS
+document.querySelectorAll(".faq-question").forEach(q => {
+    q.onclick = () => {
+        const item = q.parentElement;
+        const all = document.querySelectorAll(".faq-item");
+
+        all.forEach(i => {
+            if (i !== item) i.classList.remove("active");
+        });
+
+        item.classList.toggle("active");
+    };
+});
+
+// =========================
+// REVEAL ON SCROLL (Services + Steps)
+// =========================
+const services = document.querySelectorAll(".service");
+const steps = document.querySelectorAll(".step");
+
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+
+            // Stagger services
+            if (entry.target.classList.contains("service")) {
+                setTimeout(() => {
+                    entry.target.classList.add("show");
+                }, index * 120);
+            }
+
+            // Steps reveal instantly
+            if (entry.target.classList.contains("step")) {
+                entry.target.classList.add("show");
+            }
+        }
+    });
+}, { threshold: 0.2 });
+
+// Observe both
+services.forEach(service => revealObserver.observe(service));
+steps.forEach(step => revealObserver.observe(step));
+</script>
+<div class="sticky-contact-bar">
+    <a href="tel:+441234567890" class="sticky-btn call-btn">
+        <i class="fa-solid fa-phone"></i>
+        Call
+    </a>
+
+    <a href="https://wa.me/441234567890" class="sticky-btn whatsapp-btn">
+        <i class="fa-brands fa-whatsapp"></i>
+        WhatsApp
+    </a>
+
+    <a href="#contact" class="sticky-btn email-btn">
+        <i class="fa-solid fa-envelope"></i>
+        Enquire
+    </a>
 </div>
-  <!-- ============================
-     MANAGE MY BUSINESS POPUP
-============================= -->
-<div id="manageBusinessPopup" class="manage-popup hidden">
-  <div class="manage-popup-inner">
-
-    <div class="manage-popup-header">
-      <h2>My Business Listings</h2>
-      <button id="closeManagePopup" class="close-manage">&times;</button>
-    </div>
-
-    <div id="manageBusinessGrid" class="manage-grid"></div>
-
-  </div>
-</div>
-<!-- SPA + App Logic -->
-<script type="module" src="/index/js/main.js"></script>
 </body>
-  </html>
+</html>
