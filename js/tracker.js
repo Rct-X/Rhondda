@@ -1,48 +1,46 @@
 console.log("Tracker loaded");
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getFirestore,
   collection,
   addDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
+async function startTracker() {
 
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER",
-  appId: "YOUR_APP_ID"
+  // GET CONFIG FROM NETLIFY FUNCTION
+  const response =
+    await fetch("/.netlify/functions/firebase-config");
 
-};
+  const firebaseConfig = await response.json();
 
-console.log("Firebase config loaded");
+  console.log("Firebase config received");
 
-const app = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
 
-console.log("Firebase initialized");
+  console.log("Firebase initialized");
 
-const db = getFirestore(app);
-
-async function trackVisit() {
-
-  console.log("Tracking started");
+  const db = getFirestore(app);
 
   try {
 
-    const result = await addDoc(collection(db, "analytics"), {
+    const result = await addDoc(
+      collection(db, "analytics"),
+      {
 
-      site: "rctx",
+        site: "rctx",
 
-      page: window.location.pathname,
+        page: window.location.pathname,
 
-      timestamp: serverTimestamp()
+        timestamp: serverTimestamp()
 
-    });
+      }
+    );
 
     console.log("SUCCESS:", result.id);
 
@@ -54,4 +52,4 @@ async function trackVisit() {
 
 }
 
-trackVisit();
+startTracker();
