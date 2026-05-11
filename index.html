@@ -1015,7 +1015,13 @@ img{
             <div class="logo-tag">Rhondda Web Design</div>
         </div>
 
-<button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+<button 
+class="hamburger" 
+id="hamburgerBtn"
+type="button"
+aria-label="Open navigation menu"
+aria-expanded="false"
+aria-controls="mobileMenu">
             <span></span>
             <span></span>
             <span></span>
@@ -1361,12 +1367,14 @@ We’re currently booking for next week — limited slots due to on-site visits.
   <div class="glass-form">
     <h2>Start Your Website</h2>
 
-<form name="contact"
-method="POST"
-action="/thank-you"
-data-netlify="true"
-netlify-honeypot="bot-field">
-      
+    <form 
+      name="contact"
+      method="POST"
+      action="/thank-you"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+    >
+
       <!-- NETLIFY FORM NAME -->
       <input type="hidden" name="form-name" value="contact">
 
@@ -1376,20 +1384,55 @@ netlify-honeypot="bot-field">
       <!-- HONEYPOT FIELD -->
       <p class="hidden">
         <label>Don’t fill this out if you’re human:
-          <input name="bot-field" />
+          <input name="bot-field" autocomplete="off" />
           <input type="hidden" name="_captcha" value="false">
         </label>
       </p>
 
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="tel" name="phone" placeholder="Phone Number" required>
-      <input type="text" name="business" placeholder="Business Name" required>
-      <input type="email" name="email" placeholder="Email Address" required>
-      <input type="text" name="location" placeholder="Your Location" required>
+      <input 
+        type="text" 
+        name="name" 
+        placeholder="Your Name" 
+        autocomplete="name"
+        required
+      >
+
+      <input 
+        type="tel" 
+        name="phone" 
+        placeholder="Phone Number" 
+        autocomplete="tel"
+        required
+      >
+
+      <input 
+        type="text" 
+        name="business" 
+        placeholder="Business Name" 
+        autocomplete="organization"
+        required
+      >
+
+      <input 
+        type="email" 
+        name="email" 
+        placeholder="Email Address" 
+        autocomplete="email"
+        required
+      >
+
+      <input 
+        type="text" 
+        name="location" 
+        placeholder="Your Location" 
+        autocomplete="address-level2"
+        required
+      >
 
       <textarea 
-        name="details" 
-        placeholder="Tell us a bit about what you're looking for" 
+        name="details"
+        placeholder="Tell us a bit about what you're looking for"
+        autocomplete="off"
         required
       ></textarea>
 
@@ -1400,12 +1443,14 @@ netlify-honeypot="bot-field">
       </p>
 
       <button type="submit" class="btn-primary full-width">
-     Get My Website Started
+        Get My Website Started
       </button>
+
       <p style="text-align:center;margin-bottom:2rem;">
-  Prefer to talk first?<br>
-  Call or WhatsApp us directly.
-</p>
+        Prefer to talk first?<br>
+        Call or WhatsApp us directly.
+      </p>
+
     </form>
 
     <p style="font-size:.9rem;color:var(--text-dim);margin-top:1rem;">
@@ -1445,6 +1490,9 @@ const menu = document.getElementById("mobileMenu");
 btn.onclick = () => {
     btn.classList.toggle("active");
     menu.classList.toggle("active");
+
+    const expanded = btn.classList.contains("active");
+    btn.setAttribute("aria-expanded", expanded);
 };
 
 // =========================
@@ -1454,6 +1502,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     link.onclick = () => {
         btn.classList.remove("active");
         menu.classList.remove("active");
+        btn.setAttribute("aria-expanded", "false");
     };
 });
 
