@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RCTX Analytics</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#0b0f19;
+    color:white;
+    padding:2rem;
+}
+
+.card{
+    background:#111827;
+    padding:1.5rem;
+    border-radius:14px;
+    margin-bottom:1rem;
+}
+
+h1{
+    margin-bottom:2rem;
+}
+
+.visit{
+    padding:.7rem 0;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+</style>
+</head>
+<body>
+
+<h1>RCTX Analytics Dashboard</h1>
+
+<div class="card">
+    <h2>Total Visits</h2>
+    <div id="totalVisits">Loading...</div>
+</div>
+
+<div class="card">
+    <h2>Recent Visitors</h2>
+    <div id="recentVisits"></div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER",
+  appId: "YOUR_APP_ID"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* TOTAL VISITS */
+
+const snapshot = await getDocs(collection(db, "analytics"));
+
+document.getElementById("totalVisits").innerText =
+snapshot.size + " visits";
+
+/* RECENT VISITS */
+
+const q = query(
+  collection(db, "analytics"),
+  orderBy("timestamp", "desc"),
+  limit(20)
+);
+
+const recent = await getDocs(q);
+
+const recentWrap = document.getElementById("recentVisits");
+
+recent.forEach(doc => {
+
+  const data = doc.data();
+
+  recentWrap.innerHTML += `
+
+    <div class="visit">
+      <strong>${data.site}</strong><br>
+      ${data.page}<br>
+      ${data.referrer}
+    </div>
+
+  `;
+
+});
+
+</script>
+
+</body>
+</html>
