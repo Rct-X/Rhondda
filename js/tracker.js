@@ -1,8 +1,9 @@
 console.log("Tracker loaded");
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   collection,
@@ -21,7 +22,9 @@ async function startTracker() {
 
   console.log("Firebase config received");
 
-  const app = initializeApp(firebaseConfig);
+const app = getApps().length
+  ? getApps()[0]
+  : initializeApp(firebaseConfig);
 
   console.log("Firebase initialized");
 
