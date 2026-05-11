@@ -19,24 +19,41 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* CHANGE FOR EACH WEBSITE */
 const siteName = "rctx";
 
 async function trackVisit() {
+
   try {
 
     await addDoc(collection(db, "analytics"), {
+
       site: siteName,
+
       page: window.location.pathname,
+
+      url: window.location.href,
+
+      hostname: window.location.hostname,
+
       referrer: document.referrer || "direct",
-      screen: `${window.innerWidth}x${window.innerHeight}`,
+
+      userAgent: navigator.userAgent,
+
       language: navigator.language,
+
+      screen: `${window.innerWidth}x${window.innerHeight}`,
+
       timestamp: serverTimestamp()
+
     });
 
-    console.log("Tracked");
+    console.log("Visit tracked");
 
   } catch (err) {
-    console.error(err);
+
+    console.error("Tracking error:", err);
+
   }
 }
 
