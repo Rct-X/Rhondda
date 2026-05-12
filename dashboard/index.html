@@ -45,7 +45,10 @@ h1{
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getFirestore,
@@ -56,57 +59,95 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
+async function loadDashboard() {
 
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER",
-  appId: "YOUR_APP_ID"
+  try {
 
-};
+    console.log("Dashboard started");
 
-const app = initializeApp(firebaseConfig);
+    // GET CONFIG FROM NETLIFY FUNCTION
+    const response =
+      await fetch("/.netlify/functions/firebaseConfig");
 
-const db = getFirestore(app);
+    const firebaseConfig =
+      await response.json();
 
-/* TOTAL VISITS */
+    console.log("Firebase config received");
 
-const snapshot = await getDocs(collection(db, "analytics"));
+    // PREVENT DUPLICATE APP
+    const app = getApps().length
+      ? getApps()[0]
+      : initializeApp(firebaseConfig);
 
-document.getElementById("totalVisits").innerText =
-snapshot.size + " visits";
+    console.log("Firebase initialized");
 
-/* RECENT VISITS */
+    const db = getFirestore(app);
 
-const q = query(
-  collection(db, "analytics"),
-  orderBy("timestamp", "desc"),
-  limit(20)
-);
+    // TOTAL VISITS
+    const snapshot =
+      await getDocs(collection(db, "analytics"));
 
-const recent = await getDocs(q);
+    document.getElementById(
+      "totalVisits"
+    ).innerText =
+      snapshot.size + " visits";
 
-const recentWrap = document.getElementById("recentVisits");
+    // RECENT VISITS
+    const q = query(
+      collection(db, "analytics"),
+      orderBy("timestamp", "desc"),
+      limit(20)
+    );
 
-recent.forEach(doc => {
+    const recent = await getDocs(q);
 
-  const data = doc.data();
+    const recentWrap =
+      document.getElementById("recentVisits");
 
-  recentWrap.innerHTML += `
+    recentWrap.innerHTML = "";
 
-    <div class="visit">
-      <strong>${data.site}</strong><br>
-      ${data.page}<br>
-      ${data.referrer}
-    </div>
+    recent.forEach(doc => {
 
-  `;
+      const data = doc.data();
 
-});
+      recentWrap.innerHTML += `
+
+        <div class="visit">
+
+          <strong>
+            ${data.site || "unknown"}
+          </strong><br>
+
+          Page:
+          ${data.page || "unknown"}<br>
+
+          Referrer:
+          ${data.referrer || "direct"}<br>
+
+          Screen:
+          ${data.screen || "unknown"}
+
+        </div>
+
+      `;
+
+    });
+
+    console.log("Dashboard loaded");
+
+  } catch(err) {
+
+    console.error(
+      "DASHBOARD ERROR:",
+      err
+    );
+
+  }
+
+}
+
+loadDashboard();
 
 </script>
-<script type="module" src="/js/tracker.js"></script>
 </body>
 </html>
