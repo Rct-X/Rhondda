@@ -37,6 +37,13 @@ async function startTracker() {
 
   const db = getFirestore(app);
 
+  if (
+  window.location.hostname.includes("localhost") ||
+  window.location.pathname.includes("dashboard")
+) {
+  return;
+  }
+
   try {
     const result = await addDoc(
       collection(db, "analytics"),
