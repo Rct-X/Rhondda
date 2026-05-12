@@ -2,30 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>RCTX Analytics</title>
+<title>RCTX Analytics Dashboard</title>
 
 <style>
 body{
-    font-family:Arial;
-    background:#0b0f19;
-    color:white;
-    padding:2rem;
+  font-family: Arial;
+  background:#0b0f19;
+  color:white;
+  padding:2rem;
 }
 
 .card{
-    background:#111827;
-    padding:1.5rem;
-    border-radius:14px;
-    margin-bottom:1rem;
-}
-
-h1{
-    margin-bottom:2rem;
-}
-
-.visit{
-    padding:.7rem 0;
-    border-bottom:1px solid rgba(255,255,255,0.08);
+  background:#111827;
+  padding:1.5rem;
+  border-radius:14px;
+  margin-bottom:1rem;
 }
 </style>
 </head>
@@ -34,22 +25,23 @@ h1{
 <h1>RCTX Analytics Dashboard</h1>
 
 <div class="card">
-    <h2>Total Visits</h2>
-    <div id="totalVisits">Loading...</div>
+  <h2>Total Visits</h2>
+  <div id="totalVisits">Loading...</div>
 </div>
 
 <div class="card">
-    <h2>Recent Visitors</h2>
-    <div id="recentVisits"></div>
+  <h2>Top Pages</h2>
+  <div id="topPages"></div>
+</div>
+
+<div class="card">
+  <h2>Recent Visits</h2>
+  <div id="recent"></div>
 </div>
 
 <script type="module">
 
-import {
-  getApps,
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   collection,
@@ -59,90 +51,59 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-async function loadDashboard() {
+const response = await fetch("/.netlify/functions/firebaseConfig");
+const firebaseConfig = await response.json();
 
-  try {
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    console.log("Dashboard started");
+/* GET DATA */
+const snapshot = await getDocs(collection(db, "analytics"));
 
-    // GET CONFIG FROM NETLIFY FUNCTION
-    const response =
-      await fetch("/.netlify/functions/firebaseConfig");
+document.getElementById("totalVisits").innerText =
+snapshot.size + " visits";
 
-    const firebaseConfig =
-      await response.json();
+/* TOP PAGES (basic grouping) */
+const pages = {};
 
-    console.log("Firebase config received");
+snapshot.forEach(doc => {
+  const d = doc.data();
+  pages[d.page] = (pages[d.page] || 0) + 1;
+});
 
-    // PREVENT DUPLICATE APP
-    const app = getApps().length
-      ? getApps()[0]
-      : initializeApp(firebaseConfig);
+const topPagesEl = document.getElementById("topPages");
 
-    console.log("Firebase initialized");
+Object.entries(pages)
+.sort((a,b) => b[1] - a[1])
+.slice(0,5)
+.forEach(p => {
+  topPagesEl.innerHTML += `<div>${p[0]} — ${p[1]}</div>`;
+});
 
-    const db = getFirestore(app);
+/* RECENT */
+const q = query(
+  collection(db, "analytics"),
+  orderBy("timestamp","desc"),
+  limit(10)
+);
 
-    // TOTAL VISITS
-    const snapshot =
-      await getDocs(collection(db, "analytics"));
+const recent = await getDocs(q);
 
-    document.getElementById(
-      "totalVisits"
-    ).innerText =
-      snapshot.size + " visits";
+const recentEl = document.getElementById("recent");
 
-    // RECENT VISITS
-    const q = query(
-      collection(db, "analytics"),
-      orderBy("timestamp", "desc"),
-      limit(20)
-    );
+recent.forEach(doc => {
+  const d = doc.data();
 
-    const recent = await getDocs(q);
-
-    const recentWrap =
-      document.getElementById("recentVisits");
-
-    recentWrap.innerHTML = "";
-
-    recent.forEach(doc => {
-
-      const data = doc.data();
-
-recentWrap.innerHTML += `
-
-  <div class="visit">
-
-    <strong>${data.site}</strong><br>
-
-    Page: ${data.page || "unknown"}<br>
-
-    Referrer: ${data.referrer || "direct"}<br>
-
-    Screen: ${data.screen || "unknown"}<br>
-
-  </div>
-
-`;
-
-    });
-
-    console.log("Dashboard loaded");
-
-  } catch(err) {
-
-    console.error(
-      "DASHBOARD ERROR:",
-      err
-    );
-
-  }
-
-}
-
-loadDashboard();
+  recentEl.innerHTML += `
+    <div style="margin-bottom:10px;">
+      <b>${d.clientId}</b><br>
+      ${d.page}<br>
+      ${d.referrer}
+    </div>
+  `;
+});
 
 </script>
+
 </body>
 </html>
