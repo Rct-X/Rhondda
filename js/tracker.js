@@ -16,7 +16,7 @@ async function startTracker() {
 
   // GET CONFIG FROM NETLIFY FUNCTION
   const response =
-    await fetch("/.netlify/functions/firebase-config");
+    await fetch("/.netlify/functions/firebaseConfig");
 
   const firebaseConfig = await response.json();
 
