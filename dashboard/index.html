@@ -111,17 +111,19 @@ async function loadDashboard() {
       const data = doc.data();
 
 recentWrap.innerHTML += `
-<div class="visit">
 
-  <strong>${data.site}</strong><br>
+  <div class="visit">
 
-  Page: ${data.page || "unknown"}<br>
+    <strong>${data.site}</strong><br>
 
-  Referrer: ${data.referrer || "direct"}<br>
+    Page: ${data.page || "unknown"}<br>
 
-  Screen: ${data.screen || "unknown"}<br>
+    Referrer: ${data.referrer || "direct"}<br>
 
-</div>
+    Screen: ${data.screen || "unknown"}<br>
+
+  </div>
+
 `;
 
     });
@@ -136,6 +138,8 @@ recentWrap.innerHTML += `
     );
 
   }
+
+}
 
 loadDashboard();
 
