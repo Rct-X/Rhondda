@@ -5,9 +5,6 @@ import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.g
 
 async function startTracker() {
 
-  const alreadyTracked = sessionStorage.getItem("rctxTracked");
-  if (alreadyTracked) return;
-
   const response = await fetch("/.netlify/functions/firebaseConfig");
   const firebaseConfig = await response.json();
 
@@ -23,20 +20,21 @@ async function startTracker() {
 
     await addDoc(collection(db, "analytics"), {
 
-      clientId: window.RCTX_CLIENT_ID || "unknown",
-      site: window.location.hostname,
+      clientId: window.location.hostname,   // 🔥 FIX: consistent grouping
+      domain: window.location.hostname,
 
       page: window.location.pathname,
+      fullPath: window.location.href,
+
       referrer: document.referrer || "direct",
 
-      screen: `${window.innerWidth}x${window.innerHeight}`,
+      screen: `${window.innerWidth || 0}x${window.innerHeight || 0}`,
+
       language: navigator.language,
 
       timestamp: serverTimestamp()
 
     });
-
-    sessionStorage.setItem("rctxTracked", "true");
 
     console.log("Tracked");
 
