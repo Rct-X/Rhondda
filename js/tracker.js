@@ -5,12 +5,21 @@ import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.g
 
 async function startTracker() {
 
+  // 🔥 Prevent duplicate tracking per session
+  const alreadyTracked = sessionStorage.getItem("rctxTracked");
+  if (alreadyTracked) {
+    console.log("Already tracked");
+    return;
+  }
+
+  // Load Firebase config
   const response = await fetch("/.netlify/functions/firebaseConfig");
   const firebaseConfig = await response.json();
 
   const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // Skip local + dashboard
   if (
     window.location.hostname.includes("localhost") ||
     window.location.pathname.includes("dashboard")
@@ -20,7 +29,11 @@ async function startTracker() {
 
     await addDoc(collection(db, "analytics"), {
 
-      clientId: window.location.hostname,   // 🔥 FIX: consistent grouping
+      // 🔥 Updated clientId logic
+      clientId:
+        window.RCTX_CLIENT_ID ||
+        window.location.hostname,
+
       domain: window.location.hostname,
 
       page: window.location.pathname,
@@ -33,10 +46,12 @@ async function startTracker() {
       language: navigator.language,
 
       timestamp: serverTimestamp()
-
     });
 
     console.log("Tracked");
+
+    // 🔥 Mark session as tracked
+    sessionStorage.setItem("rctxTracked", "true");
 
   } catch (err) {
     console.error("TRACK ERROR:", err);
