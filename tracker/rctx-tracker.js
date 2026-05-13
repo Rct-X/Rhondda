@@ -35,7 +35,7 @@ async function startTracker() {
   try {
 
     const response =
-      await fetch("/.netlify/functions/firebaseConfig");
+      await fetch("https://rctx.co.uk/.netlify/functions/firebaseConfig");
 
     const firebaseConfig =
       await response.json();
