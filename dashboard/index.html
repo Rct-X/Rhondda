@@ -89,6 +89,50 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+function detectSource(referrer){
+
+  if(!referrer || referrer === "direct"){
+    return "Direct";
+  }
+
+  const r = referrer.toLowerCase();
+
+  if(r.includes("google")){
+    return "Google";
+  }
+
+  if(r.includes("facebook")){
+    return "Facebook";
+  }
+
+  if(r.includes("instagram")){
+    return "Instagram";
+  }
+
+  if(r.includes("tiktok")){
+    return "TikTok";
+  }
+
+  if(r.includes("linkedin")){
+    return "LinkedIn";
+  }
+
+  if(r.includes("twitter") || r.includes("x.com")){
+    return "X / Twitter";
+  }
+
+  if(r.includes("rctx.co.uk")){
+    return "RCTX Website";
+  }
+
+  if(r.includes("whatsapp")){
+    return "WhatsApp";
+  }
+
+  return "Other";
+
+}
+
 async function loadDashboard(){
 
   const response =
@@ -131,11 +175,17 @@ async function loadDashboard(){
         mobile:0,
         google:0,
         pages:{}
+        sources:{}
       };
 
     }
 
     clients[client].total++;
+    const source =
+  detectSource(v.referrer);
+
+clients[client].sources[source] =
+  (clients[client].sources[source] || 0) + 1;
 
     // MOBILE DETECTION
     const width =
@@ -145,15 +195,6 @@ async function loadDashboard(){
 
     if(width < 768){
       clients[client].mobile++;
-    }
-
-    // GOOGLE REFERRER
-    if(
-      (v.referrer || "")
-      .toLowerCase()
-      .includes("google")
-    ){
-      clients[client].google++;
     }
 
     // PAGE COUNTS
@@ -211,10 +252,21 @@ async function loadDashboard(){
         <div class="stat">
           ${mobilePercent}% mobile users
         </div>
+<div class="stat">
+  Top traffic sources:
+</div>
 
-        <div class="stat">
-          ${data.google} Google visitors
-        </div>
+<ul class="small">
+  ${
+    Object.entries(data.sources)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,5)
+      .map(([src,count]) =>
+        `<li>${src}: ${count}</li>`
+      )
+      .join("")
+  }
+</ul>
 
       </div>
 
