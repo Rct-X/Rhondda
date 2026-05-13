@@ -5,103 +5,226 @@
 <title>RCTX Analytics Dashboard</title>
 
 <style>
+
 body{
-  font-family: Arial;
+  margin:0;
+  padding:2rem;
   background:#0b0f19;
   color:white;
-  padding:2rem;
+  font-family:Arial;
+}
+
+h1{
+  margin-bottom:2rem;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1.5rem;
 }
 
 .card{
   background:#111827;
+  border-radius:16px;
   padding:1.5rem;
-  border-radius:14px;
-  margin-bottom:1rem;
 }
+
+.client{
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:1rem 0;
+}
+
+.client:last-child{
+  border-bottom:none;
+}
+
+.stat{
+  color:#93c5fd;
+  margin:.3rem 0;
+}
+
+.small{
+  color:#9ca3af;
+  font-size:.9rem;
+}
+
 </style>
 </head>
 <body>
 
 <h1>RCTX Analytics Dashboard</h1>
 
-<div class="card">
-  <h2>Total Visits</h2>
-  <div id="totalVisits">Loading...</div>
+<div class="grid">
+
+  <div class="card">
+    <h2>Total Visits</h2>
+    <div id="totalVisits">Loading...</div>
+  </div>
+
+  <div class="card">
+    <h2>Total Clients</h2>
+    <div id="totalClients">Loading...</div>
+  </div>
+
 </div>
 
-<div class="card">
-  <h2>Top Pages</h2>
-  <div id="topPages"></div>
-</div>
+<br><br>
 
 <div class="card">
-  <h2>Recent Visits</h2>
-  <div id="recent"></div>
+  <h2>Client Analytics</h2>
+  <div id="clients"></div>
 </div>
 
 <script type="module">
 
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
   getFirestore,
   collection,
-  getDocs,
-  query,
-  orderBy,
-  limit
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const response = await fetch("/.netlify/functions/firebaseConfig");
-const firebaseConfig = await response.json();
+async function loadDashboard(){
 
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const response =
+    await fetch("/.netlify/functions/firebaseConfig");
 
-/* GET DATA */
-const snapshot = await getDocs(collection(db, "analytics"));
+  const firebaseConfig =
+    await response.json();
 
-document.getElementById("totalVisits").innerText =
-snapshot.size + " visits";
+  const app = getApps().length
+    ? getApps()[0]
+    : initializeApp(firebaseConfig);
 
-/* TOP PAGES (basic grouping) */
-const pages = {};
+  const db = getFirestore(app);
 
-snapshot.forEach(doc => {
-  const d = doc.data();
-  pages[d.page] = (pages[d.page] || 0) + 1;
-});
+  const snapshot =
+    await getDocs(collection(db,"analytics"));
 
-const topPagesEl = document.getElementById("topPages");
+  const visits = [];
 
-Object.entries(pages)
-.sort((a,b) => b[1] - a[1])
-.slice(0,5)
-.forEach(p => {
-  topPagesEl.innerHTML += `<div>${p[0]} — ${p[1]}</div>`;
-});
+  snapshot.forEach(doc => {
+    visits.push(doc.data());
+  });
 
-/* RECENT */
-const q = query(
-  collection(db, "analytics"),
-  orderBy("timestamp","desc"),
-  limit(10)
-);
+  // TOTAL VISITS
+  document.getElementById("totalVisits")
+    .innerText = visits.length;
 
-const recent = await getDocs(q);
+  // GROUP CLIENTS
+  const clients = {};
 
-const recentEl = document.getElementById("recent");
+  visits.forEach(v => {
 
-recent.forEach(doc => {
-  const d = doc.data();
+    const client =
+      v.clientId || "unknown";
 
-  recentEl.innerHTML += `
-    <div style="margin-bottom:10px;">
-      <b>${d.clientId}</b><br>
-      ${d.page}<br>
-      ${d.referrer}
-    </div>
-  `;
-});
+    if(!clients[client]){
+
+      clients[client] = {
+        total:0,
+        mobile:0,
+        google:0,
+        pages:{}
+      };
+
+    }
+
+    clients[client].total++;
+
+    // MOBILE DETECTION
+    const width =
+      parseInt(
+        (v.screen || "0x0").split("x")[0]
+      );
+
+    if(width < 768){
+      clients[client].mobile++;
+    }
+
+    // GOOGLE REFERRER
+    if(
+      (v.referrer || "")
+      .toLowerCase()
+      .includes("google")
+    ){
+      clients[client].google++;
+    }
+
+    // PAGE COUNTS
+    const page =
+      v.page || "/";
+
+    clients[client].pages[page] =
+      (clients[client].pages[page] || 0) + 1;
+
+  });
+
+  document.getElementById("totalClients")
+    .innerText =
+      Object.keys(clients).length;
+
+  // RENDER CLIENTS
+  const clientsWrap =
+    document.getElementById("clients");
+
+  Object.entries(clients).forEach(([name,data]) => {
+
+    // TOP PAGE
+    let topPage = "/";
+    let topCount = 0;
+
+    Object.entries(data.pages).forEach(([page,count]) => {
+
+      if(count > topCount){
+        topPage = page;
+        topCount = count;
+      }
+
+    });
+
+    const mobilePercent =
+      Math.round(
+        (data.mobile / data.total) * 100
+      );
+
+    clientsWrap.innerHTML += `
+
+      <div class="client">
+
+        <h3>${name}</h3>
+
+        <div class="stat">
+          ${data.total} monthly visits
+        </div>
+
+        <div class="stat">
+          Most viewed page:
+          ${topPage}
+        </div>
+
+        <div class="stat">
+          ${mobilePercent}% mobile users
+        </div>
+
+        <div class="stat">
+          ${data.google} Google visitors
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+loadDashboard();
 
 </script>
 
