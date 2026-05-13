@@ -5,13 +5,12 @@
 <title>RCTX Analytics Dashboard</title>
 
 <style>
-
 body{
   margin:0;
   padding:2rem;
   background:#0b0f19;
   color:white;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
 }
 
 h1{
@@ -49,14 +48,34 @@ h1{
   font-size:.9rem;
 }
 
+.filters button{
+  margin-right:.5rem;
+  padding:.5rem 1rem;
+  border:none;
+  border-radius:6px;
+  background:#1f2937;
+  color:white;
+  cursor:pointer;
+}
+
+.filters button.active{
+  background:#2563eb;
+}
 </style>
 </head>
 <body>
 
 <h1>RCTX Analytics Dashboard</h1>
 
-<div class="grid">
+<div class="filters">
+  <button onclick="setRange(1)" id="f1">Today</button>
+  <button onclick="setRange(7)" id="f7">7 Days</button>
+  <button onclick="setRange(30)" id="f30">30 Days</button>
+</div>
 
+<br>
+
+<div class="grid">
   <div class="card">
     <h2>Total Visits</h2>
     <div id="totalVisits">Loading...</div>
@@ -67,6 +86,10 @@ h1{
     <div id="totalClients">Loading...</div>
   </div>
 
+  <div class="card">
+    <h2>Active Visitors (Real‑Time)</h2>
+    <div id="activeVisitors">0</div>
+  </div>
 </div>
 
 <br><br>
@@ -86,60 +109,130 @@ import {
 import {
   getFirestore,
   collection,
-  getDocs
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function detectSource(referrer){
+let RANGE = 30;
 
-  if(!referrer || referrer === "direct"){
-    return "Direct";
-  }
-
-  const r = referrer.toLowerCase();
-
-  if(r.includes("google")){
-    return "Google";
-  }
-
-  if(r.includes("facebook")){
-    return "Facebook";
-  }
-
-  if(r.includes("instagram")){
-    return "Instagram";
-  }
-
-  if(r.includes("tiktok")){
-    return "TikTok";
-  }
-
-  if(r.includes("linkedin")){
-    return "LinkedIn";
-  }
-
-  if(r.includes("twitter") || r.includes("x.com")){
-    return "X / Twitter";
-  }
-
-  if(r.includes("rctx.co.uk")){
-    return "RCTX Website";
-  }
-
-  if(r.includes("whatsapp")){
-    return "WhatsApp";
-  }
-
-  return "Other";
-
+function setRange(days){
+  RANGE = days;
+  document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+  document.getElementById("f" + days).classList.add("active");
+  renderDashboard(window.__visits);
 }
 
-async function loadDashboard(){
+function detectSource(referrer){
+  if(!referrer || referrer === "direct") return "Direct";
+  const r = referrer.toLowerCase();
+  if(r.includes("google")) return "Google";
+  if(r.includes("facebook")) return "Facebook";
+  if(r.includes("instagram")) return "Instagram";
+  if(r.includes("tiktok")) return "TikTok";
+  if(r.includes("linkedin")) return "LinkedIn";
+  if(r.includes("twitter") || r.includes("x.com")) return "X / Twitter";
+  if(r.includes("whatsapp")) return "WhatsApp";
+  if(r.includes("rctx.co.uk")) return "RCTX Website";
+  return "Other";
+}
 
-  const response =
-    await fetch("/.netlify/functions/firebaseConfig");
+function filterByDate(visits, days){
+  const now = Date.now();
+  return visits.filter(v => {
+    const t = v.timestamp?.toMillis?.() || 0;
+    return now - t <= days * 86400000;
+  });
+}
 
-  const firebaseConfig =
-    await response.json();
+function getActiveVisitors(visits){
+  const now = Date.now();
+  const active = new Set();
+  visits.forEach(v => {
+    const t = v.timestamp?.toMillis?.() || 0;
+    if(now - t < 5 * 60 * 1000){
+      active.add(v.visitorId);
+    }
+  });
+  return active.size;
+}
+
+function renderDashboard(visits){
+
+  visits = filterByDate(visits, RANGE);
+
+  document.getElementById("totalVisits").innerText = visits.length;
+  document.getElementById("activeVisitors").innerText = getActiveVisitors(visits);
+
+  const clients = {};
+
+  visits.forEach(v => {
+    const client = v.clientId || "unknown";
+
+    if(!clients[client]){
+      clients[client] = {
+        total:0,
+        mobile:0,
+        pages:{},
+        sources:{},
+        events:{ whatsapp:0, phone:0, quote:0 }
+      };
+    }
+
+    clients[client].total++;
+
+    const source = detectSource(v.referrer);
+    clients[client].sources[source] = (clients[client].sources[source] || 0) + 1;
+
+    if(v.device === "Mobile") clients[client].mobile++;
+
+    const page = v.page || "/";
+    clients[client].pages[page] = (clients[client].pages[page] || 0) + 1;
+
+    if(v.event === "whatsapp_click") clients[client].events.whatsapp++;
+    if(v.event === "phone_tap") clients[client].events.phone++;
+    if(v.event === "quote_click") clients[client].events.quote++;
+  });
+
+  document.getElementById("totalClients").innerText = Object.keys(clients).length;
+
+  const wrap = document.getElementById("clients");
+  wrap.innerHTML = "";
+
+  Object.entries(clients).forEach(([name,data]) => {
+
+    const topPage = Object.entries(data.pages)
+      .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+
+    const mobilePercent = Math.round((data.mobile / data.total) * 100);
+
+    const topSources = Object.entries(data.sources)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,5)
+      .map(([src,count]) => `<li>${src}: ${count}</li>`)
+      .join("");
+
+    wrap.innerHTML += `
+      <div class="client">
+        <h3>${name}</h3>
+
+        <div class="stat">${data.total} visits</div>
+        <div class="stat">Most viewed page: ${topPage}</div>
+        <div class="stat">${mobilePercent}% mobile users</div>
+
+        <div class="stat">WhatsApp leads: ${data.events.whatsapp}</div>
+        <div class="stat">Phone taps: ${data.events.phone}</div>
+        <div class="stat">Quote clicks: ${data.events.quote}</div>
+
+        <div class="stat">Top traffic sources:</div>
+        <ul class="small">${topSources}</ul>
+      </div>
+    `;
+  });
+}
+
+async function init(){
+
+  const response = await fetch("/.netlify/functions/firebaseConfig");
+  const firebaseConfig = await response.json();
 
   const app = getApps().length
     ? getApps()[0]
@@ -147,136 +240,15 @@ async function loadDashboard(){
 
   const db = getFirestore(app);
 
-  const snapshot =
-    await getDocs(collection(db,"analytics"));
-
-  const visits = [];
-
-  snapshot.forEach(doc => {
-    visits.push(doc.data());
-  });
-
-  // TOTAL VISITS
-  document.getElementById("totalVisits")
-    .innerText = visits.length;
-
-  // GROUP CLIENTS
-  const clients = {};
-
-  visits.forEach(v => {
-
-    const client =
-      v.clientId || "unknown";
-
-    if(!clients[client]){
-
-      clients[client] = {
-        total:0,
-        mobile:0,
-        google:0,
-        pages:{},
-        sources:{}
-      };
-
-    }
-
-    clients[client].total++;
-    const source =
-  detectSource(v.referrer);
-
-clients[client].sources[source] =
-  (clients[client].sources[source] || 0) + 1;
-
-    // MOBILE DETECTION
-    const width =
-      parseInt(
-        (v.screen || "0x0").split("x")[0]
-      );
-
-    if(width < 768){
-      clients[client].mobile++;
-    }
-
-    // PAGE COUNTS
-    const page =
-      v.page || "/";
-
-    clients[client].pages[page] =
-      (clients[client].pages[page] || 0) + 1;
-
-  });
-
-  document.getElementById("totalClients")
-    .innerText =
-      Object.keys(clients).length;
-
-  // RENDER CLIENTS
-  const clientsWrap =
-    document.getElementById("clients");
-
-  Object.entries(clients).forEach(([name,data]) => {
-
-    // TOP PAGE
-    let topPage = "/";
-    let topCount = 0;
-
-    Object.entries(data.pages).forEach(([page,count]) => {
-
-      if(count > topCount){
-        topPage = page;
-        topCount = count;
-      }
-
-    });
-
-    const mobilePercent =
-      Math.round(
-        (data.mobile / data.total) * 100
-      );
-
-    clientsWrap.innerHTML += `
-
-      <div class="client">
-
-        <h3>${name}</h3>
-
-        <div class="stat">
-          ${data.total} monthly visits
-        </div>
-
-        <div class="stat">
-          Most viewed page:
-          ${topPage}
-        </div>
-
-        <div class="stat">
-          ${mobilePercent}% mobile users
-        </div>
-<div class="stat">
-  Top traffic sources:
-</div>
-
-<ul class="small">
-  ${
-    Object.entries(data.sources)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,5)
-      .map(([src,count]) =>
-        `<li>${src}: ${count}</li>`
-      )
-      .join("")
-  }
-</ul>
-
-      </div>
-
-    `;
-
+  onSnapshot(collection(db,"analytics"), snapshot => {
+    const visits = snapshot.docs.map(doc => doc.data());
+    window.__visits = visits;
+    renderDashboard(visits);
   });
 
 }
 
-loadDashboard();
+init();
 
 </script>
 
