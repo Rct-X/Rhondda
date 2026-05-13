@@ -1,61 +1,94 @@
 console.log("Tracker loaded");
 
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 async function startTracker() {
 
-  // 🔥 Prevent duplicate tracking per session
-  const alreadyTracked = sessionStorage.getItem("rctxTracked");
-  if (alreadyTracked) {
-    console.log("Already tracked");
+  // Prevent duplicate tracking
+  if(sessionStorage.getItem("rctxTracked")){
     return;
   }
 
-  // Load Firebase config
-  const response = await fetch("/.netlify/functions/firebaseConfig");
-  const firebaseConfig = await response.json();
+  // BLOCK LOCAL + DASHBOARD + PREVIEWS
+  if(
 
-  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Skip local + dashboard
-  if (
     window.location.hostname.includes("localhost") ||
-    window.location.pathname.includes("dashboard")
-  ) return;
+
+    window.location.pathname.includes("dashboard") ||
+
+    window.location.hostname.includes("--")
+
+  ){
+    return;
+  }
 
   try {
 
-    await addDoc(collection(db, "analytics"), {
+    const response =
+      await fetch("/.netlify/functions/firebaseConfig");
 
-      // 🔥 Updated clientId logic
+    const firebaseConfig =
+      await response.json();
+
+    const app =
+      getApps().length
+      ? getApps()[0]
+      : initializeApp(firebaseConfig);
+
+    const db = getFirestore(app);
+
+    await addDoc(collection(db,"analytics"),{
+
       clientId:
         window.RCTX_CLIENT_ID ||
+        "unknown-client",
+
+      domain:
         window.location.hostname,
 
-      domain: window.location.hostname,
+      page:
+        window.location.pathname,
 
-      page: window.location.pathname,
-      fullPath: window.location.href,
+      fullPath:
+        window.location.href,
 
-      referrer: document.referrer || "direct",
+      referrer:
+        document.referrer || "direct",
 
-      screen: `${window.innerWidth || 0}x${window.innerHeight || 0}`,
+      screen:
+        `${window.innerWidth}x${window.innerHeight}`,
 
-      language: navigator.language,
+      language:
+        navigator.language,
 
-      timestamp: serverTimestamp()
+      timestamp:
+        serverTimestamp()
+
     });
+
+    sessionStorage.setItem(
+      "rctxTracked",
+      "true"
+    );
 
     console.log("Tracked");
 
-    // 🔥 Mark session as tracked
-    sessionStorage.setItem("rctxTracked", "true");
+  } catch(err){
 
-  } catch (err) {
-    console.error("TRACK ERROR:", err);
+    console.error(err);
+
   }
+
 }
 
 startTracker();
