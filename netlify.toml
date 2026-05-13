@@ -1,0 +1,9 @@
+[[headers]]
+  for = "/tracker/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/tracker/*.js"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
