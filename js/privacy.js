@@ -1,8 +1,6 @@
-<!-- =========================
-COOKIE / PRIVACY NOTICE
-========================= -->
+const style = document.createElement("style");
 
-<style>
+style.textContent = `
 .cookie-banner{
     position:fixed;
     bottom:20px;
@@ -75,22 +73,6 @@ COOKIE / PRIVACY NOTICE
     color:#fff;
 }
 
-.privacy-box h2{
-    margin-bottom:1rem;
-}
-
-.privacy-box h3{
-    margin-top:1.5rem;
-    margin-bottom:.5rem;
-    color:#93c5fd;
-}
-
-.privacy-box p{
-    color:rgba(255,255,255,0.82);
-    line-height:1.7;
-    margin-bottom:1rem;
-}
-
 .close-policy{
     margin-top:1rem;
     background:#2563eb;
@@ -99,35 +81,15 @@ COOKIE / PRIVACY NOTICE
     padding:.8rem 1rem;
     border-radius:10px;
     cursor:pointer;
-    font-weight:600;
 }
+`;
 
-.footer-links{
-    margin-top:1rem;
-    font-size:.9rem;
-}
+document.head.appendChild(style);
 
-.footer-links button{
-    background:none;
-    border:none;
-    color:#2563eb;
-    cursor:pointer;
-    font-weight:600;
-}
-
-@media(max-width:768px){
-    .cookie-banner{
-        left:12px;
-        right:12px;
-        bottom:12px;
-    }
-}
-</style>
-
-<!-- COOKIE BANNER -->
+document.body.insertAdjacentHTML("beforeend", `
 <div class="cookie-banner" id="cookieBanner">
     <p>
-        This website uses basic analytics and local storage to help improve performance, monitor visits, and understand how visitors use the site. By continuing to use this website, you agree to this use.
+        This website uses basic analytics and local storage.
     </p>
 
     <div class="cookie-actions">
@@ -141,70 +103,17 @@ COOKIE / PRIVACY NOTICE
     </div>
 </div>
 
-<!-- PRIVACY POLICY MODAL -->
 <div class="privacy-modal" id="privacyModal">
     <div class="privacy-box">
 
         <h2>Privacy Policy</h2>
 
         <p>
-            RCTX respects your privacy and is committed to protecting any information you provide through this website.
-        </p>
-
-        <h3>Information We Collect</h3>
-
-        <p>
-            When you submit a contact form, we may collect:
+            RCTX respects your privacy.
         </p>
 
         <p>
-            • Name<br>
-            • Phone number<br>
-            • Email address<br>
-            • Business information<br>
-            • Any details you submit through the enquiry form
-        </p>
-
-        <h3>How We Use Your Information</h3>
-
-        <p>
-            We use submitted information to:
-        </p>
-
-        <p>
-            • Respond to enquiries<br>
-            • Provide website services<br>
-            • Communicate regarding projects or support
-        </p>
-
-        <h3>Analytics & Tracking</h3>
-
-        <p>
-            This website uses lightweight analytics to monitor visits, page views, device types, and general traffic information. No sensitive personal information is collected through analytics tracking.
-        </p>
-
-        <h3>Cookies & Local Storage</h3>
-
-        <p>
-            This website may use browser storage and basic cookies for functionality, analytics, and remembering visitor preferences.
-        </p>
-
-        <h3>Third-Party Services</h3>
-
-        <p>
-            This website may use trusted third-party providers including hosting, analytics, form handling, and security services.
-        </p>
-
-        <h3>Your Rights</h3>
-
-        <p>
-            You may request access, correction, or deletion of your personal data at any time by contacting us directly.
-        </p>
-
-        <h3>Contact</h3>
-
-        <p>
-            Email: support@rctx.co.uk
+            Contact: support@rctx.co.uk
         </p>
 
         <button class="close-policy" id="closePolicy">
@@ -213,41 +122,23 @@ COOKIE / PRIVACY NOTICE
 
     </div>
 </div>
+`);
 
-<script>
-// =========================
-// COOKIE CONSENT
-// =========================
 const cookieBanner = document.getElementById("cookieBanner");
-const acceptCookies = document.getElementById("acceptCookies");
 
 if(!localStorage.getItem("rctx_cookie_consent")){
     cookieBanner.style.display = "block";
 }
 
-acceptCookies.onclick = () => {
+document.getElementById("acceptCookies").onclick = () => {
     localStorage.setItem("rctx_cookie_consent", "accepted");
     cookieBanner.style.display = "none";
 };
 
-// =========================
-// PRIVACY POLICY MODAL
-// =========================
-const privacyModal = document.getElementById("privacyModal");
-const openPolicy = document.getElementById("openPolicy");
-const closePolicy = document.getElementById("closePolicy");
-
-openPolicy.onclick = () => {
-    privacyModal.style.display = "flex";
+document.getElementById("openPolicy").onclick = () => {
+    document.getElementById("privacyModal").style.display = "flex";
 };
 
-closePolicy.onclick = () => {
-    privacyModal.style.display = "none";
+document.getElementById("closePolicy").onclick = () => {
+    document.getElementById("privacyModal").style.display = "none";
 };
-
-privacyModal.onclick = (e) => {
-    if(e.target === privacyModal){
-        privacyModal.style.display = "none";
-    }
-};
-</script>
