@@ -15,9 +15,12 @@ import {
 async function startTracker() {
 
   // Prevent duplicate tracking
-  if(sessionStorage.getItem("rctxTracked")){
-    return;
-  }
+  const trackKey =
+  "rctxTracked_" + window.location.pathname;
+
+if(sessionStorage.getItem(trackKey)){
+  return;
+}
 
   // BLOCK LOCAL + DASHBOARD + PREVIEWS
   if(
@@ -77,9 +80,9 @@ async function startTracker() {
     });
 
     sessionStorage.setItem(
-      "rctxTracked",
-      "true"
-    );
+  trackKey,
+  "true"
+);
 
     console.log("Tracked");
 
