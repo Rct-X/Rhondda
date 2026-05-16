@@ -988,7 +988,19 @@ revealItems.forEach(item => {
 
 <!-- TRACKER -->
 
-<script type="module" src="/tracker/rctx-tracker.js"></script>
+<script>
+window.addEventListener("load", () => {
+  setTimeout(() => {
+
+    const s = document.createElement("script");
+    s.type = "module";
+    s.src = "/tracker/rctx-tracker.js";
+
+    document.body.appendChild(s);
+
+  }, 2500);
+});
+</script>
 
 
 <!-- COOKIE BANNER -->
