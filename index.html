@@ -990,15 +990,19 @@ revealItems.forEach(item => {
 
 <script>
 window.addEventListener("load", () => {
-  setTimeout(() => {
+
+  requestIdleCallback(() => {
 
     const s = document.createElement("script");
-    s.type = "module";
+
     s.src = "/tracker/rctx-tracker.js";
+    s.type = "module";
+    s.defer = true;
 
     document.body.appendChild(s);
 
-  }, 2500);
+  });
+
 });
 </script>
 
