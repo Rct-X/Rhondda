@@ -197,6 +197,50 @@ main {
   position: relative;
 }
 
+.nav-links a {
+  position: relative;
+
+  text-decoration: none;
+
+  color: #ffffff;
+
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  padding-bottom: 0.15rem;
+
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #facc15;
+}
+
+.nav-links a::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 0;
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+    to right,
+    #facc15,
+    #f97316
+  );
+
+  transition: width 0.2s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
 /* ===== LOGO WRAP ===== */
 .logo-wrap {
   display: flex;
@@ -255,49 +299,20 @@ main {
   line-height: 1;
 }
 
-.nav-links a {
-  position: relative;
+/* ===== NAV LINKS ===== */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
 
-  text-decoration: none;
+  margin: 0;
+  padding: 0;
 
-  color: #ffffff;
-
-  font-size: 0.9rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-
-  padding-bottom: 0.15rem;
-
-  transition: color 0.2s ease;
+  list-style: none;
 }
 
-.nav-links a:hover {
-  color: #facc15;
-}
-
-.nav-links a::after {
-  content: "";
-
-  position: absolute;
-  left: 0;
-  bottom: 0;
-
-  width: 0;
-  height: 2px;
-
-  border-radius: 999px;
-
-  background: linear-gradient(
-    to right,
-    #facc15,
-    #f97316
-  );
-
-  transition: width 0.2s ease;
-}
-
-.nav-links a:hover::after {
-  width: 100%;
+.nav-links li {
+  list-style: none;
 }
 
 /* ===== HAMBURGER ===== */
@@ -357,6 +372,10 @@ main {
 
   .hamburger {
     display: flex;
+  }
+  
+  .nav-links {
+  display: flex;
   }
 
   .nav-links {
@@ -1668,4 +1687,4 @@ requestIdleCallback(() => {
 });
     </script>
 </body>
-</html>
+    </html>
