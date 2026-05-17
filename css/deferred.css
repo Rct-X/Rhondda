@@ -147,7 +147,19 @@
   height: 22px;
   color: #bfdbfe;
 }
+.list-icon {
+  width: 16px;
+  height: 16px;
 
+  flex-shrink: 0;
+
+  color: #22c55e;
+
+  stroke: currentColor;
+  fill: none;
+
+  vertical-align: middle;
+}
 .card-service h3 {
   margin: 0.2rem 0 0.3rem;
 }
