@@ -1,9 +1,21 @@
-[[headers]]
-  for = "/tracker/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
+[build]
+publish = "."
+
+[functions]
+directory = "netlify/functions"
 
 [[headers]]
-  for = "/tracker/*.js"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
+for = "/tracker/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "*"
+
+[[redirects]]
+from = "/robots.txt"
+to = "/robots.txt"
+status = 200
+
+[[redirects]]
+from = "/sitemap.xml"
+to = "/sitemap.xml"
+status = 200
