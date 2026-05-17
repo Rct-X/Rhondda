@@ -986,10 +986,6 @@ revealItems.forEach(item => {
 
 </div>
 
-<!-- TRACKER -->
-
-<script type="module" src="/tracker/rctx-tracker.js"></script>
-
 
 <!-- COOKIE BANNER -->
 <div
@@ -1085,5 +1081,20 @@ acceptCookies.addEventListener(
     }
 );
 </script>
+    <!-- TRACKER -->
+    <script>
+requestIdleCallback(() => {
+  fetch("/.netlify/functions/track", {
+    method: "POST",
+    body: JSON.stringify({
+      site: "rctx",
+      page: window.location.pathname,
+      referrer: document.referrer || "direct",
+      screen: `${window.innerWidth}x${window.innerHeight}`,
+      language: navigator.language
+    })
+  });
+});
+    </script>
 </body>
 </html>
