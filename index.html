@@ -553,7 +553,7 @@ transition-duration:.01ms!important;
   "description": "Web design services for Rhondda Cynon Taf businesses from £30/month.",
   "telephone": "+44XXXXXXXXXX",
   "email": "support@rctx.co.uk",
-  "priceRange": "£30-£50",
+  "priceRange": "£30-£45",
   "areaServed": {
     "@type": "AdministrativeArea",
     "name": "Rhondda Cynon Taf, Wales"
@@ -844,7 +844,7 @@ transition-duration:.01ms!important;
               <svg class="list-icon" aria-hidden="true">
     <use href="/assets/icons.svg#icon-check"></use>
 </svg>
-                3-page custom website
+                Up to 3-page custom website
             </li>
 
             <li>
@@ -1004,7 +1004,7 @@ transition-duration:.01ms!important;
 
     <div class="price-tag">
 
-        <div class="cost">£50<span>/mo</span></div>
+        <div class="cost">£45<span>/mo</span></div>
 
         <p>
             £50 upfront • Monthly starts after launch
@@ -1485,105 +1485,5 @@ revealItems.forEach(item => {
     </a>
 
 </div>
-
-<!-- TRACKER -->
-
-<script type="module" src="/tracker/rctx-tracker.js"></script>
-
-
-<!-- COOKIE BANNER -->
-<div
-    class="cookie-banner"
-    id="cookieBanner">
-
-    <p>
-        This website uses cookies and local
-        storage to improve functionality,
-        prevent spam, and improve user
-        experience. By using this website,
-        you agree to our Privacy Policy.
-    </p>
-
-    <div class="cookie-actions">
-
-        <button
-            class="cookie-btn cookie-accept"
-            id="acceptCookies">
-
-            Accept
-
-        </button>
-
-        <a
-            href="/policy/privacy-policy.html"
-            class="cookie-btn cookie-policy">
-
-            Privacy Policy
-
-        </a>
-
-    </div>
-
-</div>
-
-<!-- ========================= -->
-<!-- COOKIE SCRIPT -->
-<!-- ========================= -->
-<script>
-const cookieBanner =
-    document.getElementById(
-        "cookieBanner"
-    );
-
-const acceptCookies =
-    document.getElementById(
-        "acceptCookies"
-    );
-
-const consentKey =
-    "rctx_cookie_consent";
-
-// SHOW BANNER
-if (
-    !localStorage.getItem(consentKey)
-) {
-
-    cookieBanner.style.display =
-        "block";
-
-    requestAnimationFrame(() => {
-
-        cookieBanner.classList.add(
-            "show"
-        );
-
-    });
-
-}
-
-// ACCEPT COOKIES
-acceptCookies.addEventListener(
-    "click",
-    () => {
-
-        localStorage.setItem(
-            consentKey,
-            "accepted"
-        );
-
-        cookieBanner.classList.remove(
-            "show"
-        );
-
-        setTimeout(() => {
-
-            cookieBanner.style.display =
-                "none";
-
-        }, 250);
-
-    }
-);
-</script>
 </body>
 </html>
