@@ -22,7 +22,7 @@
 
     try{
 
-      await fetch("/.netlify/functions/track", {
+      await fetch("/.netlify/functions/track.js", {
         method:"POST",
         headers:{
           "Content-Type":"application/json"
