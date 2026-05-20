@@ -55,6 +55,12 @@ exports.handler = async (event) => {
 
       ...data,
 
+      ip:
+  event.headers["x-forwarded-for"] || "",
+
+userAgent:
+  event.headers["user-agent"] || ""
+
       timestamp:
         admin.firestore.FieldValue.serverTimestamp()
 
