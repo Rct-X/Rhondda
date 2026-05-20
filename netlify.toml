@@ -5,10 +5,10 @@ publish = "."
 directory = "netlify/functions"
 
 [[headers]]
-for = "/tracker/*"
+  for = "/js/rctx-tracker.js"
 
-[headers.values]
-Access-Control-Allow-Origin = "*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
 
 [[redirects]]
 from = "/robots.txt"
