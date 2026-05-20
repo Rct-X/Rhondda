@@ -22,7 +22,7 @@
 
     try{
 
-      await fetch("/.netlify/functions/track", {
+      await fetch("https://rctx.co.uk/.netlify/functions/track", {
         method:"POST",
         headers:{
           "Content-Type":"application/json"
