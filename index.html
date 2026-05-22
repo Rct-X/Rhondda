@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>RCTX | Web Design Rhondda Cynon Taf from £30/month</title>
+<title>
+Web Design Rhondda Cynon Taf | RCTX Websites From £30/Month
+</title>
 <meta name="description" content="RCTX builds fast, modern monthly websites for Rhondda Cynon Taf businesses. From £30/month • No contracts • Local visits included">
 
 <meta property="og:title" content="RCTX | Monthly Web Design for Rhondda Cynon Taf Businesses">
@@ -14,6 +16,9 @@
 <meta name="robots" content="index, follow">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RCTX Web Design">
+<meta name="geo.region" content="GB-RCT">
+<meta name="geo.placename" content="Rhondda Cynon Taf">
+<meta property="og:image:alt" content="RCTX Web Design Rhondda Cynon Taf">
 <meta name="twitter:description" content="Modern websites for Rhondda businesses from £30/month.">
 <meta name="twitter:image" content="https://rctx.co.uk/og-image.jpg">
 <meta property="og:image" content="https://rctx.co.uk/og-image.jpg">
@@ -64,6 +69,7 @@ text-wrap:pretty;
 -webkit-font-smoothing:antialiased;
 -moz-osx-font-smoothing:grayscale;
 overflow-x:hidden;
+ padding-bottom: 85px;
 }
 
 img,svg,video{display:block;max-width:100%}
@@ -265,7 +271,7 @@ transform:translateY(-7px) rotate(-45deg);
 display:flex;
 align-items:center;
 min-height:70vh;
-padding:4.5rem 0 3rem;
+padding:4rem 0 1rem;
 }
 
 .hero .container{
@@ -275,6 +281,13 @@ align-items:center;
 justify-content:center;
 max-width:860px;
 text-align:center;
+}
+
+.hero-price{
+    margin-top:1rem;
+    font-size:1rem;
+    font-weight:700;
+    color:#facc15;
 }
 
 .badge{
@@ -304,7 +317,14 @@ text-wrap:balance;
 }
 
 .hero h1 span{
-color:#bfdbfe;
+background:
+linear-gradient(
+90deg,
+#60a5fa,
+#facc15
+);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
 .hero p{
@@ -544,23 +564,22 @@ transition-duration:.01ms!important;
 {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
+  "address": {
+ "@type":"PostalAddress",
+ "addressLocality":"Treorchy",
+ "addressRegion":"Rhondda Cynon Taf",
+ "addressCountry":"GB"
+},
   "name": "RCTX",
   "url": "https://rctx.co.uk",
   "image": "https://rctx.co.uk/og-image.jpg",
   "description": "Web design services for Rhondda Cynon Taf businesses from £30/month.",
-  "telephone": "+7434745240",
+  "telephone": "+447434745240",
   "email": "support@rctx.co.uk",
   "priceRange": "£30-£45",
   "areaServed": {
     "@type": "AdministrativeArea",
     "name": "Rhondda Cynon Taf, Wales"
-  },
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "High Street",
-    "addressLocality": "Treorchy",
-    "postalCode": "CF42 6AE",
-    "addressCountry": "GB"
   },
   "sameAs": [
     "https://facebook.com/RctX"
@@ -577,15 +596,55 @@ transition-duration:.01ms!important;
       "name": "Do I need to provide anything?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. We handle everything including images, content, hosting and setup."
+        "text": "No. We handle everything — images, content writing, hosting, setup, and Google Business Profile setup. You just tell us about your business."
       }
     },
     {
       "@type": "Question",
-      "name": "When do payments start?",
+      "name": "When do monthly payments start?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Monthly payments start one month after your website is live."
+        "text": "Your monthly payment only starts one month after your website is fully live online."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the £50 setup cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The setup payment covers your business visit, images, planning, domain setup, and getting your website built and ready to launch."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to buy hosting or a domain?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. We handle your hosting, domain setup, maintenance, and technical side for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you really visit my business?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We physically visit your location to capture real photos and understand your business properly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does the website take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most websites are completed within 2–5 days after your photo visit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a contract?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No contracts. Cancel anytime. We keep clients through results, not lock-ins."
       }
     }
   ]
@@ -643,14 +702,16 @@ transition-duration:.01ms!important;
         <span class="badge">Built in the Rhondda</span>
 
         <h1>
-        Web Design for Small Businesses in<br>
-            <span>Rhondda Cynon Taf</span>
+        Web Design Rhondda Cynon Taf<br>
+            <span>for Small Businesses</span>
         </h1>
 
         <p>
-            We build modern websites for local businesses across Rhondda Cynon Taf — including hosting, support, updates, and setup from just £30/month.
+            We build modern websites for local businesses across Rhondda Cynon Taf — including hosting, support, updates, and setup.
         </p>
-
+<div class="hero-price">
+    From £30/month • £50 setup • No contracts
+</div>
         <div class="who-for">
             <strong>Perfect for:</strong>
             <p>Barbers • Cafes • Trades • Local shops</p>
@@ -660,139 +721,14 @@ transition-duration:.01ms!important;
         </div>
 
         <div class="hero-btns">
-            <a href="#pricing" class="btn btn-primary">View Plans</a>
-            <a href="#contact" class="btn btn-secondary">Contact</a>
+            <a href="#contact" class="btn btn-primary">Get My Website</a>
+            <a href="#pricing" class="btn btn-secondary">View Pricing</a>
         </div>
+        <p class="urgency">
+📍 Based in Treorchy • Serving all Rhondda Cynon Taf
+</p>
     </div>
 </header>
-<section class="about-section">
-    <div class="container about-inner">
-        <h2>Local Websites Built Properly</h2>
-
-        <p>
-         We’re a small local team based in Rhondda, building modern websites for businesses across Rhondda Cynon Taf. When you contact us, you speak directly to the person building your website.
-        </p>
-    </div>
-</section>
-
-
-
-<section class="services-section">
-    <div class="container">
-
-        <h2>Everything Your Business Needs Online</h2>
-
-        <div class="services-grid">
-
-            <div class="card card-service">
-                <div class="icon-wrap">
-                    <svg viewBox="0 0 24 24" class="icon">
-                        <rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
-                        <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2"/>
-                        <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </div>
-                <h3>Website Built For You</h3>
-                <p>We design and build your site so your business looks professional and trusted.</p>
-            </div>
-
-            <div class="card card-service">
-                <div class="icon-wrap">
-                    <svg viewBox="0 0 24 24" class="icon">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </div>
-                <h3>Real Business Imagery</h3>
-                <p>We use real images of your business so your website feels authentic and local.</p>
-            </div>
-
-            <div class="card card-service">
-                <div class="icon-wrap">
-                    <svg viewBox="0 0 24 24" class="icon">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </div>
-                <h3>Get Found On Google</h3>
-                <p>We set up your business so customers can find you on Google and Maps.</p>
-            </div>
-
-            <div class="card card-service">
-                <div class="icon-wrap">
-                    <svg viewBox="0 0 24 24" class="icon">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </div>
-                <h3>We Handle Changes</h3>
-                <p>Need an update? Just message us — no logins, no hassle.</p>
-            </div>
-
-            <div class="card card-service">
-                <div class="icon-wrap">
-                    <svg viewBox="0 0 24 24" class="icon">
-                        <path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S20 10 17.5 10c-.2 0-.4 0-.6.1C15.8 7.6 13.1 6 10 6 5.6 6 2 9.6 2 14s3.6 8 8 8h7.5c2.5 0 4.5-2 4.5-4.5" fill="none" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </div>
-                <h3>Hosting Included</h3>
-                <p>Your site stays online, fast, and secure — all taken care of.</p>
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
-
-
-<section class="cta-block">
-  <div class="container">
-<a href="#pricing" class="btn btn-primary">See Pricing</a>
-  </div>
-</section>
-
-<section id="features" class="features container">
-
-    <p class="local-note">
-        Based in Treorchy — working across Rhondda Cynon Taf including Tonypandy, Ferndale, Porth, Treherbert, and Pontypridd.
-    </p>
-
-    <div class="feature-text">
-        <h2>How It Works</h2>
-
-        <div class="timeline">
-
-            <div class="card card-step">
-                <div class="step-number">1</div>
-                <h3>We Visit You</h3>
-                <p>
-                    We come to your business, understand what you do, and take images that show your business properly. No stock images.
-                </p>
-            </div>
-
-            <div class="card card-step">
-                <div class="step-number">2</div>
-                <h3>We Build Everything</h3>
-                <p>
-                    Your website is designed, written, photographed, and set up on Google — all handled for you.
-                </p>
-            </div>
-
-            <div class="card card-step">
-                <div class="step-number">3</div>
-                <h3>You Get Customers</h3>
-                <p>
-                    Your site goes live fast, looks professional, and we handle updates and changes whenever you need.
-                </p>
-            </div>
-
-        </div>
-    </div>
-
-</section>
-
-
-
 <section id="pricing" class="pricing">
     <div class="container">
 
@@ -801,19 +737,15 @@ transition-duration:.01ms!important;
             <p>Everything handled for you — design, hosting, support, updates, and setup in one simple monthly plan.</p>
 
             <p class="mt-1 text-dim">
-                Trusted by local businesses across Rhondda Cynon Taf
+                Designed for local businesses that want a professional online presence
             </p>
         </div>
-
-        <p class="urgency">
-            We’re currently booking for next week — limited slots due to on-site visits.
-        </p>
 
     <div class="local-note mb-2">
     <strong>Simple pricing. No hidden costs.</strong><br><br>
 
     ✔ £50 one-time setup<br>
-    ✔ Monthly payments start after launch<br>
+    ✔ Monthly payments start one month after going live online<br>
     ✔ Hosting, domain & support included<br>
     ✔ We can use your own business photos
 </div>
@@ -901,11 +833,11 @@ transition-duration:.01ms!important;
         <div class="cost">£30<span>/mo</span></div>
 
         <p>
-            £50 upfront • Monthly starts after launch
+            £50 upfront • Monthly starts one month after launch
         </p>
 
         <a href="#contact" class="btn btn-primary">
-            Choose Starter
+            Start My Website
         </a>
 
     </div>
@@ -992,7 +924,7 @@ transition-duration:.01ms!important;
                <svg class="list-icon" aria-hidden="true">
     <use href="/assets/icons.svg#icon-check"></use>
 </svg>
-                Designed to help businesses grow online long-term
+                Designed to help more customers find your business online
             </li>
 
         </ul>
@@ -1004,10 +936,10 @@ transition-duration:.01ms!important;
         <div class="cost">£45<span>/mo</span></div>
 
         <p>
-            £50 upfront • Monthly starts after launch
+            £50 upfront • Monthly starts one month after launch
         </p>
 <a href="#contact" class="btn btn-primary">
-    Choose <span class="highlight-popular">Standard</span>
+    Get<span class="highlight-popular">Started Today</span>
 </a>
 
     </div>
@@ -1016,21 +948,141 @@ transition-duration:.01ms!important;
 
     </div>
 </section>
+<div class="container">
+<p class="text-soft2 fs-9 mt-1">
+✔ Based in Treorchy
+✔ Local business visits
+✔ Direct support from the website builder
+</p>
+</div>
+<section class="about-section">
+    <div class="container about-inner">
+        <h2>Local Websites Built Properly</h2>
+
+        <p>
+     RCTX is run locally from the Rhondda. We build websites for businesses across Rhondda Cynon Taf and provide direct support whenever you need help. No call centres. No outsourced support.
+        </p>
+    </div>
+</section>
+<div class="container">
+         <p class="urgency">
+When you contact RCTX, you'll speak directly with Eddie — the person building, managing and supporting your website.
+</p>
+</div>
 
 
+<section class="services-section">
+    <div class="container">
+
+        <h2>Everything Your Business Needs Online</h2>
+
+        <div class="services-grid">
+
+            <div class="card card-service">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" class="icon">
+                        <rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3>Website Built For You</h3>
+                <p>We design and build your site so your business looks professional and trusted.</p>
+            </div>
+
+            <div class="card card-service">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" class="icon">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3>Real Business Imagery</h3>
+                <p>We use real images of your business so your website feels authentic and local.</p>
+            </div>
+
+            <div class="card card-service">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" class="icon">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3>Get Found On Google</h3>
+                <p>We set up your business so customers can find you on Google and Maps.</p>
+            </div>
+
+            <div class="card card-service">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" class="icon">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3>We Handle Changes</h3>
+                <p>Need an update? Just message us — no logins, no hassle.</p>
+            </div>
+
+            <div class="card card-service">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" class="icon">
+                        <path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S20 10 17.5 10c-.2 0-.4 0-.6.1C15.8 7.6 13.1 6 10 6 5.6 6 2 9.6 2 14s3.6 8 8 8h7.5c2.5 0 4.5-2 4.5-4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3>Hosting Included</h3>
+                <p>Your site stays online, fast, and secure — all taken care of.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section id="features" class="features container">
+
+    <p class="local-note">
+        Based in Treorchy — working across Rhondda Cynon Taf including Tonypandy, Ferndale, Porth, Treherbert, and Pontypridd.
+    </p>
+
+    <div class="feature-text">
+        <h2>How It Works</h2>
+
+        <div class="timeline">
+
+            <div class="card card-step">
+                <div class="step-number">1</div>
+                <h3>We Visit You</h3>
+                <p>
+                    We come to your business, understand what you do, and take images that show your business properly. No stock images.
+                </p>
+            </div>
+
+            <div class="card card-step">
+                <div class="step-number">2</div>
+                <h3>We Build Everything</h3>
+                <p>
+                    Your website is designed, written, photographed, and set up on Google — all handled for you.
+                </p>
+            </div>
+
+            <div class="card card-step">
+                <div class="step-number">3</div>
+                <h3>You Get Customers</h3>
+                <p>
+                    Your site goes live fast, looks professional, and we handle updates and changes whenever you need.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</section>
 
 <section id="faq" class="faq container">  
 
     <div class="faq-intro">  
         <h2>Got Questions?</h2>  
         <p>Most businesses ask the same few things before getting started.</p>  
-      <button
-    type="button"
-    id="faqToggle"
-    class="btn btn-primary"
-    aria-expanded="false">
-            View FAQs
-        </button>  
+  
     </div>  
 
     <div id="faqWrapper" class="faq-wrapper">  
@@ -1038,7 +1090,7 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>Do I need to provide anything?</h3>  
-                <span class="faq-icon">+</span>  
+                <span class="faq-icon" aria-hidden="true">+</span>
             </div>  
             <div class="faq-answer">
                 <p>
@@ -1050,11 +1102,11 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>When do monthly payments start?</h3>  
-                <span class="faq-icon">+</span>  
+               <span class="faq-icon" aria-hidden="true">+</span> 
             </div>  
             <div class="faq-answer">
                 <p>
-                    Your monthly payment only starts once your website is fully live online.
+                    Your monthly payment only starts one month after your website is fully live online.
                 </p>
             </div>  
         </div>
@@ -1062,7 +1114,7 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>What does the £50 setup cover?</h3>  
-                <span class="faq-icon">+</span>  
+              <span class="faq-icon" aria-hidden="true">+</span> 
             </div>  
             <div class="faq-answer">
                 <p>
@@ -1074,7 +1126,7 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>Do I need to buy hosting or a domain?</h3>  
-                <span class="faq-icon">+</span>  
+               <span class="faq-icon" aria-hidden="true">+</span> 
             </div>  
             <div class="faq-answer">
                 <p>
@@ -1086,7 +1138,7 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>Do you really visit my business?</h3>  
-                <span class="faq-icon">+</span>  
+              <span class="faq-icon" aria-hidden="true">+</span> 
             </div>  
             <div class="faq-answer">
                 <p>
@@ -1098,7 +1150,7 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>How long does the website take?</h3>  
-                <span class="faq-icon">+</span>  
+<span class="faq-icon" aria-hidden="true">+</span> 
             </div>  
             <div class="faq-answer">
                 <p>
@@ -1110,7 +1162,7 @@ transition-duration:.01ms!important;
         <div class="card card-faq">  
             <div class="faq-question">  
                 <h3>Is there a contract?</h3>  
-                <span class="faq-icon">+</span>  
+               <span class="faq-icon" aria-hidden="true">+</span>  
             </div>  
             <div class="faq-answer">
                 <p>
@@ -1241,19 +1293,105 @@ transition-duration:.01ms!important;
         </p>
     </div>
 </section>
+<section class="service-areas">
+  <div class="container">
 
-<footer>
-    <p>© 2026 RCTX • Web Design in Rhondda Cynon Taf</p>
+    <h2>Areas We Cover</h2>
 
-<div class="footer-links">
-    <a href="/policy/privacy-policy.html" aria-label="Read our Privacy Policy">
-        Privacy Policy
-    </a>
+    <p class="text-dim mb-15">
+      We provide web design services across Rhondda Cynon Taf and surrounding valleys.
+    </p>
 
-    <a href="/policy/terms.html" aria-label="Read our Terms & Conditions">
-        Terms & Conditions
-    </a>
-</div>
+    <div class="areas-grid">
+
+      <a href="/web-design-treorchy.html" class="area-card">
+        <svg class="area-icon" aria-hidden="true">
+          <use href="/assets/icons.svg#icon-location"></use>
+        </svg>
+        Treorchy
+      </a>
+
+      <a href="/web-design-tonypandy.html" class="area-card">
+        <svg class="area-icon" aria-hidden="true">
+          <use href="/assets/icons.svg#icon-location"></use>
+        </svg>
+        Tonypandy
+      </a>
+
+      <a href="/web-design-pontypridd.html" class="area-card">
+        <svg class="area-icon" aria-hidden="true">
+          <use href="/assets/icons.svg#icon-location"></use>
+        </svg>
+        Pontypridd
+      </a>
+
+      <a href="/web-design-ferndale.html" class="area-card">
+        <svg class="area-icon" aria-hidden="true">
+          <use href="/assets/icons.svg#icon-location"></use>
+        </svg>
+        Ferndale
+      </a>
+
+      <a href="/web-design-porth.html" class="area-card">
+        <svg class="area-icon" aria-hidden="true">
+          <use href="/assets/icons.svg#icon-location"></use>
+        </svg>
+        Porth
+      </a>
+
+    </div>
+
+  </div>
+</section>
+<footer class="site-footer">
+
+    <div class="container footer-inner">
+
+        <div class="footer-brand">
+            <div class="footer-logo">
+                RCT<span>X</span>
+            </div>
+
+            <p>
+                Modern websites for businesses across
+                Rhondda Cynon Taf.
+            </p>
+        </div>
+
+        <div class="footer-contact">
+            <h3>Contact</h3>
+
+            <a href="tel:+447434745240">
+                07434 745240
+            </a>
+
+            <a href="mailto:support@rctx.co.uk">
+                support@rctx.co.uk
+            </a>
+            
+       <a href="https://wa.me/447434745240" class="footer-cta-mobile">
+    Message Eddie Directly
+</a>
+        </div>
+
+        <div class="footer-links">
+            <h3>Legal</h3>
+
+            <a href="/policy/privacy-policy.html">
+                Privacy Policy
+            </a>
+
+            <a href="/policy/terms.html">
+                Terms & Conditions
+            </a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
+    </div>
+
 </footer>
 
 <script>
@@ -1327,48 +1465,31 @@ menu.querySelectorAll("a").forEach(link => {
 // =========================
 // FAQ TOGGLE
 // =========================
-const faqBtn =
-    document.getElementById("faqToggle");
 
-const faqWrap =
-    document.getElementById("faqWrapper");
-
-faqBtn.addEventListener("click", () => {
-
-    faqWrap.classList.toggle("active");
-
-    const expanded =
-        faqWrap.classList.contains("active");
-
-    faqBtn.setAttribute(
-        "aria-expanded",
-        expanded
-    );
-
-});
 
 // =========================
 // FAQ ACCORDION
 // =========================
-document
-.querySelectorAll(".faq-question")
-.forEach(q => {
+document.querySelectorAll(".card-faq").forEach(item => {
 
-    q.addEventListener("click", () => {
+    const question = item.querySelector(".faq-question");
 
-        const item = q.parentElement;
+    question.addEventListener("click", () => {
 
-        document
-        .querySelectorAll(".card-faq")
-        .forEach(i => {
+        const isOpen = item.classList.contains("open");
 
-            if (i !== item) {
+        // close all
+        document.querySelectorAll(".card-faq")
+            .forEach(i => {
                 i.classList.remove("open");
-            }
+                i.querySelector(".faq-icon").textContent = "+";
+            });
 
-        });
-
-        item.classList.toggle("open");
+        // toggle current
+        if (!isOpen) {
+            item.classList.add("open");
+            item.querySelector(".faq-icon").textContent = "–";
+        }
 
     });
 
@@ -1436,12 +1557,12 @@ revealItems.forEach(item => {
 
 
 <!-- STICKY CONTACT BAR -->
-
+  <div class="sticky-contact-label">
+  Need help? Contact Eddie today
+</div>
 <div class="sticky-contact-bar">
-
-    <!-- CALL -->
     <a
-        href="tel:+07434745240"
+        href="tel:+447434745240"
         class="sticky-btn call-btn"
         aria-label="Call RCTX">
 
@@ -1455,7 +1576,7 @@ revealItems.forEach(item => {
 
     <!-- WHATSAPP -->
     <a
-        href="https://wa.me/07434745240"
+        href="https://wa.me/447434745240"
         class="sticky-btn whatsapp-btn"
         aria-label="Message RCTX on WhatsApp">
 
@@ -1488,4 +1609,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-</html>
+              </html>
