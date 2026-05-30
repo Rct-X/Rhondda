@@ -23,6 +23,7 @@ exports.handler = async (event) => {
 
   if (!url) return json({ error: "URL is required" }, 400);
   if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+  console.log("User entered URL:", url);
 
   let response;
   let html = "";
@@ -30,6 +31,7 @@ exports.handler = async (event) => {
 
   try {
     response = await fetch(url, { redirect: "follow" });
+    console.log(response.url);
     const buf = await response.arrayBuffer();
     const loadTimeMs = Date.now() - start;
     const sizeBytes = buf.byteLength;
