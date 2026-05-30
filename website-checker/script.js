@@ -1,4 +1,4 @@
-// Animate fade-ins
+// Fade-in animations
 window.addEventListener("load", () => {
   document.querySelectorAll(".fade-in").forEach((el, i) => {
     gsap.to(el, { opacity: 1, y: 0, duration: 0.8, delay: i * 0.1 });
@@ -9,9 +9,22 @@ window.addEventListener("load", () => {
 const urlInput = document.getElementById("urlInput");
 const runCheck = document.getElementById("runCheck");
 const results = document.getElementById("results");
+
 const scoreCircle = document.getElementById("scoreCircle");
 const gradeEl = document.getElementById("grade");
-const checksList = document.getElementById("checksList");
+
+const criticalCount = document.getElementById("criticalCount");
+const improveCount = document.getElementById("improveCount");
+const passedCount = document.getElementById("passedCount");
+
+const barGoogle = document.getElementById("barGoogle");
+const barLead = document.getElementById("barLead");
+const barTrust = document.getElementById("barTrust");
+const barMobile = document.getElementById("barMobile");
+
+const lostEnquiries = document.getElementById("lostEnquiries");
+const topFixes = document.getElementById("topFixes");
+
 const getReport = document.getElementById("getReport");
 const leadCapture = document.getElementById("leadCapture");
 const emailInput = document.getElementById("emailInput");
@@ -39,16 +52,30 @@ runCheck.addEventListener("click", async () => {
 
   lastResult = data;
 
-  // Show results
+  // Main score
   scoreCircle.textContent = data.score;
   gradeEl.textContent = data.grade;
 
-  checksList.innerHTML = "";
-  data.checks.forEach(c => {
-    const div = document.createElement("div");
-    div.className = c.pass ? "check-pass" : "check-fail";
-    div.textContent = c.label;
-    checksList.appendChild(div);
+  // Counts
+  criticalCount.textContent = data.criticalIssues;
+  improveCount.textContent = data.improvements;
+  passedCount.textContent = data.passedChecks;
+
+  // Bars
+  barGoogle.style.width = data.googleVisibility + "%";
+  barLead.style.width = data.leadGeneration + "%";
+  barTrust.style.width = data.trustCredibility + "%";
+  barMobile.style.width = data.mobileExperience + "%";
+
+  // Enquiries lost
+  lostEnquiries.textContent = `${data.enquiriesLost}–${data.enquiriesLost + 5} enquiries per month`;
+
+  // Top fixes
+  topFixes.innerHTML = "";
+  data.topFixes.forEach(fix => {
+    const li = document.createElement("li");
+    li.textContent = fix;
+    topFixes.appendChild(li);
   });
 
   results.classList.remove("hidden");
