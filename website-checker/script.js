@@ -36,7 +36,7 @@ let lastResult = null;
 // Run check
 runCheck.addEventListener("click", async () => {
   const url = urlInput.value.trim();
-  if (!url) return alert("Enter a URL");
+  if (!url) return alert("Please enter a website");
 
   results.classList.add("hidden");
   leadCapture.classList.add("hidden");
@@ -68,7 +68,7 @@ runCheck.addEventListener("click", async () => {
   barMobile.style.width = data.mobileExperience + "%";
 
   // Enquiries lost
-  lostEnquiries.textContent = `${data.enquiriesLost}–${data.enquiriesLost + 5} enquiries per month`;
+  lostEnquiries.textContent = `You could be missing around ${data.enquiriesLost}–${data.enquiriesLost + 5} enquiries per month.`;
 
   // Top fixes
   topFixes.innerHTML = "";
