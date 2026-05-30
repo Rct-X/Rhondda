@@ -43,7 +43,7 @@ exports.handler = async (event) => {
     html = bufferToString(buf);
 
     const raw = runChecks({
-      url,
+      url: response.url,   // ⭐ Use resolved URL
       html,
       loadTimeMs,
       sizeBytes,
@@ -74,14 +74,28 @@ function buildCustomerReport(raw) {
 
   const improvements = raw.checks.filter(c => !c.pass && !critical.includes(c));
 
+  // ⭐ New category scoring
   const categories = {
-    googleVisibility: scoreCategory(raw, ["title", "meta_description", "open_graph", "schema", "local_keywords"]),
-    leadGen: scoreCategory(raw, ["cta_above_fold", "phone_whatsapp"]),
-    trust: scoreCategory(raw, ["https", "favicon", "schema"]),
-    mobile: scoreCategory(raw, ["viewport", "speed"])
+    technicalSEO: scoreCategory(raw, ["title", "meta_description", "h1", "schema"]),
+    mobile: scoreCategory(raw, ["viewport", "speed"]),
+    trust: scoreCategory(raw, ["https", "favicon", "open_graph"]),
+    performance: scoreCategory(raw, ["speed", "size"]),
+    contentDepth: scoreCategory(raw, ["alt_text", "local_keywords"]),
+    localSEO: scoreCategory(raw, ["local_keywords", "schema"])
   };
 
-  const lost = Math.round((100 - raw.score) / 12);
+  // ⭐ Overall score (weighted)
+  const overall =
+    Math.round(
+      (categories.technicalSEO * 0.25) +
+      (categories.mobile * 0.15) +
+      (categories.trust * 0.15) +
+      (categories.performance * 0.20) +
+      (categories.contentDepth * 0.10) +
+      (categories.localSEO * 0.15)
+    );
+
+  const lost = Math.round((100 - overall) / 10);
 
   const topFixes = [];
   if (!raw.checks.find(c => c.id === "phone_whatsapp").pass) topFixes.push("Add click-to-call");
@@ -92,17 +106,23 @@ function buildCustomerReport(raw) {
   return {
     ok: true,
     url: raw.url,
-    score: raw.score,
-    grade: raw.grade,
 
+    // ⭐ Main score
+    score: overall,
+    grade: gradeFromScore(overall),
+
+    // ⭐ Category breakdown
+    technicalSEO: categories.technicalSEO,
+    mobile: categories.mobile,
+    trust: categories.trust,
+    performance: categories.performance,
+    contentDepth: categories.contentDepth,
+    localSEO: categories.localSEO,
+
+    // Counts
     criticalIssues: critical.length,
     improvements: improvements.length,
     passedChecks: passed,
-
-    googleVisibility: categories.googleVisibility,
-    leadGeneration: categories.leadGen,
-    trustCredibility: categories.trust,
-    mobileExperience: categories.mobile,
 
     enquiriesLost: lost,
     topFixes,
@@ -114,6 +134,15 @@ function scoreCategory(raw, ids) {
   const total = ids.length;
   const passed = ids.filter(id => raw.checks.find(c => c.id === id)?.pass).length;
   return Math.round((passed / total) * 100);
+}
+
+function gradeFromScore(score) {
+  if (score >= 97) return "A+";
+  if (score >= 92) return "A";
+  if (score >= 85) return "B";
+  if (score >= 70) return "C";
+  if (score >= 55) return "D";
+  return "E";
 }
 
 
@@ -225,17 +254,7 @@ function item(id, label, pass) {
 function scoreFromChecks(checks) {
   const total = checks.length;
   const passed = checks.filter(c => c.pass).length;
-  const score = Math.round((passed / total) * 100);
-
-  let grade = "C";
-  if (score >= 90) grade = "A+";
-  else if (score >= 80) grade = "A";
-  else if (score >= 70) grade = "B";
-  else if (score >= 60) grade = "C";
-  else if (score >= 50) grade = "D";
-  else grade = "E";
-
-  return { score, grade };
+  return Math.round((passed / total) * 100);
 }
 
 function bufferToString(buf) {
