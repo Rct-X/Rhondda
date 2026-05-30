@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Website Health Report | RCTX Web Design</title>
+  <title>Your Website Health Report | RCTX (Treorchy)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="style.css">
@@ -12,51 +12,54 @@
 <body>
 
 <header class="hero">
-  <h1 class="fade-in">Website Health Report</h1>
-  <p class="fade-in delay-1">Instant insights. Clear fixes. No jargon. Built in Treorchy for Rhondda businesses.</p>
+  <h1 class="fade-in">Free Website Health Check</h1>
+  <p class="fade-in delay-1">A friendly, local review for businesses across the Rhondda.</p>
+  <p class="fade-in delay-2 small">No jargon. No pressure. Just helpful advice from Treorchy.</p>
 </header>
 
 <main class="container">
 
   <!-- Input -->
-  <section class="checker-box fade-in delay-2">
-    <h2>Check your website</h2>
-    <p>Enter your website URL to get your free health report.</p>
+  <section class="checker-box fade-in delay-3">
+    <h2>Let’s take a quick look at your website</h2>
+    <p>Pop your website in below and I’ll check how well it’s working for your business.</p>
 
     <div class="input-row">
-      <input id="urlInput" type="text" placeholder="example.co.uk">
-      <button id="runCheck">Run Check</button>
+      <input id="urlInput" type="text" placeholder="yourbusiness.co.uk">
+      <button id="runCheck">Check My Website</button>
     </div>
 
     <p class="note">Takes around 3 seconds.</p>
   </section>
 
   <!-- Results -->
-  <section id="results" class="results hidden fade-in delay-3">
+  <section id="results" class="results hidden fade-in delay-4">
 
     <h2>Your Website Health Report</h2>
+    <p class="local-intro">Here’s a simple breakdown of how your website is performing for your business.</p>
 
     <div class="score-wrap">
       <div id="scoreCircle" class="score-circle">0</div>
       <div id="grade" class="grade">–</div>
+      <p class="score-note">This is your overall score based on what matters most for small businesses in the Rhondda.</p>
     </div>
 
     <div class="stats-row">
       <div class="stat-box red">
         <span id="criticalCount">0</span>
-        <label>Critical Issues</label>
+        <label>Important Issues</label>
       </div>
       <div class="stat-box amber">
         <span id="improveCount">0</span>
-        <label>Improvements</label>
+        <label>Could Be Improved</label>
       </div>
       <div class="stat-box green">
         <span id="passedCount">0</span>
-        <label>Passed Checks</label>
+        <label>All Good</label>
       </div>
     </div>
 
-    <h3>Performance Breakdown</h3>
+    <h3>How your website is doing</h3>
 
     <div class="bar">
       <label>Google Visibility</label>
@@ -64,7 +67,7 @@
     </div>
 
     <div class="bar">
-      <label>Lead Generation</label>
+      <label>Getting Enquiries</label>
       <div class="bar-fill" id="barLead"></div>
     </div>
 
@@ -79,31 +82,31 @@
     </div>
 
     <div class="impact-box">
-      <h3>Potential enquiries lost</h3>
-      <p id="lostEnquiries">0–0 enquiries per month</p>
+      <h3>What this means for your business</h3>
+      <p id="lostEnquiries">You could be missing enquiries each month.</p>
     </div>
 
-    <h3>Top Fixes</h3>
+    <h3>Quick wins to help you improve</h3>
     <ul id="topFixes" class="fix-list"></ul>
 
-    <button id="getReport" class="cta-btn">Get Full Report</button>
+    <button id="getReport" class="cta-btn">Get a Free Personal Review</button>
   </section>
 
   <!-- Lead capture -->
-  <section id="leadCapture" class="lead hidden fade-in delay-4">
-    <h2>Get Your Full Report</h2>
-    <p>Enter your email and I’ll send the full breakdown.</p>
+  <section id="leadCapture" class="lead hidden fade-in delay-5">
+    <h2>I can take a proper look for you</h2>
+    <p>Pop your email in and I’ll send a clearer, more personal breakdown.</p>
 
     <input id="emailInput" type="email" placeholder="you@example.com">
-    <button id="sendReport">Send Report</button>
+    <button id="sendReport">Send My Review</button>
 
-    <p class="note">I reply personally from Treorchy.</p>
+    <p class="note">I reply personally from Treorchy — usually the same day.</p>
   </section>
 
   <!-- Confirmation -->
-  <section id="thankYou" class="thank hidden fade-in delay-5">
-    <h2>Report Sent</h2>
-    <p>I’ll review it and get back to you shortly.</p>
+  <section id="thankYou" class="thank hidden fade-in delay-6">
+    <h2>All done</h2>
+    <p>I’ll take a proper look and get back to you shortly.</p>
   </section>
 
 </main>
