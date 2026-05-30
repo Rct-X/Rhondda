@@ -2,20 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Free Website Checker | RCTX Web Design</title>
+  <title>Website Health Report | RCTX Web Design</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- GSAP for animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 
 <body>
 
 <header class="hero">
-  <h1 class="fade-in">Free Website Checker</h1>
-  <p class="fade-in delay-1">Instant score. Real issues. No jargon. Built in Treorchy for Rhondda businesses.</p>
+  <h1 class="fade-in">Website Health Report</h1>
+  <p class="fade-in delay-1">Instant insights. Clear fixes. No jargon. Built in Treorchy for Rhondda businesses.</p>
 </header>
 
 <main class="container">
@@ -23,25 +21,70 @@
   <!-- Input -->
   <section class="checker-box fade-in delay-2">
     <h2>Check your website</h2>
-    <p>Enter your website URL and get an instant score.</p>
+    <p>Enter your website URL to get your free health report.</p>
 
     <div class="input-row">
       <input id="urlInput" type="text" placeholder="example.co.uk">
       <button id="runCheck">Run Check</button>
     </div>
 
-    <p class="note">No cost. No login. No spam.</p>
+    <p class="note">Takes around 3 seconds.</p>
   </section>
 
   <!-- Results -->
   <section id="results" class="results hidden fade-in delay-3">
-    <h2>Your Website Score</h2>
 
-    <div id="scoreCircle" class="score-circle">0</div>
-    <div id="grade" class="grade">–</div>
+    <h2>Your Website Health Report</h2>
 
-    <h3>Checks</h3>
-    <div id="checksList"></div>
+    <div class="score-wrap">
+      <div id="scoreCircle" class="score-circle">0</div>
+      <div id="grade" class="grade">–</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box red">
+        <span id="criticalCount">0</span>
+        <label>Critical Issues</label>
+      </div>
+      <div class="stat-box amber">
+        <span id="improveCount">0</span>
+        <label>Improvements</label>
+      </div>
+      <div class="stat-box green">
+        <span id="passedCount">0</span>
+        <label>Passed Checks</label>
+      </div>
+    </div>
+
+    <h3>Performance Breakdown</h3>
+
+    <div class="bar">
+      <label>Google Visibility</label>
+      <div class="bar-fill" id="barGoogle"></div>
+    </div>
+
+    <div class="bar">
+      <label>Lead Generation</label>
+      <div class="bar-fill" id="barLead"></div>
+    </div>
+
+    <div class="bar">
+      <label>Trust & Credibility</label>
+      <div class="bar-fill" id="barTrust"></div>
+    </div>
+
+    <div class="bar">
+      <label>Mobile Experience</label>
+      <div class="bar-fill" id="barMobile"></div>
+    </div>
+
+    <div class="impact-box">
+      <h3>Potential enquiries lost</h3>
+      <p id="lostEnquiries">0–0 enquiries per month</p>
+    </div>
+
+    <h3>Top Fixes</h3>
+    <ul id="topFixes" class="fix-list"></ul>
 
     <button id="getReport" class="cta-btn">Get Full Report</button>
   </section>
