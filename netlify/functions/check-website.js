@@ -160,12 +160,26 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   checks.push(item("phone_whatsapp", "Click-to-call or WhatsApp present", /(tel:|wa\.me|whatsapp)/i.test(html)));
 
   checks.push(item("broken_links", "No obvious 404 text", !/404 not found|page not found/i.test(html)));
-console.log(
-  checks.map(c => ({
-    check: c.id,
-    pass: c.pass
-  }))
-);
+console.log("----- WEBSITE ANALYSIS -----");
+console.log("URL:", url);
+console.log("Status:", status);
+console.log("HTML Length:", html.length);
+console.log("Load Time:", loadTimeMs + "ms");
+console.log("Size:", sizeBytes + " bytes");
+
+checks.forEach(check => {
+  console.log({
+    check: check.id,
+    pass: check.pass,
+    label: check.label
+  });
+});
+
+console.log("HEAD SAMPLE:");
+console.log(head.slice(0, 3000));
+
+console.log("BODY SAMPLE:");
+console.log(body.slice(0, 3000));
   const { score, grade } = scoreFromChecks(checks);
 
   return { url, score, grade, checks };
