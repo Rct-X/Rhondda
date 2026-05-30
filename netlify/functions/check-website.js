@@ -158,7 +158,12 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   checks.push(item("phone_whatsapp", "Click-to-call or WhatsApp present", /(tel:|wa\.me|whatsapp)/i.test(html)));
 
   checks.push(item("broken_links", "No obvious 404 text", !/404 not found|page not found/i.test(html)));
-
+console.log(
+  checks.map(c => ({
+    check: c.id,
+    pass: c.pass
+  }))
+);
   const { score, grade } = scoreFromChecks(checks);
 
   return { url, score, grade, checks };
