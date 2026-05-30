@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Free Website Checker | RCTX Web Design</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+
+<header class="hero">
+  <h1 class="fade-in">Free Website Checker</h1>
+  <p class="fade-in delay-1">Instant score. Real issues. No jargon. Built in Treorchy for Rhondda businesses.</p>
+</header>
+
+<main class="container">
+
+  <!-- Input -->
+  <section class="checker-box fade-in delay-2">
+    <h2>Check your website</h2>
+    <p>Enter your website URL and get an instant score.</p>
+
+    <div class="input-row">
+      <input id="urlInput" type="text" placeholder="example.co.uk">
+      <button id="runCheck">Run Check</button>
+    </div>
+
+    <p class="note">No cost. No login. No spam.</p>
+  </section>
+
+  <!-- Results -->
+  <section id="results" class="results hidden fade-in delay-3">
+    <h2>Your Website Score</h2>
+
+    <div id="scoreCircle" class="score-circle">0</div>
+    <div id="grade" class="grade">–</div>
+
+    <h3>Checks</h3>
+    <div id="checksList"></div>
+
+    <button id="getReport" class="cta-btn">Get Full Report</button>
+  </section>
+
+  <!-- Lead capture -->
+  <section id="leadCapture" class="lead hidden fade-in delay-4">
+    <h2>Get Your Full Report</h2>
+    <p>Enter your email and I’ll send the full breakdown.</p>
+
+    <input id="emailInput" type="email" placeholder="you@example.com">
+    <button id="sendReport">Send Report</button>
+
+    <p class="note">I reply personally from Treorchy.</p>
+  </section>
+
+  <!-- Confirmation -->
+  <section id="thankYou" class="thank hidden fade-in delay-5">
+    <h2>Report Sent</h2>
+    <p>I’ll review it and get back to you shortly.</p>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+
+</body>
+</html>
