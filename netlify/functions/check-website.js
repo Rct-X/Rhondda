@@ -22,6 +22,8 @@ exports.handler = async (event) => {
   }
 
   if (!url) return json({ error: "URL is required" }, 400);
+
+  // Normalise URL
   if (!/^https?:\/\//i.test(url)) url = "https://" + url;
   console.log("User entered URL:", url);
 
@@ -31,13 +33,23 @@ exports.handler = async (event) => {
 
   try {
     response = await fetch(url, { redirect: "follow" });
-    console.log(response.url);
+
+    // ⭐ Correct placement
+    console.log("Final fetched URL:", response.url);
+
     const buf = await response.arrayBuffer();
     const loadTimeMs = Date.now() - start;
     const sizeBytes = buf.byteLength;
     html = bufferToString(buf);
 
-    const raw = runChecks({ url, html, loadTimeMs, sizeBytes, status: response.status });
+    const raw = runChecks({
+      url,
+      html,
+      loadTimeMs,
+      sizeBytes,
+      status: response.status
+    });
+
     const report = buildCustomerReport(raw);
 
     return json(report, 200);
@@ -48,23 +60,20 @@ exports.handler = async (event) => {
   }
 };
 
+
+
 // ----------------- CUSTOMER REPORT BUILDER -----------------
 
 function buildCustomerReport(raw) {
   const passed = raw.checks.filter(c => c.pass).length;
-  const failed = raw.checks.filter(c => !c.pass).length;
 
-  const critical = raw.checks.filter(c => !c.pass && [
-    "https",
-    "status_200",
-    "speed",
-    "cta_above_fold",
-    "phone_whatsapp"
-  ].includes(c.id));
+  const critical = raw.checks.filter(c =>
+    !c.pass &&
+    ["https", "status_200", "speed", "cta_above_fold", "phone_whatsapp"].includes(c.id)
+  );
 
   const improvements = raw.checks.filter(c => !c.pass && !critical.includes(c));
 
-  // Category scoring (simple weighted)
   const categories = {
     googleVisibility: scoreCategory(raw, ["title", "meta_description", "open_graph", "schema", "local_keywords"]),
     leadGen: scoreCategory(raw, ["cta_above_fold", "phone_whatsapp"]),
@@ -72,10 +81,8 @@ function buildCustomerReport(raw) {
     mobile: scoreCategory(raw, ["viewport", "speed"])
   };
 
-  // Estimate enquiries lost
   const lost = Math.round((100 - raw.score) / 12);
 
-  // Top fixes
   const topFixes = [];
   if (!raw.checks.find(c => c.id === "phone_whatsapp").pass) topFixes.push("Add click-to-call");
   if (!raw.checks.find(c => c.id === "cta_above_fold").pass) topFixes.push("Improve homepage CTA");
@@ -85,29 +92,20 @@ function buildCustomerReport(raw) {
   return {
     ok: true,
     url: raw.url,
-
-    // Main score
     score: raw.score,
     grade: raw.grade,
 
-    // Counts
     criticalIssues: critical.length,
     improvements: improvements.length,
     passedChecks: passed,
 
-    // Categories
     googleVisibility: categories.googleVisibility,
     leadGeneration: categories.leadGen,
     trustCredibility: categories.trust,
     mobileExperience: categories.mobile,
 
-    // Business impact
     enquiriesLost: lost,
-
-    // Fixes
     topFixes,
-
-    // Raw checks (optional)
     checks: raw.checks
   };
 }
@@ -118,72 +116,107 @@ function scoreCategory(raw, ids) {
   return Math.round((passed / total) * 100);
 }
 
-// ----------------- ORIGINAL CHECK LOGIC (unchanged) -----------------
+
+
+// ----------------- CHECK ENGINE (UPDATED REGEX) -----------------
 
 function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   const lower = html.toLowerCase();
-  const head = lower.split("</head>")[0] || lower.slice(0, 8000);
+  const head = lower.split("</head>")[0] || lower.slice(0, 10000);
   const body = lower.split("</head>")[1] || lower;
 
   const checks = [];
+
   const has = (pattern) => pattern.test(lower);
   const hasHead = (pattern) => pattern.test(head);
 
-  checks.push(item("title", "Title tag present", /<title>.*?<\/title>/i.test(html)));
-  checks.push(item("meta_description", "Meta description present", /<meta[^>]+name=["']description["'][^>]*>/i.test(html)));
-  checks.push(item("h1", "H1 heading present", /<h1[^>]*>.*?<\/h1>/i.test(html)));
-  checks.push(item("viewport", "Mobile viewport meta present", /<meta[^>]+name=["']viewport["'][^>]*>/i.test(html)));
+  // SEO
+  checks.push(item("title", "Title tag present", /<title[\s\S]*?<\/title>/i.test(html)));
 
-  const isHttps = url.startsWith("https://");
-  checks.push(item("https", "Site uses HTTPS", isHttps));
+  checks.push(item("meta_description", "Meta description present",
+    /<meta[^>]+name\s*=\s*["']?description["']?[^>]*>/i.test(html)
+  ));
+
+  checks.push(item("h1", "H1 heading present",
+    /<h1[^>]*>[\s\S]*?<\/h1>/i.test(html)
+  ));
+
+  checks.push(item("viewport", "Mobile viewport meta present",
+    /<meta[^>]+name\s*=\s*["']?viewport["']?[^>]*>/i.test(html)
+  ));
+
+  // Technical
+  checks.push(item("https", "Site uses HTTPS", url.toLowerCase().startsWith("https://")));
   checks.push(item("status_200", "Page returns 200 OK", status === 200));
 
   const sizeKb = Math.round(sizeBytes / 1024);
   checks.push(item("size", `Page size under 2MB (${sizeKb}KB)`, sizeKb <= 2000));
-
   checks.push(item("speed", `Responds in under 3s (${loadTimeMs}ms)`, loadTimeMs <= 3000));
 
+  // Images
   const imgTags = html.match(/<img[^>]*>/gi) || [];
-  const imgWithAlt = imgTags.filter(t => /alt=/.test(t.toLowerCase())).length;
+  const imgWithAlt = imgTags.filter(tag => /\balt\s*=/.test(tag.toLowerCase())).length;
   const altRatio = imgTags.length ? imgWithAlt / imgTags.length : 1;
+
   checks.push(item("alt_text", "Most images have alt text", altRatio >= 0.7));
 
-  checks.push(item("open_graph", "Open Graph tags present", hasHead(/<meta[^>]+property=["']og:/)));
-  checks.push(item("favicon", "Favicon defined", hasHead(/<link[^>]+rel=["'](?:icon|shortcut icon)["'][^>]*>/)));
-  checks.push(item("schema", "Schema present", has(/application\/ld\+json/)));
+  // Social / Trust
+  checks.push(item("open_graph", "Open Graph tags present",
+    /<meta[^>]+property\s*=\s*["']?og:/i.test(head)
+  ));
 
-  checks.push(item("local_keywords", "Local area mentioned", /(rhondda|treorchy|tonypandy|porth|pontypridd)/i.test(html)));
+  checks.push(item("favicon", "Favicon defined",
+    /rel\s*=\s*["']?(icon|shortcut icon)["']?/i.test(head)
+  ));
 
-  const aboveFold = body.slice(0, 1500);
-  checks.push(item("cta_above_fold", "CTA near top of page", /(call|book|enquire|contact|message)/i.test(aboveFold)));
+  checks.push(item("schema", "Schema present", has(/application\/ld\+json/i)));
 
-  checks.push(item("phone_whatsapp", "Click-to-call or WhatsApp present", /(tel:|wa\.me|whatsapp)/i.test(html)));
+  // Local SEO
+  checks.push(item("local_keywords", "Local area mentioned",
+    /(rhondda|treorchy|tonypandy|porth|pontypridd)/i.test(html)
+  ));
 
-  checks.push(item("broken_links", "No obvious 404 text", !/404 not found|page not found/i.test(html)));
-console.log("----- WEBSITE ANALYSIS -----");
-console.log("URL:", url);
-console.log("Status:", status);
-console.log("HTML Length:", html.length);
-console.log("Load Time:", loadTimeMs + "ms");
-console.log("Size:", sizeBytes + " bytes");
+  // Conversion
+  const aboveFold = body.slice(0, 2000);
 
-checks.forEach(check => {
-  console.log({
-    check: check.id,
-    pass: check.pass,
-    label: check.label
+  checks.push(item("cta_above_fold", "CTA near top of page",
+    /(call|book|enquire|contact|message|get started|get my website)/i.test(aboveFold)
+  ));
+
+  checks.push(item("phone_whatsapp", "Click-to-call or WhatsApp present",
+    /(tel:|wa\.me|whatsapp)/i.test(html)
+  ));
+
+  checks.push(item("broken_links", "No obvious 404 text",
+    !/404 not found|page not found/i.test(html)
+  ));
+
+  // DEBUG LOGGING
+  console.log("----- WEBSITE ANALYSIS -----");
+  console.log("URL:", url);
+  console.log("Status:", status);
+  console.log("HTML Length:", html.length);
+  console.log("Load Time:", loadTimeMs + "ms");
+  console.log("Size:", sizeBytes + " bytes");
+
+  checks.forEach(check => {
+    console.log({ check: check.id, pass: check.pass, label: check.label });
   });
-});
 
-console.log("HEAD SAMPLE:");
-console.log(head.slice(0, 3000));
+  console.log("HEAD SAMPLE:");
+  console.log(head.slice(0, 3000));
 
-console.log("BODY SAMPLE:");
-console.log(body.slice(0, 3000));
+  console.log("BODY SAMPLE:");
+  console.log(body.slice(0, 3000));
+
   const { score, grade } = scoreFromChecks(checks);
 
   return { url, score, grade, checks };
 }
+
+
+
+// ----------------- HELPERS -----------------
 
 function item(id, label, pass) {
   return { id, label, pass };
@@ -204,8 +237,6 @@ function scoreFromChecks(checks) {
 
   return { score, grade };
 }
-
-// ----------------- HELPERS -----------------
 
 function bufferToString(buf) {
   try {
