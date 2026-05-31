@@ -62,10 +62,10 @@ runCheck.addEventListener("click", async () => {
   passedCount.textContent = data.passedChecks;
 
   // Bars
-  barGoogle.style.width = data.googleVisibility + "%";
-  barLead.style.width = data.leadGeneration + "%";
-  barTrust.style.width = data.trustCredibility + "%";
-  barMobile.style.width = data.mobileExperience + "%";
+barGoogle.style.width = data.technicalSEO + "%";
+barLead.style.width = data.localSEO + "%";
+barTrust.style.width = data.trust + "%";
+barMobile.style.width = data.mobile + "%";
 
   // Enquiries lost
   lostEnquiries.textContent = `You could be missing around ${data.enquiriesLost}–${data.enquiriesLost + 5} enquiries per month.`;
