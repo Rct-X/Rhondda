@@ -75,25 +75,27 @@ function buildCustomerReport(raw) {
   const improvements = raw.checks.filter(c => !c.pass && !critical.includes(c));
 
   // ⭐ New category scoring
-  const categories = {
-    technicalSEO: scoreCategory(raw, ["title", "meta_description", "h1", "schema"]),
-    mobile: scoreCategory(raw, ["viewport", "speed"]),
-    trust: scoreCategory(raw, ["https", "favicon", "open_graph"]),
-    performance: scoreCategory(raw, ["speed", "size"]),
-    contentDepth: scoreCategory(raw, ["alt_text", "local_keywords"]),
-    localSEO: scoreCategory(raw, ["local_keywords", "schema"])
-  };
+const categories = {
+  technicalSEO: scoreCategory(raw, ["title", "meta_description", "h1", "schema"]),
+  mobile: scoreCategory(raw, ["viewport", "speed"]),
+  trust: scoreCategory(raw, ["https", "favicon", "open_graph", "testimonials"]),
+  performance: scoreCategory(raw, ["speed", "size"]),
+  contentDepth: scoreCategory(raw, ["alt_text", "local_keywords"]),
+  localSEO: scoreCategory(raw, ["local_keywords", "schema"]),
+  conversions: scoreCategory(raw, ["phone_whatsapp", "contact_form", "cta_above_fold"])
+};
 
   // ⭐ Overall score (weighted)
   const overall =
-    Math.round(
-      (categories.technicalSEO * 0.25) +
-      (categories.mobile * 0.15) +
-      (categories.trust * 0.15) +
-      (categories.performance * 0.20) +
-      (categories.contentDepth * 0.10) +
-      (categories.localSEO * 0.15)
-    );
+  Math.round(
+    (categories.technicalSEO * 0.20) +
+    (categories.mobile * 0.15) +
+    (categories.trust * 0.15) +
+    (categories.performance * 0.15) +
+    (categories.contentDepth * 0.10) +
+    (categories.localSEO * 0.10) +
+    (categories.conversions * 0.15)
+  );
 
   const lost = Math.round((100 - overall) / 10);
 
@@ -118,6 +120,7 @@ function buildCustomerReport(raw) {
     performance: categories.performance,
     contentDepth: categories.contentDepth,
     localSEO: categories.localSEO,
+    conversions: categories.conversions,
 
     // Counts
     criticalIssues: critical.length,
@@ -216,6 +219,19 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
     /(tel:|wa\.me|whatsapp)/i.test(html)
   ));
 
+  checks.push(item("contact_form", "Contact form present",
+  /<form[\s>]/i.test(html)
+));
+
+  checks.push(item("testimonials", "Testimonials or reviews present",
+  /(testimonial|testimonials|review|reviews|customer feedback|what our customers say)/i.test(html)
+));
+
+  checks.push(item("social_media", "Social media links present",
+  /(facebook\.com|instagram\.com|linkedin\.com|tiktok\.com|youtube\.com)/i.test(html)
+));
+
+  
   checks.push(item("broken_links", "No obvious 404 text",
     !/404 not found|page not found/i.test(html)
   ));
