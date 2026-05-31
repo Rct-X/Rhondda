@@ -5,9 +5,6 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-[kv_namespaces]
-  rateLimit = "rate-limit"
-
 [[headers]]
   for = "/js/rctx-tracker.js"
   [headers.values]
