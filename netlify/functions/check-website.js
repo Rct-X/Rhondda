@@ -1,5 +1,6 @@
 // netlify/functions/check-website.js
 
+const requests = new Map();
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -13,6 +14,34 @@ exports.handler = async (event) => {
     return json({ error: "Use POST" }, 405);
   }
 
+  const ip =
+  event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+  "unknown";
+
+const now = Date.now();
+const windowMs = 60 * 1000; // 1 minute
+const maxRequests = 5;
+
+const userData = requests.get(ip) || {
+  count: 0,
+  start: now
+};
+
+if (now - userData.start > windowMs) {
+  userData.count = 0;
+  userData.start = now;
+}
+
+userData.count++;
+
+requests.set(ip, userData);
+
+if (userData.count > maxRequests) {
+  return json({
+    error: "Too many checks. Please wait a minute."
+  }, 429);
+}
+  
   let url;
   try {
     const body = JSON.parse(event.body || "{}");
