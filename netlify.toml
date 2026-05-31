@@ -10,6 +10,12 @@ directory = "netlify/functions"
   [headers.values]
     Access-Control-Allow-Origin = "*"
 
+[functions]
+  node_bundler = "esbuild"
+
+[kv_namespaces]
+  rateLimit = "rate-limit"
+
 [[redirects]]
 from = "/robots.txt"
 to = "/robots.txt"
