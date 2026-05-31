@@ -21,6 +21,7 @@ const barGoogle = document.getElementById("barGoogle");
 const barLead = document.getElementById("barLead");
 const barTrust = document.getElementById("barTrust");
 const barMobile = document.getElementById("barMobile");
+const barConversions = document.getElementById("barConversions");
 
 const lostEnquiries = document.getElementById("lostEnquiries");
 const topFixes = document.getElementById("topFixes");
@@ -66,6 +67,7 @@ barGoogle.style.width = data.technicalSEO + "%";
 barLead.style.width = data.localSEO + "%";
 barTrust.style.width = data.trust + "%";
 barMobile.style.width = data.mobile + "%";
+barConversions.style.width = data.conversions + "%";
 
   // Enquiries lost
 if (data.score >= 90) {
