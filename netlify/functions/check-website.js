@@ -92,6 +92,14 @@ if (userData.count > maxRequests) {
 
   if (!url) return json({ error: "URL is required" }, 400);
 
+  if (url === "__warmup__") {
+  return json({
+    ok: true,
+    remainingDaily,
+    remainingMinute
+  });
+  }
+
   if (!/^https?:\/\//i.test(url)) url = "https://" + url;
 
   console.log("User entered URL:", url);
