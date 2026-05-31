@@ -1,7 +1,7 @@
 // netlify/functions/check-website.js
 import { kv } from "@netlify/edge-functions";
 const requests = new Map();
-exports.handler = async (event) => {
+export async function handler(event) {
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
