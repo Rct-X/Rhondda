@@ -68,8 +68,16 @@ barTrust.style.width = data.trust + "%";
 barMobile.style.width = data.mobile + "%";
 
   // Enquiries lost
-  lostEnquiries.textContent = `You could be missing around ${data.enquiriesLost}–${data.enquiriesLost + 5} enquiries per month.`;
-
+if (data.score >= 90) {
+  lostEnquiries.textContent =
+    "Your website is performing strongly and appears well positioned to generate enquiries.";
+} else if (data.score >= 70) {
+  lostEnquiries.textContent =
+    "A few improvements could help increase visibility and generate more enquiries.";
+} else {
+  lostEnquiries.textContent =
+    "Several improvements could help your website generate more enquiries and leads.";
+}
   // Top fixes
   topFixes.innerHTML = "";
   data.topFixes.forEach(fix => {
