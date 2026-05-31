@@ -238,8 +238,6 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   console.log("BODY SAMPLE:");
   console.log(body.slice(0, 3000));
 
-  const { score, grade } = scoreFromChecks(checks);
-
   return { url, score, grade, checks };
 }
 
@@ -254,7 +252,13 @@ function item(id, label, pass) {
 function scoreFromChecks(checks) {
   const total = checks.length;
   const passed = checks.filter(c => c.pass).length;
-  return Math.round((passed / total) * 100);
+
+  const score = Math.round((passed / total) * 100);
+
+  return {
+    score,
+    grade: gradeFromScore(score)
+  };
 }
 
 function bufferToString(buf) {
