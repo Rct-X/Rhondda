@@ -174,3 +174,30 @@ sendReport.addEventListener("click", async () => {
   leadCapture.classList.add("hidden");
   thankYou.classList.remove("hidden");
 });
+
+// Welcome message: show remaining checks on page load
+window.addEventListener("DOMContentLoaded", async () => {
+  const welcomeBox = document.getElementById("limitInfoWelcome");
+  if (!welcomeBox) return;
+
+  const res = await fetch("/.netlify/functions/check-website", {
+    method: "POST",
+    body: JSON.stringify({ url: "__warmup__" })
+  });
+
+  const data = await res.json();
+
+  if (data.remainingDaily !== undefined) {
+    const daily = data.remainingDaily;
+
+    welcomeBox.style.display = "block";
+
+    if (daily <= 1) {
+      welcomeBox.className = "limit-message limit-warning";
+    } else {
+      welcomeBox.className = "limit-message limit-ok";
+    }
+
+    welcomeBox.textContent = `You have ${daily} free checks left today.`;
+  }
+});
