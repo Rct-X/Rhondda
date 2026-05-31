@@ -453,3 +453,42 @@ button:active {
 .tool-notice strong{
     color:var(--text);
 }
+/* How It Works */
+.how-it-works {
+  background: #f0f6ff;
+  border-radius: 16px;
+  padding: 28px;
+  margin: 32px 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  border: 1px solid rgba(59,130,246,.15); /* soft blue */
+  text-align: center;
+}
+
+.how-it-works h2{
+    margin:0 0 16px;
+    font-size:1.7rem;
+    line-height:1.2;
+    color:#0f172a;
+}
+
+.how-it-works p{
+    margin:0 0 14px;
+    color: #334155;
+    line-height:1.7;
+    font-size:1rem;
+}
+
+.how-it-works p:last-child{
+    margin-bottom:0;
+}
+
+@media (max-width:768px){
+    .how-it-works{
+        padding:22px;
+        margin:24px 0;
+    }
+
+    .how-it-works h2{
+        font-size:1.4rem;
+    }
+}
