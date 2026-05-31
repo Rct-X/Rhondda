@@ -43,15 +43,83 @@ runCheck.addEventListener("click", async () => {
   leadCapture.classList.add("hidden");
   thankYou.classList.add("hidden");
 
+  const limitInfo = document.getElementById("limitInfo");
+  const limitInfoResults = document.getElementById("limitInfoResults");
+
+  limitInfo.classList.add("hidden");
+  limitInfoResults.classList.add("hidden");
+
   const res = await fetch("/.netlify/functions/check-website", {
     method: "POST",
     body: JSON.stringify({ url })
   });
 
   const data = await res.json();
-  if (!data.ok) return alert(data.error || "Something went wrong");
+
+  // Handle rate limits
+  if (!data.ok) {
+    let msg = data.error;
+
+    if (data.remainingDaily !== undefined) {
+      msg += ` (${data.remainingDaily} checks left today)`;
+    }
+
+    if (data.remainingMinute !== undefined) {
+      msg += ` (${data.remainingMinute} left this minute)`;
+    }
+
+    limitInfo.textContent = msg;
+    limitInfo.classList.remove("hidden");
+    return;
+  }
 
   lastResult = data;
+
+  // Show remaining limits in results
+  if (data.remainingDaily !== undefined || data.remainingMinute !== undefined) {
+    limitInfoResults.textContent =
+      `Checks left today: ${data.remainingDaily} • This minute: ${data.remainingMinute}`;
+    limitInfoResults.classList.remove("hidden");
+  }
+
+  // Main score
+  scoreCircle.textContent = data.score;
+  gradeEl.textContent = data.grade;
+
+  // Counts
+  criticalCount.textContent = data.criticalIssues;
+  improveCount.textContent = data.improvements;
+  passedCount.textContent = data.passedChecks;
+
+  // Bars
+  barGoogle.style.width = data.technicalSEO + "%";
+  barLead.style.width = data.localSEO + "%";
+  barTrust.style.width = data.trust + "%";
+  barMobile.style.width = data.mobile + "%";
+  barConversions.style.width = data.conversions + "%";
+
+  // Enquiries lost
+  if (data.score >= 90) {
+    lostEnquiries.textContent =
+      "Your website is performing strongly and appears well positioned to generate enquiries.";
+  } else if (data.score >= 70) {
+    lostEnquiries.textContent =
+      "A few improvements could help increase visibility and generate more enquiries.";
+  } else {
+    lostEnquiries.textContent =
+      "Several improvements could help your website generate more enquiries and leads.";
+  }
+
+  // Top fixes
+  topFixes.innerHTML = "";
+  data.topFixes.forEach(fix => {
+    const li = document.createElement("li");
+    li.textContent = fix;
+    topFixes.appendChild(li);
+  });
+
+  results.classList.remove("hidden");
+});
 
   // Main score
   scoreCircle.textContent = data.score;
