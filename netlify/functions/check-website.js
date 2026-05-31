@@ -1,5 +1,5 @@
 // netlify/functions/check-website.js
-
+import { kv } from "@netlify/edge-functions";
 const requests = new Map();
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
@@ -14,10 +14,36 @@ exports.handler = async (event) => {
     return json({ error: "Use POST" }, 405);
   }
 
-  const ip =
+const ip =
+  event.headers["client-ip"] ||
+  event.headers["x-nf-client-connection-ip"] ||
   event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
   "unknown";
 
+  // --- Persistent KV rate limiting (daily) ---
+const kvKey = `rate:${ip}`;
+let kvData = await kv.get(kvKey);
+
+if (!kvData) {
+  kvData = { count: 0, day: Date.now() };
+}
+
+const oneDay = 24 * 60 * 60 * 1000;
+
+// Reset daily window
+if (Date.now() - kvData.day > oneDay) {
+  kvData.count = 0;
+  kvData.day = Date.now();
+}
+
+kvData.count++;
+
+await kv.set(kvKey, kvData, { ex: 86400 }); // expire in 24h
+
+if (kvData.count > 3) {
+  return json({ error: “You’ve reached today’s limit. Please try again tomorrow." }, 429);
+}
+  
 const now = Date.now();
 const windowMs = 60 * 1000; // 1 minute
 const maxRequests = 5;
