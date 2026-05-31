@@ -1,7 +1,8 @@
 // netlify/functions/check-website.js
-import { kv } from "@netlify/edge-functions";
+
 const requests = new Map();
-export async function handler(event) {
+
+exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -14,62 +15,63 @@ export async function handler(event) {
     return json({ error: "Use POST" }, 405);
   }
 
-const ip =
-  event.headers["client-ip"] ||
-  event.headers["x-nf-client-connection-ip"] ||
-  event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
-  "unknown";
+  // -----------------------------
+  // IP extraction (safe)
+  // -----------------------------
+  const ip =
+    event.headers["client-ip"] ||
+    event.headers["x-nf-client-connection-ip"] ||
+    event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    "unknown";
 
-  // --- Persistent KV rate limiting (daily) ---
-const kvKey = `rate:${ip}`;
-let kvData = await kv.get(kvKey);
+  const now = Date.now();
 
-if (!kvData) {
-  kvData = { count: 0, day: Date.now() };
-}
+  // -----------------------------
+  // Soft DAILY limit (5/day)
+  // -----------------------------
+  const dailyKey = `${ip}-daily`;
+  const dailyData = requests.get(dailyKey) || { count: 0, start: now };
+  const oneDay = 24 * 60 * 60 * 1000;
 
-const oneDay = 24 * 60 * 60 * 1000;
+  if (now - dailyData.start > oneDay) {
+    dailyData.count = 0;
+    dailyData.start = now;
+  }
 
-// Reset daily window
-if (Date.now() - kvData.day > oneDay) {
-  kvData.count = 0;
-  kvData.day = Date.now();
-}
+  dailyData.count++;
+  requests.set(dailyKey, dailyData);
 
-kvData.count++;
+  if (dailyData.count > 5) {
+    return json({
+      error: "You've reached today's limit. Please try again tomorrow."
+    }, 429);
+  }
 
-await kv.set(kvKey, kvData, { ex: 86400 }); // expire in 24h
+  // -----------------------------
+  // Per-minute limiter (5/min)
+  // -----------------------------
+  const windowMs = 60 * 1000;
+  const maxRequests = 5;
 
-if (kvData.count > 3) {
-  return json({
-    error: "You've reached today's limit. Please try again tomorrow."
-  }, 429);
-}
-  
-const now = Date.now();
-const windowMs = 60 * 1000; // 1 minute
-const maxRequests = 5;
+  const userData = requests.get(ip) || { count: 0, start: now };
 
-const userData = requests.get(ip) || {
-  count: 0,
-  start: now
-};
+  if (now - userData.start > windowMs) {
+    userData.count = 0;
+    userData.start = now;
+  }
 
-if (now - userData.start > windowMs) {
-  userData.count = 0;
-  userData.start = now;
-}
+  userData.count++;
+  requests.set(ip, userData);
 
-userData.count++;
+  if (userData.count > maxRequests) {
+    return json({
+      error: "Too many checks. Please wait a minute."
+    }, 429);
+  }
 
-requests.set(ip, userData);
-
-if (userData.count > maxRequests) {
-  return json({
-    error: "Too many checks. Please wait a minute."
-  }, 429);
-}
-  
+  // -----------------------------
+  // Parse body
+  // -----------------------------
   let url;
   try {
     const body = JSON.parse(event.body || "{}");
@@ -80,10 +82,13 @@ if (userData.count > maxRequests) {
 
   if (!url) return json({ error: "URL is required" }, 400);
 
-  // Normalise URL
   if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+
   console.log("User entered URL:", url);
 
+  // -----------------------------
+  // Fetch website
+  // -----------------------------
   let response;
   let html = "";
   let start = Date.now();
@@ -91,7 +96,6 @@ if (userData.count > maxRequests) {
   try {
     response = await fetch(url, { redirect: "follow" });
 
-    // ⭐ Correct placement
     console.log("Final fetched URL:", response.url);
 
     const buf = await response.arrayBuffer();
@@ -100,7 +104,7 @@ if (userData.count > maxRequests) {
     html = bufferToString(buf);
 
     const raw = runChecks({
-      url: response.url,   // ⭐ Use resolved URL
+      url: response.url,
       html,
       loadTimeMs,
       sizeBytes,
@@ -131,28 +135,26 @@ function buildCustomerReport(raw) {
 
   const improvements = raw.checks.filter(c => !c.pass && !critical.includes(c));
 
-  // ⭐ New category scoring
-const categories = {
-  technicalSEO: scoreCategory(raw, ["title", "meta_description", "h1", "schema"]),
-  mobile: scoreCategory(raw, ["viewport", "speed"]),
-  trust: scoreCategory(raw, ["https", "favicon", "open_graph", "testimonials"]),
-  performance: scoreCategory(raw, ["speed", "size"]),
-  contentDepth: scoreCategory(raw, ["alt_text", "local_keywords"]),
-  localSEO: scoreCategory(raw, ["local_keywords", "schema"]),
-  conversions: scoreCategory(raw, ["phone_whatsapp", "contact_form", "cta_above_fold"])
-};
+  const categories = {
+    technicalSEO: scoreCategory(raw, ["title", "meta_description", "h1", "schema"]),
+    mobile: scoreCategory(raw, ["viewport", "speed"]),
+    trust: scoreCategory(raw, ["https", "favicon", "open_graph", "testimonials"]),
+    performance: scoreCategory(raw, ["speed", "size"]),
+    contentDepth: scoreCategory(raw, ["alt_text", "local_keywords"]),
+    localSEO: scoreCategory(raw, ["local_keywords", "schema"]),
+    conversions: scoreCategory(raw, ["phone_whatsapp", "contact_form", "cta_above_fold"])
+  };
 
-  // ⭐ Overall score (weighted)
   const overall =
-  Math.round(
-    (categories.technicalSEO * 0.20) +
-    (categories.mobile * 0.15) +
-    (categories.trust * 0.15) +
-    (categories.performance * 0.15) +
-    (categories.contentDepth * 0.10) +
-    (categories.localSEO * 0.10) +
-    (categories.conversions * 0.15)
-  );
+    Math.round(
+      (categories.technicalSEO * 0.20) +
+      (categories.mobile * 0.15) +
+      (categories.trust * 0.15) +
+      (categories.performance * 0.15) +
+      (categories.contentDepth * 0.10) +
+      (categories.localSEO * 0.10) +
+      (categories.conversions * 0.15)
+    );
 
   const lost = Math.round((100 - overall) / 10);
 
@@ -165,12 +167,8 @@ const categories = {
   return {
     ok: true,
     url: raw.url,
-
-    // ⭐ Main score
     score: overall,
     grade: gradeFromScore(overall),
-
-    // ⭐ Category breakdown
     technicalSEO: categories.technicalSEO,
     mobile: categories.mobile,
     trust: categories.trust,
@@ -178,12 +176,9 @@ const categories = {
     contentDepth: categories.contentDepth,
     localSEO: categories.localSEO,
     conversions: categories.conversions,
-
-    // Counts
     criticalIssues: critical.length,
     improvements: improvements.length,
     passedChecks: passed,
-
     enquiriesLost: lost,
     topFixes,
     checks: raw.checks
@@ -207,7 +202,7 @@ function gradeFromScore(score) {
 
 
 
-// ----------------- CHECK ENGINE (UPDATED REGEX) -----------------
+// ----------------- CHECK ENGINE -----------------
 
 function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   const lower = html.toLowerCase();
@@ -217,24 +212,18 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   const checks = [];
 
   const has = (pattern) => pattern.test(lower);
-  const hasHead = (pattern) => pattern.test(head);
 
-  // SEO
   checks.push(item("title", "Title tag present", /<title[\s\S]*?<\/title>/i.test(html)));
-
   checks.push(item("meta_description", "Meta description present",
     /<meta[^>]+name\s*=\s*["']?description["']?[^>]*>/i.test(html)
   ));
-
   checks.push(item("h1", "H1 heading present",
     /<h1[^>]*>[\s\S]*?<\/h1>/i.test(html)
   ));
-
   checks.push(item("viewport", "Mobile viewport meta present",
     /<meta[^>]+name\s*=\s*["']?viewport["']?[^>]*>/i.test(html)
   ));
 
-  // Technical
   checks.push(item("https", "Site uses HTTPS", url.toLowerCase().startsWith("https://")));
   checks.push(item("status_200", "Page returns 200 OK", status === 200));
 
@@ -242,14 +231,12 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   checks.push(item("size", `Page size under 2MB (${sizeKb}KB)`, sizeKb <= 2000));
   checks.push(item("speed", `Responds in under 3s (${loadTimeMs}ms)`, loadTimeMs <= 3000));
 
-  // Images
   const imgTags = html.match(/<img[^>]*>/gi) || [];
   const imgWithAlt = imgTags.filter(tag => /\balt\s*=/.test(tag.toLowerCase())).length;
   const altRatio = imgTags.length ? imgWithAlt / imgTags.length : 1;
 
   checks.push(item("alt_text", "Most images have alt text", altRatio >= 0.7));
 
-  // Social / Trust
   checks.push(item("open_graph", "Open Graph tags present",
     /<meta[^>]+property\s*=\s*["']?og:/i.test(head)
   ));
@@ -260,12 +247,10 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
 
   checks.push(item("schema", "Schema present", has(/application\/ld\+json/i)));
 
-  // Local SEO
   checks.push(item("local_keywords", "Local area mentioned",
     /(rhondda|treorchy|tonypandy|porth|pontypridd)/i.test(html)
   ));
 
-  // Conversion
   const aboveFold = body.slice(0, 2000);
 
   checks.push(item("cta_above_fold", "CTA near top of page",
@@ -277,39 +262,20 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   ));
 
   checks.push(item("contact_form", "Contact form present",
-  /<form[\s>]/i.test(html)
-));
+    /<form[\s>]/i.test(html)
+  ));
 
   checks.push(item("testimonials", "Testimonials or reviews present",
-  /(testimonial|testimonials|review|reviews|customer feedback|what our customers say)/i.test(html)
-));
+    /(testimonial|testimonials|review|reviews|customer feedback|what our customers say)/i.test(html)
+  ));
 
   checks.push(item("social_media", "Social media links present",
-  /(facebook\.com|instagram\.com|linkedin\.com|tiktok\.com|youtube\.com)/i.test(html)
-));
+    /(facebook\.com|instagram\.com|linkedin\.com|tiktok\.com|youtube\.com)/i.test(html)
+  ));
 
-  
   checks.push(item("broken_links", "No obvious 404 text",
     !/404 not found|page not found/i.test(html)
   ));
-
-  // DEBUG LOGGING
-  console.log("----- WEBSITE ANALYSIS -----");
-  console.log("URL:", url);
-  console.log("Status:", status);
-  console.log("HTML Length:", html.length);
-  console.log("Load Time:", loadTimeMs + "ms");
-  console.log("Size:", sizeBytes + " bytes");
-
-  checks.forEach(check => {
-    console.log({ check: check.id, pass: check.pass, label: check.label });
-  });
-
-  console.log("HEAD SAMPLE:");
-  console.log(head.slice(0, 3000));
-
-  console.log("BODY SAMPLE:");
-  console.log(body.slice(0, 3000));
 
   return { url, checks };
 }
@@ -320,18 +286,6 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
 
 function item(id, label, pass) {
   return { id, label, pass };
-}
-
-function scoreFromChecks(checks) {
-  const total = checks.length;
-  const passed = checks.filter(c => c.pass).length;
-
-  const score = Math.round((passed / total) * 100);
-
-  return {
-    score,
-    grade: gradeFromScore(score)
-  };
 }
 
 function bufferToString(buf) {
