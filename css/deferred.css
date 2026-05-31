@@ -5,8 +5,14 @@
 }
 
 .whatsapp-btn {
-    background:#0f172a;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
     font-weight:700;
+}
+
+.whatsapp-btn:hover {
+    filter:brightness(1.05);
+    transform:translateY(-1px);
+}
 }.highlight-popular{color:#facc15;font-weight:800}.sticky-icon{width:18px;height:18px;flex-shrink:0}.whatsapp-icon{fill:currentColor}.areas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin-top:1.4rem;margin-bottom:1rem}.area-card{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.6rem .75rem;border-radius:10px;background:rgba(2,6,23,.35);border:1px solid rgba(148,163,184,.18);font-size:.85rem;font-weight:600;color:rgba(229,231,235,.9);text-decoration:none;transition:.2s;line-height:1;cursor:pointer}.area-icon{width:15px;height:15px;color:#facc15;flex-shrink:0}@media (min-width:900px){.area-card{flex:0 0 auto}}@media (max-width:600px){.area-card{font-size:.78rem;padding:.45rem .6rem}.area-icon{width:14px;height:14px}}.area-card:active{transform:scale(.98)}.area-card:hover{border-color:rgba(250,204,21,.55);background:rgba(15,23,42,.7);color:#fff;transform:translateY(-1px)}.share-block{display:flex;flex-direction:column;align-items:center;gap:1.2rem;padding:1.75rem 1.5rem;border-radius:18px;background:rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.08);box-shadow:0 12px 35px rgba(0,0,0,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center}.share-title{font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--text-strong);opacity:.8}.share-icons{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}.share-btn{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.08);cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s}.share-btn .icon{fill:var(--text);transition:transform .25s,fill .25s}.share-btn:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(0,0,0,.12)}.share-btn:hover .icon{transform:scale(1.12);fill:var(--primary)}.share-btn.facebook:hover{border-color:#1877f2;box-shadow:0 8px 20px rgba(24,119,242,.25)}.share-btn.whatsapp:hover{border-color:#25d366;box-shadow:0 8px 20px rgba(37,211,102,.25)}.share-btn.linkedin:hover{border-color:#0a66c2;box-shadow:0 8px 20px rgba(10,102,194,.25)}.share-btn.x:hover{border-color:#000;box-shadow:0 8px 20px rgba(0,0,0,.15)}.share-sub{font-size:.9rem;color:var(--text-soft);margin-top:-2px}@media (max-width:480px){.share-block{padding:1.5rem 1.2rem}.share-btn{width:48px;height:48px}.share-btn:hover{transform:none}}
 .audit-badge{
     display:inline-flex;
