@@ -46,6 +46,19 @@ a{
     color: inherit;
     text-decoration: none;
 }
+html, body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
 .navbar{
 position:sticky;
 top:0;
@@ -591,4 +604,4 @@ if (btn && menu) {
 }
 </script>
 </body>
-  </html>
+</html>
