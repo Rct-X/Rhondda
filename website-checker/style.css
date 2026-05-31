@@ -36,7 +36,15 @@ body {
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
+  padding-inline: 1.5rem;
+}
+
+.navbar .container{
+    max-width:1080px;
+}
+
+main.container{ papadding-top: 3rem;
+  papadding-bottom: 3rem;
 }
 
 /* Modular Content Cards */
@@ -492,3 +500,4 @@ button:active {
         font-size:1.4rem;
     }
 }
+
