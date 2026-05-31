@@ -26,48 +26,58 @@ exports.handler = async (event) => {
 
   const now = Date.now();
 
-  // -----------------------------
-  // Soft DAILY limit (5/day)
-  // -----------------------------
-  const dailyKey = `${ip}-daily`;
-  const dailyData = requests.get(dailyKey) || { count: 0, start: now };
-  const oneDay = 24 * 60 * 60 * 1000;
+// -----------------------------
+// Soft DAILY limit (5/day)
+// -----------------------------
+const dailyKey = `${ip}-daily`;
+const dailyData = requests.get(dailyKey) || { count: 0, start: now };
+const oneDay = 24 * 60 * 60 * 1000;
 
-  if (now - dailyData.start > oneDay) {
-    dailyData.count = 0;
-    dailyData.start = now;
-  }
+if (now - dailyData.start > oneDay) {
+  dailyData.count = 0;
+  dailyData.start = now;
+}
 
-  dailyData.count++;
-  requests.set(dailyKey, dailyData);
+dailyData.count++;
+requests.set(dailyKey, dailyData);
 
-  if (dailyData.count > 5) {
-    return json({
-      error: "You've reached today's limit. Please try again tomorrow."
-    }, 429);
-  }
+const dailyLimit = 5;
+const remainingDaily = Math.max(0, dailyLimit - dailyData.count);
 
-  // -----------------------------
-  // Per-minute limiter (5/min)
-  // -----------------------------
-  const windowMs = 60 * 1000;
-  const maxRequests = 5;
+if (dailyData.count > dailyLimit) {
+  return json({
+    ok: false,
+    error: "You've reached today's limit.",
+    remainingDaily: 0
+  }, 429);
+}
 
-  const userData = requests.get(ip) || { count: 0, start: now };
 
-  if (now - userData.start > windowMs) {
-    userData.count = 0;
-    userData.start = now;
-  }
+// -----------------------------
+// Per-minute limiter (5/min)
+// -----------------------------
+const windowMs = 60 * 1000;
+const maxRequests = 5;
 
-  userData.count++;
-  requests.set(ip, userData);
+const userData = requests.get(ip) || { count: 0, start: now };
 
-  if (userData.count > maxRequests) {
-    return json({
-      error: "Too many checks. Please wait a minute."
-    }, 429);
-  }
+if (now - userData.start > windowMs) {
+  userData.count = 0;
+  userData.start = now;
+}
+
+userData.count++;
+requests.set(ip, userData);
+
+const remainingMinute = Math.max(0, maxRequests - userData.count);
+
+if (userData.count > maxRequests) {
+  return json({
+    ok: false,
+    error: "Too many checks. Please wait a minute.",
+    remainingMinute: 0
+  }, 429);
+}
 
   // -----------------------------
   // Parse body
@@ -113,7 +123,11 @@ exports.handler = async (event) => {
 
     const report = buildCustomerReport(raw);
 
-    return json(report, 200);
+    return json({
+  ...report,
+  remainingDaily,
+  remainingMinute
+}, 200);
 
   } catch (err) {
     console.error(err);
