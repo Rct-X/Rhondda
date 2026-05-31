@@ -281,3 +281,127 @@ button:active {
     scroll-behavior: auto !important;
   }
 }
+/* ===== FOOTER ===== */
+
+.site-footer {
+  margin-top: 0;
+  border-top: 1px solid rgba(0,0,0,.08);
+
+  background: linear-gradient(
+    180deg,
+    #ffffff,
+    #f1f5f9
+  );
+
+  color: var(--text);
+}
+.footer-cta-mobile {
+  color: #fff !important;
+}
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  padding: 4rem 1.5rem;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* LOGO — now visible and premium */
+.footer-logo {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-strong);
+  margin-bottom: .6rem;
+}
+
+.footer-logo span {
+  background: linear-gradient(145deg, #fde68a, #facc15, #d97706);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Brand text */
+.footer-brand p {
+  max-width: 320px;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+/* Links + Contact */
+.footer-contact,
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+
+.footer-contact h3,
+.footer-links h3 {
+  margin: 0 0 .4rem;
+  font-size: .95rem;
+  color: var(--text-strong);
+}
+
+.footer-contact a,
+.footer-links a {
+  color: var(--text-soft);
+  transition: color .2s ease;
+}
+
+.footer-contact a:hover,
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+/* Bottom strip */
+.footer-bottom {
+  text-align: center;
+  padding: 1.25rem;
+  border-top: 1px solid rgba(0,0,0,.08);
+  color: var(--text-soft);
+  font-size: .82rem;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .footer-brand p {
+    margin: auto;
+  }
+}
+
+/* Mobile CTA */
+.footer-cta-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .footer-cta-mobile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: .75rem;
+    padding: .8rem 1rem;
+
+    border-radius: 12px;
+
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    font-weight: 600;
+
+    transition: transform .2s ease;
+  }
+
+  .footer-cta-mobile:active {
+    transform: scale(.98);
+  }
+}
