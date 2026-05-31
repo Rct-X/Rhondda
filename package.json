@@ -1,8 +1,9 @@
 {
   "name": "rctx-site",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
-    "type": "module"
-    "firebase-admin": "^13.0.0"
+    "firebase-admin": "^13.0.0",
+    "@netlify/kv": "^1.0.0"
   }
 }
