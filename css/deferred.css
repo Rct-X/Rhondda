@@ -21,15 +21,6 @@
     text-align:center;
 }
 
-.audit-banner-img{
-    width:100%;
-    max-width:900px;
-    margin:0 auto 2rem;
-    border-radius:24px;
-    box-shadow:0 20px 60px rgba(15,23,42,.15);
-    overflow:hidden;
-}
-
 .website-audit-promo h2{
     margin-bottom:1rem;
     font-size:clamp(2rem,4vw,3rem);
@@ -54,11 +45,6 @@
 
     .website-audit-promo{
         padding:4rem 0;
-    }
-
-    .audit-banner-img{
-        border-radius:18px;
-        margin-bottom:1.5rem;
     }
 
     .website-audit-promo h2{
