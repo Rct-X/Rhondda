@@ -21,19 +21,23 @@
 
   <!-- Input -->
   <section class="checker-box fade-in delay-3">
-    <h2>Let’s take a quick look at your website</h2>
-    <p>Pop your website in below and I’ll check how well it’s working for your business.</p>
+  <h2>Let’s take a quick look at your website</h2>
+  <p>Pop your website in below and I’ll check how well it’s working for your business.</p>
 
-    <div class="input-row">
-      <input id="urlInput" type="text" placeholder="yourbusiness.co.uk">
-      <button id="runCheck">Check My Website</button>
-    </div>
-    <p class="note">Takes around 3 seconds.</p>
-    <p class="tool-notice">
-🔒 By using this website checker, you agree that we may store a small amount of browser data to operate the tool and help prevent abuse.
-    </p>
+  <div class="input-row">
+    <input id="urlInput" type="text" placeholder="yourbusiness.co.uk">
+    <button id="runCheck">Check My Website</button>
+  </div>
+
+  <!-- FIX: This was missing -->
+  <p id="limitInfo" class="limit-message" style="display:none;"></p>
+
+  <p class="note">Takes around 3 seconds.</p>
+  <p class="tool-notice">
+    🔒 By using this website checker, you agree that we may store a small amount of browser data to operate the tool and help prevent abuse.
+  </p>
   </section>
-
+  
   <!-- Results -->
   <section id="results" class="results hidden fade-in delay-4">
 
