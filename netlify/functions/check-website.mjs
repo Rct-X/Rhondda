@@ -41,7 +41,9 @@ kvData.count++;
 await kv.set(kvKey, kvData, { ex: 86400 }); // expire in 24h
 
 if (kvData.count > 3) {
-  return json({ error: “You’ve reached today’s limit. Please try again tomorrow." }, 429);
+  return json({
+    error: "You've reached today's limit. Please try again tomorrow."
+  }, 429);
 }
   
 const now = Date.now();
