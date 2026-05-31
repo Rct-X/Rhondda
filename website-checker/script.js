@@ -107,18 +107,36 @@ runCheck.addEventListener("click", async () => {
   barMobile.style.width = data.mobile + "%";
   barConversions.style.width = data.conversions + "%";
 
-  // Enquiries lost
-  if (data.score >= 90) {
-    lostEnquiries.textContent =
-      "Your website is performing strongly and appears well positioned to generate enquiries.";
-  } else if (data.score >= 70) {
-    lostEnquiries.textContent =
-      "A few improvements could help increase visibility and generate more enquiries.";
-  } else {
-    lostEnquiries.textContent =
-      "Several improvements could help your website generate more enquiries and leads.";
-  }
-
+// Enquiries lost / recommendation
+if (data.score >= 90) {
+  lostEnquiries.innerHTML = `
+    <strong>Excellent work!</strong><br><br>
+    Your website is performing strongly and appears well positioned to generate enquiries. The audit found very few areas requiring attention, which is a great result. Continue keeping your content up to date and monitoring performance to maintain these standards.
+  `;
+} else if (data.score >= 70) {
+  lostEnquiries.innerHTML = `
+    <strong>Good job.</strong><br><br>
+    Your website has a solid foundation. A few improvements could help increase visibility, strengthen user experience and generate more enquiries over time.
+  `;
+} else if (data.score >= 50) {
+  lostEnquiries.innerHTML = `
+    <strong>There are some opportunities for improvement.</strong><br><br>
+    Several issues may be affecting search visibility, customer trust and lead generation. Many businesses in this position choose to refresh or replace older websites rather than continually patch them.
+    <br><br>
+    RCTX builds modern, mobile-friendly websites designed around speed, usability and generating enquiries.
+    <br><br>
+    <a href="/contact.html" class="btn-small">Get a Website Quote</a>
+  `;
+} else {
+  lostEnquiries.innerHTML = `
+    <strong>This website could benefit from significant improvements.</strong><br><br>
+    Several factors may be limiting search visibility and reducing potential enquiries. While some issues can be addressed individually, many businesses find that a modern rebuild delivers the best long-term results.
+    <br><br>
+    RCTX creates fast, professional websites for local businesses, focusing on user experience, search visibility and generating enquiries.
+    <br><br>
+    <a href="/contact.html" class="btn-small">Request a Free Quote</a>
+  `;
+}
   // Top fixes
   topFixes.innerHTML = "";
   data.topFixes.forEach(fix => {
