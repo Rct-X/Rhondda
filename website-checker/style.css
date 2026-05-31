@@ -147,6 +147,36 @@ button:active {
   margin-top: 0.5rem;
 }
 
+.limit-message {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: none;
+}
+
+/* Green – plenty left */
+.limit-ok {
+  background: #e6f9ec;
+  border-left: 4px solid #2ecc71;
+  color: #1e7e34;
+}
+
+/* Amber – nearly out */
+.limit-warning {
+  background: #fff7e6;
+  border-left: 4px solid #f1c40f;
+  color: #8a6d1d;
+}
+
+/* Red – limit reached */
+.limit-error {
+  background: #fdecea;
+  border-left: 4px solid #e74c3c;
+  color: #a1261c;
+}
+
 /* Statistics Layout */
 .stats-row {
   display: flex;
