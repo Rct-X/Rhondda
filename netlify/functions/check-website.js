@@ -238,7 +238,7 @@ function runChecks({ url, html, loadTimeMs, sizeBytes, status }) {
   console.log("BODY SAMPLE:");
   console.log(body.slice(0, 3000));
 
-  return { url, score, grade, checks };
+  return { url, checks };
 }
 
 
