@@ -4,65 +4,176 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Free Website Health Check | SEO, Mobile & Conversion Audit | RCTX</title>
+<title>About RCTX Web Design | Local Websites for Small Businesses</title>
 
-<meta name="description" content="Free website health check for businesses across Rhondda Cynon Taf. Check your SEO, mobile experience, trust signals and conversion opportunities in seconds.">
+<meta name="description" content="Learn about RCTX Web Design — a local web design service helping small businesses across Rhondda Cynon Taf with modern, fast and affordable websites.">
 
 <meta name="robots" content="index,follow,max-image-preview:large">
 
-<meta name="author" content="RCTX">
+<meta name="author" content="RCTX Web Design Rhondda Cynon Taf">
 
-<link rel="canonical" href="https://rctx.co.uk/website-checker.html">
+<link rel="canonical" href="https://rctx.co.uk/about">
 
 <meta name="theme-color" content="#0b0f19">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Free Website Health Check | RCTX">
-<meta property="og:description" content="Get a free website review covering SEO, mobile performance, trust signals and conversions.">
-<meta property="og:url" content="https://rctx.co.uk/website-checker.html">
-<meta property="og:image" content="https://rctx.co.uk/og-image.jpg">
+<meta property="og:title" content="About RCTX Web Design">
+<meta property="og:description" content="Local, affordable web design for small businesses across Rhondda Cynon Taf. Learn who we are and how we help businesses grow online.">
+<meta property="og:url" content="https://rctx.co.uk/about">
+<meta property="og:image" content="https://rctx.co.uk/images/about-og.jpg">
+<meta property="og:image:alt" content="About RCTX Web Design — Local Web Design for Small Businesses">
 <meta property="og:site_name" content="RCTX">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Website Health Check | RCTX">
-<meta name="twitter:description" content="Check your website's SEO, trust, mobile experience and conversion opportunities.">
-<meta name="twitter:image" content="https://rctx.co.uk/og-image.jpg">
+<meta name="twitter:title" content="About RCTX Web Design">
+<meta name="twitter:description" content="Learn about RCTX Web Design and how we help small businesses across Rhondda Cynon Taf grow online.">
+<meta name="twitter:image" content="https://rctx.co.uk/images/about-og.jpg">
 
 <!-- Favicons -->
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <link rel="stylesheet" href="/website-checker/style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!-- Styles -->
+<link rel="stylesheet" href="/about/style.css">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<!-- Schema: Organization + LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "RCTX Web Design",
+  "url": "https://rctx.co.uk",
+  "image": "https://rctx.co.uk/og/about-rctx.jpg",
+  "description": "Local, affordable web design for small businesses across Rhondda Cynon Taf.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Rhondda Cynon Taf",
+    "addressRegion": "Wales",
+    "addressCountry": "UK"
+  },
+  "areaServed": "Rhondda Cynon Taf",
+  "sameAs": [
+    "https://facebook.com/rctxwebdesign",
+    "https://instagram.com/rctxwebdesign"
+  ]
+}
+</script>
   
   <style>
-/* ===== NAVBAR ===== */
+/* ===== ROOT & BASE ===== */
 :root{
-    --nav-height:72px;
-    --text:#0f172a;
-    --text-soft:#475569;
-    --text-strong:#020617;
+    --bg:#f3f4f6;
+    --bg-soft:#f8fafc;
     --accent:#facc15;
+    --accent-soft:#fbbf24;
+    --primary:#2563eb;
+    --primary-soft:#1d4ed8;
+    --primary-dark:#1e3a8a;
+    --text:#1e293b;
+    --text-soft:#475569;
+    --text-strong:#0f172a;
+    --border:rgba(0,0,0,.12);
+    --card:rgba(255,255,255,.85);
+    --radius-lg:18px;
+    --radius-full:999px;
+    --shadow-soft:0 18px 45px rgba(15,23,42,.15);
+    --shadow-btn:0 10px 30px rgba(15,23,42,.12);
+    --text-dim:rgba(15,23,42,.65);
+    --nav-height:72px;
+    --section-space: 5.5rem;
 }
-a{
-    color: inherit;
-    text-decoration: none;
+@media(max-width:768px){
+  :root{
+    --section-space: 4rem;
+  }
 }
+.about-section,
+.services-section,
+.features,
+.pricing,
+.faq,
+.contact,
+.local-seo,
+.share-section{
+  padding: var(--section-space) 0;
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-synthesis:none;scroll-behavior:smooth}
+
+@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
+
+@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Medium.woff2") format("woff2"),url("/site/fonts/Poppins-Medium.woff") format("woff");font-weight:500;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
+
+@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
+
+@font-face{font-family:"Bricolage Grotesque";src:url("/site/fonts/BricolageGrotesque-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
+
+@font-face{font-family:"Bricolage Grotesque";src:url("/site/fonts/BricolageGrotesque-Bold.woff2") format("woff2");font-weight:700 900;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
+
+*,*::before,*::after{box-sizing:border-box}
+
 html, body {
   height: 100%;
+  margin: 0;
 }
 
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+    font-family:"Poppins",system-ui,sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,svg,video{display:block;max-width:100%}
+
+h1,h2,h3,.logo{
+margin:0;
+font-family:"Bricolage Grotesque",sans-serif;
+}
+
+p{margin:0}
+
+a{
+color:inherit;
+text-decoration:none;
+-webkit-tap-highlight-color:transparent;
+}
+
+button,input,textarea,select{
+font:inherit;
+}
+
+button{
+border:none;
+background:none;
 }
 
 main{
-    width:100%;
+  flex:1;
+  display:block}
+
+.container{
+width:100%;
+max-width:1080px;
+margin-inline:auto;
+padding-inline:1.5rem;
 }
+
+:focus-visible{
+outline:2px solid var(--accent);
+outline-offset:3px;
+}
+
+/* ===== NAVBAR ===== */
+
 .navbar{
 position:sticky;
 top:0;
@@ -74,11 +185,7 @@ background:
 linear-gradient(to bottom,rgba(15,23,42,.96),rgba(15,23,42,.88));
 border-bottom:1px solid rgba(148,163,184,.2);
 }
-.navbar .container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
+
 .nav-flex{
 position:relative;
 display:flex;
@@ -220,82 +327,170 @@ opacity:0;
 transform:translateY(-7px) rotate(-45deg);
 }
 
+/* ===== HERO ===== */
+
+.hero{
+display:flex;
+align-items:center;
+min-height:auto;
+padding:3rem 0 3rem;
+}
+
+.hero .container{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+max-width:860px;
+text-align:center;
+}
+
+.hero-price{
+    margin-top:1rem;
+    font-size:1rem;
+    font-weight:700;
+    color:#facc15;
+}
+
+.hero h1{
+margin:1.35rem 0 1rem;
+font-size:clamp(2.5rem,5vw,4.2rem);
+font-weight:900;
+line-height:1.05;
+letter-spacing:-.04em;
+color:var(--text-strong);
+text-wrap:balance;
+}
+
+.hero h1 span{
+background:
+linear-gradient(
+90deg,
+#60a5fa,
+#facc15
+);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+max-width:42rem;
+font-size:1.15rem;
+line-height:1.8;
+color: #334155;
+}
+
+/* ===== MOBILE ===== */
+
 @media (max-width:768px){
 
-    :root{
-        --nav-height:72px;
-    }
+  :root{
+    --nav-height:72px;
+  }
 
-    .hamburger{
-        display:flex;
-    }
+  .container{
+    padding-inline:1rem;
+  }
 
-    .nav-links{
-        position:absolute;
-        top:calc(100% + 10px);
-        left:1rem;
-        right:1rem;
-        z-index:1101;
-        flex-direction:column;
-        align-items:flex-start;
-        gap:1rem;
-        padding:1rem 1.1rem;
-        border:1px solid rgba(148,163,184,.25);
-        border-radius:1rem;
-        background:rgba(15,23,42,.98);
-        box-shadow:0 18px 45px rgba(0,0,0,.45);
-        opacity:0;
-        pointer-events:none;
-        transform:translateY(-8px) scale(.98);
-        transform-origin:top;
-        transition:opacity .2s ease, transform .2s ease;
-    }
+  .hamburger{
+    display:flex;
+  }
 
-    .nav-links.open{
-        opacity:1;
-        pointer-events:auto;
-        transform:translateY(0) scale(1);
-    }
+  .nav-links{
+    position:absolute;
+    top:calc(100% + 10px);
+    left:1rem;
+    right:1rem;
+    z-index:1101;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1rem;
+    padding:1rem 1.1rem;
+    border:1px solid rgba(148,163,184,.25);
+    border-radius:1rem;
+    background:rgba(15,23,42,.98);
+    box-shadow:0 18px 45px rgba(0,0,0,.45);
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(-8px) scale(.98);
+    transform-origin:top;
+    transition:
+      opacity .2s ease,
+      transform .2s ease;
+  }
 
-    .logo{
-        font-size:1.95rem;
-    }
+  .nav-links.open{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0) scale(1);
+  }
 
-    .logo-tag{
-        font-size:.55rem;
-        letter-spacing:1.2px;
-    }
+  .nav-links a{
+    width:100%;
+    font-size:.92rem;
+    padding:.15rem 0;
+  }
+
+  .logo{
+    font-size:1.95rem;
+  }
+
+  .logo-tag{
+    font-size:.55rem;
+    letter-spacing:1.2px;
+  }
+
+  .hero{
+    min-height:auto;
+    padding:3.2rem 0 2rem;
+  }
+
+  .hero h1{
+    max-width:100%;
+    font-size:2.35rem;
+    line-height:1.02;
+  }
+
+  .hero p{
+    font-size:.98rem;
+    line-height:1.65;
+  }
+
 }
 
 @media (max-width:480px){
 
-    .logo{
-        font-size:1.75rem;
-    }
+  .logo{
+    font-size:1.75rem;
+  }
 
-    .logo-tag{
-        font-size:.5rem;
-        letter-spacing:1px;
-    }
+  .logo-tag{
+    font-size:.5rem;
+    letter-spacing:1px;
+  }
+
+  .hero h1{
+    font-size:2rem;
+  }
+
 }
 
-/* Hero Section */
-.hero {
-  padding: 5rem 1.5rem;
-  text-align: center;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #ffffff;
+@media (prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+    scroll-behavior:auto !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+
 }
 
-.hero h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  margin: 0 0 0.5rem 0;
-}
-
-.navbar .container{
-    max-width:1080px;
+.logo-wrap{
+  text-decoration:none;
+  color:inherit;
 }
   </style>
   <script type="application/ld+json">
@@ -356,15 +551,19 @@ transform:translateY(-7px) rotate(-45deg);
 </nav>
 
 <header class="hero">
-  <h1 class="fade-in">About RCTX</h1>
+    <div class="container">
+        <h1 class="fade-in">
+            About RCTX<br>
+            <span>Helping Small Businesses Grow Online</span>
+        </h1>
 
   <p class="fade-in delay-1">
     Affordable website design for businesses across Rhondda Cynon Taf.
   </p>
 
-  <p class="fade-in delay-2 small">
+  <div class="hero-price">
     Family-run, local and focused on helping small businesses get online without the hassle.
-  </p>
+  </div>
 </header>
 
 <main>
