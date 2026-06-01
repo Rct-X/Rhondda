@@ -3,7 +3,111 @@
     background:#0f172a;
     font-weight:700;
 }
+/* ==========================
+   DIRECTORY COMMUNITY
+========================== */
 
+.directory-community{
+    padding:5.5rem 0;
+    background:
+    linear-gradient(
+        180deg,
+        #f8fafc 0%,
+        #ffffff 100%
+    );
+}
+
+.directory-content{
+    max-width:800px;
+    margin:0 auto;
+    text-align:center;
+}
+
+.directory-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:.55rem 1rem;
+    margin-bottom:1rem;
+    border-radius:999px;
+    background:rgba(250,204,21,.15);
+    color:#ca8a04;
+    font-size:.85rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.directory-community h2{
+    margin-bottom:1.25rem;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:900;
+    line-height:1.1;
+    color:#0f172a;
+}
+
+.directory-intro{
+    margin-bottom:1rem;
+}
+
+.directory-community p{
+    font-size:1.05rem;
+    line-height:1.8;
+    color:#475569;
+}
+
+.directory-actions{
+    display:flex;
+    justify-content:center;
+    gap:1rem;
+    flex-wrap:wrap;
+    margin-top:2rem;
+}
+
+/* Optional outline button */
+
+.btn-outline{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:.9rem 1.4rem;
+    border:2px solid #2563eb;
+    border-radius:999px;
+    font-weight:700;
+    color:#2563eb;
+    transition:.25s ease;
+}
+
+.btn-outline:hover{
+    transform:translateY(-2px);
+    background:#2563eb;
+    color:#fff;
+}
+
+@media (max-width:768px){
+
+    .directory-community{
+        padding:4rem 0;
+    }
+
+    .directory-community h2{
+        font-size:2rem;
+    }
+
+    .directory-community p{
+        font-size:1rem;
+    }
+
+    .directory-actions{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .directory-actions a{
+        width:100%;
+        max-width:320px;
+    }
+}
 .whatsapp-btn {
     background:linear-gradient(135deg,#22c55e,#16a34a);
     font-weight:700;
