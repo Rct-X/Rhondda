@@ -543,7 +543,24 @@ button:active {
     overflow:hidden;
     background: #0f172a; /* Dark sleek background to make gradients pop */
 }
+.list-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: #facc15; /* gold accent */
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  vertical-align: middle;
+  margin-right: 0.45rem;
+  transition: stroke 0.2s ease, transform 0.2s ease;
+}
 
+li:hover .list-icon {
+  stroke: #fbbf24; /* slightly brighter on hover */
+  transform: scale(1.1);
+}
 /* Animated ambient background glow */
 .business-directory-promo::before{
     content:"";
