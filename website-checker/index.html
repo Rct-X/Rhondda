@@ -35,7 +35,6 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   
   <style>
 /* ===== ROOT & BASE ===== */
@@ -354,116 +353,118 @@ line-height:1.8;
 color: #334155;
 }
 
-/* ===== UTILITIES ===== */
-
-
-
 /* ===== MOBILE ===== */
 
 @media (max-width:768px){
 
-:root{
---nav-height:72px;
-}
+  :root{
+    --nav-height:72px;
+  }
 
-.container{
-padding-inline:1rem;
-}
+  .container{
+    padding-inline:1rem;
+  }
 
-.hamburger{
-display:flex;
-}
+  .hamburger{
+    display:flex;
+  }
 
-.nav-links{
-position:absolute;
-top:calc(100% + 10px);
-left:1rem;
-right:1rem;
-z-index:1101;
-flex-direction:column;
-align-items:flex-start;
-gap:1rem;
-padding:1rem 1.1rem;
-border:1px solid rgba(148,163,184,.25);
-border-radius:1rem;
-background:rgba(15,23,42,.98);
-box-shadow:0 18px 45px rgba(0,0,0,.45);
-opacity:0;
-pointer-events:none;
-transform:translateY(-8px) scale(.98);
-transform-origin:top;
-transition:
-opacity .2s ease,
-transform .2s ease;
-}
+  .nav-links{
+    position:absolute;
+    top:calc(100% + 10px);
+    left:1rem;
+    right:1rem;
+    z-index:1101;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1rem;
+    padding:1rem 1.1rem;
+    border:1px solid rgba(148,163,184,.25);
+    border-radius:1rem;
+    background:rgba(15,23,42,.98);
+    box-shadow:0 18px 45px rgba(0,0,0,.45);
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(-8px) scale(.98);
+    transform-origin:top;
+    transition:
+      opacity .2s ease,
+      transform .2s ease;
+  }
 
-.nav-links.open{
-opacity:1;
-pointer-events:auto;
-transform:translateY(0) scale(1);
-}
+  .nav-links.open{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0) scale(1);
+  }
 
-.nav-links a{
-width:100%;
-font-size:.92rem;
-padding:.15rem 0;
-}
+  .nav-links a{
+    width:100%;
+    font-size:.92rem;
+    padding:.15rem 0;
+  }
 
-.logo{
-font-size:1.95rem;
-}
+  .logo{
+    font-size:1.95rem;
+  }
 
-.logo-tag{
-font-size:.55rem;
-letter-spacing:1.2px;
-}
+  .logo-tag{
+    font-size:.55rem;
+    letter-spacing:1.2px;
+  }
 
-.hero{
-min-height:auto;
-padding:3.2rem 0 2rem;
-}
+  .hero{
+    min-height:auto;
+    padding:3.2rem 0 2rem;
+  }
 
-.hero h1{
-max-width:100%;
-font-size:2.35rem;
-line-height:1.02;
-}
+  .hero h1{
+    max-width:100%;
+    font-size:2.35rem;
+    line-height:1.02;
+  }
 
-.hero p{
-font-size:.98rem;
-line-height:1.65;
+  .hero p{
+    font-size:.98rem;
+    line-height:1.65;
+  }
+
 }
 
 @media (max-width:480px){
 
-.logo{
-font-size:1.75rem;
-}
+  .logo{
+    font-size:1.75rem;
+  }
 
-.logo-tag{
-font-size:.5rem;
-letter-spacing:1px;
-}
+  .logo-tag{
+    font-size:.5rem;
+    letter-spacing:1px;
+  }
 
-.hero h1{
-font-size:2rem;
+  .hero h1{
+    font-size:2rem;
+  }
+
 }
 
 @media (prefers-reduced-motion:reduce){
 
-*,
-*::before,
-*::after{
-scroll-behavior:auto!important;
-animation-duration:.01ms!important;
-animation-iteration-count:1!important;
-transition-duration:.01ms!important;
+  *,
+  *::before,
+  *::after{
+    scroll-behavior:auto !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+
 }
+
+.logo-wrap{
+  text-decoration:none;
+  color:inherit;
 }
-    .logo-wrap{
-    text-decoration:none;
-    color:inherit;
-    }
   </style>
   <script type="application/ld+json">
 {
@@ -555,16 +556,20 @@ transition-duration:.01ms!important;
 </nav>
 
 <header class="hero">
-    <div class="container"
-<h1 class="fade-in">
-    Free Website Health Check<br>
-    <span>for Small Businesses</span>
-</h1>
+    <div class="container">
+        <h1 class="fade-in">
+            Free Website Health Check<br>
+            <span>for Small Businesses</span>
+        </h1>
 
-<p class="fade-in delay-1">
-    A quick, friendly website review for businesses across Rhondda Cynon Taf.
-</p>
-  <div class="hero-price">No jargon. No pressure. Just helpful advice from RctX.</div>
+        <p class="fade-in delay-1">
+            A quick, friendly website review for businesses across Rhondda Cynon Taf.
+        </p>
+
+        <div class="hero-price">
+            No jargon. No pressure. Just helpful advice from RctX.
+        </div>
+    </div>
 </header>
 
 <main class="container">
@@ -805,4 +810,4 @@ if (btn && menu) {
 }
 </script>
 </body>
-  </html>
+</html>
