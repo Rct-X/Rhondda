@@ -752,79 +752,13 @@ color: #334155;
     </div>
 
     <div class="footer-bottom">
-        © 2026 RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
+        © <span id="year"></span> RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
     </div>
 
 </footer>
 
 <script src="script.js"></script>
+<script defer src="/js/footer-nav-faq.js"></script>
 
-<script>
-  // =========================
-// MOBILE MENU
-// =========================
-
-const btn = document.getElementById("hamburgerBtn");
-const menu = document.getElementById("mobileMenu");
-
-if (btn && menu) {
-
-    function closeMenu() {
-        menu.classList.remove("open");
-        btn.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
-    }
-
-    function openMenu() {
-        menu.classList.add("open");
-        btn.classList.add("open");
-        btn.setAttribute("aria-expanded", "true");
-    }
-
-    btn.addEventListener("click", () => {
-
-        const isOpen = menu.classList.contains("open");
-
-        if (isOpen) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-
-    });
-
-    // Close on outside click
-    document.addEventListener("click", (e) => {
-
-        const clickedInside =
-            menu.contains(e.target) ||
-            btn.contains(e.target);
-
-        if (
-            !clickedInside &&
-            menu.classList.contains("open")
-        ) {
-            closeMenu();
-        }
-
-    });
-
-    // Close on Escape
-    document.addEventListener("keydown", (e) => {
-
-        if (e.key === "Escape") {
-            closeMenu();
-        }
-
-    });
-
-    // Close when a nav link is clicked
-    menu.querySelectorAll("a").forEach(link => {
-
-        link.addEventListener("click", closeMenu);
-
-    });
-}
-</script>
 </body>
 </html>
