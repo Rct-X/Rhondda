@@ -1,15 +1,6 @@
-/* Core Reset & Base Styles */
+    /* Core Reset & Base Styles */
 *, *::before, *::after {
   box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  background-color: #f8fafc;
-  color: #0f172a;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
 }
 
 .small {
@@ -292,7 +283,7 @@ button:active {
 /* ===== FOOTER ===== */
 
 .site-footer {
-  margin-top: 0;
+  margin-top: auto;
   border-top: 1px solid rgba(0,0,0,.08);
 
   background: linear-gradient(
@@ -302,15 +293,22 @@ button:active {
   );
 
   color: var(--text);
+
+  /* FIX: ensure breathing room at bottom */
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
+
 .footer-cta-mobile {
   color: #fff !important;
 }
+
 .footer-inner {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 3rem;
+
   padding: 4rem 1.5rem;
+
   max-width: 1120px;
   margin: 0 auto;
 }
@@ -368,6 +366,10 @@ button:active {
 .footer-bottom {
   text-align: center;
   padding: 1.25rem;
+
+  /* FIX: better mobile-safe spacing */
+  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0));
+
   border-top: 1px solid rgba(0,0,0,.08);
   color: var(--text-soft);
   font-size: .82rem;
@@ -671,4 +673,4 @@ button:active {
 /* spacing between sections automatically flows */
 .section + .section{
     margin-top: 1.5rem;
-  }
+      }
