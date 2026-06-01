@@ -2,7 +2,38 @@
 *, *::before, *::after {
   box-sizing: border-box;
 }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1.6rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-btn);
+}
 
+.btn-primary {
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  color: #111827;
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background: linear-gradient(135deg, #fbbf24, #facc15);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(250, 204, 21, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 15px rgba(250, 204, 21, 0.25);
+}
 .small {
   font-size: 0.95rem;
   color: #94a3b8;
