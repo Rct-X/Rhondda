@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Free Website Health Check | SEO, Mobile & Conversion Audit | RCTX</title>
+
+<meta name="description" content="Free website health check for businesses across Rhondda Cynon Taf. Check your SEO, mobile experience, trust signals and conversion opportunities in seconds.">
+
+<meta name="robots" content="index,follow,max-image-preview:large">
+
+<meta name="author" content="RCTX">
+
+<link rel="canonical" href="https://rctx.co.uk/website-checker.html">
+
+<meta name="theme-color" content="#0b0f19">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Website Health Check | RCTX">
+<meta property="og:description" content="Get a free website review covering SEO, mobile performance, trust signals and conversions.">
+<meta property="og:url" content="https://rctx.co.uk/website-checker.html">
+<meta property="og:image" content="https://rctx.co.uk/og-image.jpg">
+<meta property="og:site_name" content="RCTX">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Website Health Check | RCTX">
+<meta name="twitter:description" content="Check your website's SEO, trust, mobile experience and conversion opportunities.">
+<meta name="twitter:image" content="https://rctx.co.uk/og-image.jpg">
+
+<!-- Favicons -->
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <style>
+/* ===== NAVBAR ===== */
+:root{
+    --nav-height:72px;
+    --text:#0f172a;
+    --text-soft:#475569;
+    --text-strong:#020617;
+    --accent:#facc15;
+}
+a{
+    color: inherit;
+    text-decoration: none;
+}
+html, body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main{
+    width:100%;
+}
+.navbar{
+position:sticky;
+top:0;
+z-index:1000;
+isolation:isolate;
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+background:
+linear-gradient(to bottom,rgba(15,23,42,.96),rgba(15,23,42,.88));
+border-bottom:1px solid rgba(148,163,184,.2);
+}
+.navbar .container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.nav-flex{
+position:relative;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:1.5rem;
+min-height:var(--nav-height);
+}
+
+.logo-wrap{
+position:relative;
+z-index:1102;
+display:flex;
+flex-direction:column;
+justify-content:center;
+flex-shrink:0;
+}
+
+.logo{
+display:inline-flex;
+align-items:center;
+gap:.15rem;
+font-size:2.1rem;
+font-weight:900;
+line-height:1;
+letter-spacing:-.5px;
+color:#fff;
+white-space:nowrap;
+}
+
+.logo span{
+display:inline-block;
+font-weight:900;
+transform:scale(1.18);
+background:
+linear-gradient(145deg,#fde68a 0%,#facc15 35%,#d97706 100%);
+-webkit-background-clip:text;
+background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.logo-tag{
+margin-top:4px;
+font-size:1rem;
+font-weight:800;
+line-height:1;
+letter-spacing:1.5px;
+text-transform:uppercase;
+color:#fff;
+white-space:nowrap;
+}
+
+/* ===== NAV LINKS ===== */
+
+.nav-links{
+display:flex;
+align-items:center;
+gap:1.5rem;
+margin:0;
+padding:0;
+list-style:none;
+}
+
+.nav-links a{
+position:relative;
+display:inline-flex;
+align-items:center;
+padding-bottom:.15rem;
+font-size:.9rem;
+font-weight:500;
+letter-spacing:.04em;
+text-transform:uppercase;
+color:#fff;
+transition:color .2s ease;
+}
+
+.nav-links a:hover{
+color:var(--accent);
+}
+
+.nav-links a::after{
+content:"";
+position:absolute;
+left:0;
+bottom:0;
+width:0;
+height:2px;
+border-radius:999px;
+background:
+linear-gradient(to right,#facc15,#f97316);
+transition:width .2s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after{
+width:100%;
+}
+
+/* ===== HAMBURGER ===== */
+
+.hamburger{
+position:relative;
+z-index:1102;
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+gap:5px;
+width:44px;
+height:44px;
+padding:0;
+cursor:pointer;
+border-radius:12px;
+transition:background .2s ease;
+}
+
+.hamburger:hover{
+background:rgba(255,255,255,.05);
+}
+
+.hamburger span{
+width:22px;
+height:2px;
+border-radius:999px;
+background:#fff;
+transition:transform .25s ease,opacity .25s ease;
+will-change:transform;
+}
+
+.hamburger.open span:nth-child(1){
+transform:translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2){
+opacity:0;
+}
+
+.hamburger.open span:nth-child(3){
+transform:translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width:768px){
+
+    :root{
+        --nav-height:72px;
+    }
+
+    .hamburger{
+        display:flex;
+    }
+
+    .nav-links{
+        position:absolute;
+        top:calc(100% + 10px);
+        left:1rem;
+        right:1rem;
+        z-index:1101;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:1rem;
+        padding:1rem 1.1rem;
+        border:1px solid rgba(148,163,184,.25);
+        border-radius:1rem;
+        background:rgba(15,23,42,.98);
+        box-shadow:0 18px 45px rgba(0,0,0,.45);
+        opacity:0;
+        pointer-events:none;
+        transform:translateY(-8px) scale(.98);
+        transform-origin:top;
+        transition:opacity .2s ease, transform .2s ease;
+    }
+
+    .nav-links.open{
+        opacity:1;
+        pointer-events:auto;
+        transform:translateY(0) scale(1);
+    }
+
+    .logo{
+        font-size:1.95rem;
+    }
+
+    .logo-tag{
+        font-size:.55rem;
+        letter-spacing:1.2px;
+    }
+}
+
+@media (max-width:480px){
+
+    .logo{
+        font-size:1.75rem;
+    }
+
+    .logo-tag{
+        font-size:.5rem;
+        letter-spacing:1px;
+    }
+}
+
+/* Hero Section */
+.hero {
+  padding: 5rem 1.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #ffffff;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.5rem 0;
+}
+
+.navbar .container{
+    max-width:1080px;
+}
+  </style>
+  <script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ProfessionalService",
+  "name":"RCTX",
+  "url":"https://rctx.co.uk",
+  "telephone":"+447434745240",
+  "email":"support@rctx.co.uk",
+  "image":"https://rctx.co.uk/og-image.jpg",
+  "areaServed":"Rhondda Cynon Taf",
+"description":"Family-run web design business providing affordable websites, hosting, support and SEO services across Rhondda Cynon Taf."
+}
+</script>
+  </head>
+<body>
+
+<nav class="navbar">
+
+      <div class="container">
+
+        <div class="nav-flex">
+
+    <a href="/" class="logo-wrap" aria-label="RCTX Home">
+        <div class="logo">
+            RCT<span>X</span>
+        </div>
+        <div class="logo-tag">
+            Web Design
+        </div>
+    </a>
+
+    <button
+        class="hamburger"
+        id="hamburgerBtn"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileMenu">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </button>
+
+<ul class="nav-links" id="mobileMenu">
+    <li><a href="/website-pricing.html">View Pricing</a></li>
+    <li><a href="/about.html">About RctX</a></li>
+    <li><a href="/contact.html">Get in Touch</a></li>
+</ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<header class="hero">
+  <h1 class="fade-in">About RCTX</h1>
+
+  <p class="fade-in delay-1">
+    Affordable website design for businesses across Rhondda Cynon Taf.
+  </p>
+
+  <p class="fade-in delay-2 small">
+    Family-run, local and focused on helping small businesses get online without the hassle.
+  </p>
+</header>
+
+<main>
+
+<section class="about-content">
+
+    <h2>Who We Are</h2>
+
+    <p>
+        RCTX is a small family-run web design business based in the Rhondda.
+    </p>
+
+    <p>
+        When you contact RCTX, you're speaking directly with me, Eddie — the person who designs, builds and manages your website from start to finish.
+    </p>
+
+    <p>
+        If we arrange a visit to your business, it will usually be myself or my daughter who comes along to gather information, take photographs and learn more about your business so we can create a website that represents you properly.
+    </p>
+
+</section>
+
+<section class="about-content">
+
+    <h2>Why We Started RCTX</h2>
+
+    <p>
+        We set up RCTX because too many local businesses were being forced to either build their own websites or pay large upfront fees for something that should be straightforward and affordable.
+    </p>
+
+    <p>
+        Our goal is simple: provide modern, professional websites for businesses across Rhondda Cynon Taf at a price that makes sense.
+    </p>
+
+    <p>
+        We handle everything for you, including domain names, hosting, website updates, technical maintenance and search engine optimisation.
+    </p>
+
+</section>
+
+<section class="section">
+
+    <h2>What You Get</h2>
+
+    <p>
+        We don't just build websites and disappear.
+    </p>
+
+    <p>
+        We provide ongoing support, help you keep your information up to date and make sure your website continues to work properly as your business grows.
+    </p>
+
+    <p>
+        Whether you're a tradesperson, local shop, service provider or new business, we'll help you establish a professional online presence without unnecessary complexity.
+    </p>
+
+</section>
+
+<section class="how-it-works">
+
+    <h2>Local Service, Real People</h2>
+
+    <p>
+        Because we're local, we're happy to visit businesses across Rhondda Cynon Taf to understand what you do and gather the information needed for your website.
+    </p>
+
+    <p>
+        No call centres. No outsourcing. No passing you from department to department.
+    </p>
+
+    <p>
+        Just direct communication with the people building your website.
+    </p>
+
+</section>
+
+<section class="business-directory-promo">
+
+    <span class="audit-badge">Free Local Business Directory</span>
+
+    <h2>Showcase Your Business Across Rhondda Cynon Taf</h2>
+
+    <p>
+        A simple, friendly directory built for local businesses in the Rhondda.
+        Get your name in front of more local people looking for services right now.
+    </p>
+
+    <p>
+        Whether you're a handyman, man with a van, hairdresser, café, or any local service —
+        you can add your business for free in minutes.
+    </p>
+
+    <p>
+        No catches. No contracts. Just more visibility for genuine valley businesses.
+    </p>
+
+    <a href="/rhondda-cynon-taf-business-directory.html" class="btn">
+        Add My Business
+    </a>
+
+</section>
+
+</main>
+
+
+
+<footer class="site-footer">
+
+    <div class="container footer-inner">
+
+        <div class="footer-brand">
+            <div class="footer-logo">
+                RCT<span>X</span>
+            </div>
+
+            <p>
+                Modern websites for businesses across
+                Rhondda Cynon Taf.
+            </p>
+        </div>
+
+        <div class="footer-contact">
+            <h3>Contact</h3>
+
+            <a href="tel:+447434745240">
+                07434 745240
+            </a>
+
+            <a href="mailto:support@rctx.co.uk">
+                support@rctx.co.uk
+            </a>
+            
+       <a href="https://wa.me/447434745240" class="footer-cta-mobile">
+    Message Eddie Directly
+</a>
+        </div>
+
+        <div class="footer-links">
+            <h3>Legal</h3>
+
+            <a href="/policy/privacy-policy.html">
+                Privacy Policy
+            </a>
+
+            <a href="/policy/terms.html">
+                Terms & Conditions
+            </a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
+    </div>
+
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+  // =========================
+// MOBILE MENU
+// =========================
+
+const btn = document.getElementById("hamburgerBtn");
+const menu = document.getElementById("mobileMenu");
+
+if (btn && menu) {
+
+    function closeMenu() {
+        menu.classList.remove("open");
+        btn.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+    }
+
+    function openMenu() {
+        menu.classList.add("open");
+        btn.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+    }
+
+    btn.addEventListener("click", () => {
+
+        const isOpen = menu.classList.contains("open");
+
+        if (isOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+
+    });
+
+    // Close on outside click
+    document.addEventListener("click", (e) => {
+
+        const clickedInside =
+            menu.contains(e.target) ||
+            btn.contains(e.target);
+
+        if (
+            !clickedInside &&
+            menu.classList.contains("open")
+        ) {
+            closeMenu();
+        }
+
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+
+        if (e.key === "Escape") {
+            closeMenu();
+        }
+
+    });
+
+    // Close when a nav link is clicked
+    menu.querySelectorAll("a").forEach(link => {
+
+        link.addEventListener("click", closeMenu);
+
+    });
+}
+</script>
+</body>
+</html>
