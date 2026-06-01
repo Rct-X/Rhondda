@@ -674,3 +674,291 @@ button:active {
 .section + .section{
     margin-top: 1.5rem;
       }
+/* ===== _ ===== */
+
+.included{
+padding:4rem 0;
+}
+
+.included h2,
+.comparison h2,
+.why-rctx h2,
+.pricing-faq h2,
+.pricing-cta h2{
+text-align:center;
+margin-bottom:2rem;
+font-size:clamp(2rem,4vw,3rem);
+}
+
+.included-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:1rem;
+}
+
+.included-item{
+background:#fff;
+padding:1rem;
+border-radius:16px;
+border:1px solid rgba(0,0,0,.08);
+font-weight:600;
+box-shadow:var(--shadow-soft);
+}
+
+/* ===== PRICING CARDS ===== */
+
+.card-pricing{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:2rem;
+margin-top:2rem;
+padding:2rem;
+border-radius:24px;
+background:#fff;
+box-shadow:var(--shadow-soft);
+}
+
+.card-pricing.featured{
+border:3px solid var(--accent);
+position:relative;
+}
+
+.card-pricing.featured::before{
+content:"MOST POPULAR";
+position:absolute;
+top:-14px;
+left:50%;
+transform:translateX(-50%);
+background:var(--accent);
+padding:.45rem 1rem;
+border-radius:999px;
+font-size:.75rem;
+font-weight:700;
+}
+
+.price-info ul{
+padding:0;
+margin:1.5rem 0 0;
+list-style:none;
+}
+
+.price-info li{
+display:flex;
+gap:.75rem;
+align-items:flex-start;
+margin-bottom:.9rem;
+}
+
+.price-tag{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:1.5rem;
+border-radius:18px;
+background:#f8fafc;
+}
+
+.cost{
+font-size:3rem;
+font-weight:900;
+line-height:1;
+}
+
+.cost span{
+font-size:1rem;
+font-weight:600;
+}
+
+/* ===== COMPARISON ===== */
+
+.comparison{
+padding:5rem 0;
+}
+
+.comparison-table{
+background:#fff;
+border-radius:20px;
+overflow:hidden;
+box-shadow:var(--shadow-soft);
+}
+
+.row{
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
+}
+
+.row div{
+padding:1rem;
+border-bottom:1px solid rgba(0,0,0,.08);
+}
+
+.row.head{
+background:#0f172a;
+color:#fff;
+font-weight:700;
+}
+
+/* ===== BENEFITS ===== */
+
+.why-rctx{
+padding:5rem 0;
+}
+
+.benefits-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:1.5rem;
+}
+
+.benefits-grid article{
+background:#fff;
+padding:2rem;
+border-radius:20px;
+box-shadow:var(--shadow-soft);
+}
+
+.benefits-grid h3{
+margin-bottom:.75rem;
+}
+
+/* ===== FAQ ===== */
+
+.pricing-faq{
+padding:5rem 0;
+}
+
+.pricing-faq details{
+background:#fff;
+border-radius:16px;
+padding:1rem 1.25rem;
+margin-bottom:1rem;
+box-shadow:var(--shadow-soft);
+}
+
+.pricing-faq summary{
+cursor:pointer;
+font-weight:700;
+}
+
+.pricing-faq p{
+margin-top:1rem;
+}
+
+/* ===== CTA ===== */
+
+.pricing-cta{
+padding:5rem 0;
+text-align:center;
+}
+
+.pricing-cta p{
+max-width:700px;
+margin:1rem auto 2rem;
+}
+
+/* ===== MOBILE ===== */
+
+@media(max-width:768px){
+
+.card-pricing{
+grid-template-columns:1fr;
+}
+
+.row{
+grid-template-columns:1.5fr 1fr 1fr;
+}
+
+.cost{
+font-size:2.5rem;
+}
+
+}
+
+.pricing-audience{
+    max-width:900px;
+    margin:0 auto 3rem;
+    text-align:center;
+    padding:2rem;
+    background:#fff;
+    border:1px solid rgba(15,23,42,.08);
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(15,23,42,.06);
+}
+
+.audience-label{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:.45rem .9rem;
+    margin-bottom:1rem;
+    border-radius:999px;
+    background:rgba(37,99,235,.08);
+    color:var(--primary);
+    font-size:.85rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.pricing-audience h2{
+    margin-bottom:1rem;
+    font-size:clamp(1.8rem,4vw,2.6rem);
+    line-height:1.1;
+    color:var(--text-strong);
+}
+
+.audience-text{
+    max-width:700px;
+    margin:0 auto;
+    color:var(--text-soft);
+    line-height:1.8;
+}
+
+.audience-tags{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:.75rem;
+    margin-top:1.75rem;
+}
+
+.audience-tags span{
+    padding:.65rem 1rem;
+    border-radius:999px;
+    background:#f8fafc;
+    border:1px solid rgba(15,23,42,.08);
+    font-size:.9rem;
+    font-weight:600;
+    color:var(--text);
+    transition:.25s ease;
+}
+
+.audience-tags span:hover{
+    transform:translateY(-2px);
+    border-color:rgba(37,99,235,.25);
+    box-shadow:0 8px 20px rgba(37,99,235,.08);
+}
+
+@media(max-width:768px){
+
+    .pricing-audience{
+        padding:1.5rem;
+        margin-bottom:2rem;
+    }
+
+    .pricing-audience h2{
+        font-size:1.8rem;
+    }
+
+    .audience-tags{
+        gap:.5rem;
+    }
+
+    .audience-tags span{
+        font-size:.85rem;
+        padding:.55rem .85rem;
+    }
+
+}
