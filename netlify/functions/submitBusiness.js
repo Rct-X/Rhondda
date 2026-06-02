@@ -1,0 +1,105 @@
+// netlify/functions/submitBusiness.js
+const admin = require("firebase-admin");
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+    })
+  });
+}
+
+const db = admin.firestore();
+
+function slugify(str) {
+  return str
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" })
+    };
+  }
+
+  try {
+    const body = JSON.parse(event.body || "{}");
+
+    const {
+      name,
+      category,
+      town,
+      phone,
+      website,
+      address,
+      description,
+      extraKeywords
+    } = body;
+
+    if (!name || !category || !town || !description) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing required fields." })
+      };
+    }
+
+    const categorySlug = slugify(category);
+    const townSlug = slugify(town);
+    const slug = slugify(name);
+
+    const keywords = new Set();
+
+    // Base keywords
+    keywords.add(name.toLowerCase());
+    keywords.add(category.toLowerCase());
+    keywords.add(town.toLowerCase());
+    keywords.add(`${category.toLowerCase()} ${town.toLowerCase()}`);
+
+    // Extra keywords
+    if (extraKeywords) {
+      extraKeywords
+        .split(",")
+        .map(k => k.trim().toLowerCase())
+        .filter(Boolean)
+        .forEach(k => keywords.add(k));
+    }
+
+    const doc = {
+      name,
+      slug,
+      category,
+      categorySlug,
+      town,
+      townSlug,
+      phone: phone || null,
+      website: website || null,
+      address: address || null,
+      description,
+      keywords: Array.from(keywords),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      status: "pending"
+    };
+
+    await db.collection("pending_submissions").add(doc);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ ok: true })
+    };
+  } catch (err) {
+    console.error("submitBusiness error", err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal server error" })
+    };
+  }
+};
