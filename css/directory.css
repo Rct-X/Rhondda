@@ -81,3 +81,90 @@
   background: #2563eb;
   color: #fff;
 }
+/* ==========================
+   ADD BUSINESS SECTION
+========================== */
+
+.add-business{
+    padding:5rem 0;
+    background:#fff;
+    text-align:center;
+    border-top:1px solid var(--border);
+}
+
+.add-business .container{
+    max-width:900px;
+}
+
+.add-business h2{
+    margin-bottom:1rem;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:800;
+    color:var(--text-strong);
+    line-height:1.15;
+}
+
+.add-business p{
+    max-width:750px;
+    margin:0 auto 2rem;
+    font-size:1.05rem;
+    line-height:1.8;
+    color:var(--text-soft);
+}
+
+.add-business .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ==========================
+   DIRECTORY CONTENT
+========================== */
+
+.directory-content{
+    padding:5rem 0;
+    background:var(--bg-soft);
+}
+
+.directory-content .container{
+    max-width:900px;
+}
+
+.directory-content h2{
+    text-align:center;
+    margin-bottom:2rem;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:800;
+    color:var(--text-strong);
+    line-height:1.15;
+}
+
+.directory-content p{
+    margin-bottom:1.5rem;
+    font-size:1.05rem;
+    line-height:1.9;
+    color:var(--text-soft);
+}
+
+.directory-content p:last-child{
+    margin-bottom:0;
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width:768px){
+
+    .add-business,
+    .directory-content{
+        padding:4rem 0;
+    }
+
+    .add-business p,
+    .directory-content p{
+        font-size:1rem;
+    }
+
+}
