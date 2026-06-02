@@ -179,22 +179,18 @@ async function loadPending() {
 // APPROVE BUSINESS
 // ===============================
 async function approveBusiness(id) {
+
   console.log("[approveBusiness] Approving:", id);
 
   try {
-const token = await auth.currentUser.getIdToken();
 
-const res = await fetch("/.netlify/functions/approveBusiness", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
-  },
-  body: JSON.stringify({ id })
-});
+    const token = await auth.currentUser.getIdToken();
+
+    const res = await fetch("/.netlify/functions/approveBusiness", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ id })
     });
@@ -204,7 +200,9 @@ const res = await fetch("/.netlify/functions/approveBusiness", {
     loadPending();
 
   } catch (err) {
+
     console.error("[approveBusiness] Approve failed:", err);
+
   }
 }
 
@@ -212,22 +210,18 @@ const res = await fetch("/.netlify/functions/approveBusiness", {
 // REJECT BUSINESS
 // ===============================
 async function rejectBusiness(id) {
+
   console.log("[rejectBusiness] Rejecting:", id);
 
   try {
+
     const token = await auth.currentUser.getIdToken();
 
-const res = await fetch("/.netlify/functions/rejectBusiness", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
-  },
-  body: JSON.stringify({ id })
-});
+    const res = await fetch("/.netlify/functions/rejectBusiness", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ id })
     });
@@ -237,6 +231,8 @@ const res = await fetch("/.netlify/functions/rejectBusiness", {
     loadPending();
 
   } catch (err) {
+
     console.error("[rejectBusiness] Reject failed:", err);
+
   }
 }
