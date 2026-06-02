@@ -73,12 +73,13 @@ exports.handler = async (event) => {
 
     const data = doc.data();
 
-    await db.collection("businesses").add({
-      ...data,
-      verified: false,
-      ownerId: null,
-      approvedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
+await db.collection("businesses").add({
+  ...data,
+  status: "approved",
+  verified: false,
+  ownerId: null,
+  approvedAt: admin.firestore.FieldValue.serverTimestamp()
+});
 
     await db
       .collection("pending_submissions")
