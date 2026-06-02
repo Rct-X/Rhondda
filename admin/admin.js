@@ -3,6 +3,11 @@
 // ===============================
 async function initFirebase() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
+
+  if (!res.ok) {
+    throw new Error("Failed to load Firebase config");
+  }
+
   const config = await res.json();
 
   if (!firebase.apps.length) {
@@ -19,19 +24,6 @@ let db;
 let auth;
 
 // ===============================
-// INIT APP (WAIT FOR FIREBASE)
-// ===============================
-(async () => {
-  const firebaseServices = await initFirebase();
-
-  auth = firebaseServices.auth;
-  db = firebaseServices.db;
-
-  setupAuth();        // safe to run now
-  loadPending();      // optional preload if needed
-})();
-
-// ===============================
 // ELEMENTS
 // ===============================
 const loginSection = document.getElementById("loginSection");
@@ -40,10 +32,32 @@ const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 
 // ===============================
-// LOGIN (SAFE AFTER INIT)
+// INIT APP (SAFE ORDER)
+// ===============================
+(async () => {
+  try {
+    const services = await initFirebase();
+
+    auth = services.auth;
+    db = services.db;
+
+    setupAuth();
+
+    console.log("Firebase initialised:", { auth, db });
+
+  } catch (err) {
+    console.error("Firebase init failed:", err);
+    loginMessage.textContent = "System error. Please refresh.";
+  }
+})();
+
+// ===============================
+// AUTH + LOGIN HANDLERS
 // ===============================
 function setupAuth() {
+  if (!auth) return;
 
+  // LOGIN BUTTON
   loginBtn.addEventListener("click", async () => {
     const email = document.getElementById("adminEmail").value.trim();
     const password = document.getElementById("adminPassword").value.trim();
@@ -53,15 +67,21 @@ function setupAuth() {
     try {
       await auth.signInWithEmailAndPassword(email, password);
     } catch (err) {
+      console.error("Login error:", err);
       loginMessage.textContent = "Invalid login.";
     }
   });
 
+  // AUTH STATE CHANGE
   auth.onAuthStateChanged((user) => {
     if (user) {
       loginSection.style.display = "none";
       dashboardSection.style.display = "block";
-      loadPending();
+
+      loadPending().catch(err => {
+        console.error("loadPending failed:", err);
+      });
+
     } else {
       loginSection.style.display = "block";
       dashboardSection.style.display = "none";
@@ -74,61 +94,89 @@ function setupAuth() {
 // ===============================
 async function loadPending() {
   const list = document.getElementById("pendingList");
-  list.innerHTML = "<p>Loading…</p>";
 
-  const snap = await db.collection("pending_submissions")
-    .orderBy("createdAt", "desc")
-    .get();
-
-  if (snap.empty) {
-    list.innerHTML = "<p>No pending submissions.</p>";
+  if (!db) {
+    console.error("Firestore not initialised");
     return;
   }
 
-  list.innerHTML = "";
+  list.innerHTML = "<p>Loading…</p>";
 
-  snap.forEach(doc => {
-    const b = doc.data();
-    const id = doc.id;
+  try {
+    const snap = await db.collection("pending_submissions")
+      .orderBy("createdAt", "desc")
+      .get();
 
-    const item = document.createElement("div");
-    item.className = "pending-item";
+    if (snap.empty) {
+      list.innerHTML = "<p>No pending submissions.</p>";
+      return;
+    }
 
-    item.innerHTML = `
-      <h3>${b.name}</h3>
-      <p>${b.category} • ${b.town}</p>
-      <p>${b.description}</p>
+    list.innerHTML = "";
 
-      <div class="pending-actions">
-        <button class="btn-approve" onclick="approveBusiness('${id}')">Approve</button>
-        <button class="btn-reject" onclick="rejectBusiness('${id}')">Reject</button>
-      </div>
-    `;
+    snap.forEach(doc => {
+      const b = doc.data();
+      const id = doc.id;
 
-    list.appendChild(item);
-  });
+      const item = document.createElement("div");
+      item.className = "pending-item";
+
+      item.innerHTML = `
+        <h3>${b.name || "No name"}</h3>
+        <p>${b.category || "No category"} • ${b.town || "No town"}</p>
+        <p>${b.description || ""}</p>
+
+        <div class="pending-actions">
+          <button class="btn-approve" onclick="approveBusiness('${id}')">Approve</button>
+          <button class="btn-reject" onclick="rejectBusiness('${id}')">Reject</button>
+        </div>
+      `;
+
+      list.appendChild(item);
+    });
+
+  } catch (err) {
+    console.error("Firestore error:", err);
+    list.innerHTML = "<p>Error loading submissions.</p>";
+  }
 }
 
 // ===============================
-// APPROVE
+// APPROVE BUSINESS
 // ===============================
 async function approveBusiness(id) {
-  await fetch("/.netlify/functions/approveBusiness", {
-    method: "POST",
-    body: JSON.stringify({ id })
-  });
+  try {
+    await fetch("/.netlify/functions/approveBusiness", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id })
+    });
 
-  loadPending();
+    loadPending();
+
+  } catch (err) {
+    console.error("Approve failed:", err);
+  }
 }
 
 // ===============================
-// REJECT
+// REJECT BUSINESS
 // ===============================
 async function rejectBusiness(id) {
-  await fetch("/.netlify/functions/rejectBusiness", {
-    method: "POST",
-    body: JSON.stringify({ id })
-  });
+  try {
+    await fetch("/.netlify/functions/rejectBusiness", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id })
+    });
 
-  loadPending();
+    loadPending();
+
+  } catch (err) {
+    console.error("Reject failed:", err);
+  }
 }
