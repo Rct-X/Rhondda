@@ -46,9 +46,9 @@ function detectBusinessURL() {
 // ===============================
 async function loadBusiness(categorySlug, townSlug, slug) {
   const q = db.collection("businesses")
-              .where("categorySlug", "==", categorySlug)
-              .where("townSlug", "==", townSlug)
-              .where("slug", "==", slug);
+    .where("categorySlug", "==", categorySlug)
+    .where("townSlug", "==", townSlug)
+    .where("slug", "==", slug);
 
   const snap = await q.get();
 
@@ -60,10 +60,17 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   const b = snap.docs[0].data();
 
   // ===============================
+  // SET CANONICAL URL
+  // ===============================
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) {
+    canonical.href = `https://rctx.co.uk/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+  }
+
+  // ===============================
   // INJECT SEO
   // ===============================
-  document.getElementById("seoTitle").textContent =
-    `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
+  document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
 
   document.getElementById("seoDescription").setAttribute(
     "content",
@@ -85,7 +92,9 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   const websiteEl = document.getElementById("businessWebsite");
   if (b.website) {
     websiteEl.textContent = b.website;
-    websiteEl.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
+    websiteEl.href = b.website.startsWith("http")
+      ? b.website
+      : `https://${b.website}`;
   } else {
     websiteEl.textContent = "Not provided";
     websiteEl.removeAttribute("href");
@@ -109,10 +118,10 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     document.getElementById("claimedBadge").innerHTML =
       `<span class="badge badge-claimed">Claimed</span>`;
 
-    // Claimed message
     const claimedMsg = document.getElementById("claimedMessage");
     if (claimedMsg) {
-      claimedMsg.textContent = "This business listing has been claimed by the owner.";
+      claimedMsg.textContent =
+        "This business listing has been claimed by the owner.";
     }
   }
 
@@ -161,8 +170,8 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
   // 1. Same category + same town
   const q1 = db.collection("businesses")
-               .where("categorySlug", "==", categorySlug)
-               .where("townSlug", "==", townSlug);
+    .where("categorySlug", "==", categorySlug)
+    .where("townSlug", "==", townSlug);
 
   const snap1 = await q1.get();
 
@@ -174,7 +183,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
   // 2. If fewer than 4, add same category anywhere
   if (results.length < 4) {
     const q2 = db.collection("businesses")
-                 .where("categorySlug", "==", categorySlug);
+      .where("categorySlug", "==", categorySlug);
 
     const snap2 = await q2.get();
 
@@ -186,10 +195,8 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
     });
   }
 
-  // Limit to 4
   results = results.slice(0, 4);
 
-  // Render
   if (results.length === 0) {
     relatedGrid.innerHTML = `<p>No similar businesses found.</p>`;
     return;
