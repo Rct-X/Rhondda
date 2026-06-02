@@ -1,17 +1,34 @@
 // ===============================
-// LOAD FIREBASE CONFIG
+// LOAD FIREBASE CONFIG + INIT
 // ===============================
-async function loadFirebaseConfig() {
+async function initFirebase() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
-  return res.json();
+  const config = await res.json();
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+  }
+
+  return {
+    auth: firebase.auth(),
+    db: firebase.firestore()
+  };
 }
 
 let db;
+let auth;
 
+// ===============================
+// INIT APP (WAIT FOR FIREBASE)
+// ===============================
 (async () => {
-  const config = await loadFirebaseConfig();
-  firebase.initializeApp(config);
-  db = firebase.firestore();
+  const firebaseServices = await initFirebase();
+
+  auth = firebaseServices.auth;
+  db = firebaseServices.db;
+
+  setupAuth();        // safe to run now
+  loadPending();      // optional preload if needed
 })();
 
 // ===============================
@@ -23,35 +40,34 @@ const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 
 // ===============================
-// LOGIN
+// LOGIN (SAFE AFTER INIT)
 // ===============================
-loginBtn.addEventListener("click", async () => {
-  const email = document.getElementById("adminEmail").value.trim();
-  const password = document.getElementById("adminPassword").value.trim();
+function setupAuth() {
 
-  loginMessage.textContent = "";
+  loginBtn.addEventListener("click", async () => {
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value.trim();
 
-  try {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
-  } catch (err) {
-    loginMessage.textContent = "Invalid login.";
-    return;
-  }
-});
+    loginMessage.textContent = "";
 
-// ===============================
-// AUTH STATE
-// ===============================
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    loginSection.style.display = "none";
-    dashboardSection.style.display = "block";
-    loadPending();
-  } else {
-    loginSection.style.display = "block";
-    dashboardSection.style.display = "none";
-  }
-});
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (err) {
+      loginMessage.textContent = "Invalid login.";
+    }
+  });
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      loginSection.style.display = "none";
+      dashboardSection.style.display = "block";
+      loadPending();
+    } else {
+      loginSection.style.display = "block";
+      dashboardSection.style.display = "none";
+    }
+  });
+}
 
 // ===============================
 // LOAD PENDING SUBMISSIONS
@@ -61,8 +77,8 @@ async function loadPending() {
   list.innerHTML = "<p>Loading…</p>";
 
   const snap = await db.collection("pending_submissions")
-                       .orderBy("createdAt", "desc")
-                       .get();
+    .orderBy("createdAt", "desc")
+    .get();
 
   if (snap.empty) {
     list.innerHTML = "<p>No pending submissions.</p>";
@@ -94,7 +110,7 @@ async function loadPending() {
 }
 
 // ===============================
-// APPROVE BUSINESS
+// APPROVE
 // ===============================
 async function approveBusiness(id) {
   await fetch("/.netlify/functions/approveBusiness", {
@@ -106,7 +122,7 @@ async function approveBusiness(id) {
 }
 
 // ===============================
-// REJECT BUSINESS
+// REJECT
 // ===============================
 async function rejectBusiness(id) {
   await fetch("/.netlify/functions/rejectBusiness", {
