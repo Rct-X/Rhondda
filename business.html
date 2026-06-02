@@ -394,28 +394,48 @@ transform:translateY(-7px) rotate(-45deg);
 
 <body class="business-page">
 
-<header class="navbar">
-  <div class="container nav-flex">
+<nav class="navbar">
 
-    <a href="/" class="logo-wrap">
-      <div class="logo">RCT<span>X</span></div>
-      <div class="logo-tag">WEB DESIGN</div>
-    </a>
+  <div class="container">
 
-    <button id="hamburgerBtn" class="hamburger" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-flex">
 
-    <ul class="nav-links" id="mobileMenu">
-      <li><a href="/directory">Find Local Businesses</a></li>
-      <li><a href="/add-business">Add Your Business</a></li>
-      <li><a href="/pricing">View Pricing</a></li>
-      <li><a href="/about">About RCTX</a></li>
-      <li><a href="/contact">Get in Touch</a></li>
-    </ul>
+      <a href="/" class="logo-wrap" aria-label="RCTX Home">
+        <div class="logo">
+          RCT<span>X</span>
+        </div>
+        <div class="logo-tag">
+          Web Design
+        </div>
+      </a>
+
+      <button
+        class="hamburger"
+        id="hamburgerBtn"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileMenu">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </button>
+
+      <ul class="nav-links" id="mobileMenu">
+        <li><a href="/directory">Find Local Businesses</a></li>
+        <li><a href="/add-business">Add Your Business</a></li>
+        <li><a href="/website-pricing">View Pricing</a></li>
+        <li><a href="/about">About RCTX</a></li>
+        <li><a href="/contact">Get in Touch</a></li>
+      </ul>
+
+    </div>
 
   </div>
-</header>
+
+</nav>
 
 <main>
 
@@ -520,11 +540,11 @@ transform:translateY(-7px) rotate(-45deg);
         <div class="footer-links">
             <h3>Legal</h3>
 
-            <a href="/policy/privacy-policy.html">
+            <a href="/policy/privacy-policy">
                 Privacy Policy
             </a>
 
-            <a href="/policy/terms.html">
+            <a href="/policy/terms">
                 Terms & Conditions
             </a>
         </div>
@@ -537,8 +557,8 @@ transform:translateY(-7px) rotate(-45deg);
 
 </footer>
 
-<script src="/js/main.js"></script>
+
 <script src="/js/business.js"></script>
 
 </body>
-  </html>
+</html>
