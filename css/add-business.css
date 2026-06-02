@@ -21,33 +21,55 @@
 }
 
 .hero-small p {
-  max-width: 600px;
+  max-width: 700px;
+  line-height: 1.6;
+  color: var(--text-soft);
 }
 
 /* ============================
-   FORM CARD
+   MAIN LAYOUT (WIDER FORM)
+============================ */
+.add-business-page .container {
+  max-width: 1200px; /* 🔥 wider page */
+}
+
+/* ============================
+   FORM WRAPPER
 ============================ */
 .form-card {
   background: var(--card);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   margin-top: 2rem;
-}
 
-.form-card h2 {
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  max-width: 980px;   /* 🔥 wider form itself */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ============================
-   FORM GRID
+   FORM TITLE
+============================ */
+.form-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+
+/* ============================
+   FORM GRID (BETTER CONTROL)
 ============================ */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
   margin-bottom: 1.5rem;
+}
+
+/* make some fields full width */
+.form-group.full {
+  grid-column: 1 / -1;
 }
 
 /* ============================
@@ -60,36 +82,44 @@
 
 .form-group label {
   font-weight: 600;
-  margin-bottom: .35rem;
+  margin-bottom: .4rem;
+  font-size: .95rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: .75rem;
-  border-radius: var(--radius);
+  padding: .85rem 1rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--bg-soft);
   color: var(--text);
   font-size: 1rem;
+  transition: border .2s ease, box-shadow .2s ease;
 }
 
 .form-group textarea {
   resize: vertical;
+  min-height: 120px;
 }
 
+/* focus state */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 /* ============================
-   CHECKBOX
+   CHECKBOX SECTION
 ============================ */
 .checkbox-group {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .checkbox-group label {
@@ -97,31 +127,32 @@
   align-items: center;
   gap: .5rem;
   font-size: .95rem;
+  color: var(--text-soft);
 }
 
 /* ============================
-   FORM MESSAGE
+   MESSAGE BOX
 ============================ */
 .form-message {
   margin: 1rem 0;
-  padding: .75rem 1rem;
-  border-radius: var(--radius);
+  padding: .85rem 1rem;
+  border-radius: var(--radius-lg);
   font-size: .95rem;
   display: none;
 }
 
 .form-message.success {
   display: block;
-  background: #16a34a20;
+  background: rgba(22, 163, 74, 0.12);
   color: #16a34a;
-  border: 1px solid #16a34a50;
+  border: 1px solid rgba(22, 163, 74, 0.25);
 }
 
 .form-message.error {
   display: block;
-  background: #dc262620;
+  background: rgba(220, 38, 38, 0.12);
   color: #dc2626;
-  border: 1px solid #dc262650;
+  border: 1px solid rgba(220, 38, 38, 0.25);
 }
 
 /* ============================
@@ -129,20 +160,25 @@
 ============================ */
 .btn-primary {
   width: 100%;
-  padding: .9rem;
+  padding: 1rem;
   font-size: 1.05rem;
-  font-weight: 600;
-  border-radius: var(--radius);
-  background: var(--primary);
+  font-weight: 700;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff;
   text-align: center;
   border: none;
   cursor: pointer;
-  transition: background .2s ease;
+  transition: transform .15s ease, filter .2s ease;
 }
 
 .btn-primary:hover {
-  background: var(--primary-dark);
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-primary:disabled {
@@ -153,12 +189,23 @@
 /* ============================
    RESPONSIVE
 ============================ */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .form-card {
-    padding: 1.5rem;
+    max-width: 100%;
+    padding: 2rem;
   }
 
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
   .hero-small h1 {
     font-size: 1.6rem;
+  }
+
+  .form-card {
+    padding: 1.5rem;
   }
 }
