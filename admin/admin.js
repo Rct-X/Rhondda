@@ -182,7 +182,16 @@ async function approveBusiness(id) {
   console.log("[approveBusiness] Approving:", id);
 
   try {
-    const res = await fetch("/.netlify/functions/approveBusiness", {
+const token = await auth.currentUser.getIdToken();
+
+const res = await fetch("/.netlify/functions/approveBusiness", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify({ id })
+});
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -206,7 +215,16 @@ async function rejectBusiness(id) {
   console.log("[rejectBusiness] Rejecting:", id);
 
   try {
-    const res = await fetch("/.netlify/functions/rejectBusiness", {
+    const token = await auth.currentUser.getIdToken();
+
+const res = await fetch("/.netlify/functions/rejectBusiness", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify({ id })
+});
       method: "POST",
       headers: {
         "Content-Type": "application/json"
