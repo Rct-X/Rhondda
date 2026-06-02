@@ -18,6 +18,11 @@
     Access-Control-Allow-Origin = "*"
     Accept-Ranges = "none"
 
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
 [[redirects]]
   from = "/robots.txt"
   to = "/robots.txt"
