@@ -206,7 +206,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
   results.forEach(b => {
     const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}.html`;
     card.className = "related-card";
 
     card.innerHTML = `
