@@ -224,3 +224,71 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
     relatedGrid.appendChild(card);
   });
         }
+
+// ===============================
+// SHARE POPUP
+// ===============================
+
+setTimeout(() => {
+
+  // only show once per session
+  if (sessionStorage.getItem("sharePopupShown")) return;
+
+  const popup = document.getElementById("sharePopup");
+
+  if (popup) {
+    popup.classList.add("show");
+    sessionStorage.setItem("sharePopupShown", "true");
+  }
+
+}, 6000);
+
+// CLOSE
+document.addEventListener("click", (e) => {
+
+  if (e.target.id === "closeSharePopup") {
+    document.getElementById("sharePopup")?.classList.remove("show");
+  }
+
+});
+
+// SHARE BUTTON
+document.addEventListener("click", async (e) => {
+
+  if (e.target.id !== "shareBusinessBtn") return;
+
+  const shareData = {
+    title: document.title,
+    text: "Check out this local business on RCTX",
+    url: window.location.href
+  };
+
+  // MOBILE NATIVE SHARE
+  if (navigator.share) {
+
+    try {
+      await navigator.share(shareData);
+    } catch(err) {
+      console.log("Share cancelled");
+    }
+
+  } else {
+
+    // FALLBACK COPY LINK
+    try {
+
+      await navigator.clipboard.writeText(window.location.href);
+
+      e.target.textContent = "Link Copied!";
+
+      setTimeout(() => {
+        e.target.textContent = "Share This Business";
+      }, 2000);
+
+    } catch(err) {
+      alert("Could not copy link");
+    }
+
+  }
+
+});
