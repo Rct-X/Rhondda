@@ -434,3 +434,224 @@ async function rejectBusiness(id) {
   }
 
 }
+
+let RANGE = 30;
+
+window.setRange = function(days){
+
+  RANGE = days;
+
+  document
+    .querySelectorAll(".filters button")
+    .forEach(b => b.classList.remove("active"));
+
+  document
+    .getElementById("f" + days)
+    .classList.add("active");
+
+  renderDashboard(window.__visits || []);
+
+};
+
+function detectSource(referrer){
+
+  if(!referrer || referrer === "direct"){
+    return "Direct";
+  }
+
+  const r = referrer.toLowerCase();
+
+  if(r.includes("google")) return "Google";
+  if(r.includes("facebook")) return "Facebook";
+  if(r.includes("instagram")) return "Instagram";
+  if(r.includes("tiktok")) return "TikTok";
+  if(r.includes("linkedin")) return "LinkedIn";
+  if(r.includes("twitter") || r.includes("x.com")) return "X / Twitter";
+  if(r.includes("whatsapp")) return "WhatsApp";
+  if(r.includes("rctx.co.uk")) return "RCTX Website";
+
+  return "Other";
+}
+
+function filterByDate(visits, days){
+
+  const now = Date.now();
+
+  return visits.filter(v => {
+
+    const t = v.timestamp || 0;
+
+    return now - t <= days * 86400000;
+
+  });
+
+}
+
+function renderDashboard(visits){
+
+  visits = filterByDate(visits, RANGE);
+
+  document.getElementById("totalVisits").innerText =
+    visits.length;
+
+  const clients = {};
+
+  visits.forEach(v => {
+
+    const client = v.clientId || "unknown";
+
+    if(!clients[client]){
+
+      clients[client] = {
+        total:0,
+        mobile:0,
+        pages:{},
+        sources:{},
+        events:{
+          whatsapp:0,
+          phone:0,
+          form:0
+        }
+      };
+
+    }
+
+    clients[client].total++;
+
+    const source =
+      detectSource(v.referrer);
+
+    clients[client].sources[source] =
+      (clients[client].sources[source] || 0) + 1;
+
+    if(v.device === "Mobile"){
+      clients[client].mobile++;
+    }
+
+    const page = v.page || "/";
+
+    clients[client].pages[page] =
+      (clients[client].pages[page] || 0) + 1;
+
+    if(v.event === "whatsapp_click"){
+      clients[client].events.whatsapp++;
+    }
+
+    if(v.event === "phone_tap"){
+      clients[client].events.phone++;
+    }
+
+    if(v.event === "form_submit"){
+      clients[client].events.form++;
+    }
+
+  });
+
+  document.getElementById("totalClients").innerText =
+    Object.keys(clients).length;
+
+  const wrap =
+    document.getElementById("clients");
+
+  wrap.innerHTML = "";
+
+  Object.entries(clients).forEach(([name,data]) => {
+
+    const topPage =
+      Object.entries(data.pages)
+      .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+
+const mobilePercent =
+  data.total
+    ? Math.round((data.mobile / data.total) * 100)
+    : 0;
+
+    const topSources =
+      Object.entries(data.sources)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,5)
+      .map(([src,count]) =>
+        `<li>${src}: ${count}</li>`
+      )
+      .join("");
+
+    wrap.innerHTML += `
+
+      <div class="client">
+
+        <h3>${name}</h3>
+
+        <div class="stat">
+          ${data.total} visits
+        </div>
+
+        <div class="stat">
+          Most viewed page: ${topPage}
+        </div>
+
+        <div class="stat">
+          ${mobilePercent}% mobile users
+        </div>
+
+        <div class="stat">
+          WhatsApp leads: ${data.events.whatsapp}
+        </div>
+
+        <div class="stat">
+          Phone taps: ${data.events.phone}
+        </div>
+
+        <div class="stat">
+          Form submits: ${data.events.form}
+        </div>
+
+        <div class="stat">
+          Top traffic sources:
+        </div>
+
+        <ul class="small">
+          ${topSources}
+        </ul>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+async function loadAnalytics(){
+
+  try{
+
+    const response =
+      await fetch("/.netlify/functions/getAnalytics");
+
+    if(!response.ok){
+  throw new Error("Failed to load analytics");
+}
+
+const visits = await response.json();
+
+    window.__visits = visits;
+
+    renderDashboard(visits);
+
+    document
+      .getElementById("f30")
+      .classList.add("active");
+
+  }catch(err){
+
+    console.error("Dashboard failed:", err);
+    
+    document.getElementById("totalVisits").innerText =
+  "Error";
+
+document.getElementById("totalClients").innerText =
+  "Error";
+
+  }
+
+}
