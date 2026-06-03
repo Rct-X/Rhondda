@@ -140,11 +140,20 @@ function setupAuth() {
       loginSection.style.display = "none";
       dashboardSection.style.display = "block";
 
-      loadPending().catch(err => {
-        console.error(
-          "[AuthState] loadPending failed:",
-          err
-        );
+const analyticsSection =
+  document.getElementById("analyticsSection");
+
+if (analyticsSection) {
+  analyticsSection.style.display = "block";
+}
+
+loadPending().catch(err => {
+  console.error("[AuthState] loadPending failed:", err);
+});
+
+loadAnalytics().catch(err => {
+  console.error("[Analytics] Failed:", err);
+});
       });
 
     } else {
@@ -625,8 +634,17 @@ async function loadAnalytics(){
 
   try{
 
-    const response =
-      await fetch("/.netlify/functions/getAnalytics");
+    const token =
+  await auth.currentUser.getIdToken();
+
+const response = await fetch(
+  "/.netlify/functions/getAnalytics",
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
 
     if(!response.ok){
   throw new Error("Failed to load analytics");
