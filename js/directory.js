@@ -83,7 +83,7 @@ async function loadCategory(categorySlug) {
     const b = doc.data();
 
     const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}.html`;
     card.className = "card-business";
 
     card.innerHTML = `
@@ -121,7 +121,7 @@ async function loadCategoryTown(categorySlug, townSlug) {
     const b = doc.data();
 
     const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}.html`;
     card.className = "card-business";
 
     card.innerHTML = `
@@ -161,7 +161,7 @@ async function searchDirectory() {
     const b = doc.data();
 
     const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}.html`;
     card.className = "card-business";
 
     card.innerHTML = `
