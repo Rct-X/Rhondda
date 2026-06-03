@@ -2,8 +2,11 @@
 // FETCH FIREBASE CONFIG
 // ===============================
 async function loadFirebaseConfig() {
+  console.log("🔥 Fetching Firebase config...");
   const res = await fetch("/.netlify/functions/firebaseConfig");
-  return res.json();
+  const json = await res.json();
+  console.log("🔥 Firebase config loaded:", json);
+  return json;
 }
 
 let db;
@@ -12,13 +15,20 @@ let db;
 // INIT FIREBASE + LOAD BUSINESS
 // ===============================
 (async () => {
+  console.log("🚀 Initialising Firebase...");
   const config = await loadFirebaseConfig();
   firebase.initializeApp(config);
   db = firebase.firestore();
+  console.log("🔥 Firestore initialised:", db);
 
   const page = detectBusinessURL();
+  console.log("📌 detectBusinessURL() returned:", page);
+
   if (page.type === "business") {
+    console.log("📥 Loading business:", page);
     loadBusiness(page.category, page.town, page.slug);
+  } else {
+    console.warn("❌ Not a business page. Page type:", page.type);
   }
 })();
 
@@ -27,17 +37,19 @@ let db;
 // ===============================
 function detectBusinessURL() {
   const parts = window.location.pathname.split("/").filter(Boolean);
-  // ["directory", "barbers", "treorchy", "fade-room"]
+  console.log("🔍 URL parts:", parts);
 
   if (parts.length === 4 && parts[0] === "directory") {
+    console.log("✅ Business URL detected");
     return {
       type: "business",
       category: parts[1],
       town: parts[2],
-      slug: parts[3]
+      slug: parts[3].replace(".html", "")
     };
   }
 
+  console.warn("❌ URL does NOT match business pattern");
   return { type: "unknown" };
 }
 
@@ -45,41 +57,51 @@ function detectBusinessURL() {
 // LOAD BUSINESS DATA
 // ===============================
 async function loadBusiness(categorySlug, townSlug, slug) {
+  console.log("📡 Querying Firestore for:", { categorySlug, townSlug, slug });
+
   const q = db.collection("businesses")
     .where("categorySlug", "==", categorySlug)
     .where("townSlug", "==", townSlug)
     .where("slug", "==", slug);
 
   const snap = await q.get();
+  console.log("📡 Firestore response:", snap);
 
   if (snap.empty) {
+    console.error("❌ No business found in Firestore for:", { categorySlug, townSlug, slug });
     document.getElementById("businessName").textContent = "Business Not Found";
     return;
   }
 
   const b = snap.docs[0].data();
+  console.log("✅ Business found:", b);
 
   // ===============================
   // SET CANONICAL URL
   // ===============================
   const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) {
-    canonical.href = `https://rctx.co.uk/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+    canonical.href = `https://rctx.co.uk/directory/${b.categorySlug}/${b.townSlug}/${b.slug}.html`;
+    console.log("🔗 Canonical set:", canonical.href);
   }
 
   // ===============================
   // INJECT SEO
   // ===============================
+  console.log("📝 Injecting SEO...");
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
 
-  document.getElementById("seoDescription").setAttribute(
-    "content",
-    `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`
-  );
+  const seoDesc = document.getElementById("seoDescription");
+  if (seoDesc) {
+    seoDesc.setAttribute("content", `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`);
+  } else {
+    console.warn("⚠️ Missing #seoDescription element");
+  }
 
   // ===============================
   // INJECT MAIN CONTENT
   // ===============================
+  console.log("📝 Injecting main content...");
   document.getElementById("businessName").textContent = b.name;
   document.getElementById("businessCategory").textContent = b.category;
   document.getElementById("businessTown").textContent = b.town;
@@ -103,6 +125,7 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   // ===============================
   // SIDEBAR
   // ===============================
+  console.log("📌 Updating sidebar...");
   document.getElementById("businessTownSidebar").textContent = b.town;
   document.getElementById("businessCategorySidebar").textContent = b.category;
 
@@ -110,11 +133,13 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   // BADGES
   // ===============================
   if (b.verified) {
+    console.log("🏅 Verified badge applied");
     document.getElementById("verifiedBadge").innerHTML =
       `<span class="badge badge-verified">Verified</span>`;
   }
 
   if (b.ownerId) {
+    console.log("👑 Claimed badge applied");
     document.getElementById("claimedBadge").innerHTML =
       `<span class="badge badge-claimed">Claimed</span>`;
 
@@ -128,6 +153,7 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   // ===============================
   // OPENING HOURS
   // ===============================
+  console.log("⏰ Injecting opening hours...");
   const hoursList = document.getElementById("businessHours");
   hoursList.innerHTML = "";
 
@@ -142,20 +168,23 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   }
 
   // ===============================
-  // HIDE CLAIM BUTTON IF CLAIMED
+  // CLAIM BUTTON
   // ===============================
   const claimBtn = document.getElementById("claimBtn");
   if (claimBtn) {
     if (b.ownerId) {
+      console.log("🔒 Hiding claim button (already claimed)");
       claimBtn.style.display = "none";
     } else {
       claimBtn.href = `/claim-business?b=${b.slug}`;
+      console.log("🔗 Claim button link set:", claimBtn.href);
     }
   }
 
   // ===============================
   // LOAD RELATED BUSINESSES
   // ===============================
+  console.log("🔁 Loading related businesses...");
   loadRelated(b.categorySlug, b.townSlug, b.slug);
 }
 
@@ -163,6 +192,8 @@ async function loadBusiness(categorySlug, townSlug, slug) {
 // LOAD RELATED BUSINESSES
 // ===============================
 async function loadRelated(categorySlug, townSlug, currentSlug) {
+  console.log("🔍 Loading related businesses for:", { categorySlug, townSlug, currentSlug });
+
   const relatedGrid = document.getElementById("relatedGrid");
   relatedGrid.innerHTML = `<p class="text-dim">Loading recommendations…</p>`;
 
@@ -174,6 +205,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
     .where("townSlug", "==", townSlug);
 
   const snap1 = await q1.get();
+  console.log("📡 Related (same town) results:", snap1.size);
 
   snap1.forEach(doc => {
     const b = doc.data();
@@ -182,10 +214,12 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
   // 2. If fewer than 4, add same category anywhere
   if (results.length < 4) {
+    console.log("📉 Less than 4 results, loading more from same category...");
     const q2 = db.collection("businesses")
       .where("categorySlug", "==", categorySlug);
 
     const snap2 = await q2.get();
+    console.log("📡 Related (same category) results:", snap2.size);
 
     snap2.forEach(doc => {
       const b = doc.data();
@@ -196,6 +230,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
   }
 
   results = results.slice(0, 4);
+  console.log("🎯 Final related businesses:", results);
 
   if (results.length === 0) {
     relatedGrid.innerHTML = `<p>No similar businesses found.</p>`;
