@@ -42,13 +42,34 @@ exports.handler = async (event) => {
       website,
       address,
       description,
-      extraKeywords
+      extraKeywords,
+      wasteLicence
     } = body;
 
     if (!name || !category || !town || !description) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Missing required fields." })
+      };
+    }
+
+    // ===============================
+    // WASTE LICENCE VALIDATION
+    // ===============================
+    const wasteCategories = [
+      "Waste Collection",
+      "Man With A Van",
+      "Removals"
+    ];
+
+    const requiresWasteLicence = wasteCategories.includes(category);
+
+    if (requiresWasteLicence && !wasteLicence) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          error: "Waste carrier licence number is required for this category."
+        })
       };
     }
 
@@ -80,11 +101,17 @@ exports.handler = async (event) => {
       categorySlug,
       town,
       townSlug,
+
       phone: phone || null,
       website: website || null,
       address: address || null,
+
       description,
+
+      wasteLicence: wasteLicence || null,
+
       keywords: Array.from(keywords),
+
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       status: "pending"
     };
@@ -95,8 +122,10 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({ ok: true })
     };
+
   } catch (err) {
     console.error("submitBusiness error", err);
+
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Internal server error" })
