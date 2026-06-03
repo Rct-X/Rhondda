@@ -1,1 +1,2 @@
 /directory/*  /directory.html  200
+/directory/:category/:town/:slug   /directory/business.html   200
