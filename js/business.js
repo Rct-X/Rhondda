@@ -64,19 +64,48 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   );
 
 // ===============================
-// DYNAMIC OG IMAGE
+// STATIC CATEGORY OG IMAGE
 // ===============================
-const ogUrl = `https://rctx.co.uk/.netlify/functions/og?category=${b.categorySlug}`;
+const ogImageMap = {
+  plumbers: "https://rctx.co.uk/og/plumbers.jpg",
+  electricians: "https://rctx.co.uk/og/electricians.jpg",
+  builders: "https://rctx.co.uk/og/builders.jpg",
+  roofers: "https://rctx.co.uk/og/roofers.jpg",
+  "painters-decorators": "https://rctx.co.uk/og/painters-decorators.jpg",
+  handyman: "https://rctx.co.uk/og/handyman.jpg",
+  cleaners: "https://rctx.co.uk/og/cleaners.jpg",
+  "window-cleaners": "https://rctx.co.uk/og/window-cleaners.jpg",
+  gardeners: "https://rctx.co.uk/og/gardeners.jpg",
+  "waste-collection": "https://rctx.co.uk/og/waste-collection.jpg",
+  "man-with-a-van": "https://rctx.co.uk/og/man-with-a-van.jpg",
+  removals: "https://rctx.co.uk/og/removals.jpg",
+  "car-mechanics": "https://rctx.co.uk/og/car-mechanics.jpg",
+  tyres: "https://rctx.co.uk/og/tyres.jpg",
+  barbers: "https://rctx.co.uk/og/barbers.jpg",
+  hairdressers: "https://rctx.co.uk/og/hairdressers.jpg",
+  "beauty-salons": "https://rctx.co.uk/og/beauty-salons.jpg",
+  "dog-groomers": "https://rctx.co.uk/og/dog-groomers.jpg",
+  cafes: "https://rctx.co.uk/og/cafes.jpg",
+  restaurants: "https://rctx.co.uk/og/restaurants.jpg",
+  takeaways: "https://rctx.co.uk/og/takeaways.jpg",
+  shops: "https://rctx.co.uk/og/shops.jpg",
+  gyms: "https://rctx.co.uk/og/gyms.jpg",
+  photographers: "https://rctx.co.uk/og/photographers.jpg"
+};
+
+const ogUrl =
+  ogImageMap[b.categorySlug] ||
+  "https://rctx.co.uk/og/default-business.jpg";
 
 document.getElementById("ogImage")?.setAttribute("content", ogUrl);
-document.querySelector('meta[property="og:url"]')?.setAttribute(
-  "content",
-  window.location.href
-);
-document.querySelector('link[rel="canonical"]')?.setAttribute(
-  "href",
-  window.location.href
-);
+
+document
+  .querySelector('meta[property="og:url"]')
+  ?.setAttribute("content", window.location.href);
+
+document
+  .querySelector('link[rel="canonical"]')
+  ?.setAttribute("href", window.location.href);
   
   // MAIN CONTENT
   document.getElementById("businessName").textContent = b.name;
@@ -194,4 +223,4 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
     relatedGrid.appendChild(card);
   });
-}
+        }
