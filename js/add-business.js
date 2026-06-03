@@ -65,7 +65,16 @@ if (form) {
     const town = document.getElementById("town").value;
 
     const phone = document.getElementById("phone").value.trim();
-    const website = document.getElementById("website").value.trim();
+    let website = document.getElementById("website").value.trim();
+
+// Add https:// automatically
+if (
+  website &&
+  !website.startsWith("http://") &&
+  !website.startsWith("https://")
+) {
+  website = `https://${website}`;
+}
     const address = document.getElementById("address").value.trim();
 
     const description = document.getElementById("description").value.trim();
