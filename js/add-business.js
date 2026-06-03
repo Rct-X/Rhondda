@@ -11,6 +11,29 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");
 }
 
+const categorySelect = document.getElementById("category");
+const wasteLicenceGroup = document.getElementById("wasteLicenceGroup");
+const wasteLicenceInput = document.getElementById("wasteLicence");
+
+const wasteCategories = [
+  "Waste Collection",
+  "Removals"
+];
+
+function toggleWasteLicenceField() {
+  const selectedCategory = categorySelect.value;
+
+  if (wasteCategories.includes(selectedCategory)) {
+    wasteLicenceGroup.style.display = "block";
+    wasteLicenceInput.required = true;
+  } else {
+    wasteLicenceGroup.style.display = "none";
+    wasteLicenceInput.required = false;
+    wasteLicenceInput.value = "";
+  }
+}
+
+categorySelect.addEventListener("change", toggleWasteLicenceField);
 if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -26,9 +49,20 @@ if (form) {
     const address = document.getElementById("address").value.trim();
     const description = document.getElementById("description").value.trim();
     const extraKeywords = document.getElementById("extraKeywords").value.trim();
+  const wasteLicence = document.getElementById("wasteLicence").value.trim();
     const consent = document.getElementById("consent").checked;
 
-    if (!name || !category || !town || !description || !consent) {
+    if (!name || !category || !town || !description || !consent) 
+    if (
+  wasteCategories.includes(category) &&
+  !wasteLicence
+) {
+  formMessage.textContent =
+    "Please enter your waste carrier licence number.";
+
+  formMessage.classList.add("error");
+  return;
+    }{
       formMessage.textContent = "Please fill in all required fields.";
       formMessage.classList.add("error");
       return;
@@ -77,7 +111,8 @@ if (form) {
           website,
           address,
           description,
-          extraKeywords
+          extraKeywords,
+          wasteLicence
         })
       });
 
