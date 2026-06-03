@@ -9,7 +9,7 @@ async function loadFirebaseConfig() {
 let db;
 
 // ===============================
-// READ URL PARAMETERS
+// READ URL PATH PARAMETERS
 // ===============================
 function getPathParams() {
   const parts = window.location.pathname.split("/").filter(Boolean);
@@ -29,7 +29,6 @@ function getPathParams() {
   db = firebase.firestore();
 
   const page = getPathParams();
-loadBusiness(page.category, page.town, page.slug);
 
   if (!page.category || !page.town || !page.slug) {
     console.error("Missing URL parameters");
@@ -170,7 +169,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
   results.forEach(b => {
     const card = document.createElement("a");
-    card.href = `/directory/business.html?c=${b.categorySlug}&t=${b.townSlug}&s=${b.slug}`;
+    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
     card.className = "related-card";
 
     card.innerHTML = `
