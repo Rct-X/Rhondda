@@ -134,17 +134,73 @@ async function loadPending() {
 
       item.innerHTML = `
         <h3>${b.name || "No name"}</h3>
-        <p>${b.category || ""} • ${b.town || ""}</p>
 
-        ${b.description ? `<p>${b.description}</p>` : ""}
+        <p><strong>Category:</strong> ${b.category || "N/A"}</p>
 
-        <div>
-          ${b.phone ? `<a href="tel:${b.phone}">${b.phone}</a>` : ""}
-          ${b.website ? `<a href="${b.website}" target="_blank">${b.website}</a>` : ""}
+        <p><strong>Town:</strong> ${b.town || "N/A"}</p>
+
+        <p><strong>Phone:</strong> ${b.phone || "N/A"}</p>
+
+        <p>
+          <strong>Website:</strong>
+          ${
+            b.website
+              ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer">${b.website}</a>`
+              : "N/A"
+          }
+        </p>
+
+        <p><strong>Address:</strong> ${b.address || "N/A"}</p>
+
+        <p>
+          <strong>Description:</strong><br>
+          ${b.description || "N/A"}
+        </p>
+
+        ${
+          b.wasteLicence
+            ? `
+              <p>
+                <strong>Waste Licence:</strong>
+                ${b.wasteLicence}
+              </p>
+            `
+            : ""
+        }
+
+        ${
+          b.keywords?.length
+            ? `
+              <p>
+                <strong>Keywords:</strong>
+                ${b.keywords.join(", ")}
+              </p>
+            `
+            : ""
+        }
+
+        ${
+          b.createdAt
+            ? `
+              <p>
+                <strong>Submitted:</strong>
+                ${new Date(b.createdAt.seconds * 1000).toLocaleString()}
+              </p>
+            `
+            : ""
+        }
+
+        <div class="pending-actions">
+
+          <button onclick="approveBusiness('${id}')">
+            Approve
+          </button>
+
+          <button onclick="rejectBusiness('${id}')">
+            Reject
+          </button>
+
         </div>
-
-        <button onclick="approveBusiness('${id}')">Approve</button>
-        <button onclick="rejectBusiness('${id}')">Reject</button>
       `;
 
       list.appendChild(item);
@@ -155,7 +211,6 @@ async function loadPending() {
     list.innerHTML = "<p>Error loading submissions.</p>";
   }
 }
-
 // ===============================
 // APPROVE / REJECT
 // ===============================
