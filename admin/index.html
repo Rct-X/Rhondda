@@ -40,7 +40,40 @@
     <h2>Pending Submissions</h2>
     <div id="pendingList" class="pending-list"></div>
   </section>
+<section id="analyticsSection" class="admin-card" style="display:none;">
 
+  <h2>Analytics Dashboard</h2>
+
+  <div class="filters">
+    <button onclick="setRange(1)" id="f1">Today</button>
+    <button onclick="setRange(7)" id="f7">7 Days</button>
+    <button onclick="setRange(30)" id="f30">30 Days</button>
+  </div>
+
+  <br>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2>Page Views</h2>
+      <div id="totalVisits">Loading...</div>
+    </div>
+
+    <div class="card">
+      <h2>Total Clients</h2>
+      <div id="totalClients">Loading...</div>
+    </div>
+
+  </div>
+
+  <br><br>
+
+  <div class="card">
+    <h2>Client Analytics</h2>
+    <div id="clients"></div>
+  </div>
+
+</section>
 </main>
 
 <script src="admin.js"></script>
