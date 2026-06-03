@@ -11,12 +11,12 @@ let db;
 // ===============================
 // READ URL PARAMETERS
 // ===============================
-function getParams() {
-  const params = new URLSearchParams(window.location.search);
+function getPathParams() {
+  const parts = window.location.pathname.split("/").filter(Boolean);
   return {
-    category: params.get("c"),
-    town: params.get("t"),
-    slug: params.get("s")
+    category: parts[1],
+    town: parts[2],
+    slug: parts[3]
   };
 }
 
@@ -28,7 +28,8 @@ function getParams() {
   firebase.initializeApp(config);
   db = firebase.firestore();
 
-  const page = getParams();
+  const page = getPathParams();
+loadBusiness(page.category, page.town, page.slug);
 
   if (!page.category || !page.town || !page.slug) {
     console.error("Missing URL parameters");
