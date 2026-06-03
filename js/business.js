@@ -63,6 +63,21 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`
   );
 
+// ===============================
+// DYNAMIC OG IMAGE
+// ===============================
+const ogUrl = `https://rctx.co.uk/.netlify/functions/og?category=${b.categorySlug}`;
+
+document.getElementById("ogImage")?.setAttribute("content", ogUrl);
+document.querySelector('meta[property="og:url"]')?.setAttribute(
+  "content",
+  window.location.href
+);
+document.querySelector('link[rel="canonical"]')?.setAttribute(
+  "href",
+  window.location.href
+);
+  
   // MAIN CONTENT
   document.getElementById("businessName").textContent = b.name;
   document.getElementById("businessCategory").textContent = b.category;
