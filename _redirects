@@ -1,6 +1,2 @@
-# Business pages
-/directory/:category/:town/:slug    /directory/business.html    200
-
-# Category pages
-/directory/:category                /directory/:category.html   200
-/directory/:category/*              /directory/:category.html   200
+/directory/:category/:town/:slug   /directory/business.html   200
+/directory/*                       /directory.html            200
