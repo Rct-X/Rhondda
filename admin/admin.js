@@ -1,20 +1,22 @@
 // ===============================
-// STATE
-// ===============================
-let db, auth;
-let RANGE = 30;
-window.__visits = [];
-
-// ===============================
-// FIREBASE INIT
+// LOAD FIREBASE CONFIG + INIT
 // ===============================
 async function initFirebase() {
+
+  console.log("[initFirebase] Starting Firebase initialisation…");
+
   const res = await fetch("/.netlify/functions/firebaseConfig");
-  if (!res.ok) throw new Error("Firebase config failed");
+
+  if (!res.ok) {
+    console.error("[initFirebase] Failed to load Firebase config");
+    throw new Error("Failed to load Firebase config");
+  }
 
   const config = await res.json();
 
-  if (!firebase.apps.length) firebase.initializeApp(config);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+  }
 
   return {
     auth: firebase.auth(),
@@ -22,93 +24,136 @@ async function initFirebase() {
   };
 }
 
+let db;
+let auth;
+
 // ===============================
-// BOOTSTRAP
+// ELEMENTS
+// ===============================
+const loginSection = document.getElementById("loginSection");
+const dashboardSection = document.getElementById("dashboardSection");
+const loginBtn = document.getElementById("loginBtn");
+const loginMessage = document.getElementById("loginMessage");
+
+// ===============================
+// INIT APP
 // ===============================
 (async () => {
+
   try {
-    ({ auth, db } = await initFirebase());
+
+    const services = await initFirebase();
+
+    auth = services.auth;
+    db = services.db;
+
     setupAuth();
-  } catch (e) {
-    console.error(e);
+
+  } catch (err) {
+    console.error(err);
+    loginMessage.textContent = "System error. Please refresh.";
   }
+
 })();
 
 // ===============================
 // AUTH
 // ===============================
 function setupAuth() {
-  const loginBtn = document.getElementById("loginBtn");
-  const loginSection = document.getElementById("loginSection");
-  const dashboard = document.getElementById("dashboardSection");
 
-  loginBtn.onclick = async () => {
+  loginBtn.addEventListener("click", async () => {
+
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value.trim();
+
+    loginMessage.textContent = "";
+
     try {
-      const email = adminEmail.value.trim();
-      const pass = adminPassword.value.trim();
-      await auth.signInWithEmailAndPassword(email, pass);
-    } catch {
-      loginMessage.textContent = "Invalid login";
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (err) {
+      loginMessage.textContent = "Invalid login.";
     }
-  };
 
-  auth.onAuthStateChanged(async user => {
-    if (!user) {
+  });
+
+  // ✅ FIXED BLOCK (THIS WAS BROKEN BEFORE)
+  auth.onAuthStateChanged((user) => {
+
+    if (user) {
+
+      loginSection.style.display = "none";
+      dashboardSection.style.display = "block";
+
+      const analyticsSection = document.getElementById("analyticsSection");
+      if (analyticsSection) analyticsSection.style.display = "block";
+
+      loadPending().catch(console.error);
+      loadAnalytics().catch(console.error);
+
+    } else {
+
       loginSection.style.display = "block";
-      dashboard.style.display = "none";
+      dashboardSection.style.display = "none";
+    }
+
+  });
+}
+
+// ===============================
+// LOAD PENDING
+// ===============================
+async function loadPending() {
+
+  const list = document.getElementById("pendingList");
+
+  if (!db) return;
+
+  list.innerHTML = "<p>Loading…</p>";
+
+  try {
+
+    const snap = await db
+      .collection("pending_submissions")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    if (snap.empty) {
+      list.innerHTML = "<p>No pending submissions.</p>";
       return;
     }
 
-    loginSection.style.display = "none";
-    dashboard.style.display = "block";
+    list.innerHTML = "";
 
-    loadPending();
-    loadAnalytics();
-  });
-}
+    snap.forEach(doc => {
 
-// ===============================
-// PENDING BUSINESSES
-// ===============================
-async function loadPending() {
-  const list = document.getElementById("pendingList");
-  list.innerHTML = "Loading...";
+      const b = doc.data();
+      const id = doc.id;
 
-  const snap = await db.collection("pending_submissions")
-    .orderBy("createdAt", "desc")
-    .get();
+      const item = document.createElement("div");
+      item.className = "pending-item";
 
-  list.innerHTML = "";
+      item.innerHTML = `
+        <h3>${b.name || "No name"}</h3>
+        <p>${b.category || ""} • ${b.town || ""}</p>
 
-  snap.forEach(doc => {
-    const b = doc.data();
+        ${b.description ? `<p>${b.description}</p>` : ""}
 
-    list.innerHTML += `
-      <div class="pending-item">
-        <h3>${b.name}</h3>
-        <p>${b.category} • ${b.town}</p>
+        <div>
+          ${b.phone ? `<a href="tel:${b.phone}">${b.phone}</a>` : ""}
+          ${b.website ? `<a href="${b.website}" target="_blank">${b.website}</a>` : ""}
+        </div>
 
-        ${b.phone ? `<p>📞 <a href="tel:${b.phone}">${b.phone}</a></p>` : ""}
+        <button onclick="approveBusiness('${id}')">Approve</button>
+        <button onclick="rejectBusiness('${id}')">Reject</button>
+      `;
 
-        ${b.website ? `
-          <p>🌐 <a href="${formatUrl(b.website)}" target="_blank">Visit</a></p>
-        ` : ""}
+      list.appendChild(item);
+    });
 
-        ${b.wasteLicence ? `<p>Licence: ${b.wasteLicence}</p>` : ""}
-
-        <button onclick="approveBusiness('${doc.id}')">Approve</button>
-        <button onclick="rejectBusiness('${doc.id}')">Reject</button>
-      </div>
-    `;
-  });
-}
-
-// ===============================
-// WEBSITE FIX (IMPORTANT FIX YOU ASKED)
-// ===============================
-function formatUrl(url) {
-  if (!url) return "";
-  return url.startsWith("http") ? url : `https://${url}`;
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = "<p>Error loading submissions.</p>";
+  }
 }
 
 // ===============================
@@ -121,7 +166,7 @@ async function approveBusiness(id) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      "Authorization": `Bearer ${token}`
     },
     body: JSON.stringify({ id })
   });
@@ -136,7 +181,7 @@ async function rejectBusiness(id) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      "Authorization": `Bearer ${token}`
     },
     body: JSON.stringify({ id })
   });
@@ -145,80 +190,134 @@ async function rejectBusiness(id) {
 }
 
 // ===============================
-// ANALYTICS
+// ANALYTICS STATE
 // ===============================
-async function loadAnalytics() {
-  const token = await auth.currentUser.getIdToken();
+let RANGE = 30;
 
-  const res = await fetch("/.netlify/functions/getAnalytics", {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
-  window.__visits = await res.json();
-  renderAnalytics();
-}
-
-function setRange(days) {
+window.setRange = function(days){
   RANGE = days;
-  renderAnalytics();
+
+  document.querySelectorAll(".filters button")
+    .forEach(b => b.classList.remove("active"));
+
+  document.getElementById("f" + days).classList.add("active");
+
+  renderDashboard(window.__visits || []);
+};
+
+function detectSource(referrer){
+  if(!referrer || referrer === "direct") return "Direct";
+
+  const r = referrer.toLowerCase();
+
+  if(r.includes("google")) return "Google";
+  if(r.includes("facebook")) return "Facebook";
+  if(r.includes("instagram")) return "Instagram";
+  if(r.includes("tiktok")) return "TikTok";
+  if(r.includes("linkedin")) return "LinkedIn";
+  if(r.includes("twitter") || r.includes("x.com")) return "X / Twitter";
+  if(r.includes("whatsapp")) return "WhatsApp";
+  if(r.includes("rctx.co.uk")) return "RCTX Website";
+
+  return "Other";
 }
 
-function renderAnalytics() {
-  const visits = window.__visits.filter(v =>
-    Date.now() - (v.timestamp || 0) < RANGE * 86400000
-  );
+function filterByDate(visits, days){
+  const now = Date.now();
+  return visits.filter(v => now - (v.timestamp || 0) <= days * 86400000);
+}
 
-  totalVisits.innerText = visits.length;
+function renderDashboard(visits){
+
+  visits = filterByDate(visits, RANGE);
+
+  document.getElementById("totalVisits").innerText = visits.length;
 
   const clients = {};
 
   visits.forEach(v => {
-    const id = v.clientId || "unknown";
 
-    clients[id] ||= {
-      total: 0,
-      mobile: 0,
-      sources: {},
-      events: { whatsapp: 0, phone: 0, form: 0 }
-    };
+    const c = v.clientId || "unknown";
 
-    const c = clients[id];
-    c.total++;
+    if(!clients[c]){
+      clients[c] = {
+        total:0,
+        mobile:0,
+        pages:{},
+        sources:{},
+        events:{ whatsapp:0, phone:0, form:0 }
+      };
+    }
 
-    if (v.device === "Mobile") c.mobile++;
+    clients[c].total++;
 
-    const src = detectSource(v.referrer);
-    c.sources[src] = (c.sources[src] || 0) + 1;
+    const source = detectSource(v.referrer);
+    clients[c].sources[source] = (clients[c].sources[source] || 0) + 1;
 
-    if (v.event === "whatsapp_click") c.events.whatsapp++;
-    if (v.event === "phone_tap") c.events.phone++;
-    if (v.event === "form_submit") c.events.form++;
+    if(v.device === "Mobile") clients[c].mobile++;
+
+    const page = v.page || "/";
+    clients[c].pages[page] = (clients[c].pages[page] || 0) + 1;
+
+    if(v.event === "whatsapp_click") clients[c].events.whatsapp++;
+    if(v.event === "phone_tap") clients[c].events.phone++;
+    if(v.event === "form_submit") clients[c].events.form++;
   });
 
-  totalClients.innerText = Object.keys(clients).length;
+  document.getElementById("totalClients").innerText =
+    Object.keys(clients).length;
 
-  clientsDiv.innerHTML = Object.entries(clients)
-    .map(([id, c]) => `
+  const wrap = document.getElementById("clients");
+  wrap.innerHTML = "";
+
+  Object.entries(clients).forEach(([name,data]) => {
+
+    const topPage =
+      Object.entries(data.pages).sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+
+    const mobilePercent =
+      data.total ? Math.round((data.mobile/data.total)*100) : 0;
+
+    const topSources =
+      Object.entries(data.sources)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,5)
+        .map(([s,c])=>`<li>${s}: ${c}</li>`)
+        .join("");
+
+    wrap.innerHTML += `
       <div class="client">
-        <h3>${id}</h3>
-        <p>${c.total} visits</p>
-        <p>${Math.round((c.mobile / c.total) * 100)}% mobile</p>
+        <h3>${name}</h3>
+        <div>${data.total} visits</div>
+        <div>${topPage}</div>
+        <div>${mobilePercent}% mobile</div>
+        <div>WhatsApp: ${data.events.whatsapp}</div>
+        <div>Phone: ${data.events.phone}</div>
+        <div>Forms: ${data.events.form}</div>
+        <ul>${topSources}</ul>
       </div>
-    `).join("");
+    `;
+  });
 }
 
-// ===============================
-// SOURCE DETECTION
-// ===============================
-function detectSource(r = "") {
-  r = r.toLowerCase();
-  if (!r || r === "direct") return "Direct";
-  if (r.includes("google")) return "Google";
-  if (r.includes("facebook")) return "Facebook";
-  if (r.includes("instagram")) return "Instagram";
-  if (r.includes("tiktok")) return "TikTok";
-  if (r.includes("linkedin")) return "LinkedIn";
-  if (r.includes("twitter") || r.includes("x.com")) return "X";
-  if (r.includes("whatsapp")) return "WhatsApp";
-  return "Other";
-                      }
+async function loadAnalytics(){
+
+  try{
+
+    const token = await auth.currentUser.getIdToken();
+
+    const res = await fetch("/.netlify/functions/getAnalytics", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if(!res.ok) throw new Error("Analytics failed");
+
+    const visits = await res.json();
+
+    window.__visits = visits;
+    renderDashboard(visits);
+
+  } catch(err){
+    console.error(err);
+  }
+}
