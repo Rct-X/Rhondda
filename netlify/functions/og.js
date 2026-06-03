@@ -1,6 +1,4 @@
-import { Resvg } from "@resvg/resvg-js";
-
-export async function handler(event) {
+exports.handler = async (event) => {
   const category = event.queryStringParameters.category || "business";
 
   const title = `Find Local ${category.replace(/-/g, " ")} in Rhondda Cynon Taf`;
@@ -13,13 +11,12 @@ export async function handler(event) {
   </svg>
   `;
 
-  const resvg = new Resvg(svg);
-  const pngData = resvg.render().asPng();
-
   return {
     statusCode: 200,
-    headers: { "Content-Type": "image/png" },
-    body: pngData.toString("base64"),
-    isBase64Encoded: true
+    headers: {
+      "Content-Type": "image/svg+xml",
+      "Cache-Control": "public, max-age=31536000"
+    },
+    body: svg
   };
-}
+};
