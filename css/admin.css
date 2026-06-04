@@ -67,3 +67,71 @@
   margin-top: .75rem;
   font-size: .9rem;
 }
+/* ===============================
+   ANALYTICS DELETE TOOLS
+=============================== */
+
+.analytics-actions{
+display:flex;
+flex-wrap:wrap;
+gap:.75rem;
+margin:1rem 0 1.5rem;
+align-items:center;
+}
+
+.analytics-actions input[type="date"]{
+padding:.8rem 1rem;
+border:1px solid rgba(148,163,184,.25);
+border-radius:12px;
+background:#fff;
+color:#0f172a;
+font-size:.95rem;
+min-height:46px;
+outline:none;
+}
+
+.analytics-actions input[type="date"]:focus{
+border-color:#2563eb;
+box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+.analytics-actions button{
+padding:.85rem 1.1rem;
+border:none;
+border-radius:12px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+font-size:.92rem;
+cursor:pointer;
+transition:.2s ease;
+min-height:46px;
+}
+
+.analytics-actions button:hover{
+transform:translateY(-1px);
+opacity:.95;
+}
+
+.analytics-actions .danger{
+background:#dc2626;
+}
+
+.analytics-actions .danger:hover{
+background:#b91c1c;
+}
+
+/* Mobile */
+@media (max-width:640px){
+
+.analytics-actions{
+flex-direction:column;
+align-items:stretch;
+}
+
+.analytics-actions input,
+.analytics-actions button{
+width:100%;
+}
+
+}
