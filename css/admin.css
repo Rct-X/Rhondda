@@ -5,8 +5,9 @@
 }
 
 .admin-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: auto;
+  padding: 0 1rem;
 }
 
 .admin-card {
@@ -135,3 +136,25 @@ width:100%;
 }
 
 }
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:.85rem 1.1rem;
+border:none;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+transition:.2s ease;
+}
+
+.btn-primary{
+background:#2563eb;
+color:#fff;
+}
+
+.btn-primary:hover{
+opacity:.95;
+transform:translateY(-1px);
+}
+
