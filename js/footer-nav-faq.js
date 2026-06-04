@@ -1,26 +1,32 @@
 // =========================
-// MOBILE MENU
+// MOBILE MENU (HAMBURGER)
 // =========================
 
 const btn = document.getElementById("hamburgerBtn");
 const menu = document.getElementById("mobileMenu");
 
+function closeMenu() {
+    menu.classList.remove("open");
+    btn.classList.remove("open");
+    btn.setAttribute("aria-expanded", "false");
+
+    // also close all nav groups when menu closes
+    document.querySelectorAll(".nav-group").forEach(g => {
+        g.classList.remove("open");
+    });
+}
+
+function openMenu() {
+    menu.classList.add("open");
+    btn.classList.add("open");
+    btn.setAttribute("aria-expanded", "true");
+}
+
 if (btn && menu) {
 
-    function closeMenu() {
-        menu.classList.remove("open");
-        btn.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
-    }
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
 
-    function openMenu() {
-        menu.classList.add("open");
-        btn.classList.add("open");
-        btn.setAttribute("aria-expanded", "true");
-    }
-
-    // Toggle menu
-    btn.addEventListener("click", () => {
         const isOpen = menu.classList.contains("open");
         isOpen ? closeMenu() : openMenu();
     });
@@ -33,16 +39,48 @@ if (btn && menu) {
         }
     });
 
-    // Close on ESC
+    // ESC key closes everything
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeMenu();
     });
 
-    // Close when nav link clicked
+    // Close menu when clicking normal links
     menu.querySelectorAll("a").forEach(link => {
         link.addEventListener("click", closeMenu);
     });
 }
+
+
+// =========================
+// MOBILE NAV GROUP TOGGLE
+// =========================
+
+document.querySelectorAll(".nav-group-title").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        const group = btn.closest(".nav-group");
+        if (!group) return;
+
+        const isOpen = group.classList.contains("open");
+
+        // close other groups (accordion behaviour)
+        document.querySelectorAll(".nav-group").forEach(g => {
+            if (g !== group) {
+                g.classList.remove("open");
+                const otherBtn = g.querySelector(".nav-group-title");
+                if (otherBtn) otherBtn.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        // toggle current group
+        group.classList.toggle("open", !isOpen);
+
+        // ARIA state update
+        btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+});
+
 
 // =========================
 // FAQ ACCORDION
@@ -50,23 +88,26 @@ if (btn && menu) {
 
 document.querySelectorAll(".card-faq").forEach(item => {
     const question = item.querySelector(".faq-question");
+    const icon = item.querySelector(".faq-icon");
+
+    if (!question) return;
 
     question.addEventListener("click", () => {
         const isOpen = item.classList.contains("open");
 
-        // Close all
         document.querySelectorAll(".card-faq").forEach(i => {
             i.classList.remove("open");
-            i.querySelector(".faq-icon").textContent = "+";
+            const iIcon = i.querySelector(".faq-icon");
+            if (iIcon) iIcon.textContent = "+";
         });
 
-        // Open selected
         if (!isOpen) {
             item.classList.add("open");
-            item.querySelector(".faq-icon").textContent = "–";
+            if (icon) icon.textContent = "–";
         }
     });
 });
+
 
 // =========================
 // REVEAL ON SCROLL
@@ -76,22 +117,22 @@ const revealItems = document.querySelectorAll(".card-service, .card-step");
 
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
+        if (!entry.isIntersecting) return;
 
-            if (entry.target.classList.contains("card-service")) {
-                setTimeout(() => {
-                    entry.target.classList.add("show");
-                }, index * 120);
-            } else {
+        if (entry.target.classList.contains("card-service")) {
+            setTimeout(() => {
                 entry.target.classList.add("show");
-            }
-
-            revealObserver.unobserve(entry.target);
+            }, index * 120);
+        } else {
+            entry.target.classList.add("show");
         }
+
+        revealObserver.unobserve(entry.target);
     });
 }, { threshold: 0.15 });
 
 revealItems.forEach(item => revealObserver.observe(item));
+
 
 // =========================
 // YEAR AUTO-UPDATE
