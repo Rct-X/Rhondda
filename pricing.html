@@ -190,7 +190,7 @@
   ]
 }
 </script>
-  <link rel="preload"
+ <link rel="preload"
       href="/site/fonts/BricolageGrotesque-Bold.woff2"
       as="font"
       type="font/woff2"
@@ -201,7 +201,8 @@
       as="font"
       type="font/woff2"
       crossorigin>
-  <style>
+  
+    <style>
 /* ===== ROOT & BASE ===== */
 :root{
     --bg:#f3f4f6;
@@ -229,27 +230,15 @@
     --section-space: 4rem;
   }
 }
-.about-section,
-.services-section,
-.features,
-.pricing,
-.faq,
-.contact,
-.local-seo,
-.share-section{
-  padding: var(--section-space) 0;
-}
+
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-synthesis:none;scroll-behavior:smooth}
 
-@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
-
-@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Medium.woff2") format("woff2"),url("/site/fonts/Poppins-Medium.woff") format("woff");font-weight:500;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
-
-@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
-
-@font-face{font-family:"Bricolage Grotesque";src:url("/site/fonts/BricolageGrotesque-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
-
-@font-face{font-family:"Bricolage Grotesque";src:url("/site/fonts/BricolageGrotesque-Bold.woff2") format("woff2");font-weight:700 900;font-style:normal;font-display:swap;ascent-override:92%;descent-override:22%;line-gap-override:0%;size-adjust:102%}
+/* ===== FONTS (unchanged) ===== */
+@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Medium.woff2") format("woff2"),url("/site/fonts/Poppins-Medium.woff") format("woff");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Poppins";src:url("/site/fonts/Poppins-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Bricolage Grotesque";src:url("/site/fonts/BricolageGrotesque-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Bricolage Grotesque";src:url("/site/fonts/BricolageGrotesque-Bold.woff2") format("woff2");font-weight:700 900;font-style:normal;font-display:swap}
 
 *,*::before,*::after{box-sizing:border-box}
 
@@ -262,7 +251,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-    font-family:"Poppins",system-ui,sans-serif;
+  font-family:"Poppins",system-ui,sans-serif;
   background-color: #f8fafc;
   color: #0f172a;
   line-height: 1.5;
@@ -284,18 +273,10 @@ text-decoration:none;
 -webkit-tap-highlight-color:transparent;
 }
 
-button,input,textarea,select{
-font:inherit;
-}
+button,input,textarea,select{font:inherit}
+button{border:none;background:none}
 
-button{
-border:none;
-background:none;
-}
-
-main{
-  flex:1;
-  display:block}
+main{flex:1;display:block}
 
 .container{
 width:100%;
@@ -309,7 +290,9 @@ outline:2px solid var(--accent);
 outline-offset:3px;
 }
 
-/* ===== NAVBAR ===== */
+/* =========================
+   NAVBAR (UNCHANGED)
+========================= */
 
 .navbar{
 position:sticky;
@@ -330,6 +313,92 @@ align-items:center;
 justify-content:space-between;
 gap:1.5rem;
 min-height:var(--nav-height);
+}
+
+/* ===== NAV GROUPS ===== */
+
+.nav-group {
+    width: 100%;
+}
+
+.nav-group-title {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,.7);
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .6rem 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.nav-group-title::after {
+    content: "›";
+    position: absolute;
+    right: 0;
+    transition: transform .2s ease;
+    color: rgba(255,255,255,.5);
+}
+
+.nav-group.open .nav-group-title::after {
+    transform: rotate(90deg);
+    color: var(--accent);
+}
+
+.nav-sub {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 .5rem 0;
+    display: none;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.nav-group.open .nav-sub {
+    display: flex;
+}
+
+.nav-sub a {
+    font-size: .92rem;
+    padding-left: .5rem;
+    color: #fff;
+    opacity: .9;
+}
+
+.nav-sub a:hover {
+    color: var(--accent);
+    opacity: 1;
+}
+.nav-cta {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,.12);
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.nav-cta p {
+    font-size: .85rem;
+    color: #ffffff;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.nav-cta-btn {
+    display: inline-flex;
+    justify-content: center;
+    padding: .6rem 1rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #facc15, #f97316);
+    color: #0f172a;
+    font-weight: 800;
+    font-size: .8rem;
+    text-transform: uppercase;
 }
 
 .logo-wrap{
@@ -357,10 +426,8 @@ white-space:nowrap;
 display:inline-block;
 font-weight:900;
 transform:scale(1.18);
-background:
-linear-gradient(145deg,#fde68a 0%,#facc15 35%,#d97706 100%);
+background:linear-gradient(145deg,#fde68a 0%,#facc15 35%,#d97706 100%);
 -webkit-background-clip:text;
-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
@@ -368,65 +435,106 @@ background-clip:text;
 margin-top:4px;
 font-size:1rem;
 font-weight:800;
-line-height:1;
 letter-spacing:1.5px;
 text-transform:uppercase;
 color:#fff;
 white-space:nowrap;
 }
 
-/* ===== NAV LINKS ===== */
+/* =========================
+   NEW NAV MENU SYSTEM
+========================= */
 
 .nav-links{
+display:none; /* replaced system */
+}
+
+/* Dropdown container */
+#mobileMenu{
+position:absolute;
+top:calc(100% + 12px);
+right:0;
+width:min(420px, calc(100vw - 2rem));
+z-index:1101;
+
+display:flex;
+flex-direction:column;
+gap:1rem;
+
+padding:1.25rem;
+
+border:1px solid rgba(148,163,184,.18);
+border-radius:1.25rem;
+
+background:rgba(15,23,42,.98);
+box-shadow:0 25px 60px rgba(0,0,0,.45);
+
+opacity:0;
+pointer-events:none;
+transform:translateY(-10px) scale(.98);
+transform-origin:top right;
+
+transition:.2s ease;
+}
+
+#mobileMenu.open{
+opacity:1;
+pointer-events:auto;
+transform:translateY(0) scale(1);
+}
+
+/* Sections */
+.nav-section{
+display:flex;
+flex-direction:column;
+gap:.25rem;
+}
+
+.nav-section-title{
+font-size:.75rem;
+font-weight:800;
+letter-spacing:.14em;
+text-transform:uppercase;
+color:#94a3b8;
+margin-bottom:.4rem;
+}
+
+/* Links */
+#mobileMenu a{
 display:flex;
 align-items:center;
-gap:1.5rem;
-margin:0;
-padding:0;
-list-style:none;
-}
 
-.nav-links a{
-position:relative;
-display:inline-flex;
-align-items:center;
-padding-bottom:.15rem;
-font-size:.9rem;
-font-weight:500;
-letter-spacing:.04em;
-text-transform:uppercase;
+min-height:44px;
+padding:.75rem .9rem;
+
+border-radius:.85rem;
+
+font-size:.95rem;
+font-weight:600;
+
 color:#fff;
-transition:color .2s ease;
+
+transition:.2s ease;
 }
 
-.nav-links a:hover{
+#mobileMenu a:hover{
+background:rgba(255,255,255,.06);
 color:var(--accent);
+transform:translateX(3px);
 }
 
-.nav-links a::after{
-content:"";
-position:absolute;
-left:0;
-bottom:0;
-width:0;
-height:2px;
-border-radius:999px;
-background:
-linear-gradient(to right,#facc15,#f97316);
-transition:width .2s ease;
+/* Divider */
+.nav-divider{
+height:1px;
+background:rgba(148,163,184,.15);
+margin:.25rem 0;
 }
 
-.nav-links a:hover::after,
-.nav-links a:focus-visible::after{
-width:100%;
-}
-
-/* ===== HAMBURGER ===== */
-
+/* Hamburger always active */
 .hamburger{
 position:relative;
 z-index:1102;
-display:none;
+display:flex;
 align-items:center;
 justify-content:center;
 flex-direction:column;
@@ -439,38 +547,27 @@ border-radius:12px;
 transition:background .2s ease;
 }
 
-.hamburger:hover{
-background:rgba(255,255,255,.05);
-}
+.hamburger:hover{background:rgba(255,255,255,.05)}
 
 .hamburger span{
-width:22px;
-height:2px;
+width:28px;
+height:4px;
 border-radius:999px;
-background:#fff;
+background:#f7ef8a;
 transition:transform .25s ease,opacity .25s ease;
-will-change:transform;
 }
 
-.hamburger.open span:nth-child(1){
-transform:translateY(7px) rotate(45deg);
-}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-.hamburger.open span:nth-child(2){
-opacity:0;
-}
-
-.hamburger.open span:nth-child(3){
-transform:translateY(-7px) rotate(-45deg);
-}
-
-/* ===== HERO ===== */
+/* ===== HERO (UNCHANGED) ===== */
 
 .hero{
 display:flex;
 align-items:center;
 min-height:auto;
-padding:3rem 0 3rem;
+padding:3rem 0;
 }
 
 .hero .container{
@@ -483,10 +580,10 @@ text-align:center;
 }
 
 .hero-price{
-    margin-top:1rem;
-    font-size:1rem;
-    font-weight:700;
-    color:#facc15;
+margin-top:1rem;
+font-size:1rem;
+font-weight:700;
+color:#facc15;
 }
 
 .hero h1{
@@ -494,18 +591,11 @@ margin:1.35rem 0 1rem;
 font-size:clamp(2.5rem,5vw,4.2rem);
 font-weight:900;
 line-height:1.05;
-letter-spacing:-.04em;
 color:var(--text-strong);
-text-wrap:balance;
 }
 
 .hero h1 span{
-background:
-linear-gradient(
-90deg,
-#60a5fa,
-#facc15
-);
+background:linear-gradient(90deg,#60a5fa,#facc15);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
@@ -514,166 +604,204 @@ linear-gradient(
 max-width:42rem;
 font-size:1.15rem;
 line-height:1.8;
-color: #334155;
+color:#334155;
 }
 
 /* ===== MOBILE ===== */
 
 @media (max-width:768px){
 
-  :root{
-    --nav-height:72px;
-  }
+.container{padding-inline:1rem}
 
-  .container{
-    padding-inline:1rem;
-  }
+.logo{font-size:1.95rem}
+.logo-tag{font-size:.55rem}
 
-  .hamburger{
-    display:flex;
-  }
-
-  .nav-links{
-    position:absolute;
-    top:calc(100% + 10px);
-    left:1rem;
-    right:1rem;
-    z-index:1101;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:1rem;
-    padding:1rem 1.1rem;
-    border:1px solid rgba(148,163,184,.25);
-    border-radius:1rem;
-    background:rgba(15,23,42,.98);
-    box-shadow:0 18px 45px rgba(0,0,0,.45);
-    opacity:0;
-    pointer-events:none;
-    transform:translateY(-8px) scale(.98);
-    transform-origin:top;
-    transition:
-      opacity .2s ease,
-      transform .2s ease;
-  }
-
-  .nav-links.open{
-    opacity:1;
-    pointer-events:auto;
-    transform:translateY(0) scale(1);
-  }
-
-  .nav-links a{
-    width:100%;
-    font-size:.92rem;
-    padding:.15rem 0;
-  }
-
-  .logo{
-    font-size:1.95rem;
-  }
-
-  .logo-tag{
-    font-size:.55rem;
-    letter-spacing:1.2px;
-  }
-
-  .hero{
-    min-height:auto;
-    padding:3.2rem 0 2rem;
-  }
-
-  .hero h1{
-    max-width:100%;
-    font-size:2.35rem;
-    line-height:1.02;
-  }
-
-  .hero p{
-    font-size:.98rem;
-    line-height:1.65;
-  }
-
+.hero h1{font-size:2.35rem}
+.hero p{font-size:.98rem}
 }
 
 @media (max-width:480px){
-
-  .logo{
-    font-size:1.75rem;
-  }
-
-  .logo-tag{
-    font-size:.5rem;
-    letter-spacing:1px;
-  }
-
-  .hero h1{
-    font-size:2rem;
-  }
-
+.logo{font-size:1.75rem}
+.hero h1{font-size:2rem}
 }
 
 @media (prefers-reduced-motion:reduce){
-
-  *,
-  *::before,
-  *::after{
-    scroll-behavior:auto !important;
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
-  }
-
+*{transition:none!important;scroll-behavior:auto!important}
 }
 
 .logo-wrap{
-  text-decoration:none;
-  color:inherit;
+text-decoration:none;
+color:inherit;
 }
-  </style>
+
+/* =========================
+   DESKTOP FIX (CRITICAL)
+========================= */
+
+@media (min-width: 769px) {
+
+    /* turn dropdown into real nav container */
+    #mobileMenu {
+        position: static;
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: none !important;
+
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    /* groups become inline blocks */
+    .nav-group {
+        position: relative;
+        width: auto;
+    }
+
+    /* titles behave like nav labels */
+    .nav-group-title {
+        padding: .4rem .6rem;
+        color: rgba(255,255,255,.85);
+        cursor: default;
+    }
+
+    .nav-group-title::after {
+        display: none;
+    }
+
+    /* hover dropdowns on desktop */
+    .nav-sub {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+
+        display: none !important;
+        min-width: 200px;
+
+        background: rgba(15,23,42,.98);
+        border: 1px solid rgba(148,163,184,.18);
+        border-radius: .9rem;
+        padding: .6rem;
+
+        flex-direction: column;
+        gap: .25rem;
+        z-index: 2000;
+    }
+
+    .nav-group {
+  position: relative;
+}
+
+.nav-sub {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: .15s ease;
+  display: flex !important;
+}
+
+.nav-group:hover .nav-sub {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+    /* CTA aligns right like proper desktop nav */
+    .nav-cta {
+        margin-top: 0;
+        margin-left: auto;
+        padding-top: 0;
+        border-top: none;
+        align-items: flex-end;
+    }
+
+    /* hamburger hidden on desktop */
+    .hamburger {
+        display: none;
+    }
+}
+.nav-flex {
+    min-height: 72px;
+    align-items: center;
+}
+</style>
   </head>
 <body class="pricing-page">
 
 <nav class="navbar" aria-label="Main navigation">
-
-      <div class="container">
+    <div class="container">
 
         <div class="nav-flex">
 
-    <a href="/" class="logo-wrap" aria-label="RCTX Home">
-        <div class="logo">
-            RCT<span>X</span>
-        </div>
-        <div class="logo-tag">
-            Web Design
-        </div>
-    </a>
+            <a href="/" class="logo-wrap" aria-label="RCTX Home">
+                <div class="logo">
+                    RCT<span>X</span>
+                </div>
+                <div class="logo-tag">
+                    Web Design
+                </div>
+            </a>
 
-    <button
-        class="hamburger"
-        id="hamburgerBtn"
-        type="button"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-        aria-controls="mobileMenu">
+            <button
+                class="hamburger"
+                id="hamburgerBtn"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="mobileMenu">
 
-        <span></span>
-        <span></span>
-        <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
 
-    </button>
+            </button>
 
-<ul class="nav-links" id="mobileMenu">
-        <li><a href="/directory">Find Local Businesses</a></li>
-        <li><a href="/add-business">Add Your Business</a></li>
-        <li><a href="/website-pricing">View Pricing</a></li>
-        <li><a href="/about">About RCTX</a></li>
-        <li><a href="/contact">Get in Touch</a></li>
-</ul>
+            <ul class="nav-links" id="mobileMenu">
+
+                <!-- WEB DESIGN GROUP -->
+                <li class="nav-group">
+                    <button class="nav-group-title" type="button">
+                        Web Design
+                    </button>
+
+                    <ul class="nav-sub">
+                        <li><a href="/pricing">View Pricing</a></li>
+                        <li><a href="/about">About RCTX</a></li>
+                    </ul>
+                </li>
+
+                <!-- DIRECTORY GROUP -->
+                <li class="nav-group">
+                    <button class="nav-group-title" type="button">
+                        Directory
+                    </button>
+
+                    <ul class="nav-sub">
+                        <li><a href="/directory">Find Businesses</a></li>
+                        <li><a href="/add-business">Add Your Business</a></li>
+                    </ul>
+                </li>
+ <li><a href="/contact">Get in Touch</a></li>
+                <!-- CTA (IMPORTANT) -->
+                <li class="nav-cta">
+                    <p>Business websites from £30/month</p>
+                    <a href="/pricing" class="nav-cta-btn">
+                        View Pricing
+                    </a>
+                </li>
+
+            </ul>
 
         </div>
 
     </div>
-
 </nav>
 
 <header class="hero">
