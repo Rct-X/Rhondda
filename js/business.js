@@ -55,6 +55,23 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   }
 
   const b = snap.docs[0].data();
+  window.currentBusiness = b;
+
+// Dynamic OG tags (helps WhatsApp / Facebook / iMessage previews)
+document.querySelector('meta[property="og:title"]')?.setAttribute(
+  "content",
+  `${b.name} | ${b.category} in ${b.town}`
+);
+
+document.querySelector('meta[property="og:description"]')?.setAttribute(
+  "content",
+  `${b.name} - trusted ${b.category} in ${b.town}. View full details on RCTX Directory.`
+);
+
+document.querySelector('meta[property="og:url"]')?.setAttribute(
+  "content",
+  window.location.href
+);
 
   // SEO
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
@@ -257,11 +274,13 @@ document.addEventListener("click", async (e) => {
 
   if (e.target.id !== "shareBusinessBtn") return;
 
-  const shareData = {
-    title: document.title,
-    text: "Check out this local business on RCTX",
-    url: window.location.href
-  };
+  const b = window.currentBusiness || {};
+
+const shareData = {
+  title: `${b.name || "Local Business"} | ${b.category || ""} in ${b.town || ""}`,
+  text: `${b.name || "Check this business"} - ${b.category || ""} in ${b.town || ""}. View details, contact info and more on RCTX.`,
+  url: window.location.href
+};
 
   // MOBILE NATIVE SHARE
   if (navigator.share) {
