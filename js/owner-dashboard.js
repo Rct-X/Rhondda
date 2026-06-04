@@ -814,53 +814,128 @@ function loadPreview() {
   const h =
     business.hours || {};
 
-  const html = `
-    <h3>${business.name}</h3>
+  const gallery =
+    business.gallery || [];
 
-    <p>
+  const hoursHtml =
+    Object.entries(h)
+      .map(([day, value]) => `
+        <li>
+          <strong>${day}:</strong>
+          ${value || "Closed"}
+        </li>
+      `)
+      .join("");
+
+  const galleryHtml =
+    gallery.length
+      ? gallery.map(url => `
+          <img
+            src="${url}"
+            class="preview-gallery-img"
+          >
+        `).join("")
+      : "<p>No gallery images uploaded.</p>";
+
+  const html = `
+
+    <!-- LOGO -->
+    <div class="preview-logo-wrap">
+
+      ${
+        business.logoUrl
+          ? `
+            <img
+              src="${business.logoUrl}"
+              class="preview-logo"
+            >
+          `
+          : `
+            <div class="preview-no-logo">
+              No Logo
+            </div>
+          `
+      }
+
+    </div>
+
+    <!-- NAME -->
+    <h2 class="preview-name">
+      ${business.name}
+    </h2>
+
+    <!-- CATEGORY -->
+    <p class="preview-category">
       ${business.category}
       •
       ${business.town}
     </p>
 
-    <p>
-      ${business.description || ""}
-    </p>
+    <!-- GALLERY -->
+    <section class="preview-section">
 
-    <h4>Opening Hours</h4>
+      <h3>Gallery</h3>
 
-    <pre>
-${JSON.stringify(h, null, 2)}
-    </pre>
+      <div class="preview-gallery">
+        ${galleryHtml}
+      </div>
 
-    <h4>Logo</h4>
+    </section>
 
-    ${
-      business.logoUrl
-        ? `
-          <img
-            src="${business.logoUrl}"
-            style="max-width:150px;">
-        `
-        : "No logo uploaded"
-    }
+    <!-- ABOUT -->
+    <section class="preview-section">
 
-    <h4>Gallery</h4>
+      <h3>About</h3>
 
-    ${
-      (business.gallery || [])
-        .map(url => `
-          <img
-            src="${url}"
-            style="
-              width:90px;
-              height:90px;
-              object-fit:cover;
-              margin:4px;
-            ">
-        `)
-        .join("")
-    }
+      <p>
+        ${business.description || "No description added yet."}
+      </p>
+
+    </section>
+
+    <!-- CONTACT -->
+    <section class="preview-section">
+
+      <h3>Contact</h3>
+
+      <p>
+        <strong>Phone:</strong>
+        ${business.phone || "Not provided"}
+      </p>
+
+      <p>
+        <strong>Address:</strong>
+        ${business.address || "Not provided"}
+      </p>
+
+      <p>
+        <strong>Website:</strong>
+        ${
+          business.website
+            ? `
+              <a
+                href="${business.website}"
+                target="_blank"
+              >
+                ${business.website}
+              </a>
+            `
+            : "Not provided"
+        }
+      </p>
+
+    </section>
+
+    <!-- OPENING HOURS -->
+    <section class="preview-section">
+
+      <h3>Opening Hours</h3>
+
+      <ul class="preview-hours">
+        ${hoursHtml}
+      </ul>
+
+    </section>
   `;
 
   document.getElementById("previewArea")
