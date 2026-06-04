@@ -22,8 +22,15 @@ let business;
 
 let bizId;
 let pendingRef;
+
 const MAX_GALLERY_IMAGES = 3;
 const MAX_FILE_SIZE_MB = 3;
+
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
 
 /* ===========================
    INIT
@@ -99,8 +106,8 @@ const MAX_FILE_SIZE_MB = 3;
         console.log("[DB] Business loaded:", business);
 
         pendingRef = db
-  .collection("pending_changes")
-  .doc(bizId);
+          .collection("pending_changes")
+          .doc(bizId);
 
         console.log("[DB] Pending ref ready:", bizId);
 
@@ -311,6 +318,9 @@ document.getElementById("hoursForm")
     }
   });
 
+/* ===========================
+   GALLERY COUNT
+=========================== */
 function updateGalleryCount() {
 
   const current =
@@ -418,6 +428,29 @@ document.getElementById("uploadLogoBtn")
         return;
       }
 
+      if (
+        !ALLOWED_IMAGE_TYPES.includes(file.type)
+      ) {
+
+        document.getElementById("logoStatus")
+          .textContent =
+          "Only JPG, PNG or WEBP allowed.";
+
+        return;
+      }
+
+      if (
+        file.size >
+        MAX_FILE_SIZE_MB * 1024 * 1024
+      ) {
+
+        document.getElementById("logoStatus")
+          .textContent =
+          `Logo exceeds ${MAX_FILE_SIZE_MB}MB`;
+
+        return;
+      }
+
       console.log("[LOGO] Upload starting:", file.name);
 
       const compressed =
@@ -438,6 +471,11 @@ document.getElementById("uploadLogoBtn")
       await savePendingChanges({
         logoUrl: url
       });
+
+      business.logoUrl = url;
+
+      loadLogoPreview();
+      loadPreview();
 
       document.getElementById("logoStatus").textContent =
         "Logo sent for approval.";
@@ -504,48 +542,60 @@ document.getElementById("uploadGalleryBtn")
 
       const files =
         document.getElementById("galleryInput").files;
+
       const existingCount =
-  (business.gallery || []).length;
+        (business.gallery || []).length;
 
-if (
-  existingCount >= MAX_GALLERY_IMAGES
-) {
+      if (
+        existingCount >= MAX_GALLERY_IMAGES
+      ) {
 
-  document.getElementById("galleryStatus")
-    .textContent =
-    `You already reached the ${MAX_GALLERY_IMAGES} image limit.`;
+        document.getElementById("galleryStatus")
+          .textContent =
+          `You already reached the ${MAX_GALLERY_IMAGES} image limit.`;
 
-  return;
-}
+        return;
+      }
 
-if (
-  existingCount + files.length >
-  MAX_GALLERY_IMAGES
-) {
+      if (
+        existingCount + files.length >
+        MAX_GALLERY_IMAGES
+      ) {
 
-  const remaining =
-    MAX_GALLERY_IMAGES - existingCount;
+        const remaining =
+          MAX_GALLERY_IMAGES - existingCount;
 
-  document.getElementById("galleryStatus")
-    .textContent =
-    `You can only upload ${remaining} more image(s).`;
+        document.getElementById("galleryStatus")
+          .textContent =
+          `You can only upload ${remaining} more image(s).`;
 
-  return;
-}
+        return;
+      }
 
       for (const file of files) {
 
-  if (
-    file.size >
-    MAX_FILE_SIZE_MB * 1024 * 1024
-  ) {
+        if (
+          !ALLOWED_IMAGE_TYPES.includes(file.type)
+        ) {
 
-    document.getElementById("galleryStatus")
-      .textContent =
-      `${file.name} exceeds ${MAX_FILE_SIZE_MB}MB`;
+          document.getElementById("galleryStatus")
+            .textContent =
+            `${file.name} is not a supported image type`;
 
-    return;
-  }
+          return;
+        }
+
+        if (
+          file.size >
+          MAX_FILE_SIZE_MB * 1024 * 1024
+        ) {
+
+          document.getElementById("galleryStatus")
+            .textContent =
+            `${file.name} exceeds ${MAX_FILE_SIZE_MB}MB`;
+
+          return;
+        }
       }
 
       if (!files.length) {
@@ -560,8 +610,9 @@ if (
         files.length
       );
 
-      const gallery =
-        business.gallery || [];
+      const gallery = [
+        ...(business.gallery || [])
+      ];
 
       for (let file of files) {
 
@@ -601,6 +652,12 @@ if (
       await savePendingChanges({
         gallery
       });
+
+      business.gallery = gallery;
+
+      updateGalleryCount();
+      loadGalleryPreview();
+      loadPreview();
 
       document.getElementById("galleryStatus").textContent =
         "Images sent for approval.";
@@ -691,6 +748,7 @@ async function savePendingChanges(partial) {
     throw err;
   }
 }
+
 /* ===========================
    PREVIEW
 =========================== */
