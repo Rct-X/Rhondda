@@ -22,6 +22,8 @@ let business;
 
 let bizId;
 let pendingRef;
+const MAX_GALLERY_IMAGES = 3;
+const MAX_FILE_SIZE_MB = 3;
 
 /* ===========================
    INIT
@@ -108,6 +110,7 @@ let pendingRef;
         loadLogoPreview();
         loadGalleryPreview();
         loadPreview();
+        updateGalleryCount();
 
         await loadPendingNotice();
 
@@ -308,6 +311,16 @@ document.getElementById("hoursForm")
     }
   });
 
+function updateGalleryCount() {
+
+  const current =
+    (business.gallery || []).length;
+
+  document.getElementById("galleryCount")
+    .textContent =
+    `${current}/${MAX_GALLERY_IMAGES} images used`;
+}
+
 /* ===========================
    IMAGE COMPRESSION
 =========================== */
@@ -491,6 +504,49 @@ document.getElementById("uploadGalleryBtn")
 
       const files =
         document.getElementById("galleryInput").files;
+      const existingCount =
+  (business.gallery || []).length;
+
+if (
+  existingCount >= MAX_GALLERY_IMAGES
+) {
+
+  document.getElementById("galleryStatus")
+    .textContent =
+    `You already reached the ${MAX_GALLERY_IMAGES} image limit.`;
+
+  return;
+}
+
+if (
+  existingCount + files.length >
+  MAX_GALLERY_IMAGES
+) {
+
+  const remaining =
+    MAX_GALLERY_IMAGES - existingCount;
+
+  document.getElementById("galleryStatus")
+    .textContent =
+    `You can only upload ${remaining} more image(s).`;
+
+  return;
+}
+
+      for (const file of files) {
+
+  if (
+    file.size >
+    MAX_FILE_SIZE_MB * 1024 * 1024
+  ) {
+
+    document.getElementById("galleryStatus")
+      .textContent =
+      `${file.name} exceeds ${MAX_FILE_SIZE_MB}MB`;
+
+    return;
+  }
+      }
 
       if (!files.length) {
 
