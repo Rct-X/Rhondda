@@ -51,9 +51,7 @@ exports.handler = async (event) => {
     if (!id) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          error: "Missing submission id"
-        })
+        body: JSON.stringify({ error: "Missing submission id" })
       };
     }
 
@@ -65,32 +63,44 @@ exports.handler = async (event) => {
     if (!doc.exists) {
       return {
         statusCode: 404,
-        body: JSON.stringify({
-          error: "Submission not found"
-        })
+        body: JSON.stringify({ error: "Submission not found" })
       };
     }
 
     const data = doc.data();
 
-await db.collection("businesses").add({
-  ...data,
-  status: "approved",
-  verified: false,
-  ownerId: null,
-  approvedAt: admin.firestore.FieldValue.serverTimestamp()
-});
+    // MOVE TO BUSINESSES COLLECTION
+    await db.collection("businesses").add({
+      ...data,
+      status: "approved",
+      verified: false,
+      ownerId: null,
+      approvedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
 
+    // DELETE PENDING SUBMISSION
     await db
       .collection("pending_submissions")
       .doc(id)
       .delete();
 
+    // ============================================
+    // SEND EMAIL: "Your listing is live — claim it"
+    // ============================================
+    await fetch(process.env.URL + "/.netlify/functions/sendListingApprovedEmail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        businessName: data.name,
+        slug: data.slug
+      })
+    });
+
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        ok: true
-      })
+      body: JSON.stringify({ ok: true })
     };
 
   } catch (err) {
@@ -99,9 +109,7 @@ await db.collection("businesses").add({
 
     return {
       statusCode: 401,
-      body: JSON.stringify({
-        error: "Unauthorized"
-      })
+      body: JSON.stringify({ error: "Unauthorized" })
     };
   }
 };
