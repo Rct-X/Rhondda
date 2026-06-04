@@ -780,3 +780,111 @@ async function loadAnalytics(){
     );
   }
       }
+
+// ===============================
+// DELETE ANALYTICS RANGE
+// ===============================
+
+async function deleteAnalyticsRange(){
+
+  const start =
+    document.getElementById("analyticsStart").value;
+
+  const end =
+    document.getElementById("analyticsEnd").value;
+
+  if(!start || !end){
+
+    alert("Select start and end dates");
+
+    return;
+  }
+
+  if(
+    !confirm(
+      `Delete analytics from ${start} to ${end}?`
+    )
+  ){
+    return;
+  }
+
+  try{
+
+    const token =
+      await auth.currentUser.getIdToken();
+
+    const res = await fetch(
+      "/.netlify/functions/deleteAnalyticsRange",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":`Bearer ${token}`
+        },
+        body:JSON.stringify({
+          start,
+          end
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    alert(data.message);
+
+    loadAnalytics();
+
+  } catch(err){
+
+    console.error(err);
+
+    alert("Delete failed");
+  }
+}
+
+// ===============================
+// DELETE ALL
+// ===============================
+
+async function deleteAllAnalytics(){
+
+  if(
+    !confirm(
+      "Delete ALL analytics permanently?"
+    )
+  ){
+    return;
+  }
+
+  try{
+
+    const token =
+      await auth.currentUser.getIdToken();
+
+    const res = await fetch(
+      "/.netlify/functions/deleteAnalyticsRange",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":`Bearer ${token}`
+        },
+        body:JSON.stringify({
+          all:true
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    alert(data.message);
+
+    loadAnalytics();
+
+  } catch(err){
+
+    console.error(err);
+
+    alert("Delete failed");
+  }
+}
