@@ -27,6 +27,7 @@
       <button data-tab="hours">Opening Hours</button>
       <button data-tab="logo">Logo Upload</button>
       <button data-tab="gallery">Gallery Upload</button>
+      <button data-tab="preview">Preview Listing</button>
       <button id="logoutBtn">Logout</button>
     </nav>
   </aside>
@@ -39,7 +40,12 @@
       <p id="bizCategory"></p>
       <p id="bizTown"></p>
       <p id="bizStatus"></p>
-    </section>
+      <p id="pendingNotice" style="color:#b36b00;"></p>
+
+<section id="tab-preview" class="tab">
+  <h2>Your Listing Preview</h2>
+  <div id="previewArea"></div>
+</section>
 
     <!-- EDIT DETAILS -->
     <section id="tab-details" class="tab">
