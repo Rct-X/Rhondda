@@ -1,128 +1,257 @@
-const admin = require("firebase-admin");
+(function () {
 
-// =========================
-// INITIALISE FIREBASE
-// =========================
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      project_id: process.env.RN_FIREBASE_PROJECT_ID,
-      client_email: process.env.RN_FIREBASE_CLIENT_EMAIL,
-      private_key: process.env.RN_FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
-    })
-  });
-}
+  // ============================
+  // CONFIG
+  // ============================
+  const CLIENT_ID =
+    window.RCTX_CLIENT_ID || "Unknown";
 
-const db = admin.firestore();
+  const ENDPOINT =
+    "https://rctx.co.uk/.netlify/functions/track";
 
-// =========================
-// CORS HEADERS (REQUIRED)
-// =========================
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS"
-};
+  // ============================
+  // IGNORE TRACKING
+  // ============================
+  if (
+    localStorage.getItem(
+      "rctx_ignore_tracking"
+    ) === "true"
+  ) {
 
-// =========================
-// NETLIFY FUNCTION
-// =========================
-exports.handler = async (event) => {
+    console.log(
+      "%cTRACKING DISABLED",
+      `
+        color:red;
+        font-size:16px;
+        font-weight:bold;
+      `
+    );
 
-  // Handle preflight OPTIONS request
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers,
-      body: "OK"
-    };
+    return;
   }
 
-  // ONLY ALLOW POST
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: "Method Not Allowed" })
-    };
-  }
+  // ============================
+  // DEVICE DETECTION
+  // ============================
+  function getDevice() {
 
-  try {
-    const data = JSON.parse(event.body || "{}");
+    const ua =
+      navigator.userAgent.toLowerCase();
 
-    // =========================
-    // BASIC BOT/SPAM FILTER
-    // =========================
-    const ip = (event.headers["x-forwarded-for"] || "").split(",")[0].trim();
-    const userAgent = (event.headers["user-agent"] || "").toLowerCase();
-
-    const botWords = [
-      "bot", "crawl", "spider", "preview",
-      "facebookexternalhit", "slurp", "curl",
-      "wget", "python", "headless"
-    ];
-
-    const isBot = botWords.some(word => userAgent.includes(word));
-
-    if (isBot) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ ignored: "bot" })
-      };
+    if (/ipad|tablet/.test(ua)) {
+      return "Tablet";
     }
 
-    // =========================
-    // DUPLICATE REFRESH FILTER
-    // =========================
-    const recent = await db
-      .collection("analytics")
-      .where("ip", "==", ip)
-      .where("page", "==", data.page)
-      .where("event", "==", data.event)
-      .limit(5)
-      .get();
-
-    let duplicate = false;
-
-    recent.forEach(doc => {
-      const d = doc.data();
-      if (!d.timestamp) return;
-
-      const diff = Date.now() - d.timestamp.toMillis();
-      if (diff < 30000) duplicate = true;
-    });
-
-    if (duplicate) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ ignored: "duplicate" })
-      };
+    if (/mobile|iphone|android/.test(ua)) {
+      return "Mobile";
     }
 
-    // =========================
-    // SAVE ANALYTICS
-    // =========================
-    await db.collection("analytics").add({
-      ...data,
-      ip,
-      userAgent,
-      timestamp: admin.firestore.FieldValue.serverTimestamp()
+    return "Desktop";
+  }
+
+  // ============================
+  // SEND EVENT
+  // ============================
+  async function sendEvent(payload) {
+
+    try {
+
+      await fetch(ENDPOINT, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(payload)
+      });
+
+    } catch (err) {
+
+      console.warn(
+        "[TRACKER] Failed sending event, queueing...",
+        err
+      );
+
+      // ============================
+      // OFFLINE QUEUE
+      // ============================
+      try {
+
+        const queue =
+          JSON.parse(
+            localStorage.getItem("rctx_queue") || "[]"
+          );
+
+        queue.push(payload);
+
+        localStorage.setItem(
+          "rctx_queue",
+          JSON.stringify(queue)
+        );
+
+      } catch (_) {}
+    }
+  }
+
+  // ============================
+  // FLUSH OFFLINE QUEUE
+  // ============================
+  async function flushQueue() {
+
+    try {
+
+      const queue =
+        JSON.parse(
+          localStorage.getItem("rctx_queue") || "[]"
+        );
+
+      if (!queue.length) {
+        return;
+      }
+
+      console.log(
+        "[TRACKER] Flushing queued events:",
+        queue.length
+      );
+
+      for (const item of queue) {
+
+        await sendEvent(item);
+      }
+
+      localStorage.removeItem("rctx_queue");
+
+      console.log(
+        "[TRACKER] Queue flushed"
+      );
+
+    } catch (err) {
+
+      console.error(
+        "[TRACKER] Queue flush failed",
+        err
+      );
+    }
+  }
+
+  // ============================
+  // ONLINE RECOVERY
+  // ============================
+  window.addEventListener(
+    "online",
+    flushQueue
+  );
+
+  // ============================
+  // TRACK FUNCTION
+  // ============================
+  function track(eventName = "page_view") {
+
+    const payload = {
+
+      clientId:
+        CLIENT_ID,
+
+      page:
+        window.location.pathname,
+
+      event:
+        eventName,
+
+      device:
+        getDevice(),
+
+      referrer:
+        document.referrer || "direct",
+
+      ts:
+        Date.now()
+    };
+
+    console.log(
+      "[TRACKER] Sending:",
+      payload
+    );
+
+    sendEvent(payload);
+  }
+
+  // ============================
+  // PAGE VIEW
+  // ============================
+  track("page_view");
+
+  // ============================
+  // WHATSAPP CLICKS
+  // ============================
+  document
+    .querySelectorAll('a[href*="wa.me"]')
+    .forEach(btn => {
+
+      btn.addEventListener(
+        "click",
+        () => {
+
+          console.log(
+            "[TRACKER] WhatsApp click"
+          );
+
+          track("whatsapp_click");
+
+        },
+        { once: true }
+      );
     });
 
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ success: true })
-    };
+  // ============================
+  // PHONE TAPS
+  // ============================
+  document
+    .querySelectorAll('a[href^="tel:"]')
+    .forEach(btn => {
 
-  } catch (err) {
-    console.error(err);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: err.message })
-    };
+      btn.addEventListener(
+        "click",
+        () => {
+
+          console.log(
+            "[TRACKER] Phone tap"
+          );
+
+          track("phone_tap");
+
+        },
+        { once: true }
+      );
+    });
+
+  // ============================
+  // FORM SUBMITS
+  // ============================
+  const form =
+    document.querySelector("form");
+
+  if (form) {
+
+    form.addEventListener(
+      "submit",
+      () => {
+
+        console.log(
+          "[TRACKER] Form submit"
+        );
+
+        track("form_submit");
+
+      },
+      { once: true }
+    );
   }
-};
+
+  // ============================
+  // FLUSH STORED EVENTS
+  // ============================
+  flushQueue();
+
+})();
