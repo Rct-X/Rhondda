@@ -69,29 +69,48 @@ function setupAuth() {
     loginMessage.textContent = "";
 
     try {
+
       await auth.signInWithEmailAndPassword(email, password);
+
+      console.log("[AUTH] Admin login successful");
+
     } catch (err) {
+
+      console.error("[AUTH] Login failed:", err);
+
       loginMessage.textContent = "Invalid login.";
     }
 
   });
 
-  // ✅ FIXED BLOCK (THIS WAS BROKEN BEFORE)
   auth.onAuthStateChanged((user) => {
 
+    console.log("[AUTH] Auth state changed");
+
     if (user) {
+
+      console.log("[AUTH] Admin logged in:", user.uid);
 
       loginSection.style.display = "none";
       dashboardSection.style.display = "block";
 
-      const analyticsSection = document.getElementById("analyticsSection");
-      if (analyticsSection) analyticsSection.style.display = "block";
+      const analyticsSection =
+        document.getElementById("analyticsSection");
+
+      if (analyticsSection) {
+        analyticsSection.style.display = "block";
+      }
 
       loadPending().catch(console.error);
-loadClaims().catch(console.error);
-loadAnalytics().catch(console.error);
+      loadClaims().catch(console.error);
+      loadAnalytics().catch(console.error);
+
+      // ✅ NEW
+      loadPendingChanges().catch(console.error);
 
     } else {
+
+      console.log("[AUTH] No admin user");
 
       loginSection.style.display = "block";
       dashboardSection.style.display = "none";
@@ -101,7 +120,7 @@ loadAnalytics().catch(console.error);
 }
 
 // ===============================
-// LOAD PENDING
+// LOAD PENDING SUBMISSIONS
 // ===============================
 async function loadPending() {
 
@@ -113,13 +132,19 @@ async function loadPending() {
 
   try {
 
+    console.log("[PENDING] Loading pending submissions");
+
     const snap = await db
       .collection("pending_submissions")
       .orderBy("createdAt", "desc")
       .get();
 
+    console.log("[PENDING] Found submissions:", snap.size);
+
     if (snap.empty) {
+
       list.innerHTML = "<p>No pending submissions.</p>";
+
       return;
     }
 
@@ -131,6 +156,7 @@ async function loadPending() {
       const id = doc.id;
 
       const item = document.createElement("div");
+
       item.className = "pending-item";
 
       item.innerHTML = `
@@ -185,7 +211,9 @@ async function loadPending() {
             ? `
               <p>
                 <strong>Submitted:</strong>
-                ${new Date(b.createdAt.seconds * 1000).toLocaleString()}
+                ${new Date(
+                  b.createdAt.seconds * 1000
+                ).toLocaleString()}
               </p>
             `
             : ""
@@ -208,49 +236,116 @@ async function loadPending() {
     });
 
   } catch (err) {
-    console.error(err);
-    list.innerHTML = "<p>Error loading submissions.</p>";
+
+    console.error("[PENDING] Failed loading submissions:", err);
+
+    list.innerHTML =
+      "<p>Error loading submissions.</p>";
   }
 }
 
-async function loadClaims() {
-  const list = document.getElementById("claimsList");
+// ===============================
+// LOAD PENDING OWNER CHANGES
+// ===============================
+async function loadPendingChanges() {
 
-  if (!db) return;
+  console.log("[PENDING_CHANGES] Loading owner edits");
 
-  list.innerHTML = "<p>Loading claims…</p>";
+  const list =
+    document.getElementById("pendingChangesList");
+
+  if (!list) {
+
+    console.warn(
+      "[PENDING_CHANGES] Missing #pendingChangesList element"
+    );
+
+    return;
+  }
+
+  list.innerHTML = "<p>Loading…</p>";
 
   try {
+
     const snap = await db
-      .collection("claims")
-      .where("status", "==", "pending")
-      .orderBy("createdAt", "desc")
+      .collection("pending_changes")
       .get();
 
+    console.log(
+      "[PENDING_CHANGES] Documents found:",
+      snap.size
+    );
+
     if (snap.empty) {
-      list.innerHTML = "<p>No pending claims.</p>";
+
+      list.innerHTML =
+        "<p>No pending owner edits.</p>";
+
       return;
     }
 
     list.innerHTML = "";
 
     snap.forEach(doc => {
-      const c = doc.data();
+
+      const data = doc.data();
       const id = doc.id;
 
-      const item = document.createElement("div");
-      item.className = "pending-item";
+      console.log(
+        "[PENDING_CHANGES] Rendering:",
+        id,
+        data
+      );
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "pending-item";
 
       item.innerHTML = `
-        <h3>Claim for: ${c.slug}</h3>
+        <h3>
+          Changes for:
+          ${data.businessId || id}
+        </h3>
 
-        <p><strong>Name:</strong> ${c.name}</p>
-        <p><strong>Email:</strong> ${c.email}</p>
-        <p><strong>Message:</strong><br>${c.message || "No message"}</p>
+        <p>
+          <strong>Status:</strong>
+          ${data.status || "unknown"}
+        </p>
+
+        <p>
+          <strong>Owner:</strong>
+          ${data.ownerId || "unknown"}
+        </p>
+
+        ${
+          data.submittedAt
+            ? `
+              <p>
+                <strong>Submitted:</strong>
+                ${new Date(
+                  data.submittedAt.seconds * 1000
+                ).toLocaleString()}
+              </p>
+            `
+            : ""
+        }
+
+        <pre>
+${JSON.stringify(data, null, 2)}
+        </pre>
 
         <div class="pending-actions">
-          <button onclick="approveClaim('${id}')">Approve Claim</button>
-          <button onclick="rejectClaim('${id}')">Reject Claim</button>
+
+          <button onclick="approvePendingChanges('${id}')">
+            Approve
+          </button>
+
+          <button onclick="rejectPendingChanges('${id}')">
+            Reject
+          </button>
+
         </div>
       `;
 
@@ -258,15 +353,104 @@ async function loadClaims() {
     });
 
   } catch (err) {
-    console.error(err);
-    list.innerHTML = "<p>Error loading claims.</p>";
+
+    console.error(
+      "[PENDING_CHANGES] Failed loading:",
+      err
+    );
+
+    list.innerHTML =
+      "<p>Error loading pending changes.</p>";
   }
 }
+
 // ===============================
-// APPROVE / REJECT
+// LOAD CLAIMS
+// ===============================
+async function loadClaims() {
+
+  const list = document.getElementById("claimsList");
+
+  if (!db) return;
+
+  list.innerHTML = "<p>Loading claims…</p>";
+
+  try {
+
+    console.log("[CLAIMS] Loading claims");
+
+    const snap = await db
+      .collection("claims")
+      .where("status", "==", "pending")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    console.log("[CLAIMS] Claims found:", snap.size);
+
+    if (snap.empty) {
+
+      list.innerHTML = "<p>No pending claims.</p>";
+
+      return;
+    }
+
+    list.innerHTML = "";
+
+    snap.forEach(doc => {
+
+      const c = doc.data();
+      const id = doc.id;
+
+      const item = document.createElement("div");
+
+      item.className = "pending-item";
+
+      item.innerHTML = `
+        <h3>Claim for: ${c.slug}</h3>
+
+        <p><strong>Name:</strong> ${c.name}</p>
+
+        <p><strong>Email:</strong> ${c.email}</p>
+
+        <p>
+          <strong>Message:</strong><br>
+          ${c.message || "No message"}
+        </p>
+
+        <div class="pending-actions">
+
+          <button onclick="approveClaim('${id}')">
+            Approve Claim
+          </button>
+
+          <button onclick="rejectClaim('${id}')">
+            Reject Claim
+          </button>
+
+        </div>
+      `;
+
+      list.appendChild(item);
+    });
+
+  } catch (err) {
+
+    console.error("[CLAIMS] Failed loading claims:", err);
+
+    list.innerHTML =
+      "<p>Error loading claims.</p>";
+  }
+}
+
+// ===============================
+// APPROVE / REJECT BUSINESS
 // ===============================
 async function approveBusiness(id) {
-  const token = await auth.currentUser.getIdToken();
+
+  console.log("[ADMIN] Approving business:", id);
+
+  const token =
+    await auth.currentUser.getIdToken();
 
   await fetch("/.netlify/functions/approveBusiness", {
     method: "POST",
@@ -281,7 +465,11 @@ async function approveBusiness(id) {
 }
 
 async function rejectBusiness(id) {
-  const token = await auth.currentUser.getIdToken();
+
+  console.log("[ADMIN] Rejecting business:", id);
+
+  const token =
+    await auth.currentUser.getIdToken();
 
   await fetch("/.netlify/functions/rejectBusiness", {
     method: "POST",
@@ -295,8 +483,15 @@ async function rejectBusiness(id) {
   loadPending();
 }
 
+// ===============================
+// APPROVE / REJECT CLAIM
+// ===============================
 async function approveClaim(id) {
-  const token = await auth.currentUser.getIdToken();
+
+  console.log("[ADMIN] Approving claim:", id);
+
+  const token =
+    await auth.currentUser.getIdToken();
 
   await fetch("/.netlify/functions/approveClaim", {
     method: "POST",
@@ -311,7 +506,11 @@ async function approveClaim(id) {
 }
 
 async function rejectClaim(id) {
-  const token = await auth.currentUser.getIdToken();
+
+  console.log("[ADMIN] Rejecting claim:", id);
+
+  const token =
+    await auth.currentUser.getIdToken();
 
   await fetch("/.netlify/functions/rejectClaim", {
     method: "POST",
@@ -324,24 +523,83 @@ async function rejectClaim(id) {
 
   loadClaims();
 }
+
+// ===============================
+// APPROVE / REJECT PENDING CHANGES
+// ===============================
+async function approvePendingChanges(id) {
+
+  console.log(
+    "[ADMIN] Approving pending changes:",
+    id
+  );
+
+  const token =
+    await auth.currentUser.getIdToken();
+
+  await fetch(
+    "/.netlify/functions/approvePendingChanges",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ id })
+    }
+  );
+
+  loadPendingChanges();
+}
+
+async function rejectPendingChanges(id) {
+
+  console.log(
+    "[ADMIN] Rejecting pending changes:",
+    id
+  );
+
+  const token =
+    await auth.currentUser.getIdToken();
+
+  await fetch(
+    "/.netlify/functions/rejectPendingChanges",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ id })
+    }
+  );
+
+  loadPendingChanges();
+}
+
 // ===============================
 // ANALYTICS STATE
 // ===============================
 let RANGE = 30;
 
 window.setRange = function(days){
+
   RANGE = days;
 
   document.querySelectorAll(".filters button")
     .forEach(b => b.classList.remove("active"));
 
-  document.getElementById("f" + days).classList.add("active");
+  document.getElementById("f" + days)
+    .classList.add("active");
 
   renderDashboard(window.__visits || []);
 };
 
 function detectSource(referrer){
-  if(!referrer || referrer === "direct") return "Direct";
+
+  if(!referrer || referrer === "direct") {
+    return "Direct";
+  }
 
   const r = referrer.toLowerCase();
 
@@ -358,15 +616,20 @@ function detectSource(referrer){
 }
 
 function filterByDate(visits, days){
+
   const now = Date.now();
-  return visits.filter(v => now - (v.timestamp || 0) <= days * 86400000);
+
+  return visits.filter(v =>
+    now - (v.timestamp || 0) <= days * 86400000
+  );
 }
 
 function renderDashboard(visits){
 
   visits = filterByDate(visits, RANGE);
 
-  document.getElementById("totalVisits").innerText = visits.length;
+  document.getElementById("totalVisits").innerText =
+    visits.length;
 
   const clients = {};
 
@@ -375,84 +638,148 @@ function renderDashboard(visits){
     const c = v.clientId || "unknown";
 
     if(!clients[c]){
+
       clients[c] = {
         total:0,
         mobile:0,
         pages:{},
         sources:{},
-        events:{ whatsapp:0, phone:0, form:0 }
+        events:{
+          whatsapp:0,
+          phone:0,
+          form:0
+        }
       };
     }
 
     clients[c].total++;
 
-    const source = detectSource(v.referrer);
-    clients[c].sources[source] = (clients[c].sources[source] || 0) + 1;
+    const source =
+      detectSource(v.referrer);
 
-    if(v.device === "Mobile") clients[c].mobile++;
+    clients[c].sources[source] =
+      (clients[c].sources[source] || 0) + 1;
+
+    if(v.device === "Mobile"){
+      clients[c].mobile++;
+    }
 
     const page = v.page || "/";
-    clients[c].pages[page] = (clients[c].pages[page] || 0) + 1;
 
-    if(v.event === "whatsapp_click") clients[c].events.whatsapp++;
-    if(v.event === "phone_tap") clients[c].events.phone++;
-    if(v.event === "form_submit") clients[c].events.form++;
+    clients[c].pages[page] =
+      (clients[c].pages[page] || 0) + 1;
+
+    if(v.event === "whatsapp_click"){
+      clients[c].events.whatsapp++;
+    }
+
+    if(v.event === "phone_tap"){
+      clients[c].events.phone++;
+    }
+
+    if(v.event === "form_submit"){
+      clients[c].events.form++;
+    }
   });
 
   document.getElementById("totalClients").innerText =
     Object.keys(clients).length;
 
-  const wrap = document.getElementById("clients");
+  const wrap =
+    document.getElementById("clients");
+
   wrap.innerHTML = "";
 
-  Object.entries(clients).forEach(([name,data]) => {
+  Object.entries(clients)
+    .forEach(([name,data]) => {
 
-    const topPage =
-      Object.entries(data.pages).sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+      const topPage =
+        Object.entries(data.pages)
+          .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
 
-    const mobilePercent =
-      data.total ? Math.round((data.mobile/data.total)*100) : 0;
+      const mobilePercent =
+        data.total
+          ? Math.round((data.mobile/data.total)*100)
+          : 0;
 
-    const topSources =
-      Object.entries(data.sources)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,5)
-        .map(([s,c])=>`<li>${s}: ${c}</li>`)
-        .join("");
+      const topSources =
+        Object.entries(data.sources)
+          .sort((a,b)=>b[1]-a[1])
+          .slice(0,5)
+          .map(([s,c])=>`<li>${s}: ${c}</li>`)
+          .join("");
 
-    wrap.innerHTML += `
-      <div class="client">
-        <h3>${name}</h3>
-        <div>${data.total} visits</div>
-        <div>${topPage}</div>
-        <div>${mobilePercent}% mobile</div>
-        <div>WhatsApp: ${data.events.whatsapp}</div>
-        <div>Phone: ${data.events.phone}</div>
-        <div>Forms: ${data.events.form}</div>
-        <ul>${topSources}</ul>
-      </div>
-    `;
-  });
+      wrap.innerHTML += `
+        <div class="client">
+
+          <h3>${name}</h3>
+
+          <div>${data.total} visits</div>
+
+          <div>${topPage}</div>
+
+          <div>${mobilePercent}% mobile</div>
+
+          <div>
+            WhatsApp:
+            ${data.events.whatsapp}
+          </div>
+
+          <div>
+            Phone:
+            ${data.events.phone}
+          </div>
+
+          <div>
+            Forms:
+            ${data.events.form}
+          </div>
+
+          <ul>${topSources}</ul>
+
+        </div>
+      `;
+    });
 }
 
 async function loadAnalytics(){
 
   try{
 
-    const token = await auth.currentUser.getIdToken();
+    console.log("[ANALYTICS] Loading analytics");
 
-    const res = await fetch("/.netlify/functions/getAnalytics", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const token =
+      await auth.currentUser.getIdToken();
 
-    if(!res.ok) throw new Error("Analytics failed");
+    const res = await fetch(
+      "/.netlify/functions/getAnalytics",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if(!res.ok){
+      throw new Error("Analytics failed");
+    }
 
     const visits = await res.json();
 
+    console.log(
+      "[ANALYTICS] Visits loaded:",
+      visits.length
+    );
+
     window.__visits = visits;
+
     renderDashboard(visits);
 
   } catch(err){
-    console.error(err);
+
+    console.error(
+      "[ANALYTICS] Failed:",
+      err
+    );
   }
-}
+      }
