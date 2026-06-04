@@ -101,3 +101,36 @@ body {
     padding: 20px;
   }
 }
+.gallery-item{
+  position:relative;
+  display:inline-block;
+  margin:6px;
+}
+
+.gallery-thumb{
+  width:120px;
+  height:120px;
+  object-fit:cover;
+  border-radius:10px;
+  display:block;
+}
+
+.gallery-delete{
+  position:absolute;
+  top:6px;
+  right:6px;
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:50%;
+  background:#d11a2a;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  line-height:1;
+  font-weight:bold;
+}
+
+.gallery-delete:hover{
+  opacity:0.9;
+}
