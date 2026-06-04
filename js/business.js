@@ -55,6 +55,7 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   }
 
   const b = snap.docs[0].data();
+  window.currentBusiness = b;
 
   // SEO
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
@@ -95,7 +96,7 @@ const ogImageMap = {
 
 const ogUrl =
   ogImageMap[b.categorySlug] ||
-  "https://rctx.co.uk/og/default-business.jpg";
+  "https://rctx.co.uk/og/find-rctx.jpg";
 
 document.getElementById("ogImage")?.setAttribute("content", ogUrl);
 
@@ -225,41 +226,16 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
   });
         }
 
-// ===============================
-// SHARE POPUP
-// ===============================
-
-setTimeout(() => {
-
-  // only show once per session
-  if (sessionStorage.getItem("sharePopupShown")) return;
-
-  const popup = document.getElementById("sharePopup");
-
-  if (popup) {
-    popup.classList.add("show");
-    sessionStorage.setItem("sharePopupShown", "true");
-  }
-
-}, 6000);
-
-// CLOSE
-document.addEventListener("click", (e) => {
-
-  if (e.target.id === "closeSharePopup") {
-    document.getElementById("sharePopup")?.classList.remove("show");
-  }
-
-});
-
 // SHARE BUTTON
 document.addEventListener("click", async (e) => {
 
   if (e.target.id !== "shareBusinessBtn") return;
 
+  const b = window.currentBusiness;
+
   const shareData = {
-    title: document.title,
-    text: "Check out this local business on RCTX",
+    title: `${b.name} – ${b.category} in ${b.town}`,
+    text: b.description || `Check out ${b.name} on RCTX`,
     url: window.location.href
   };
 
