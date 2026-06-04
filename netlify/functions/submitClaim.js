@@ -1,33 +1,40 @@
-import admin from "firebase-admin";
+const admin = require("firebase-admin");
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.applicationDefault()
+    credential: admin.credential.cert({
+      projectId: process.env.RN_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.RN_FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.RN_FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+    })
   });
 }
 
-export async function handler(event) {
-  try {
-    const { name, email, message, slug } = JSON.parse(event.body);
+const db = admin.firestore();
 
-    await admin.firestore().collection("claims").add({
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405 };
+  }
+
+  try {
+    const { name, email, message, slug } = JSON.parse(event.body || "{}");
+
+    await db.collection("claims").add({
       name,
       email,
       message,
       slug,
       status: "pending",
-      createdAt: Date.now()
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Your claim has been submitted." })
+      body: JSON.stringify({ ok: true })
     };
-
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message })
-    };
+    console.error(err);
+    return { statusCode: 500, body: JSON.stringify({ error: "Server error" }) };
   }
-}
+};
