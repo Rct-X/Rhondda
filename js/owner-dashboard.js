@@ -1,4 +1,5 @@
 async function loadFirebaseConfig() {
+
   console.log("[INIT] Loading Firebase config...");
 
   const res = await fetch("/.netlify/functions/firebaseConfig");
@@ -12,9 +13,21 @@ async function loadFirebaseConfig() {
   return res.json();
 }
 
-let db, auth, storage, bizRef, business;
+let db;
+let auth;
+let storage;
 
+let bizRef;
+let business;
+
+let bizId;
+let pendingRef;
+
+/* ===========================
+   INIT
+=========================== */
 (async () => {
+
   try {
 
     console.log("[INIT] Starting dashboard init...");
@@ -24,9 +37,13 @@ let db, auth, storage, bizRef, business;
     console.log("[INIT] Firebase config loaded");
 
     if (!firebase.apps.length) {
+
       firebase.initializeApp(config);
+
       console.log("[INIT] Firebase app initialised");
+
     } else {
+
       console.log("[INIT] Firebase already initialised");
     }
 
@@ -41,8 +58,11 @@ let db, auth, storage, bizRef, business;
       console.log("[AUTH] Auth state changed");
 
       if (!user) {
+
         console.log("[AUTH] No user logged in. Redirecting...");
+
         window.location.href = "/owner-login";
+
         return;
       }
 
@@ -50,7 +70,8 @@ let db, auth, storage, bizRef, business;
 
       try {
 
-        const snap = await db.collection("businesses")
+        const snap = await db
+          .collection("businesses")
           .where("ownerId", "==", user.uid)
           .limit(1)
           .get();
@@ -59,6 +80,7 @@ let db, auth, storage, bizRef, business;
         console.log("[DB] Matching businesses:", snap.size);
 
         if (snap.empty) {
+
           console.warn("[DB] No business found for owner:", user.uid);
 
           document.getElementById("bizName").textContent =
@@ -68,50 +90,65 @@ let db, auth, storage, bizRef, business;
         }
 
         bizRef = snap.docs[0].ref;
+        bizId = snap.docs[0].id;
+
         business = snap.docs[0].data();
 
         console.log("[DB] Business loaded:", business);
+
+        pendingRef = db
+          .collection("business_pending_changes")
+          .doc(bizId);
+
+        console.log("[DB] Pending ref ready:", bizId);
 
         loadOverview();
         loadDetailsForm();
         loadHoursForm();
         loadLogoPreview();
         loadGalleryPreview();
+        loadPreview();
+
+        await loadPendingNotice();
 
       } catch (err) {
+
         console.error("[DB] Failed loading business:", err);
       }
 
     });
 
   } catch (err) {
+
     console.error("[INIT] Fatal init error:", err);
   }
+
 })();
 
-/* ---------------------------
+/* ===========================
    TAB SWITCHING
----------------------------- */
-document.querySelectorAll("#sidebar nav button").forEach(btn => {
+=========================== */
+document.querySelectorAll("#sidebar nav button")
+  .forEach(btn => {
 
-  btn.addEventListener("click", () => {
+    btn.addEventListener("click", () => {
 
-    const tab = btn.dataset.tab;
+      const tab = btn.dataset.tab;
 
-    console.log("[UI] Switching tab:", tab);
+      console.log("[UI] Switching tab:", tab);
 
-    document.querySelectorAll(".tab")
-      .forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab")
+        .forEach(t => t.classList.remove("active"));
 
-    document.getElementById("tab-" + tab)
-      .classList.add("active");
+      document.getElementById("tab-" + tab)
+        .classList.add("active");
+    });
+
   });
 
-});
-
-/* ---------------------------
+/* ===========================
    OVERVIEW
----------------------------- */
+=========================== */
 function loadOverview() {
 
   console.log("[OVERVIEW] Rendering overview");
@@ -126,12 +163,14 @@ function loadOverview() {
     business.town;
 
   document.getElementById("bizStatus").textContent =
-    business.verified ? "Verified" : "Not Verified";
+    business.verified
+      ? "Verified"
+      : "Not Verified";
 }
 
-/* ---------------------------
+/* ===========================
    DETAILS
----------------------------- */
+=========================== */
 function loadDetailsForm() {
 
   console.log("[DETAILS] Loading details form");
@@ -157,7 +196,7 @@ document.getElementById("detailsForm")
 
     e.preventDefault();
 
-    console.log("[DETAILS] Saving details...");
+    console.log("[DETAILS] Saving pending details...");
 
     try {
 
@@ -171,38 +210,51 @@ document.getElementById("detailsForm")
 
       console.log("[DETAILS] Payload:", payload);
 
-      await bizRef.update(payload);
-
-      console.log("[DETAILS] Update successful");
+      await savePendingChanges(payload);
 
       document.getElementById("detailsStatus").textContent =
-        "Saved!";
+        "Changes sent for approval.";
+
+      console.log("[DETAILS] Pending save complete");
 
     } catch (err) {
 
-      console.error("[DETAILS] Update failed:", err);
+      console.error("[DETAILS] Save failed:", err);
 
       document.getElementById("detailsStatus").textContent =
         "Save failed.";
     }
-});
+  });
 
-/* ---------------------------
+/* ===========================
    HOURS
----------------------------- */
+=========================== */
 function loadHoursForm() {
 
   console.log("[HOURS] Loading hours");
 
   const h = business.hours || {};
 
-  document.getElementById("h-mon").value = h.Monday || "";
-  document.getElementById("h-tue").value = h.Tuesday || "";
-  document.getElementById("h-wed").value = h.Wednesday || "";
-  document.getElementById("h-thu").value = h.Thursday || "";
-  document.getElementById("h-fri").value = h.Friday || "";
-  document.getElementById("h-sat").value = h.Saturday || "";
-  document.getElementById("h-sun").value = h.Sunday || "";
+  document.getElementById("h-mon").value =
+    h.Monday || "";
+
+  document.getElementById("h-tue").value =
+    h.Tuesday || "";
+
+  document.getElementById("h-wed").value =
+    h.Wednesday || "";
+
+  document.getElementById("h-thu").value =
+    h.Thursday || "";
+
+  document.getElementById("h-fri").value =
+    h.Friday || "";
+
+  document.getElementById("h-sat").value =
+    h.Saturday || "";
+
+  document.getElementById("h-sun").value =
+    h.Sunday || "";
 }
 
 document.getElementById("hoursForm")
@@ -210,43 +262,55 @@ document.getElementById("hoursForm")
 
     e.preventDefault();
 
-    console.log("[HOURS] Saving opening hours...");
+    console.log("[HOURS] Saving pending hours...");
 
     try {
 
-      const payload = {
-        hours: {
-          Monday: document.getElementById("h-mon").value,
-          Tuesday: document.getElementById("h-tue").value,
-          Wednesday: document.getElementById("h-wed").value,
-          Thursday: document.getElementById("h-thu").value,
-          Friday: document.getElementById("h-fri").value,
-          Saturday: document.getElementById("h-sat").value,
-          Sunday: document.getElementById("h-sun").value
-        }
+      const hours = {
+
+        Monday:
+          document.getElementById("h-mon").value,
+
+        Tuesday:
+          document.getElementById("h-tue").value,
+
+        Wednesday:
+          document.getElementById("h-wed").value,
+
+        Thursday:
+          document.getElementById("h-thu").value,
+
+        Friday:
+          document.getElementById("h-fri").value,
+
+        Saturday:
+          document.getElementById("h-sat").value,
+
+        Sunday:
+          document.getElementById("h-sun").value
       };
 
-      console.log("[HOURS] Payload:", payload);
+      console.log("[HOURS] Payload:", hours);
 
-      await bizRef.update(payload);
-
-      console.log("[HOURS] Hours updated");
+      await savePendingChanges({ hours });
 
       document.getElementById("hoursStatus").textContent =
-        "Hours updated!";
+        "Hours sent for approval.";
+
+      console.log("[HOURS] Pending save complete");
 
     } catch (err) {
 
-      console.error("[HOURS] Update failed:", err);
+      console.error("[HOURS] Save failed:", err);
 
       document.getElementById("hoursStatus").textContent =
         "Hours update failed.";
     }
-});
+  });
 
-/* ---------------------------
+/* ===========================
    IMAGE COMPRESSION
----------------------------- */
+=========================== */
 function compressImage(file, maxSize = 800) {
 
   console.log("[IMAGE] Compressing:", file.name);
@@ -257,15 +321,20 @@ function compressImage(file, maxSize = 800) {
 
     img.onload = () => {
 
-      const canvas = document.createElement("canvas");
+      const canvas =
+        document.createElement("canvas");
 
       const scale =
         maxSize / Math.max(img.width, img.height);
 
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
+      canvas.width =
+        img.width * scale;
 
-      const ctx = canvas.getContext("2d");
+      canvas.height =
+        img.height * scale;
+
+      const ctx =
+        canvas.getContext("2d");
 
       ctx.drawImage(
         img,
@@ -284,13 +353,14 @@ function compressImage(file, maxSize = 800) {
       }, "image/jpeg", 0.8);
     };
 
-    img.src = URL.createObjectURL(file);
+    img.src =
+      URL.createObjectURL(file);
   });
 }
 
-/* ---------------------------
+/* ===========================
    LOGO PREVIEW
----------------------------- */
+=========================== */
 function loadLogoPreview() {
 
   console.log("[LOGO] Loading logo preview");
@@ -300,22 +370,26 @@ function loadLogoPreview() {
 
   if (business.logoUrl) {
 
-    preview.src = business.logoUrl;
-    preview.style.display = "block";
+    preview.src =
+      business.logoUrl;
+
+    preview.style.display =
+      "block";
 
     console.log("[LOGO] Logo loaded");
 
   } else {
 
-    preview.style.display = "none";
+    preview.style.display =
+      "none";
 
     console.log("[LOGO] No logo found");
   }
 }
 
-/* ---------------------------
+/* ===========================
    LOGO UPLOAD
----------------------------- */
+=========================== */
 document.getElementById("uploadLogoBtn")
   .addEventListener("click", async () => {
 
@@ -325,7 +399,9 @@ document.getElementById("uploadLogoBtn")
         document.getElementById("logoInput").files[0];
 
       if (!file) {
+
         console.warn("[LOGO] No file selected");
+
         return;
       }
 
@@ -346,16 +422,14 @@ document.getElementById("uploadLogoBtn")
 
       console.log("[LOGO] Download URL:", url);
 
-      await bizRef.update({
+      await savePendingChanges({
         logoUrl: url
       });
 
-      business.logoUrl = url;
-
-      loadLogoPreview();
-
       document.getElementById("logoStatus").textContent =
-        "Logo uploaded!";
+        "Logo sent for approval.";
+
+      console.log("[LOGO] Pending logo saved");
 
     } catch (err) {
 
@@ -364,11 +438,11 @@ document.getElementById("uploadLogoBtn")
       document.getElementById("logoStatus").textContent =
         "Logo upload failed.";
     }
-});
+  });
 
-/* ---------------------------
+/* ===========================
    GALLERY PREVIEW
----------------------------- */
+=========================== */
 function loadGalleryPreview() {
 
   console.log("[GALLERY] Loading gallery");
@@ -376,7 +450,10 @@ function loadGalleryPreview() {
   const container =
     document.getElementById("galleryPreview");
 
-  if (!business.gallery || business.gallery.length === 0) {
+  if (
+    !business.gallery ||
+    business.gallery.length === 0
+  ) {
 
     container.innerHTML =
       "<p>No images uploaded yet.</p>";
@@ -390,7 +467,8 @@ function loadGalleryPreview() {
 
   business.gallery.forEach(url => {
 
-    const img = document.createElement("img");
+    const img =
+      document.createElement("img");
 
     img.src = url;
 
@@ -403,9 +481,9 @@ function loadGalleryPreview() {
   );
 }
 
-/* ---------------------------
+/* ===========================
    GALLERY UPLOAD
----------------------------- */
+=========================== */
 document.getElementById("uploadGalleryBtn")
   .addEventListener("click", async () => {
 
@@ -415,7 +493,9 @@ document.getElementById("uploadGalleryBtn")
         document.getElementById("galleryInput").files;
 
       if (!files.length) {
+
         console.warn("[GALLERY] No files selected");
+
         return;
       }
 
@@ -429,7 +509,10 @@ document.getElementById("uploadGalleryBtn")
 
       for (let file of files) {
 
-        console.log("[GALLERY] Processing:", file.name);
+        console.log(
+          "[GALLERY] Processing:",
+          file.name
+        );
 
         const compressed =
           await compressImage(file);
@@ -437,7 +520,9 @@ document.getElementById("uploadGalleryBtn")
         const id =
           Date.now() +
           "-" +
-          Math.random().toString(36).slice(2);
+          Math.random()
+            .toString(36)
+            .slice(2);
 
         const ref =
           storage.ref(
@@ -451,32 +536,212 @@ document.getElementById("uploadGalleryBtn")
 
         gallery.push(url);
 
-        console.log("[GALLERY] Uploaded:", url);
+        console.log(
+          "[GALLERY] Uploaded:",
+          url
+        );
       }
 
-      await bizRef.update({ gallery });
-
-      business.gallery = gallery;
-
-      loadGalleryPreview();
+      await savePendingChanges({
+        gallery
+      });
 
       document.getElementById("galleryStatus").textContent =
-        "Images uploaded!";
+        "Images sent for approval.";
 
-      console.log("[GALLERY] Gallery update complete");
+      console.log(
+        "[GALLERY] Pending gallery saved"
+      );
 
     } catch (err) {
 
-      console.error("[GALLERY] Upload failed:", err);
+      console.error(
+        "[GALLERY] Upload failed:",
+        err
+      );
 
       document.getElementById("galleryStatus").textContent =
         "Gallery upload failed.";
     }
-});
+  });
 
-/* ---------------------------
+/* ===========================
+   SAVE PENDING CHANGES
+=========================== */
+async function savePendingChanges(partial) {
+
+  try {
+
+    console.log(
+      "[PENDING] Saving changes:",
+      partial
+    );
+
+    const user =
+      auth.currentUser;
+
+    await pendingRef.set(
+      {
+        ...partial,
+
+        ownerId:
+          user.uid,
+
+        businessId:
+          bizId,
+
+        status:
+          "pending",
+
+        submittedAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+      },
+      {
+        merge: true
+      }
+    );
+
+    console.log(
+      "[PENDING] Pending changes saved"
+    );
+
+    const notice =
+      document.getElementById("pendingNotice");
+
+    if (notice) {
+
+      notice.textContent =
+        "Changes saved and awaiting approval.";
+    }
+
+  } catch (err) {
+
+    console.error(
+      "[PENDING] Save failed:",
+      err
+    );
+
+    throw err;
+  }
+}
+
+/* ===========================
+   PREVIEW
+=========================== */
+function loadPreview() {
+
+  console.log("[PREVIEW] Rendering preview");
+
+  const h =
+    business.hours || {};
+
+  const html = `
+    <h3>${business.name}</h3>
+
+    <p>
+      ${business.category}
+      •
+      ${business.town}
+    </p>
+
+    <p>
+      ${business.description || ""}
+    </p>
+
+    <h4>Opening Hours</h4>
+
+    <pre>
+${JSON.stringify(h, null, 2)}
+    </pre>
+
+    <h4>Logo</h4>
+
+    ${
+      business.logoUrl
+        ? `
+          <img
+            src="${business.logoUrl}"
+            style="max-width:150px;">
+        `
+        : "No logo uploaded"
+    }
+
+    <h4>Gallery</h4>
+
+    ${
+      (business.gallery || [])
+        .map(url => `
+          <img
+            src="${url}"
+            style="
+              width:90px;
+              height:90px;
+              object-fit:cover;
+              margin:4px;
+            ">
+        `)
+        .join("")
+    }
+  `;
+
+  document.getElementById("previewArea")
+    .innerHTML = html;
+}
+
+/* ===========================
+   PENDING NOTICE
+=========================== */
+async function loadPendingNotice() {
+
+  try {
+
+    console.log(
+      "[PENDING] Checking pending status"
+    );
+
+    const snap =
+      await pendingRef.get();
+
+    if (!snap.exists) {
+
+      console.log(
+        "[PENDING] No pending document"
+      );
+
+      return;
+    }
+
+    const p =
+      snap.data();
+
+    console.log(
+      "[PENDING] Pending data:",
+      p
+    );
+
+    if (p.status === "pending") {
+
+      document.getElementById("pendingNotice")
+        .textContent =
+        "You have changes waiting for approval. Your live listing will update once approved.";
+
+      console.log(
+        "[PENDING] Pending notice shown"
+      );
+    }
+
+  } catch (err) {
+
+    console.error(
+      "[PENDING] Failed loading notice:",
+      err
+    );
+  }
+}
+
+/* ===========================
    LOGOUT
----------------------------- */
+=========================== */
 document.getElementById("logoutBtn")
   .addEventListener("click", async () => {
 
@@ -485,4 +750,4 @@ document.getElementById("logoutBtn")
     await auth.signOut();
 
     console.log("[AUTH] Signed out");
-});
+  });
