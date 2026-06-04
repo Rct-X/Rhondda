@@ -569,38 +569,19 @@ document.getElementById("uploadGalleryBtn")
    SAVE PENDING CHANGES
 =========================== */
 async function savePendingChanges(partial) {
+  const user = auth.currentUser;
 
-  try {
-
-    console.log(
-      "[PENDING] Saving changes:",
-      partial
-    );
-
-    const user =
-      auth.currentUser;
-
-    await pendingRef.set(
-      {
-        ...partial,
-
-        ownerId:
-          user.uid,
-
-        businessId:
-          bizId,
-
-        status:
-          "pending",
-
-        submittedAt:
-          firebase.firestore.FieldValue.serverTimestamp()
-      },
-      {
-        merge: true
-      }
-    );
-
+  await pendingRef.set(
+    {
+      ...partial,
+      ownerId: user.uid,
+      businessId: bizId,
+      status: "pending",
+      submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+    },
+    { merge: true }
+  );
+}
     console.log(
       "[PENDING] Pending changes saved"
     );
