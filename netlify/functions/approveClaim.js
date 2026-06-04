@@ -1,61 +1,78 @@
-import admin from "firebase-admin";
-import fetch from "node-fetch";
+const admin = require("firebase-admin");
+const fetch = require("node-fetch");
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.applicationDefault()
+    credential: admin.credential.cert({
+      projectId: process.env.RN_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.RN_FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.RN_FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+    })
   });
 }
 
-export async function handler(event) {
-  try {
-    const { claimId } = JSON.parse(event.body);
+const db = admin.firestore();
 
-    const claimRef = admin.firestore().collection("claims").doc(claimId);
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405 };
+  }
+
+  try {
+    const { claimId } = JSON.parse(event.body || "{}");
+
+    const claimRef = db.collection("claims").doc(claimId);
     const claimSnap = await claimRef.get();
+
+    if (!claimSnap.exists) {
+      return { statusCode: 404, body: JSON.stringify({ error: "Claim not found" }) };
+    }
+
     const claim = claimSnap.data();
 
-    // Find business by slug
-    const businessSnap = await admin.firestore()
+    // Find the business by slug
+    const bizSnap = await db
       .collection("businesses")
       .where("slug", "==", claim.slug)
+      .limit(1)
       .get();
 
-    const businessRef = businessSnap.docs[0].ref;
-    const business = businessSnap.docs[0].data();
+    if (bizSnap.empty) {
+      return { statusCode: 404, body: JSON.stringify({ error: "Business not found" }) };
+    }
 
-    // Mark business as claimed (owner will create account next)
-    await businessRef.update({
-      ownerId: "pending"
+    const bizRef = bizSnap.docs[0].ref;
+    const biz = bizSnap.docs[0].data();
+
+    // Mark business as having a pending owner
+    await bizRef.update({
+      ownerStatus: "pending-setup" // or ownerId: "pending"
     });
 
     // Send the approval email
     await fetch(process.env.URL + "/.netlify/functions/sendClaimApproval", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: claim.name,
         email: claim.email,
-        businessName: business.name,
-        slug: business.slug
+        businessName: biz.name,
+        slug: biz.slug
       })
     });
 
     // Mark claim as approved
     await claimRef.update({
       status: "approved",
-      emailSent: true,
-      approvedAt: Date.now()
+      approvedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Claim approved + email sent" })
+      body: JSON.stringify({ ok: true })
     };
-
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message })
-    };
+    console.error(err);
+    return { statusCode: 500, body: JSON.stringify({ error: "Server error" }) };
   }
-}
+};
