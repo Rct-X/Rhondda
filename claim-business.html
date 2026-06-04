@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Claim Your Business | RCTX Directory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/css/claim-business.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Claim Your Business</h1>
+    <p class="intro">Verify your ownership to manage and update your listing.</p>
+
+    <div id="businessInfo" class="business-box">
+      Loading business details…
+    </div>
+
+    <form id="claimForm">
+      <label>Your Name</label>
+      <input type="text" id="name" required>
+
+      <label>Your Email</label>
+      <input type="email" id="email" required>
+
+      <label>Message (optional)</label>
+      <textarea id="message" rows="4"></textarea>
+
+      <input type="hidden" id="businessSlug">
+
+      <button type="submit" class="btn">Submit Claim</button>
+    </form>
+
+    <p id="statusMsg" class="status"></p>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script src="/js/claim-business.js"></script>
+
+</body>
+</html>
