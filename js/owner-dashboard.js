@@ -516,14 +516,70 @@ function loadGalleryPreview() {
 
   container.innerHTML = "";
 
-  business.gallery.forEach(url => {
+  business.gallery.forEach((url, index) => {
 
+    // WRAPPER
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className =
+      "gallery-item";
+
+    // IMAGE
     const img =
       document.createElement("img");
 
     img.src = url;
 
-    container.appendChild(img);
+    img.className =
+      "gallery-thumb";
+
+    // DELETE BUTTON
+    const removeBtn =
+      document.createElement("button");
+
+    removeBtn.className =
+      "gallery-delete";
+
+    removeBtn.innerHTML = "×";
+
+    removeBtn.title =
+      "Remove image";
+
+    // DELETE CLICK
+    removeBtn.addEventListener(
+      "click",
+      () => {
+
+        const confirmed =
+          confirm(
+            "Remove this image? You can upload another after saving."
+          );
+
+        if (!confirmed) return;
+
+        // REMOVE IMAGE
+        business.gallery.splice(index, 1);
+
+        console.log(
+          "[GALLERY] Image removed locally"
+        );
+
+        // REFRESH UI
+        loadGalleryPreview();
+        updateGalleryCount();
+
+        document.getElementById(
+          "galleryStatus"
+        ).textContent =
+          "Image removed. Click upload to save changes.";
+      }
+    );
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(removeBtn);
+
+    container.appendChild(wrapper);
   });
 
   console.log(
@@ -610,8 +666,7 @@ document.getElementById("uploadGalleryBtn")
         files.length
       );
 
-      const gallery = [
-        ...(business.gallery || [])
+      const gallery = [...(business.gallery || [])];
       ];
 
       for (let file of files) {
@@ -652,6 +707,12 @@ document.getElementById("uploadGalleryBtn")
       await savePendingChanges({
         gallery
       });
+      
+      business.gallery = gallery;
+
+loadGalleryPreview();
+
+updateGalleryCount();
 
       business.gallery = gallery;
 
