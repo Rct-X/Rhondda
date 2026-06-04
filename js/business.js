@@ -387,7 +387,19 @@ if (b.gallery && b.gallery.length) {
       .textContent =
         "This business listing has been claimed by the owner.";
   }
+// ===============================
+// WASTE LICENCE BADGE
+// ===============================
+if (b.wasteLicence) {
 
+  document.getElementById("verifiedBadge")
+    .innerHTML +=
+      `
+      <span class="badge badge-waste">
+        ♻️ Licensed Waste Carrier
+      </span>
+      `;
+}
   // ===============================
   // HOURS
   // ===============================
