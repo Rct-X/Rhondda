@@ -2,107 +2,46 @@
 // FETCH FIREBASE CONFIG
 // ===============================
 async function loadFirebaseConfig() {
-  console.log("🔧 Fetching Firebase config…");
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
 }
 
 let db;
-let currentBusiness = null;
 
 // ===============================
 // READ URL PATH PARAMETERS
 // ===============================
 function getPathParams() {
   const parts = window.location.pathname.split("/").filter(Boolean);
-  const params = {
+  return {
     category: parts[1],
     town: parts[2],
     slug: parts[3]
   };
-  console.log("📌 URL Params:", params);
-  return params;
 }
-
-// ===============================
-// SHARE POPUP ELEMENTS
-// ===============================
-const sharePopup = document.getElementById("sharePopup");
-const closeSharePopupBtn = document.getElementById("closeSharePopup");
-
-console.log("🔍 sharePopup =", sharePopup);
-console.log("🔍 closeSharePopupBtn =", closeSharePopupBtn);
-
-// Close popup
-closeSharePopupBtn?.addEventListener("click", () => {
-  console.log("❌ Popup closed via button");
-  sharePopup?.classList.remove("show");
-});
-
-// Close popup when clicking background
-sharePopup?.addEventListener("click", (e) => {
-  if (e.target === sharePopup) {
-    console.log("❌ Popup closed via background click");
-    sharePopup.classList.remove("show");
-  }
-});
-
-// ===============================
-// POPUP TIMER (SHOW AFTER 6s)
-// ===============================
-console.log("⏳ Popup timer started…");
-
-setTimeout(() => {
-  console.log("⏳ 6 seconds passed — checking popup conditions…");
-
-  if (sessionStorage.getItem("sharePopupShown")) {
-    console.log("⚠️ Popup already shown this session — skipping");
-    return;
-  }
-
-  if (!sharePopup) {
-    console.log("❌ sharePopup element NOT FOUND — cannot show popup");
-    return;
-  }
-
-  console.log("✅ Showing popup now");
-  sharePopup.classList.add("show");
-  sessionStorage.setItem("sharePopupShown", "true");
-
-}, 6000);
 
 // ===============================
 // INIT FIREBASE + LOAD BUSINESS
 // ===============================
 (async () => {
-  try {
-    const config = await loadFirebaseConfig();
-    console.log("🔥 Firebase config loaded");
+  const config = await loadFirebaseConfig();
+  firebase.initializeApp(config);
+  db = firebase.firestore();
 
-    firebase.initializeApp(config);
-    db = firebase.firestore();
-    console.log("🔥 Firebase initialized");
+  const page = getPathParams();
 
-    const page = getPathParams();
-
-    if (!page.category || !page.town || !page.slug) {
-      console.error("❌ Missing URL parameters");
-      return;
-    }
-
-    loadBusiness(page.category, page.town, page.slug);
-
-  } catch (err) {
-    console.error("❌ Firebase init error:", err);
+  if (!page.category || !page.town || !page.slug) {
+    console.error("Missing URL parameters");
+    return;
   }
+
+  loadBusiness(page.category, page.town, page.slug);
 })();
 
 // ===============================
 // LOAD BUSINESS DATA
 // ===============================
 async function loadBusiness(categorySlug, townSlug, slug) {
-  console.log("📥 Loading business:", categorySlug, townSlug, slug);
-
   const q = db.collection("businesses")
     .where("categorySlug", "==", categorySlug)
     .where("townSlug", "==", townSlug)
@@ -111,83 +50,110 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   const snap = await q.get();
 
   if (snap.empty) {
-    console.log("❌ Business not found");
-    setText("businessName", "Business Not Found");
+    document.getElementById("businessName").textContent = "Business Not Found";
     return;
   }
 
   const b = snap.docs[0].data();
-  currentBusiness = b;
-  window.currentBusiness = b;
-
-  console.log("✅ Business loaded:", b);
 
   // SEO
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
+  document.getElementById("seoDescription")?.setAttribute(
+    "content",
+    `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`
+  );
 
-  // UNIVERSAL OG IMAGE
-  const ogTag = document.getElementById("ogImage");
-  if (ogTag) {
-    ogTag.setAttribute("content", "https://rctx.co.uk/images/find-rctx.jpg");
-    console.log("🖼 OG image set");
-  } else {
-    console.log("⚠️ ogImage tag missing in HTML");
-  }
+// ===============================
+// STATIC CATEGORY OG IMAGE
+// ===============================
+const ogImageMap = {
+  plumbers: "https://rctx.co.uk/og/plumbers.jpg",
+  electricians: "https://rctx.co.uk/og/electricians.jpg",
+  builders: "https://rctx.co.uk/og/builders.jpg",
+  roofers: "https://rctx.co.uk/og/roofers.jpg",
+  "painters-decorators": "https://rctx.co.uk/og/painters-decorators.jpg",
+  handyman: "https://rctx.co.uk/og/handyman.jpg",
+  cleaners: "https://rctx.co.uk/og/cleaners.jpg",
+  "window-cleaners": "https://rctx.co.uk/og/window-cleaners.jpg",
+  gardeners: "https://rctx.co.uk/og/gardeners.jpg",
+  "waste-collection": "https://rctx.co.uk/og/waste-collection.jpg",
+  "man-with-a-van": "https://rctx.co.uk/og/man-with-a-van.jpg",
+  removals: "https://rctx.co.uk/og/removals.jpg",
+  "car-mechanics": "https://rctx.co.uk/og/car-mechanics.jpg",
+  tyres: "https://rctx.co.uk/og/tyres.jpg",
+  barbers: "https://rctx.co.uk/og/barbers.jpg",
+  hairdressers: "https://rctx.co.uk/og/hairdressers.jpg",
+  "beauty-salons": "https://rctx.co.uk/og/beauty-salons.jpg",
+  "dog-groomers": "https://rctx.co.uk/og/dog-groomers.jpg",
+  cafes: "https://rctx.co.uk/og/cafes.jpg",
+  restaurants: "https://rctx.co.uk/og/restaurants.jpg",
+  takeaways: "https://rctx.co.uk/og/takeaways.jpg",
+  shops: "https://rctx.co.uk/og/shops.jpg",
+  gyms: "https://rctx.co.uk/og/gyms.jpg",
+  photographers: "https://rctx.co.uk/og/photographers.jpg"
+};
 
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  ogUrl?.setAttribute("content", window.location.href);
+const ogUrl =
+  ogImageMap[b.categorySlug] ||
+  "https://rctx.co.uk/og/default-business.jpg";
 
-  const canonical = document.querySelector('link[rel="canonical"]');
-  canonical?.setAttribute("href", window.location.href);
+document.getElementById("ogImage")?.setAttribute("content", ogUrl);
 
+document
+  .querySelector('meta[property="og:url"]')
+  ?.setAttribute("content", window.location.href);
+
+document
+  .querySelector('link[rel="canonical"]')
+  ?.setAttribute("href", window.location.href);
+  
   // MAIN CONTENT
-  setText("businessName", b.name);
-  setText("businessCategory", b.category);
-  setText("businessTown", b.town);
-  setText("businessDescription", b.description || "No description provided.");
-  setText("businessPhone", b.phone || "Not provided");
-  setText("businessAddress", b.address || "Not provided");
+  document.getElementById("businessName").textContent = b.name;
+  document.getElementById("businessCategory").textContent = b.category;
+  document.getElementById("businessTown").textContent = b.town;
+  document.getElementById("businessDescription").textContent =
+    b.description || "No description provided.";
 
-  // WEBSITE
+  document.getElementById("businessPhone").textContent = b.phone || "Not provided";
+  document.getElementById("businessAddress").textContent = b.address || "Not provided";
+
   const websiteEl = document.getElementById("businessWebsite");
-  if (websiteEl) {
-    if (b.website) {
-      websiteEl.textContent = b.website;
-      websiteEl.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
-    } else {
-      websiteEl.textContent = "Not provided";
-      websiteEl.removeAttribute("href");
-    }
+  if (b.website) {
+    websiteEl.textContent = b.website;
+    websiteEl.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
+  } else {
+    websiteEl.textContent = "Not provided";
+    websiteEl.removeAttribute("href");
   }
 
   // SIDEBAR
-  setText("businessTownSidebar", b.town);
-  setText("businessCategorySidebar", b.category);
+  document.getElementById("businessTownSidebar").textContent = b.town;
+  document.getElementById("businessCategorySidebar").textContent = b.category;
 
   // BADGES
   if (b.verified) {
-    setHTML("verifiedBadge", `<span class="badge badge-verified">Verified</span>`);
+    document.getElementById("verifiedBadge").innerHTML =
+      `<span class="badge badge-verified">Verified</span>`;
   }
 
   if (b.ownerId) {
-    setHTML("claimedBadge", `<span class="badge badge-claimed">Claimed</span>`);
-    setText("claimedMessage", "This business listing has been claimed by the owner.");
+    document.getElementById("claimedBadge").innerHTML =
+      `<span class="badge badge-claimed">Claimed</span>`;
+    const claimedMsg = document.getElementById("claimedMessage");
+    if (claimedMsg) claimedMsg.textContent = "This business listing has been claimed by the owner.";
   }
 
   // HOURS
   const hoursList = document.getElementById("businessHours");
-  if (hoursList) {
-    hoursList.innerHTML = "";
-
-    if (b.hours) {
-      Object.entries(b.hours).forEach(([day, hours]) => {
-        const li = document.createElement("li");
-        li.textContent = `${day}: ${hours}`;
-        hoursList.appendChild(li);
-      });
-    } else {
-      hoursList.innerHTML = "<li>No hours provided.</li>";
-    }
+  hoursList.innerHTML = "";
+  if (b.hours) {
+    Object.entries(b.hours).forEach(([day, hours]) => {
+      const li = document.createElement("li");
+      li.textContent = `${day}: ${hours}`;
+      hoursList.appendChild(li);
+    });
+  } else {
+    hoursList.innerHTML = "<li>No hours provided.</li>";
   }
 
   // CLAIM BUTTON
@@ -200,18 +166,15 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     }
   }
 
+  // RELATED
   loadRelated(b.categorySlug, b.townSlug, b.slug);
 }
 
 // ===============================
-// RELATED BUSINESSES
+// LOAD RELATED BUSINESSES
 // ===============================
 async function loadRelated(categorySlug, townSlug, currentSlug) {
-  console.log("🔎 Loading related businesses…");
-
   const relatedGrid = document.getElementById("relatedGrid");
-  if (!relatedGrid) return;
-
   relatedGrid.innerHTML = `<p class="text-dim">Loading recommendations…</p>`;
 
   let results = [];
@@ -260,73 +223,72 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
     relatedGrid.appendChild(card);
   });
-
-  console.log("✅ Related businesses loaded");
-}
+        }
 
 // ===============================
-// SHARE SYSTEM
+// SHARE POPUP
 // ===============================
-document.addEventListener("click", async (e) => {
-  const shareBtn = e.target.closest("#shareBusinessBtn");
-  if (!shareBtn) return;
 
-  console.log("📤 Share button clicked");
+setTimeout(() => {
 
-  const b = window.currentBusiness;
+  // only show once per session
+  if (sessionStorage.getItem("sharePopupShown")) return;
 
-  if (!b) {
-    console.log("❌ No business loaded yet — cannot share");
-    return;
+  const popup = document.getElementById("sharePopup");
+
+  if (popup) {
+    popup.classList.add("show");
+    sessionStorage.setItem("sharePopupShown", "true");
   }
 
+}, 6000);
+
+// CLOSE
+document.addEventListener("click", (e) => {
+
+  if (e.target.id === "closeSharePopup") {
+    document.getElementById("sharePopup")?.classList.remove("show");
+  }
+
+});
+
+// SHARE BUTTON
+document.addEventListener("click", async (e) => {
+
+  if (e.target.id !== "shareBusinessBtn") return;
+
   const shareData = {
-    title: `${b.name} – ${b.category} in ${b.town}`,
-    text: b.description || `Check out ${b.name} on RCTX`,
+    title: document.title,
+    text: "Check out this local business on RCTX",
     url: window.location.href
   };
 
-  console.log("📄 shareData =", shareData);
-
-  // MOBILE SHARE
+  // MOBILE NATIVE SHARE
   if (navigator.share) {
-    console.log("📱 Using navigator.share()");
+
     try {
       await navigator.share(shareData);
-      console.log("✅ Share successful");
-      sharePopup?.classList.remove("show");
-    } catch (err) {
-      console.log("⚠️ Share cancelled or failed:", err);
+    } catch(err) {
+      console.log("Share cancelled");
     }
-    return;
+
+  } else {
+
+    // FALLBACK COPY LINK
+    try {
+
+      await navigator.clipboard.writeText(window.location.href);
+
+      e.target.textContent = "Link Copied!";
+
+      setTimeout(() => {
+        e.target.textContent = "Share This Business";
+      }, 2000);
+
+    } catch(err) {
+      alert("Could not copy link");
+    }
+
   }
 
-  // FALLBACK COPY
-  console.log("📝 Using fallback copy");
-  try {
-    await navigator.clipboard.writeText(window.location.href);
-    console.log("📋 Link copied to clipboard");
-
-    shareBtn.textContent = "Link Copied!";
-    setTimeout(() => {
-      shareBtn.textContent = "Share This Business";
-    }, 2000);
-
-  } catch (err) {
-    console.log("❌ Clipboard copy failed:", err);
-    window.prompt("Copy link:", window.location.href);
-  }
 });
-
-// ===============================
-// HELPERS
-// ===============================
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-function setHTML(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.innerHTML = value;
-                          }
