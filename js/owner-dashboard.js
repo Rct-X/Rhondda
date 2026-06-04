@@ -35,10 +35,14 @@ let db, auth, storage, bizRef, business;
     loadOverview();
     loadDetailsForm();
     loadHoursForm();
+    loadLogoPreview();
+    loadGalleryPreview();
   });
 })();
 
-// TAB SWITCHING
+/* ---------------------------
+   TAB SWITCHING
+---------------------------- */
 document.querySelectorAll("#sidebar nav button").forEach(btn => {
   btn.addEventListener("click", () => {
     const tab = btn.dataset.tab;
@@ -47,7 +51,9 @@ document.querySelectorAll("#sidebar nav button").forEach(btn => {
   });
 });
 
-// OVERVIEW
+/* ---------------------------
+   OVERVIEW
+---------------------------- */
 function loadOverview() {
   document.getElementById("bizName").textContent = business.name;
   document.getElementById("bizCategory").textContent = business.category;
@@ -55,7 +61,9 @@ function loadOverview() {
   document.getElementById("bizStatus").textContent = business.verified ? "Verified" : "Not Verified";
 }
 
-// DETAILS
+/* ---------------------------
+   DETAILS
+---------------------------- */
 function loadDetailsForm() {
   document.getElementById("d-name").value = business.name;
   document.getElementById("d-description").value = business.description || "";
@@ -78,7 +86,9 @@ document.getElementById("detailsForm").addEventListener("submit", async (e) => {
   document.getElementById("detailsStatus").textContent = "Saved!";
 });
 
-// HOURS
+/* ---------------------------
+   HOURS
+---------------------------- */
 function loadHoursForm() {
   const h = business.hours || {};
   document.getElementById("h-mon").value = h.Monday || "";
@@ -108,7 +118,9 @@ document.getElementById("hoursForm").addEventListener("submit", async (e) => {
   document.getElementById("hoursStatus").textContent = "Hours updated!";
 });
 
-// IMAGE COMPRESSION
+/* ---------------------------
+   IMAGE COMPRESSION
+---------------------------- */
 function compressImage(file, maxSize = 800) {
   return new Promise(resolve => {
     const img = new Image();
@@ -127,7 +139,23 @@ function compressImage(file, maxSize = 800) {
   });
 }
 
-// LOGO UPLOAD
+/* ---------------------------
+   LOGO PREVIEW (SAFE)
+---------------------------- */
+function loadLogoPreview() {
+  const preview = document.getElementById("logoPreview");
+
+  if (business.logoUrl) {
+    preview.src = business.logoUrl;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
+}
+
+/* ---------------------------
+   LOGO UPLOAD
+---------------------------- */
 document.getElementById("uploadLogoBtn").addEventListener("click", async () => {
   const file = document.getElementById("logoInput").files[0];
   if (!file) return;
@@ -140,11 +168,34 @@ document.getElementById("uploadLogoBtn").addEventListener("click", async () => {
   const url = await ref.getDownloadURL();
   await bizRef.update({ logoUrl: url });
 
-  document.getElementById("logoPreview").src = url;
+  business.logoUrl = url;
+  loadLogoPreview();
+
   document.getElementById("logoStatus").textContent = "Logo uploaded!";
 });
 
-// GALLERY UPLOAD
+/* ---------------------------
+   GALLERY PREVIEW (SAFE)
+---------------------------- */
+function loadGalleryPreview() {
+  const container = document.getElementById("galleryPreview");
+
+  if (!business.gallery || business.gallery.length === 0) {
+    container.innerHTML = "<p>No images uploaded yet.</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+  business.gallery.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    container.appendChild(img);
+  });
+}
+
+/* ---------------------------
+   GALLERY UPLOAD
+---------------------------- */
 document.getElementById("uploadGalleryBtn").addEventListener("click", async () => {
   const files = document.getElementById("galleryInput").files;
   if (!files.length) return;
@@ -163,11 +214,16 @@ document.getElementById("uploadGalleryBtn").addEventListener("click", async () =
   }
 
   await bizRef.update({ gallery });
+  business.gallery = gallery;
+
+  loadGalleryPreview();
 
   document.getElementById("galleryStatus").textContent = "Images uploaded!";
 });
 
-// LOGOUT
+/* ---------------------------
+   LOGOUT
+---------------------------- */
 document.getElementById("logoutBtn").addEventListener("click", () => {
   auth.signOut();
 });
