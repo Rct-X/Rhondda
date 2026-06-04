@@ -157,4 +157,28 @@ color:#fff;
 opacity:.95;
 transform:translateY(-1px);
 }
+.filters{
+display:flex;
+gap:.75rem;
+flex-wrap:wrap;
+}
 
+.filters button{
+padding:.7rem 1rem;
+border:none;
+border-radius:12px;
+background:#e2e8f0;
+color:#0f172a;
+font-weight:700;
+cursor:pointer;
+transition:.2s ease;
+}
+
+.filters button:hover{
+transform:translateY(-1px);
+}
+
+.filters button.active{
+background:#0f172a;
+color:#fff;
+}
