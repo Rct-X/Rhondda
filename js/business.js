@@ -7,6 +7,7 @@ async function loadFirebaseConfig() {
 }
 
 let db;
+let currentBusiness = null;
 
 // ===============================
 // READ URL PATH PARAMETERS
@@ -21,21 +22,44 @@ function getPathParams() {
 }
 
 // ===============================
+// SHARE POPUP CONTROLS
+// ===============================
+const sharePopup = document.getElementById("sharePopup");
+const closeSharePopupBtn = document.getElementById("closeSharePopup");
+
+// close popup
+closeSharePopupBtn?.addEventListener("click", () => {
+  sharePopup?.classList.remove("show");
+});
+
+// close on background click (optional enhancement)
+sharePopup?.addEventListener("click", (e) => {
+  if (e.target === sharePopup) {
+    sharePopup.classList.remove("show");
+  }
+});
+
+// ===============================
 // INIT FIREBASE + LOAD BUSINESS
 // ===============================
 (async () => {
-  const config = await loadFirebaseConfig();
-  firebase.initializeApp(config);
-  db = firebase.firestore();
+  try {
+    const config = await loadFirebaseConfig();
+    firebase.initializeApp(config);
+    db = firebase.firestore();
 
-  const page = getPathParams();
+    const page = getPathParams();
 
-  if (!page.category || !page.town || !page.slug) {
-    console.error("Missing URL parameters");
-    return;
+    if (!page.category || !page.town || !page.slug) {
+      console.error("Missing URL parameters");
+      return;
+    }
+
+    loadBusiness(page.category, page.town, page.slug);
+
+  } catch (err) {
+    console.error("Firebase init error:", err);
   }
-
-  loadBusiness(page.category, page.town, page.slug);
 })();
 
 // ===============================
@@ -55,79 +79,60 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   }
 
   const b = snap.docs[0].data();
+  currentBusiness = b;
   window.currentBusiness = b;
 
   // SEO
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
-  document.getElementById("seoDescription")?.setAttribute(
-    "content",
-    `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`
-  );
 
-
-// ===============================
-// STATIC UNIVERSAL OG IMAGE
-// ===============================
-document.getElementById("ogImage")?.setAttribute(
-  "content",
-  "https://rctx.co.uk/images/find-rctx.jpg"
-);
-
-document
-  .querySelector('meta[property="og:url"]')
-  ?.setAttribute("content", window.location.href);
-
-document
-  .querySelector('link[rel="canonical"]')
-  ?.setAttribute("href", window.location.href);
-  
   // MAIN CONTENT
-  document.getElementById("businessName").textContent = b.name;
-  document.getElementById("businessCategory").textContent = b.category;
-  document.getElementById("businessTown").textContent = b.town;
-  document.getElementById("businessDescription").textContent =
-    b.description || "No description provided.";
+  setText("businessName", b.name);
+  setText("businessCategory", b.category);
+  setText("businessTown", b.town);
+  setText("businessDescription", b.description || "No description provided.");
+  setText("businessPhone", b.phone || "Not provided");
+  setText("businessAddress", b.address || "Not provided");
 
-  document.getElementById("businessPhone").textContent = b.phone || "Not provided";
-  document.getElementById("businessAddress").textContent = b.address || "Not provided";
-
+  // WEBSITE
   const websiteEl = document.getElementById("businessWebsite");
-  if (b.website) {
-    websiteEl.textContent = b.website;
-    websiteEl.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
-  } else {
-    websiteEl.textContent = "Not provided";
-    websiteEl.removeAttribute("href");
+  if (websiteEl) {
+    if (b.website) {
+      websiteEl.textContent = b.website;
+      websiteEl.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
+    } else {
+      websiteEl.textContent = "Not provided";
+      websiteEl.removeAttribute("href");
+    }
   }
 
   // SIDEBAR
-  document.getElementById("businessTownSidebar").textContent = b.town;
-  document.getElementById("businessCategorySidebar").textContent = b.category;
+  setText("businessTownSidebar", b.town);
+  setText("businessCategorySidebar", b.category);
 
   // BADGES
   if (b.verified) {
-    document.getElementById("verifiedBadge").innerHTML =
-      `<span class="badge badge-verified">Verified</span>`;
+    setHTML("verifiedBadge", `<span class="badge badge-verified">Verified</span>`);
   }
 
   if (b.ownerId) {
-    document.getElementById("claimedBadge").innerHTML =
-      `<span class="badge badge-claimed">Claimed</span>`;
-    const claimedMsg = document.getElementById("claimedMessage");
-    if (claimedMsg) claimedMsg.textContent = "This business listing has been claimed by the owner.";
+    setHTML("claimedBadge", `<span class="badge badge-claimed">Claimed</span>`);
+    setText("claimedMessage", "This business listing has been claimed by the owner.");
   }
 
   // HOURS
   const hoursList = document.getElementById("businessHours");
-  hoursList.innerHTML = "";
-  if (b.hours) {
-    Object.entries(b.hours).forEach(([day, hours]) => {
-      const li = document.createElement("li");
-      li.textContent = `${day}: ${hours}`;
-      hoursList.appendChild(li);
-    });
-  } else {
-    hoursList.innerHTML = "<li>No hours provided.</li>";
+  if (hoursList) {
+    hoursList.innerHTML = "";
+
+    if (b.hours) {
+      Object.entries(b.hours).forEach(([day, hours]) => {
+        const li = document.createElement("li");
+        li.textContent = `${day}: ${hours}`;
+        hoursList.appendChild(li);
+      });
+    } else {
+      hoursList.innerHTML = "<li>No hours provided.</li>";
+    }
   }
 
   // CLAIM BUTTON
@@ -140,15 +145,16 @@ document
     }
   }
 
-  // RELATED
   loadRelated(b.categorySlug, b.townSlug, b.slug);
 }
 
 // ===============================
-// LOAD RELATED BUSINESSES
+// RELATED BUSINESSES
 // ===============================
 async function loadRelated(categorySlug, townSlug, currentSlug) {
   const relatedGrid = document.getElementById("relatedGrid");
+  if (!relatedGrid) return;
+
   relatedGrid.innerHTML = `<p class="text-dim">Loading recommendations…</p>`;
 
   let results = [];
@@ -197,14 +203,17 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
     relatedGrid.appendChild(card);
   });
-        }
+}
 
-// SHARE BUTTON
+// ===============================
+// SHARE SYSTEM (FIXED)
+// ===============================
 document.addEventListener("click", async (e) => {
-
-  if (e.target.id !== "shareBusinessBtn") return;
+  const shareBtn = e.target.closest("#shareBusinessBtn");
+  if (!shareBtn) return;
 
   const b = window.currentBusiness;
+  if (!b) return;
 
   const shareData = {
     title: `${b.name} – ${b.category} in ${b.town}`,
@@ -212,32 +221,39 @@ document.addEventListener("click", async (e) => {
     url: window.location.href
   };
 
-  // MOBILE NATIVE SHARE
+  // MOBILE SHARE
   if (navigator.share) {
-
     try {
       await navigator.share(shareData);
-    } catch(err) {
-      console.log("Share cancelled");
-    }
-
-  } else {
-
-    // FALLBACK COPY LINK
-    try {
-
-      await navigator.clipboard.writeText(window.location.href);
-
-      e.target.textContent = "Link Copied!";
-
-      setTimeout(() => {
-        e.target.textContent = "Share This Business";
-      }, 2000);
-
-    } catch(err) {
-      alert("Could not copy link");
-    }
-
+      sharePopup?.classList.remove("show");
+    } catch (err) {}
+    return;
   }
 
+  // FALLBACK COPY
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+
+    shareBtn.textContent = "Link Copied!";
+
+    setTimeout(() => {
+      shareBtn.textContent = "Share This Business";
+    }, 2000);
+
+  } catch (err) {
+    window.prompt("Copy link:", window.location.href);
+  }
 });
+
+// ===============================
+// HELPERS
+// ===============================
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function setHTML(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = value;
+}
