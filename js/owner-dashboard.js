@@ -97,8 +97,8 @@ let pendingRef;
         console.log("[DB] Business loaded:", business);
 
         pendingRef = db
-          .collection("business_pending_changes")
-          .doc(bizId);
+  .collection("pending_changes")
+  .doc(bizId);
 
         console.log("[DB] Pending ref ready:", bizId);
 
@@ -569,25 +569,55 @@ document.getElementById("uploadGalleryBtn")
    SAVE PENDING CHANGES
 =========================== */
 async function savePendingChanges(partial) {
-  const user = auth.currentUser;
 
-  await pendingRef.set(
-    {
-      ...partial,
-      ownerId: user.uid,
-      businessId: bizId,
-      status: "pending",
-      submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-    },
-    { merge: true }
-  );
-}
+  try {
+
+    console.log(
+      "[PENDING] Saving pending changes:",
+      partial
+    );
+
+    const user = auth.currentUser;
+
+    if (!user) {
+
+      throw new Error(
+        "No authenticated user"
+      );
+    }
+
+    if (!pendingRef) {
+
+      throw new Error(
+        "Pending reference not initialised"
+      );
+    }
+
+    await pendingRef.set(
+      {
+        ...partial,
+
+        ownerId: user.uid,
+
+        businessId: bizId,
+
+        status: "pending",
+
+        submittedAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp()
+      },
+      { merge: true }
+    );
+
     console.log(
       "[PENDING] Pending changes saved"
     );
 
     const notice =
-      document.getElementById("pendingNotice");
+      document.getElementById(
+        "pendingNotice"
+      );
 
     if (notice) {
 
@@ -605,7 +635,6 @@ async function savePendingChanges(partial) {
     throw err;
   }
 }
-
 /* ===========================
    PREVIEW
 =========================== */
