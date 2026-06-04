@@ -667,7 +667,6 @@ document.getElementById("uploadGalleryBtn")
       );
 
       const gallery = [...(business.gallery || [])];
-      ];
 
       for (let file of files) {
 
@@ -708,11 +707,6 @@ document.getElementById("uploadGalleryBtn")
         gallery
       });
       
-      business.gallery = gallery;
-
-loadGalleryPreview();
-
-updateGalleryCount();
 
       business.gallery = gallery;
 
