@@ -64,41 +64,14 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`
   );
 
-// ===============================
-// STATIC CATEGORY OG IMAGE
-// ===============================
-const ogImageMap = {
-  plumbers: "https://rctx.co.uk/og/plumbers.jpg",
-  electricians: "https://rctx.co.uk/og/electricians.jpg",
-  builders: "https://rctx.co.uk/og/builders.jpg",
-  roofers: "https://rctx.co.uk/og/roofers.jpg",
-  "painters-decorators": "https://rctx.co.uk/og/painters-decorators.jpg",
-  handyman: "https://rctx.co.uk/og/handyman.jpg",
-  cleaners: "https://rctx.co.uk/og/cleaners.jpg",
-  "window-cleaners": "https://rctx.co.uk/og/window-cleaners.jpg",
-  gardeners: "https://rctx.co.uk/og/gardeners.jpg",
-  "waste-collection": "https://rctx.co.uk/og/waste-collection.jpg",
-  "man-with-a-van": "https://rctx.co.uk/og/man-with-a-van.jpg",
-  removals: "https://rctx.co.uk/og/removals.jpg",
-  "car-mechanics": "https://rctx.co.uk/og/car-mechanics.jpg",
-  tyres: "https://rctx.co.uk/og/tyres.jpg",
-  barbers: "https://rctx.co.uk/og/barbers.jpg",
-  hairdressers: "https://rctx.co.uk/og/hairdressers.jpg",
-  "beauty-salons": "https://rctx.co.uk/og/beauty-salons.jpg",
-  "dog-groomers": "https://rctx.co.uk/og/dog-groomers.jpg",
-  cafes: "https://rctx.co.uk/og/cafes.jpg",
-  restaurants: "https://rctx.co.uk/og/restaurants.jpg",
-  takeaways: "https://rctx.co.uk/og/takeaways.jpg",
-  shops: "https://rctx.co.uk/og/shops.jpg",
-  gyms: "https://rctx.co.uk/og/gyms.jpg",
-  photographers: "https://rctx.co.uk/og/photographers.jpg"
-};
 
-const ogUrl =
-  ogImageMap[b.categorySlug] ||
-  "https://rctx.co.uk/og/find-rctx.jpg";
-
-document.getElementById("ogImage")?.setAttribute("content", ogUrl);
+// ===============================
+// STATIC UNIVERSAL OG IMAGE
+// ===============================
+document.getElementById("ogImage")?.setAttribute(
+  "content",
+  "https://rctx.co.uk/images/find-rctx.jpg"
+);
 
 document
   .querySelector('meta[property="og:url"]')
