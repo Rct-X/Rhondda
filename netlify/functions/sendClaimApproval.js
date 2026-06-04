@@ -6,7 +6,7 @@ export async function handler(event) {
   try {
     const { name, email, businessName, slug } = JSON.parse(event.body);
 
-    const setupUrl = `https://rctx.co.uk/owner-setup?b=${slug}`;
+    const setupUrl = `https://rctx.co.uk/owner-setup?b=${slug}&email=${email}`;
     const unsubscribeUrl = `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
 
     // Full HTML Email Template
