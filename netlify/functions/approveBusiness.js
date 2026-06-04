@@ -28,7 +28,7 @@ async function verifyUser(event) {
   const decoded = await admin.auth().verifyIdToken(token);
 
   // ONLY YOUR ADMIN EMAIL
-  if (decoded.email !== "eddyjohnpickering@gmail.com") {
+  if (decoded.email !== "epickering45@googlemail.com") {
     throw new Error("Unauthorized");
   }
 
