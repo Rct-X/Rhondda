@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Owner Dashboard | RCTX</title>
+
+  <!-- Make it responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Don’t let Google index this private area -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Optional: simple description -->
+  <meta name="description" content="Manage your RCTX business listing, update details, hours, logo and gallery.">
+
+  <link rel="stylesheet" href="/css/owner-dashboard.css">
+</head>
+<body>
+
+<div id="dashboard">
+
+  <aside id="sidebar">
+    <h2>RCTX Dashboard</h2>
+    <nav>
+      <button data-tab="overview">Overview</button>
+      <button data-tab="details">Edit Details</button>
+      <button data-tab="hours">Opening Hours</button>
+      <button data-tab="logo">Logo Upload</button>
+      <button data-tab="gallery">Gallery Upload</button>
+      <button id="logoutBtn">Logout</button>
+    </nav>
+  </aside>
+
+  <main id="content">
+
+    <!-- OVERVIEW -->
+    <section id="tab-overview" class="tab active">
+      <h1 id="bizName"></h1>
+      <p id="bizCategory"></p>
+      <p id="bizTown"></p>
+      <p id="bizStatus"></p>
+    </section>
+
+    <!-- EDIT DETAILS -->
+    <section id="tab-details" class="tab">
+      <h2>Edit Business Details</h2>
+      <form id="detailsForm">
+        <label>Name</label>
+        <input id="d-name">
+
+        <label>Description</label>
+        <textarea id="d-description"></textarea>
+
+        <label>Phone</label>
+        <input id="d-phone">
+
+        <label>Address</label>
+        <input id="d-address">
+
+        <label>Website</label>
+        <input id="d-website">
+
+        <button class="btn">Save Changes</button>
+      </form>
+      <p id="detailsStatus"></p>
+    </section>
+
+    <!-- HOURS -->
+    <section id="tab-hours" class="tab">
+      <h2>Opening Hours</h2>
+      <form id="hoursForm">
+        <div class="hours-grid">
+          <label>Monday</label><input id="h-mon">
+          <label>Tuesday</label><input id="h-tue">
+          <label>Wednesday</label><input id="h-wed">
+          <label>Thursday</label><input id="h-thu">
+          <label>Friday</label><input id="h-fri">
+          <label>Saturday</label><input id="h-sat">
+          <label>Sunday</label><input id="h-sun">
+        </div>
+        <button class="btn">Save Hours</button>
+      </form>
+      <p id="hoursStatus"></p>
+    </section>
+
+    <!-- LOGO UPLOAD -->
+    <section id="tab-logo" class="tab">
+      <h2>Upload Logo</h2>
+      <input type="file" id="logoInput" accept="image/*">
+      <button id="uploadLogoBtn" class="btn">Upload Logo</button>
+      <p id="logoStatus"></p>
+      <img id="logoPreview" style="max-width:150px;margin-top:10px;">
+    </section>
+
+    <!-- GALLERY UPLOAD -->
+    <section id="tab-gallery" class="tab">
+      <h2>Upload Gallery Images</h2>
+      <input type="file" id="galleryInput" accept="image/*" multiple>
+      <button id="uploadGalleryBtn" class="btn">Upload Images</button>
+      <p id="galleryStatus"></p>
+      <div id="galleryPreview" class="gallery-grid"></div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+<script src="/js/owner-dashboard.js"></script>
+
+</body>
+</html>
