@@ -528,26 +528,23 @@ async function rejectClaim(id) {
 // APPROVE / REJECT PENDING CHANGES
 // ===============================
 async function approvePendingChanges(id) {
+  console.log("[ADMIN] Approving pending changes:", id);
 
-  console.log(
-    "[ADMIN] Approving pending changes:",
-    id
-  );
+  const token = await auth.currentUser.getIdToken();
 
-  const token =
-    await auth.currentUser.getIdToken();
+  const res = await fetch("/.netlify/functions/approvePendingChanges", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ businessId: id })
+  });
 
-  await fetch(
-    "/.netlify/functions/approvePendingChanges",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ id })
-    }
-  );
+  if (!res.ok) {
+    console.error("[ADMIN] Approve failed:", res.status);
+    return;
+  }
 
   loadPendingChanges();
 }
