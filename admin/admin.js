@@ -88,7 +88,8 @@ function setupAuth() {
       if (analyticsSection) analyticsSection.style.display = "block";
 
       loadPending().catch(console.error);
-      loadAnalytics().catch(console.error);
+loadClaims().catch(console.error);
+loadAnalytics().catch(console.error);
 
     } else {
 
@@ -211,6 +212,56 @@ async function loadPending() {
     list.innerHTML = "<p>Error loading submissions.</p>";
   }
 }
+
+async function loadClaims() {
+  const list = document.getElementById("claimsList");
+
+  if (!db) return;
+
+  list.innerHTML = "<p>Loading claims…</p>";
+
+  try {
+    const snap = await db
+      .collection("claims")
+      .where("status", "==", "pending")
+      .orderBy("createdAt", "desc")
+      .get();
+
+    if (snap.empty) {
+      list.innerHTML = "<p>No pending claims.</p>";
+      return;
+    }
+
+    list.innerHTML = "";
+
+    snap.forEach(doc => {
+      const c = doc.data();
+      const id = doc.id;
+
+      const item = document.createElement("div");
+      item.className = "pending-item";
+
+      item.innerHTML = `
+        <h3>Claim for: ${c.slug}</h3>
+
+        <p><strong>Name:</strong> ${c.name}</p>
+        <p><strong>Email:</strong> ${c.email}</p>
+        <p><strong>Message:</strong><br>${c.message || "No message"}</p>
+
+        <div class="pending-actions">
+          <button onclick="approveClaim('${id}')">Approve Claim</button>
+          <button onclick="rejectClaim('${id}')">Reject Claim</button>
+        </div>
+      `;
+
+      list.appendChild(item);
+    });
+
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = "<p>Error loading claims.</p>";
+  }
+}
 // ===============================
 // APPROVE / REJECT
 // ===============================
@@ -244,6 +295,35 @@ async function rejectBusiness(id) {
   loadPending();
 }
 
+async function approveClaim(id) {
+  const token = await auth.currentUser.getIdToken();
+
+  await fetch("/.netlify/functions/approveClaim", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ claimId: id })
+  });
+
+  loadClaims();
+}
+
+async function rejectClaim(id) {
+  const token = await auth.currentUser.getIdToken();
+
+  await fetch("/.netlify/functions/rejectClaim", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ claimId: id })
+  });
+
+  loadClaims();
+}
 // ===============================
 // ANALYTICS STATE
 // ===============================
