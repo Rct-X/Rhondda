@@ -2,6 +2,7 @@
 // FETCH FIREBASE CONFIG
 // ===============================
 async function loadFirebaseConfig() {
+  console.log("🔧 Fetching Firebase config…");
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
 }
@@ -14,30 +15,61 @@ let currentBusiness = null;
 // ===============================
 function getPathParams() {
   const parts = window.location.pathname.split("/").filter(Boolean);
-  return {
+  const params = {
     category: parts[1],
     town: parts[2],
     slug: parts[3]
   };
+  console.log("📌 URL Params:", params);
+  return params;
 }
 
 // ===============================
-// SHARE POPUP CONTROLS
+// SHARE POPUP ELEMENTS
 // ===============================
 const sharePopup = document.getElementById("sharePopup");
 const closeSharePopupBtn = document.getElementById("closeSharePopup");
 
-// close popup
+console.log("🔍 sharePopup =", sharePopup);
+console.log("🔍 closeSharePopupBtn =", closeSharePopupBtn);
+
+// Close popup
 closeSharePopupBtn?.addEventListener("click", () => {
+  console.log("❌ Popup closed via button");
   sharePopup?.classList.remove("show");
 });
 
-// close on background click (optional enhancement)
+// Close popup when clicking background
 sharePopup?.addEventListener("click", (e) => {
   if (e.target === sharePopup) {
+    console.log("❌ Popup closed via background click");
     sharePopup.classList.remove("show");
   }
 });
+
+// ===============================
+// POPUP TIMER (SHOW AFTER 6s)
+// ===============================
+console.log("⏳ Popup timer started…");
+
+setTimeout(() => {
+  console.log("⏳ 6 seconds passed — checking popup conditions…");
+
+  if (sessionStorage.getItem("sharePopupShown")) {
+    console.log("⚠️ Popup already shown this session — skipping");
+    return;
+  }
+
+  if (!sharePopup) {
+    console.log("❌ sharePopup element NOT FOUND — cannot show popup");
+    return;
+  }
+
+  console.log("✅ Showing popup now");
+  sharePopup.classList.add("show");
+  sessionStorage.setItem("sharePopupShown", "true");
+
+}, 6000);
 
 // ===============================
 // INIT FIREBASE + LOAD BUSINESS
@@ -45,20 +77,23 @@ sharePopup?.addEventListener("click", (e) => {
 (async () => {
   try {
     const config = await loadFirebaseConfig();
+    console.log("🔥 Firebase config loaded");
+
     firebase.initializeApp(config);
     db = firebase.firestore();
+    console.log("🔥 Firebase initialized");
 
     const page = getPathParams();
 
     if (!page.category || !page.town || !page.slug) {
-      console.error("Missing URL parameters");
+      console.error("❌ Missing URL parameters");
       return;
     }
 
     loadBusiness(page.category, page.town, page.slug);
 
   } catch (err) {
-    console.error("Firebase init error:", err);
+    console.error("❌ Firebase init error:", err);
   }
 })();
 
@@ -66,6 +101,8 @@ sharePopup?.addEventListener("click", (e) => {
 // LOAD BUSINESS DATA
 // ===============================
 async function loadBusiness(categorySlug, townSlug, slug) {
+  console.log("📥 Loading business:", categorySlug, townSlug, slug);
+
   const q = db.collection("businesses")
     .where("categorySlug", "==", categorySlug)
     .where("townSlug", "==", townSlug)
@@ -74,7 +111,8 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   const snap = await q.get();
 
   if (snap.empty) {
-    document.getElementById("businessName").textContent = "Business Not Found";
+    console.log("❌ Business not found");
+    setText("businessName", "Business Not Found");
     return;
   }
 
@@ -82,8 +120,25 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   currentBusiness = b;
   window.currentBusiness = b;
 
+  console.log("✅ Business loaded:", b);
+
   // SEO
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
+
+  // UNIVERSAL OG IMAGE
+  const ogTag = document.getElementById("ogImage");
+  if (ogTag) {
+    ogTag.setAttribute("content", "https://rctx.co.uk/images/find-rctx.jpg");
+    console.log("🖼 OG image set");
+  } else {
+    console.log("⚠️ ogImage tag missing in HTML");
+  }
+
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  ogUrl?.setAttribute("content", window.location.href);
+
+  const canonical = document.querySelector('link[rel="canonical"]');
+  canonical?.setAttribute("href", window.location.href);
 
   // MAIN CONTENT
   setText("businessName", b.name);
@@ -152,6 +207,8 @@ async function loadBusiness(categorySlug, townSlug, slug) {
 // RELATED BUSINESSES
 // ===============================
 async function loadRelated(categorySlug, townSlug, currentSlug) {
+  console.log("🔎 Loading related businesses…");
+
   const relatedGrid = document.getElementById("relatedGrid");
   if (!relatedGrid) return;
 
@@ -203,17 +260,25 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
     relatedGrid.appendChild(card);
   });
+
+  console.log("✅ Related businesses loaded");
 }
 
 // ===============================
-// SHARE SYSTEM (FIXED)
+// SHARE SYSTEM
 // ===============================
 document.addEventListener("click", async (e) => {
   const shareBtn = e.target.closest("#shareBusinessBtn");
   if (!shareBtn) return;
 
+  console.log("📤 Share button clicked");
+
   const b = window.currentBusiness;
-  if (!b) return;
+
+  if (!b) {
+    console.log("❌ No business loaded yet — cannot share");
+    return;
+  }
 
   const shareData = {
     title: `${b.name} – ${b.category} in ${b.town}`,
@@ -221,26 +286,34 @@ document.addEventListener("click", async (e) => {
     url: window.location.href
   };
 
+  console.log("📄 shareData =", shareData);
+
   // MOBILE SHARE
   if (navigator.share) {
+    console.log("📱 Using navigator.share()");
     try {
       await navigator.share(shareData);
+      console.log("✅ Share successful");
       sharePopup?.classList.remove("show");
-    } catch (err) {}
+    } catch (err) {
+      console.log("⚠️ Share cancelled or failed:", err);
+    }
     return;
   }
 
   // FALLBACK COPY
+  console.log("📝 Using fallback copy");
   try {
     await navigator.clipboard.writeText(window.location.href);
+    console.log("📋 Link copied to clipboard");
 
     shareBtn.textContent = "Link Copied!";
-
     setTimeout(() => {
       shareBtn.textContent = "Share This Business";
     }, 2000);
 
   } catch (err) {
+    console.log("❌ Clipboard copy failed:", err);
     window.prompt("Copy link:", window.location.href);
   }
 });
@@ -256,4 +329,4 @@ function setText(id, value) {
 function setHTML(id, value) {
   const el = document.getElementById(id);
   if (el) el.innerHTML = value;
-}
+                          }
