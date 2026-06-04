@@ -202,8 +202,23 @@ if (
         );
       }
 
-      formMessage.textContent =
-        "Thank you! Your business has been submitted for review.";
+      formMessage.innerHTML = `
+  <strong>
+    Thank you! Your business has been submitted for review.
+  </strong>
+
+  <br><br>
+
+  Need a professional website for your business?
+
+  <br><br>
+
+  <a
+    href="/website-pricing"
+    class="inline-link">
+    Websites from £30/month →
+  </a>
+`;
 
       formMessage.classList.add("success");
 
