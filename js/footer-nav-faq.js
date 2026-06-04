@@ -1,4 +1,4 @@
-// =========================
+=========================
 // MOBILE MENU
 // =========================
 
@@ -43,6 +43,19 @@ if (btn && menu) {
         link.addEventListener("click", closeMenu);
     });
 }
+
+// =========================
+// NAV GROUP ACCORDION
+// =========================
+
+document.querySelectorAll(".nav-group-title").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const group = btn.parentElement;
+
+        // toggle current
+        group.classList.toggle("open");
+    });
+});
 
 // =========================
 // FAQ ACCORDION
