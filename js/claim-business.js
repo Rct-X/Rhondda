@@ -1,4 +1,3 @@
-// Submit claim
 document.getElementById("claimForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -10,9 +9,11 @@ document.getElementById("claimForm").addEventListener("submit", async (e) => {
   const message = document.getElementById("message").value.trim();
   const slug = document.getElementById("businessSlug").value;
 
-  // Show loading state
+  // Start loading state
   btn.disabled = true;
-  btn.innerHTML = "Submitting…";
+  btn.classList.add("loading");
+  btn.textContent = "Submitting";
+
   status.textContent = "Please wait…";
 
   try {
@@ -37,7 +38,8 @@ document.getElementById("claimForm").addEventListener("submit", async (e) => {
     status.style.color = "red";
   }
 
-  // Reset button (optional)
+  // End loading state
   btn.disabled = false;
-  btn.innerHTML = "Submit Claim";
+  btn.classList.remove("loading");
+  btn.textContent = "Submit Claim";
 });
