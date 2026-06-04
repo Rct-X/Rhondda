@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const fetch = require("node-fetch");
+const fetch = require("node-fetch"); // MUST be v2.6.7
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -21,16 +21,27 @@ exports.handler = async (event) => {
   try {
     const { claimId } = JSON.parse(event.body || "{}");
 
+    if (!claimId) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing claimId" })
+      };
+    }
+
+    // Load claim
     const claimRef = db.collection("claims").doc(claimId);
     const claimSnap = await claimRef.get();
 
     if (!claimSnap.exists) {
-      return { statusCode: 404, body: JSON.stringify({ error: "Claim not found" }) };
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: "Claim not found" })
+      };
     }
 
     const claim = claimSnap.data();
 
-    // Find the business by slug
+    // Find business by slug
     const bizSnap = await db
       .collection("businesses")
       .where("slug", "==", claim.slug)
@@ -38,18 +49,24 @@ exports.handler = async (event) => {
       .get();
 
     if (bizSnap.empty) {
-      return { statusCode: 404, body: JSON.stringify({ error: "Business not found" }) };
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: "Business not found" })
+      };
     }
 
     const bizRef = bizSnap.docs[0].ref;
     const biz = bizSnap.docs[0].data();
 
-    // Mark business as having a pending owner
+    // Update business to show it is now claimed
     await bizRef.update({
-      ownerStatus: "pending-setup" // or ownerId: "pending"
+      ownerId: claim.email,                     // owner is now this email
+      ownerStatus: "claimed",                   // clean + clear
+      verified: true,                           // optional but recommended
+      claimedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // Send the approval email
+    // Send approval email via your Resend function
     await fetch(process.env.URL + "/.netlify/functions/sendClaimApproval", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -71,8 +88,12 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({ ok: true })
     };
+
   } catch (err) {
-    console.error(err);
-    return { statusCode: 500, body: JSON.stringify({ error: "Server error" }) };
+    console.error("approveClaim ERROR:", err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Server error" })
+    };
   }
 };
