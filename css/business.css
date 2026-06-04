@@ -258,3 +258,15 @@ line-height:1;
   font-size: 14px;
   color: #666;
 }
+.badge-waste{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#14532d;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:.8rem;
+  font-weight:700;
+  margin-left:8px;
+}
