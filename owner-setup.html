@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Owner Setup | RCTX</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="stylesheet" href="/css/owner-setup.css">
+</head>
+<body>
+
+<div class="setup-container">
+
+  <h1>Set Up Your Owner Account</h1>
+
+  <div id="businessInfo" class="biz-box">Loading business…</div>
+
+  <form id="setupForm">
+    <label>Email</label>
+    <input type="email" id="email" readonly>
+
+    <label>Create Password</label>
+    <input type="password" id="password" required>
+
+    <button class="btn">Create Account</button>
+  </form>
+
+  <p id="statusMsg"></p>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script src="/js/owner-setup.js"></script>
+
+</body>
+</html>
