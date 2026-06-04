@@ -60,11 +60,11 @@ exports.handler = async (event) => {
 
     // Update business to show it is now claimed
     await bizRef.update({
-      ownerId: claim.email,                     // owner is now this email
-      ownerStatus: "claimed",                   // clean + clear
-      verified: true,                           // optional but recommended
-      claimedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
+  ownerId: null,                                // leave empty until setup
+  ownerStatus: "pending-setup",                 // waiting for owner to create account
+  verified: true,
+  claimedAt: admin.firestore.FieldValue.serverTimestamp()
+});
 
     // Send approval email via your Resend function
     await fetch(process.env.URL + "/.netlify/functions/sendClaimApproval", {
