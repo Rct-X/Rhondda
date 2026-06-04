@@ -214,7 +214,7 @@ if (
   <br><br>
 
   <a
-    href="/website-pricing"
+    href="/pricing"
     class="inline-link">
     Websites from £30/month →
   </a>
