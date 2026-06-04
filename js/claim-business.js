@@ -1,3 +1,44 @@
+// Load Firebase config
+async function loadFirebaseConfig() {
+  const res = await fetch("/.netlify/functions/firebaseConfig");
+  return res.json();
+}
+
+let db;
+
+// Read ?b=slug
+function getSlug() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("b");
+}
+
+// Load business info
+(async () => {
+  const config = await loadFirebaseConfig();
+  firebase.initializeApp(config);
+  db = firebase.firestore();
+
+  const slug = getSlug();
+  document.getElementById("businessSlug").value = slug;
+
+  const q = db.collection("businesses").where("slug", "==", slug);
+  const snap = await q.get();
+
+  if (snap.empty) {
+    document.getElementById("businessInfo").textContent = "Business not found.";
+    return;
+  }
+
+  const b = snap.docs[0].data();
+
+  document.getElementById("businessInfo").innerHTML = `
+    <strong>${b.name}</strong><br>
+    ${b.category} • ${b.town}<br>
+    ${b.address || ""}
+  `;
+})();
+
+// Submit claim
 document.getElementById("claimForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
