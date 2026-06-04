@@ -1,257 +1,128 @@
-(function () {
+const admin = require("firebase-admin");
 
-  // ============================
-  // CONFIG
-  // ============================
-  const CLIENT_ID =
-    window.RCTX_CLIENT_ID || "Unknown";
+// =========================
+// INITIALISE FIREBASE
+// =========================
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      project_id: process.env.RN_FIREBASE_PROJECT_ID,
+      client_email: process.env.RN_FIREBASE_CLIENT_EMAIL,
+      private_key: process.env.RN_FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+    })
+  });
+}
 
-  const ENDPOINT =
-    "https://rctx.co.uk/.netlify/functions/track";
+const db = admin.firestore();
 
-  // ============================
-  // IGNORE TRACKING
-  // ============================
-  if (
-    localStorage.getItem(
-      "rctx_ignore_tracking"
-    ) === "true"
-  ) {
+// =========================
+// CORS HEADERS (REQUIRED)
+// =========================
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS"
+};
 
-    console.log(
-      "%cTRACKING DISABLED",
-      `
-        color:red;
-        font-size:16px;
-        font-weight:bold;
-      `
-    );
+// =========================
+// NETLIFY FUNCTION
+// =========================
+exports.handler = async (event) => {
 
-    return;
+  // Handle preflight OPTIONS request
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers,
+      body: "OK"
+    };
   }
 
-  // ============================
-  // DEVICE DETECTION
-  // ============================
-  function getDevice() {
-
-    const ua =
-      navigator.userAgent.toLowerCase();
-
-    if (/ipad|tablet/.test(ua)) {
-      return "Tablet";
-    }
-
-    if (/mobile|iphone|android/.test(ua)) {
-      return "Mobile";
-    }
-
-    return "Desktop";
+  // ONLY ALLOW POST
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: "Method Not Allowed" })
+    };
   }
 
-  // ============================
-  // SEND EVENT
-  // ============================
-  async function sendEvent(payload) {
+  try {
+    const data = JSON.parse(event.body || "{}");
 
-    try {
+    // =========================
+    // BASIC BOT/SPAM FILTER
+    // =========================
+    const ip = (event.headers["x-forwarded-for"] || "").split(",")[0].trim();
+    const userAgent = (event.headers["user-agent"] || "").toLowerCase();
 
-      await fetch(ENDPOINT, {
-        method: "POST",
+    const botWords = [
+      "bot", "crawl", "spider", "preview",
+      "facebookexternalhit", "slurp", "curl",
+      "wget", "python", "headless"
+    ];
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+    const isBot = botWords.some(word => userAgent.includes(word));
 
-        body: JSON.stringify(payload)
-      });
-
-    } catch (err) {
-
-      console.warn(
-        "[TRACKER] Failed sending event, queueing...",
-        err
-      );
-
-      // ============================
-      // OFFLINE QUEUE
-      // ============================
-      try {
-
-        const queue =
-          JSON.parse(
-            localStorage.getItem("rctx_queue") || "[]"
-          );
-
-        queue.push(payload);
-
-        localStorage.setItem(
-          "rctx_queue",
-          JSON.stringify(queue)
-        );
-
-      } catch (_) {}
+    if (isBot) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ ignored: "bot" })
+      };
     }
-  }
 
-  // ============================
-  // FLUSH OFFLINE QUEUE
-  // ============================
-  async function flushQueue() {
+    // =========================
+    // DUPLICATE REFRESH FILTER
+    // =========================
+    const recent = await db
+      .collection("analytics")
+      .where("ip", "==", ip)
+      .where("page", "==", data.page)
+      .where("event", "==", data.event)
+      .limit(5)
+      .get();
 
-    try {
+    let duplicate = false;
 
-      const queue =
-        JSON.parse(
-          localStorage.getItem("rctx_queue") || "[]"
-        );
+    recent.forEach(doc => {
+      const d = doc.data();
+      if (!d.timestamp) return;
 
-      if (!queue.length) {
-        return;
-      }
+      const diff = Date.now() - d.timestamp.toMillis();
+      if (diff < 30000) duplicate = true;
+    });
 
-      console.log(
-        "[TRACKER] Flushing queued events:",
-        queue.length
-      );
-
-      for (const item of queue) {
-
-        await sendEvent(item);
-      }
-
-      localStorage.removeItem("rctx_queue");
-
-      console.log(
-        "[TRACKER] Queue flushed"
-      );
-
-    } catch (err) {
-
-      console.error(
-        "[TRACKER] Queue flush failed",
-        err
-      );
+    if (duplicate) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ ignored: "duplicate" })
+      };
     }
-  }
 
-  // ============================
-  // ONLINE RECOVERY
-  // ============================
-  window.addEventListener(
-    "online",
-    flushQueue
-  );
+    // =========================
+    // SAVE ANALYTICS
+    // =========================
+    await db.collection("analytics").add({
+      ...data,
+      ip,
+      userAgent,
+      timestamp: admin.firestore.FieldValue.serverTimestamp()
+    });
 
-  // ============================
-  // TRACK FUNCTION
-  // ============================
-  function track(eventName = "page_view") {
-
-    const payload = {
-
-      clientId:
-        CLIENT_ID,
-
-      page:
-        window.location.pathname,
-
-      event:
-        eventName,
-
-      device:
-        getDevice(),
-
-      referrer:
-        document.referrer || "direct",
-
-      ts:
-        Date.now()
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ success: true })
     };
 
-    console.log(
-      "[TRACKER] Sending:",
-      payload
-    );
-
-    sendEvent(payload);
+  } catch (err) {
+    console.error(err);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: err.message })
+    };
   }
-
-  // ============================
-  // PAGE VIEW
-  // ============================
-  track("page_view");
-
-  // ============================
-  // WHATSAPP CLICKS
-  // ============================
-  document
-    .querySelectorAll('a[href*="wa.me"]')
-    .forEach(btn => {
-
-      btn.addEventListener(
-        "click",
-        () => {
-
-          console.log(
-            "[TRACKER] WhatsApp click"
-          );
-
-          track("whatsapp_click");
-
-        },
-        { once: true }
-      );
-    });
-
-  // ============================
-  // PHONE TAPS
-  // ============================
-  document
-    .querySelectorAll('a[href^="tel:"]')
-    .forEach(btn => {
-
-      btn.addEventListener(
-        "click",
-        () => {
-
-          console.log(
-            "[TRACKER] Phone tap"
-          );
-
-          track("phone_tap");
-
-        },
-        { once: true }
-      );
-    });
-
-  // ============================
-  // FORM SUBMITS
-  // ============================
-  const form =
-    document.querySelector("form");
-
-  if (form) {
-
-    form.addEventListener(
-      "submit",
-      () => {
-
-        console.log(
-          "[TRACKER] Form submit"
-        );
-
-        track("form_submit");
-
-      },
-      { once: true }
-    );
-  }
-
-  // ============================
-  // FLUSH STORED EVENTS
-  // ============================
-  flushQueue();
-
-})();
+};
