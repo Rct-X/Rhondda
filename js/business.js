@@ -336,7 +336,37 @@ async function loadBusiness(
         "<p>No photos added yet.</p>";
     }
   }
+// GALLERY CAROUSEL
+const scroller = document.getElementById("galleryScroller");
+const counter = document.getElementById("galleryCounter");
 
+if (b.gallery && b.gallery.length) {
+
+  scroller.innerHTML = "";
+
+  b.gallery.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    scroller.appendChild(img);
+  });
+
+  // Counter logic
+  let current = 1;
+  const total = b.gallery.length;
+
+  counter.textContent = `${current} / ${total}`;
+
+  scroller.addEventListener("scroll", () => {
+    const scrollLeft = scroller.scrollLeft;
+    const width = scroller.children[0].offsetWidth + 10; // image width + gap
+    current = Math.round(scrollLeft / width) + 1;
+    counter.textContent = `${current} / ${total}`;
+  });
+
+} else {
+  scroller.innerHTML = "<p>No photos added yet.</p>";
+  counter.textContent = "";
+}
   // ===============================
   // BADGES
   // ===============================
