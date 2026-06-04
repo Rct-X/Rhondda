@@ -69,3 +69,19 @@ input, textarea {
   font-weight: bold;
   text-align: center;
 }
+
+.btn.loading::after {
+  content: "";
+  margin-left: 8px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
