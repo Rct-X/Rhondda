@@ -86,18 +86,6 @@ await db.collection("businesses").add({
       .doc(id)
       .delete();
 
-    // SEND CLAIM APPROVAL EMAIL
-await fetch(process.env.URL + "/.netlify/functions/sendClaimApproval", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name: data.name,
-    email: data.email,
-    businessName: data.name,
-    slug: data.slug
-  })
-});
-
     return {
       statusCode: 200,
       body: JSON.stringify({
