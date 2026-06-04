@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+import admin from "firebase-admin";
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -6,29 +6,28 @@ if (!admin.apps.length) {
   });
 }
 
-const db = admin.firestore();
-
-exports.handler = async (event) => {
+export async function handler(event) {
   try {
     const { name, email, message, slug } = JSON.parse(event.body);
 
-    await db.collection("business_claim_requests").add({
+    await admin.firestore().collection("claims").add({
       name,
       email,
       message,
       slug,
-      createdAt: new Date()
+      status: "pending",
+      createdAt: Date.now()
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Your claim has been submitted. We will contact you soon." })
+      body: JSON.stringify({ message: "Your claim has been submitted." })
     };
 
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Error submitting claim." })
+      body: JSON.stringify({ error: err.message })
     };
   }
-};
+}
