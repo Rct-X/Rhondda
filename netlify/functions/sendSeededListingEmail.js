@@ -6,7 +6,8 @@ export async function handler(event) {
   try {
     const { name, email, businessName, slug } = JSON.parse(event.body);
 
-    const claimUrl = `https://rctx.co.uk/owner-setup?b=${slug}&email=${email}`;
+    const claimUrl =
+  `https://rctx.co.uk/directory/${townSlug}/${slug}`;
     const unsubscribeUrl = `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
 
     // FULL HTML TEMPLATE (SEEDING VERSION)
