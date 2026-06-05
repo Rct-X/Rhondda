@@ -84,7 +84,9 @@ if (
     const wasteLicence = document.getElementById("wasteLicence").value.trim();
 
     const consent = document.getElementById("consent").checked;
-
+const slug = slugify(name);
+const townSlug = slugify(town);
+const categorySlug = slugify(category);
     // ===============================
     // VALIDATION
     // ===============================
@@ -178,19 +180,19 @@ if (
           },
 
           body: JSON.stringify({
-            name,
-            category,
-            town,
-
-            phone,
-            website,
-            address,
-
-            description,
-            extraKeywords,
-
-            wasteLicence
-          })
+  name,
+  category,
+  categorySlug,
+  town,
+  townSlug,
+  slug,
+  phone,
+  website,
+  address,
+  description,
+  extraKeywords,
+  wasteLicence
+})
         }
       );
 
