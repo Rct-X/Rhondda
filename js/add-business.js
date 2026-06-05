@@ -63,6 +63,7 @@ if (form) {
     const name = document.getElementById("name").value.trim();
     const category = document.getElementById("category").value;
     const town = document.getElementById("town").value;
+    const email = document.getElementById("email").value.trim();
 
     const phone = document.getElementById("phone").value.trim();
     let website = document.getElementById("website").value.trim();
@@ -180,6 +181,7 @@ const categorySlug = slugify(category);
 
           body: JSON.stringify({
   name,
+  email,            
   category,
   categorySlug,
   town,
