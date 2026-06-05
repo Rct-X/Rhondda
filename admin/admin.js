@@ -122,7 +122,7 @@ function setActiveTab(tabId) {
     .querySelector(`[data-tab="${tabId}"]`)
     ?.classList.add("active");
 }
-
+};
 // ===============================
 // SIDEBAR NAVIGATION
 // ===============================
