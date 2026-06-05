@@ -188,8 +188,8 @@ exports.handler = async (event) => {
             businessName: name,
 
             slug,
-
-            townSlug
+            townSlug,
+            categorySlug
           })
         }
       );
