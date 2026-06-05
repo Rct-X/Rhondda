@@ -167,16 +167,16 @@ async function(section){
   // LAZY LOAD MODULES
   if(section === "dashboard"){
 
-    await import("moderation.js");
+    await import("./moderation.js");
   }
 
   if(section === "analytics"){
 
-    await import("analytics.js");
+    await import("./analytics.js");
   }
 
   if(section === "marketing"){
 
-    await import("marketing.js");
+    await import("./marketing.js");
   }
 };
