@@ -91,11 +91,13 @@ exports.handler = async (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-        businessName: data.name,
-        slug: data.slug
-      })
+  name: data.name,
+  email: data.email,
+  businessName: data.name,
+  slug: data.slug,
+  townSlug: data.townSlug,
+  categorySlug: data.categorySlug
+})
     });
 
     return {
