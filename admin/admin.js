@@ -4,9 +4,7 @@
 
 async function initFirebase() {
 
-  const res = await fetch(
-    "/.netlify/functions/firebaseConfig"
-  );
+  const res = await fetch("/.netlify/functions/firebaseConfig");
 
   if (!res.ok) {
     throw new Error("Firebase config failed");
@@ -31,14 +29,9 @@ window.auth = null;
 // ELEMENTS
 // ===============================
 
-const loginSection =
-  document.getElementById("loginSection");
-
-const loginBtn =
-  document.getElementById("loginBtn");
-
-const loginMessage =
-  document.getElementById("loginMessage");
+const loginSection = document.getElementById("loginSection");
+const loginBtn = document.getElementById("loginBtn");
+const loginMessage = document.getElementById("loginMessage");
 
 // ===============================
 // INIT APP
@@ -75,11 +68,8 @@ function setupAuth() {
 
   loginBtn?.addEventListener("click", async () => {
 
-    const email =
-      document.getElementById("adminEmail")?.value?.trim();
-
-    const password =
-      document.getElementById("adminPassword")?.value?.trim();
+    const email = document.getElementById("adminEmail")?.value?.trim();
+    const password = document.getElementById("adminPassword")?.value?.trim();
 
     loginMessage.textContent = "";
 
@@ -90,7 +80,6 @@ function setupAuth() {
     } catch (err) {
 
       console.error(err);
-
       loginMessage.textContent = "Invalid login";
     }
   });
@@ -98,7 +87,6 @@ function setupAuth() {
   auth.onAuthStateChanged(async (user) => {
 
     if (!user) {
-
       loginSection.style.display = "block";
       hideAllSections();
       return;
@@ -106,52 +94,77 @@ function setupAuth() {
 
     loginSection.style.display = "none";
 
-    // default load AFTER auth is confirmed
+    // default tab
     await openSection("dashboard");
+    setActiveTab("dashboardTab");
   });
 }
 
-document.querySelectorAll(".admin-tab").forEach(b => {
-  b.classList.remove("active");
-});
-
-document
-  .querySelector('[data-tab="dashboardTab"]')
-  ?.classList.add("active");
-
 // ===============================
-// SECTION ROUTER
+// TAB UI HELPERS
 // ===============================
 
 function hideAllSections() {
 
-  document.querySelectorAll(".admin-tab").forEach(b => {
-  b.classList.remove("active");
-});
-
-document
-  .querySelector('[data-tab="dashboardTab"]')
-  ?.classList.add("active");
+  document
+    .querySelectorAll(".admin-panel, .admin-panel-section")
     .forEach(section => {
       section.style.display = "none";
     });
 }
+
+function setActiveTab(tabId) {
+
+  document.querySelectorAll(".admin-tab")
+    .forEach(btn => btn.classList.remove("active"));
+
+  document
+    .querySelector(`[data-tab="${tabId}"]`)
+    ?.classList.add("active");
+}
+
+// ===============================
+// SIDEBAR NAVIGATION
+// ===============================
+
+function setupSidebarNavigation() {
+
+  document.querySelectorAll(".admin-tab").forEach(btn => {
+
+    btn.addEventListener("click", async () => {
+
+      const tab = btn.dataset.tab;
+      if (!tab) return;
+
+      setActiveTab(tab);
+
+      const section = tab.replace("Tab", "");
+
+      await openSection(section);
+    });
+  });
+}
+
+// ===============================
+// ROUTER
+// ===============================
 
 window.openSection = async function (section) {
 
   hideAllSections();
 
   const target =
-    document.getElementById(section + "Section") ||
-    document.getElementById(section + "Tab");
+    document.getElementById(section + "Tab") ||
+    document.getElementById(section + "Section");
 
   if (target) {
     target.style.display = "block";
   }
 
-  // ===============================
-  // DASHBOARD / MODERATION
-  // ===============================
+  // ===========================
+  // LAZY MODULE LOADING
+  // ===========================
+
   if (section === "dashboard") {
 
     const mod = await import("./moderation.js");
@@ -162,9 +175,6 @@ window.openSection = async function (section) {
     });
   }
 
-  // ===============================
-  // ANALYTICS
-  // ===============================
   if (section === "analytics") {
 
     const analytics = await import("./analytics.js");
@@ -174,37 +184,7 @@ window.openSection = async function (section) {
     });
   }
 
-  // ===============================
-  // MARKETING
-  // ===============================
   if (section === "marketing") {
-
     await import("./marketing.js");
   }
 };
-
-function setupSidebarNavigation() {
-
-  document.querySelectorAll(".admin-tab").forEach(btn => {
-
-    btn.addEventListener("click", async () => {
-
-      const tab = btn.dataset.tab;
-
-      if (!tab) return;
-
-      // remove active state
-      document.querySelectorAll(".admin-tab")
-        .forEach(b => b.classList.remove("active"));
-
-      btn.classList.add("active");
-
-      // convert:
-      // dashboardTab → dashboard
-      const section =
-        const section = tab.replace("Tab", "");
-
-      await window.openSection(section);
-    });
-  });
-}
