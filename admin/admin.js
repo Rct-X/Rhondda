@@ -54,6 +54,7 @@ const loginMessage =
     window.db = services.db;
 
     setupAuth();
+    setupSidebarNavigation();
 
   } catch (err) {
 
@@ -110,14 +111,27 @@ function setupAuth() {
   });
 }
 
+document.querySelectorAll(".admin-tab").forEach(b => {
+  b.classList.remove("active");
+});
+
+document
+  .querySelector('[data-tab="dashboardTab"]')
+  ?.classList.add("active");
+
 // ===============================
 // SECTION ROUTER
 // ===============================
 
 function hideAllSections() {
 
-  document
-    .querySelectorAll(".admin-panel-section, .admin-panel")
+  document.querySelectorAll(".admin-tab").forEach(b => {
+  b.classList.remove("active");
+});
+
+document
+  .querySelector('[data-tab="dashboardTab"]')
+  ?.classList.add("active");
     .forEach(section => {
       section.style.display = "none";
     });
@@ -188,7 +202,7 @@ function setupSidebarNavigation() {
       // convert:
       // dashboardTab → dashboard
       const section =
-        tab.replace("Tab", "").replace("tab", "").toLowerCase();
+        const section = tab.replace("Tab", "");
 
       await window.openSection(section);
     });
