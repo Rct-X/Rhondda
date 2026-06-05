@@ -36,6 +36,7 @@ exports.handler = async (event) => {
 
     const {
       name,
+      email,
       category,
       town,
       phone,
