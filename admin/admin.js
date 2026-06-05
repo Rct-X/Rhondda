@@ -168,3 +168,29 @@ window.openSection = async function (section) {
     await import("./marketing.js");
   }
 };
+
+function setupSidebarNavigation() {
+
+  document.querySelectorAll(".admin-tab").forEach(btn => {
+
+    btn.addEventListener("click", async () => {
+
+      const tab = btn.dataset.tab;
+
+      if (!tab) return;
+
+      // remove active state
+      document.querySelectorAll(".admin-tab")
+        .forEach(b => b.classList.remove("active"));
+
+      btn.classList.add("active");
+
+      // convert:
+      // dashboardTab → dashboard
+      const section =
+        tab.replace("Tab", "").replace("tab", "").toLowerCase();
+
+      await window.openSection(section);
+    });
+  });
+}
