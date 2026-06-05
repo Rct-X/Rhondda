@@ -1,6 +1,6 @@
-// ===============================
+// ======================================
 // FIREBASE INIT
-// ===============================
+// ======================================
 
 async function initFirebase() {
 
@@ -25,17 +25,17 @@ async function initFirebase() {
 window.db = null;
 window.auth = null;
 
-// ===============================
+// ======================================
 // ELEMENTS
-// ===============================
+// ======================================
 
 const loginSection = document.getElementById("loginSection");
 const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 
-// ===============================
+// ======================================
 // INIT APP
-// ===============================
+// ======================================
 
 (async () => {
 
@@ -60,9 +60,9 @@ const loginMessage = document.getElementById("loginMessage");
 
 })();
 
-// ===============================
+// ======================================
 // AUTH
-// ===============================
+// ======================================
 
 function setupAuth() {
 
@@ -94,15 +94,14 @@ function setupAuth() {
 
     loginSection.style.display = "none";
 
-    // default tab
     await openSection("dashboard");
     setActiveTab("dashboardTab");
   });
 }
 
-// ===============================
+// ======================================
 // TAB UI HELPERS
-// ===============================
+// ======================================
 
 function hideAllSections() {
 
@@ -115,17 +114,18 @@ function hideAllSections() {
 
 function setActiveTab(tabId) {
 
-  document.querySelectorAll(".admin-tab")
+  document
+    .querySelectorAll(".admin-tab")
     .forEach(btn => btn.classList.remove("active"));
 
   document
     .querySelector(`[data-tab="${tabId}"]`)
     ?.classList.add("active");
 }
-};
-// ===============================
+
+// ======================================
 // SIDEBAR NAVIGATION
-// ===============================
+// ======================================
 
 function setupSidebarNavigation() {
 
@@ -138,16 +138,16 @@ function setupSidebarNavigation() {
 
       setActiveTab(tab);
 
-      const section = tab.replace("Tab", "");
+      const section = tab.replace("Tab", "").replace("tab", "").toLowerCase();
 
       await openSection(section);
     });
   });
 }
 
-// ===============================
+// ======================================
 // ROUTER
-// ===============================
+// ======================================
 
 window.openSection = async function (section) {
 
@@ -162,7 +162,7 @@ window.openSection = async function (section) {
   }
 
   // ===========================
-  // LAZY MODULE LOADING
+  // DASHBOARD (MODERATION)
   // ===========================
 
   if (section === "dashboard") {
@@ -175,6 +175,10 @@ window.openSection = async function (section) {
     });
   }
 
+  // ===========================
+  // ANALYTICS
+  // ===========================
+
   if (section === "analytics") {
 
     const analytics = await import("./analytics.js");
@@ -182,12 +186,24 @@ window.openSection = async function (section) {
     await analytics.initAnalytics({
       auth: window.auth
     });
+
+    // expose globals used by inline buttons
+    window.setRange = analytics.setRange;
+    window.deleteAnalyticsRange = analytics.deleteAnalyticsRange;
+    window.deleteAllAnalytics = analytics.deleteAllAnalytics;
   }
 
-if (section === "marketing") {
-  const marketing = await import("./marketing.js");
-  await marketing.initMarketing({
-    db: window.db,
-    auth: window.auth
-  });
-}
+  // ===========================
+  // MARKETING
+  // ===========================
+
+  if (section === "marketing") {
+
+    const marketing = await import("./marketing.js");
+
+    await marketing.initMarketing({
+      db: window.db,
+      auth: window.auth
+    });
+  }
+};
