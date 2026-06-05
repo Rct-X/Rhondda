@@ -221,11 +221,15 @@ async function loadPending() {
 
         <div class="pending-actions">
 
-          <button onclick="approveBusiness('${id}')">
+          <button
+  class="btn btn-success"
+  onclick="approveBusiness('${id}')">
             Approve
           </button>
 
-          <button onclick="rejectBusiness('${id}')">
+          <button
+  class="btn btn-danger"
+  onclick="rejectBusiness('${id}')">
             Reject
           </button>
 
