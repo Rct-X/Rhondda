@@ -1,80 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel | RCTX Directory</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" href="/css/admin.css">
 
-  <!-- Firebase -->
+<meta charset="UTF-8">
+
+<title>Admin Panel | RCTX Directory</title>
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<meta name="robots"
+      content="noindex,nofollow">
+
+<link rel="stylesheet"
+      href="/css/admin.css">
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
 </head>
 
 <body class="admin-page">
 
+<!-- =====================================
+     NAVBAR
+===================================== -->
+
 <header class="navbar">
+
   <div class="container nav-flex">
-    <a href="/" class="logo-wrap">
-      <div class="logo">RCT<span>X</span></div>
-      <div class="logo-tag">WEB DESIGN</div>
+
+    <a href="/"
+       class="logo-wrap">
+
+      <div class="logo">
+        RCT<span>X</span>
+      </div>
+
+      <div class="logo-tag">
+        WEB DESIGN
+      </div>
+
     </a>
+
   </div>
+
 </header>
-<section>
-  <div class="admin-topbar">
 
-  <div class="admin-title-wrap">
-    <h1>RCTX Admin</h1>
-    <p>Directory management, analytics and moderation</p>
-  </div>
+<!-- =====================================
+     ADMIN APP
+===================================== -->
 
-  <div class="admin-nav">
-
-    <a href="/admin/index.html" class="admin-link">
-      🏠 Dashboard
-    </a>
-
-    <a href="/admin/marketing.html" class="admin-link">
-      📣 Marketing Tools
-    </a>
-
-    <a href="/dashboard/index.html" class="admin-link">
-      📊 Analytics
-    </a>
-
-  </div>
-
-  </div>
-</section>
 <main class="admin-container">
 
-  <!-- LOGIN SCREEN -->
-  <section id="loginSection" class="admin-card">
-    <h2>Admin Login</h2>
-    <input type="email" id="adminEmail" placeholder="Email">
-    <input type="password" id="adminPassword" placeholder="Password">
-    <button id="loginBtn" class="btn btn-primary">Login</button>
-    <p id="loginMessage" class="admin-message"></p>
+  <div class="admin-layout">
+
+    <!-- =====================================
+         SIDEBAR
+    ===================================== -->
+
+    <aside class="admin-sidebar">
+
+      <div class="admin-title-wrap">
+
+        <h1>RCTX Admin</h1>
+
+        <p>
+          Directory management,
+          analytics and moderation
+        </p>
+
+      </div>
+
+      <nav class="admin-nav">
+
+        <button
+          class="admin-tab active"
+          data-tab="dashboardTab">
+
+          🏠 Dashboard
+
+        </button>
+
+        <button
+          class="admin-tab"
+          data-tab="analyticsTab">
+
+          📊 Analytics
+
+        </button>
+
+        <button
+          class="admin-tab"
+          data-tab="marketingTab">
+
+          📣 Marketing
+
+        </button>
+
+        <button
+          class="admin-tab"
+          data-tab="settingsTab">
+
+          ⚙ Settings
+
+        </button>
+
+      </nav>
+
+    </aside>
+
+    <!-- =====================================
+         CONTENT AREA
+    ===================================== -->
+
+    <div class="admin-content">
+
+      <!-- =====================================
+           LOGIN
+      ===================================== -->
+
+      <section id="loginSection"
+               class="admin-card">
+
+        <h2>Admin Login</h2>
+
+        <input type="email"
+               id="adminEmail"
+               placeholder="Email">
+
+        <input type="password"
+               id="adminPassword"
+               placeholder="Password">
+
+        <button id="loginBtn"
+                class="btn btn-primary">
+
+          Login
+
+        </button>
+
+        <p id="loginMessage"
+           class="admin-message"></p>
+
+      </section>
+
+<!-- =====================================
+     DASHBOARD TAB
+===================================== -->
+
+<section id="dashboardTab"
+         class="admin-panel active"
+         style="display:none;">
+
+  <!-- Pending Submissions -->
+  <div class="admin-card">
+
+    <div class="section-head">
+
+      <div>
+        <h2>Pending Submissions</h2>
+        <p>
+          Businesses waiting for approval
+        </p>
+      </div>
+
+      <span class="admin-badge">
+        Moderation
+      </span>
+
+    </div>
+
+    <div id="pendingList"
+         class="pending-list">
+
+      <p>Loading...</p>
+
+    </div>
+
+  </div>
+
+  <!-- Pending Claims -->
+  <div class="admin-card">
+
+    <div class="section-head">
+
+      <div>
+        <h2>Pending Claims</h2>
+        <p>
+          Ownership requests awaiting review
+        </p>
+      </div>
+
+      <span class="admin-badge">
+        Claims
+      </span>
+
+    </div>
+
+    <div id="claimsList">
+
+      <p>Loading...</p>
+
+    </div>
+
+  </div>
+
+  <!-- Pending Changes -->
+  <div class="admin-card">
+
+    <div class="section-head">
+
+      <div>
+        <h2>Pending Owner Edits</h2>
+        <p>
+          Requested business profile changes
+        </p>
+      </div>
+
+      <span class="admin-badge">
+        Edits
+      </span>
+
+    </div>
+
+    <div id="pendingChangesList">
+
+      <p>Loading...</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+  <!-- =====================================
+     ANALYTICS TAB
+===================================== -->
+
+<section id="analyticsTab"
+         class="admin-panel"
+         style="display:none;">
+
+    <h2>Analytics Dashboard</h2>
+
+    <div class="filters">
+
+      <button onclick="setRange(1)"
+              id="f1">
+
+        Today
+
+      </button>
+
+      <button onclick="setRange(7)"
+              id="f7">
+
+        7 Days
+
+      </button>
+
+      <button onclick="setRange(30)"
+              id="f30"
+              class="active">
+
+        30 Days
+
+      </button>
+
+    </div>
+
+    <div class="analytics-actions">
+
+      <input type="date"
+             id="analyticsStart">
+
+      <input type="date"
+             id="analyticsEnd">
+
+      <button onclick="deleteAnalyticsRange()"
+              class="btn btn-primary">
+
+        Delete Selected Range
+
+      </button>
+
+      <button onclick="deleteAllAnalytics()"
+              class="btn btn-danger">
+
+        Delete ALL
+
+      </button>
+
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h2>Page Views</h2>
+
+        <div id="totalVisits">
+          Loading...
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <h2>Total Clients</h2>
+
+        <div id="totalClients">
+          Loading...
+        </div>
+
+      </div>
+
+    </div>
+
   </section>
 
-  <!-- DASHBOARD -->
-  <section id="dashboardSection" class="admin-card" style="display:none;">
-    <h2>Pending Submissions</h2>
-    <div id="pendingList" class="pending-list"></div>
-    <h2>Pending Claims</h2>
-<div id="claimsList"></div>
+  <div class="admin-card">
 
-  </section>
-  <section id="pendingChangesSection">
-  <h2>Pending Owner Edits</h2>
-  <div id="pendingChangesList"></div>
-  </section>
-  
+    <h2>Client Analytics</h2>
+
+    <div id="clients"></div>
+
+  </div>
+
+</section>
+
+ 
+
+<!-- =========================================
+MARKETING SECTION
+Add inside <main class="admin-container">
+========================================= -->
+
+<section
+  id="marketingSection"
+  class="admin-card admin-panel-section"
+  style="display:none;"
+>
+
+  <div class="section-header">
+    <div>
+      <h2>Marketing Tools</h2>
+      <p>
+        Quickly seed directory listings and send invite emails.
+      </p>
+    </div>
+  </div>
+
+  <div class="marketing-grid">
+
+    <!-- QUICK ADD -->
+    <div class="marketing-card">
+
+      <h3>Quick Add Business</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="name">Business Name</label>
+          <input id="name" placeholder="Example Plumbing Ltd">
+        </div>
+
+        <div class="field">
+          <label for="email">Email (optional)</label>
+          <input id="email" placeholder="name@email.com">
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" placeholder="07400 000000">
+        </div>
+
+        <div class="field">
+          <label for="town">Town</label>
+          <input id="town" placeholder="Tonypandy">
+        </div>
+
+        <div class="field full">
+          <label for="category">Category</label>
+
+          <select id="category">
+
+            <option value="">
+              Select Category
+            </option>
+
+            <option value="plumbers">Plumbers</option>
+            <option value="electricians">Electricians</option>
+            <option value="builders">Builders</option>
+            <option value="roofers">Roofers</option>
+            <option value="painters-decorators">
+              Painters & Decorators
+            </option>
+
+            <option value="handyman-services">
+              Handyman Services
+            </option>
+
+            <option value="cleaners">
+              Cleaners
+            </option>
+
+            <option value="window-cleaners">
+              Window Cleaners
+            </option>
+
+            <option value="gardeners">
+              Gardeners
+            </option>
+
+            <option value="waste-collection">
+              Waste Collection
+            </option>
+
+            <option value="man-with-a-van">
+              Man With A Van
+            </option>
+
+            <option value="removals">
+              Removals
+            </option>
+
+            <option value="car-mechanics">
+              Car Mechanics
+            </option>
+
+            <option value="tyres">
+              Tyres & Repairs
+            </option>
+
+            <option value="barbers">
+              Barbers
+            </option>
+
+            <option value="hairdressers">
+              Hairdressers
+            </option>
+
+            <option value="beauty-salons">
+              Beauty Salons
+            </option>
+
+            <option value="dog-groomers">
+              Dog Groomers
+            </option>
+
+            <option value="cafes">
+              Cafes
+            </option>
+
+            <option value="restaurants">
+              Restaurants
+            </option>
+
+            <option value="takeaways">
+              Takeaways
+            </option>
+
+            <option value="shops">
+              Shops
+            </option>
+
+            <option value="gyms">
+              Gyms
+            </option>
+
+            <option value="photographers">
+              Photographers
+            </option>
+
+          </select>
+        </div>
+
+      </div>
+
+      <div class="marketing-actions">
+
+        <button
+          onclick="addBusiness()"
+          class="btn btn-primary"
+        >
+          Add Business & Send Email
+        </button>
+
+      </div>
+
+      <p id="result" class="admin-message"></p>
+
+    </div>
+
+  </div>
+
+</section>
+
+      <!-- =====================================
+           SETTINGS TAB
+      ===================================== -->
+
+      <section id="settingsTab"
+               class="admin-panel"
+               style="display:none;">
+
+        <div class="admin-card">
+
+          <h2>Settings</h2>
+
+          <p>
+            Admin settings coming soon.
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </div>
+
 </main>
 
-<script src="admin.js"></script>
+<script type="module" src="/admin.js"></script>
+
 </body>
-</html>
+  </html>
