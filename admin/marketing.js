@@ -1,31 +1,19 @@
 // ======================================
-// MARKETING.JS
-// Admin marketing tools (frontend)
+// MARKETING MODULE (ESM SAFE)
 // ======================================
 
-let db;
-let auth;
+export async function initMarketing({ db, auth }) {
+  console.log("[MARKETING] init");
 
-// ======================================
-// INIT
-// ======================================
-
-export async function initMarketing(services) {
-
-  console.log("[MARKETING] Initialising marketing module");
-
-  db = services.db;
-  auth = services.auth;
-
+  // expose globals for inline HTML buttons
   window.addBusiness = addBusiness;
 }
 
 // ======================================
-// QUICK ADD BUSINESS
+// ADD BUSINESS
 // ======================================
 
 async function addBusiness() {
-
   const name = document.getElementById("name")?.value?.trim();
   const email = document.getElementById("email")?.value?.trim();
   const phone = document.getElementById("phone")?.value?.trim();
@@ -35,37 +23,24 @@ async function addBusiness() {
   const result = document.getElementById("result");
 
   if (!name || !town || !category) {
-    if (result) {
-      result.textContent = "Name, town and category are required.";
-    }
+    if (result) result.textContent = "Missing required fields";
     return;
   }
 
-  if (result) {
-    result.textContent = "Adding business...";
-  }
-
   try {
-
-    const token = await auth.currentUser.getIdToken();
-
-    const res = await fetch(
-      "/.netlify/functions/addBusiness",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          town,
-          category
-        })
-      }
-    );
+    const res = await fetch("/.netlify/functions/adminAddBusiness", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        phone,
+        town,
+        category
+      })
+    });
 
     const data = await res.json();
 
@@ -74,30 +49,21 @@ async function addBusiness() {
     }
 
     if (result) {
-      result.textContent = "Business added successfully.";
+      result.textContent = "Business added successfully!";
     }
 
-    clearForm();
+    // clear form
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("town").value = "";
+    document.getElementById("category").value = "";
 
   } catch (err) {
-
-    console.error("[MARKETING] Error:", err);
+    console.error("[MARKETING] error", err);
 
     if (result) {
-      result.textContent = err.message || "Error adding business";
+      result.textContent = err.message;
     }
   }
-}
-
-// ======================================
-// CLEAR FORM
-// ======================================
-
-function clearForm() {
-
-  document.getElementById("name").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("phone").value = "";
-  document.getElementById("town").value = "";
-  document.getElementById("category").value = "";
 }
