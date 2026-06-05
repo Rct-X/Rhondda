@@ -28,7 +28,9 @@ async function addBusiness() {
   }
 
   // ✅ MUST be outside fetch
-  const slug = name.toLowerCase().replace(/\s+/g, "-");
+  const slug = `${town}-${name}`
+  .toLowerCase()
+  .replace(/\s+/g, "-");
 
   try {
     const res = await fetch("/.netlify/functions/adminAddBusiness", {
