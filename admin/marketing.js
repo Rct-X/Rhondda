@@ -1,46 +1,103 @@
-// marketing.js
-// Handles navigation + admin-only access for Marketing Tools
+// ======================================
+// MARKETING.JS
+// Admin marketing tools (frontend)
+// ======================================
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Ensure user is logged in (your existing admin auth)
-  const adminUser = localStorage.getItem("rctx_admin");
+let db;
+let auth;
 
-  if (!adminUser) {
-    window.location.href = "/admin/login.html";
+// ======================================
+// INIT
+// ======================================
+
+export async function initMarketing(services) {
+
+  console.log("[MARKETING] Initialising marketing module");
+
+  db = services.db;
+  auth = services.auth;
+
+  window.addBusiness = addBusiness;
+}
+
+// ======================================
+// QUICK ADD BUSINESS
+// ======================================
+
+async function addBusiness() {
+
+  const name = document.getElementById("name")?.value?.trim();
+  const email = document.getElementById("email")?.value?.trim();
+  const phone = document.getElementById("phone")?.value?.trim();
+  const town = document.getElementById("town")?.value?.trim();
+  const category = document.getElementById("category")?.value;
+
+  const result = document.getElementById("result");
+
+  if (!name || !town || !category) {
+    if (result) {
+      result.textContent = "Name, town and category are required.";
+    }
     return;
   }
 
-  // Elements
-  const scraperBtn = document.getElementById("open-scraper");
-  const followupsBtn = document.getElementById("open-followups");
-  const dashboardBtn = document.getElementById("open-claim-dashboard");
-
-  // Navigation handlers
-  if (scraperBtn) {
-    scraperBtn.addEventListener("click", () => {
-      window.location.href = "/admin/scraper.html";
-    });
+  if (result) {
+    result.textContent = "Adding business...";
   }
 
-  if (followupsBtn) {
-    followupsBtn.addEventListener("click", () => {
-      window.location.href = "/admin/followups.html";
-    });
-  }
+  try {
 
-  if (dashboardBtn) {
-    dashboardBtn.addEventListener("click", () => {
-      window.location.href = "/admin/claim-dashboard.html";
-    });
-  }
+    const token = await auth.currentUser.getIdToken();
 
-  // Optional: highlight active section
-  const current = window.location.pathname;
-  const links = document.querySelectorAll(".tool-card");
+    const res = await fetch(
+      "/.netlify/functions/addBusiness",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          town,
+          category
+        })
+      }
+    );
 
-  links.forEach(link => {
-    if (current.includes(link.getAttribute("data-page"))) {
-      link.classList.add("active");
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to add business");
     }
-  });
-});
+
+    if (result) {
+      result.textContent = "Business added successfully.";
+    }
+
+    clearForm();
+
+  } catch (err) {
+
+    console.error("[MARKETING] Error:", err);
+
+    if (result) {
+      result.textContent = err.message || "Error adding business";
+    }
+  }
+}
+
+// ======================================
+// CLEAR FORM
+// ======================================
+
+function clearForm() {
+
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("town").value = "";
+  document.getElementById("category").value = "";
+}
