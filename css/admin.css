@@ -417,3 +417,8 @@ flex-direction:column;
 width:100%;
 }
 }
+.admin-tab.active{
+background:#0f172a;
+color:#fff;
+transform:translateY(-2px);
+}
