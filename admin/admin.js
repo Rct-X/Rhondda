@@ -4,22 +4,17 @@
 
 async function initFirebase() {
 
-  const res =
-    await fetch(
-      "/.netlify/functions/firebaseConfig"
-    );
+  const res = await fetch(
+    "/.netlify/functions/firebaseConfig"
+  );
 
-  if(!res.ok){
-
-    throw new Error(
-      "Firebase config failed"
-    );
+  if (!res.ok) {
+    throw new Error("Firebase config failed");
   }
 
   const config = await res.json();
 
-  if(!firebase.apps.length){
-
+  if (!firebase.apps.length) {
     firebase.initializeApp(config);
   }
 
@@ -46,27 +41,27 @@ const loginMessage =
   document.getElementById("loginMessage");
 
 // ===============================
-// INIT
+// INIT APP
 // ===============================
 
 (async () => {
 
-  try{
+  try {
 
-    const services =
-      await initFirebase();
+    const services = await initFirebase();
 
     window.auth = services.auth;
     window.db = services.db;
 
     setupAuth();
 
-  } catch(err){
+  } catch (err) {
 
     console.error(err);
 
-    loginMessage.textContent =
-      "System error";
+    if (loginMessage) {
+      loginMessage.textContent = "System error";
+    }
   }
 
 })();
@@ -75,107 +70,100 @@ const loginMessage =
 // AUTH
 // ===============================
 
-function setupAuth(){
+function setupAuth() {
 
-  loginBtn?.addEventListener(
-    "click",
-    async () => {
+  loginBtn?.addEventListener("click", async () => {
 
-      const email =
-        document.getElementById("adminEmail")
-          .value
-          .trim();
+    const email =
+      document.getElementById("adminEmail")?.value?.trim();
 
-      const password =
-        document.getElementById("adminPassword")
-          .value
-          .trim();
+    const password =
+      document.getElementById("adminPassword")?.value?.trim();
 
-      loginMessage.textContent = "";
+    loginMessage.textContent = "";
 
-      try{
+    try {
 
-        await auth
-          .signInWithEmailAndPassword(
-            email,
-            password
-          );
+      await auth.signInWithEmailAndPassword(email, password);
 
-      } catch(err){
+    } catch (err) {
 
-        console.error(err);
+      console.error(err);
 
-        loginMessage.textContent =
-          "Invalid login";
-      }
+      loginMessage.textContent = "Invalid login";
     }
-  );
+  });
 
-  auth.onAuthStateChanged(
-    async user => {
+  auth.onAuthStateChanged(async (user) => {
 
-      if(!user){
+    if (!user) {
 
-        loginSection.style.display =
-          "block";
-
-        hideAllSections();
-
-        return;
-      }
-
-      loginSection.style.display =
-        "none";
-
-      // DEFAULT SECTION
-      await openSection("dashboard");
+      loginSection.style.display = "block";
+      hideAllSections();
+      return;
     }
-  );
+
+    loginSection.style.display = "none";
+
+    // default load AFTER auth is confirmed
+    await openSection("dashboard");
+  });
 }
 
 // ===============================
 // SECTION ROUTER
 // ===============================
 
-function hideAllSections(){
+function hideAllSections() {
 
   document
-    .querySelectorAll(
-      ".admin-panel-section"
-    )
+    .querySelectorAll(".admin-panel-section, .admin-panel")
     .forEach(section => {
-
       section.style.display = "none";
     });
 }
 
-window.openSection =
-async function(section){
+window.openSection = async function (section) {
 
   hideAllSections();
 
   const target =
-    document.getElementById(
-      section + "Section"
-    );
+    document.getElementById(section + "Section") ||
+    document.getElementById(section + "Tab");
 
-  if(target){
-
+  if (target) {
     target.style.display = "block";
   }
 
-  // LAZY LOAD MODULES
-  if(section === "dashboard"){
+  // ===============================
+  // DASHBOARD / MODERATION
+  // ===============================
+  if (section === "dashboard") {
 
-    await import("./moderation.js");
+    const mod = await import("./moderation.js");
+
+    await mod.initModeration({
+      db: window.db,
+      auth: window.auth
+    });
   }
 
-  if(section === "analytics"){
+  // ===============================
+  // ANALYTICS
+  // ===============================
+  if (section === "analytics") {
 
-    await import("./analytics.js");
+    const analytics = await import("./analytics.js");
+
+    await analytics.initAnalytics({
+      auth: window.auth
+    });
   }
 
-  if(section === "marketing"){
+  // ===============================
+  // MARKETING
+  // ===============================
+  if (section === "marketing") {
 
     await import("./marketing.js");
   }
