@@ -184,7 +184,10 @@ window.openSection = async function (section) {
     });
   }
 
-  if (section === "marketing") {
-    await import("./marketing.js");
-  }
-};
+if (section === "marketing") {
+  const marketing = await import("./marketing.js");
+  await marketing.initMarketing({
+    db: window.db,
+    auth: window.auth
+  });
+}
