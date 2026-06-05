@@ -121,7 +121,6 @@ const categorySlug = slugify(category);
     // ===============================
     // CHECK IF BUSINESS EXISTS
     // ===============================
-    const slug = slugify(name);
 
     try {
 
