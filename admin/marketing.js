@@ -27,20 +27,24 @@ async function addBusiness() {
     return;
   }
 
+  // ✅ MUST be outside fetch
+  const slug = name.toLowerCase().replace(/\s+/g, "-");
+
   try {
     const res = await fetch("/.netlify/functions/adminAddBusiness", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      const slug = name.toLowerCase().replace(/\s+/g, "-");
-
-body: JSON.stringify({
-  name,
-  email,
-  businessName: name,
-  slug
-})
+      body: JSON.stringify({
+        name,
+        email,
+        phone,
+        town,
+        category,
+        businessName: name,
+        slug
+      })
     });
 
     const data = await res.json();
