@@ -33,13 +33,14 @@ async function addBusiness() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        name,
-        email,
-        phone,
-        town,
-        category
-      })
+      const slug = name.toLowerCase().replace(/\s+/g, "-");
+
+body: JSON.stringify({
+  name,
+  email,
+  businessName: name,
+  slug
+})
     });
 
     const data = await res.json();
