@@ -102,7 +102,8 @@ exports.handler = async (event) => {
       categorySlug,
       town,
       townSlug,
-
+      
+      email: email || null,
       phone: phone || null,
       website: website || null,
       address: address || null,
