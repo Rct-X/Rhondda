@@ -54,7 +54,16 @@ exports.handler = async (event) => {
     await db
       .collection("pending_submissions")
       .add({
-
+await fetch(
+  `${process.env.URL}/.netlify/functions/sendSeededListingEmail`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  }
+);
         ...data,
 
         status:"pending",
