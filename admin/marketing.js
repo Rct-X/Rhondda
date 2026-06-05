@@ -1,90 +1,46 @@
-const admin = require("firebase-admin");
+// marketing.js
+// Handles navigation + admin-only access for Marketing Tools
 
-if (!admin.apps.length) {
+document.addEventListener("DOMContentLoaded", () => {
+  // Ensure user is logged in (your existing admin auth)
+  const adminUser = localStorage.getItem("rctx_admin");
 
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId:
-        process.env.RN_FIREBASE_PROJECT_ID,
-
-      clientEmail:
-        process.env.RN_FIREBASE_CLIENT_EMAIL,
-
-      privateKey:
-        process.env
-          .RN_FIREBASE_PRIVATE_KEY
-          ?.replace(/\\n/g, "\n")
-    })
-  });
-}
-
-const db = admin.firestore();
-
-exports.handler = async (event) => {
-
-  try {
-
-    if(event.httpMethod !== "POST"){
-
-      return {
-        statusCode:405,
-        body:JSON.stringify({
-          error:"Method not allowed"
-        })
-      };
-    }
-
-    const data =
-      JSON.parse(event.body || "{}");
-
-    if(
-      !data.name ||
-      !data.town ||
-      !data.category
-    ){
-
-      return {
-        statusCode:400,
-        body:JSON.stringify({
-          error:"Missing required fields"
-        })
-      };
-    }
-
-    await db
-      .collection("pending_submissions")
-      .add({
-
-        ...data,
-
-        status:"pending",
-
-        source:"admin_seed",
-
-        createdAt:
-          admin.firestore.FieldValue
-            .serverTimestamp()
-      });
-
-    return {
-      statusCode:200,
-      body:JSON.stringify({
-        ok:true
-      })
-    };
-
-  } catch(err){
-
-    console.error(
-      "[ADMIN_ADD_BUSINESS]",
-      err
-    );
-
-    return {
-      statusCode:500,
-      body:JSON.stringify({
-        error:err.message
-      })
-    };
+  if (!adminUser) {
+    window.location.href = "/admin/login.html";
+    return;
   }
-};
+
+  // Elements
+  const scraperBtn = document.getElementById("open-scraper");
+  const followupsBtn = document.getElementById("open-followups");
+  const dashboardBtn = document.getElementById("open-claim-dashboard");
+
+  // Navigation handlers
+  if (scraperBtn) {
+    scraperBtn.addEventListener("click", () => {
+      window.location.href = "/admin/scraper.html";
+    });
+  }
+
+  if (followupsBtn) {
+    followupsBtn.addEventListener("click", () => {
+      window.location.href = "/admin/followups.html";
+    });
+  }
+
+  if (dashboardBtn) {
+    dashboardBtn.addEventListener("click", () => {
+      window.location.href = "/admin/claim-dashboard.html";
+    });
+  }
+
+  // Optional: highlight active section
+  const current = window.location.pathname;
+  const links = document.querySelectorAll(".tool-card");
+
+  links.forEach(link => {
+    if (current.includes(link.getAttribute("data-page"))) {
+      link.classList.add("active");
+    }
+  });
+});
