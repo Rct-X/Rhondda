@@ -36,7 +36,8 @@ export async function initModeration(services){
   await Promise.all([
     loadPending(),
     loadClaims(),
-    loadPendingChanges()
+    loadPendingChanges(),
+    setupSidebarNavigation()
   ]);
 }
 
