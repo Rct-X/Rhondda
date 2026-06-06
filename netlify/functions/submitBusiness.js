@@ -59,7 +59,8 @@ exports.handler = async (event) => {
     // ===============================
     const wasteCategories = [
       "Waste Collection",
-      "Removals"
+      "Removals",
+      "House Clearances"
     ];
 
     const requiresWasteLicence = wasteCategories.includes(category);
