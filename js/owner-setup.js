@@ -16,11 +16,14 @@ function getParams() {
 
 (async () => {
   const config = await loadFirebaseConfig();
+
+// Only initialise if not already initialised
+if (!firebase.apps.length) {
   firebase.initializeApp(config);
+}
 
-  db = firebase.firestore();
-  auth = firebase.auth();
-
+db = firebase.firestore();
+auth = firebase.auth();
   const { slug, email } = getParams();
 
   if (!slug || !email) {
