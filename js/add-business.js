@@ -3,6 +3,83 @@ const formMessage = document.getElementById("formMessage");
 const submitBtn = document.getElementById("submitBtn");
 
 // ===============================
+// TOWN AUTOCOMPLETE
+// ===============================
+const towns = [
+  "Treorchy",
+  "Treherbert",
+  "Tonypandy",
+  "Porth",
+  "Pontypridd",
+  "Ferndale",
+  "Tylorstown",
+  "Treforest",
+  "Tonyrefail",
+  "Pentre",
+  "Maerdy",
+  "Mountain Ash",
+  "Aberdare",
+  "Ystrad",
+  "Gelli",
+  "Cymmer",
+  "Williamstown",
+  "Penygraig",
+  "Trebanog",
+  "Llwynypia"
+];
+
+const townInput = document.getElementById("town");
+const suggestions = document.getElementById("townSuggestions");
+
+townInput.addEventListener("input", () => {
+
+  const value = townInput.value.toLowerCase();
+
+  suggestions.innerHTML = "";
+
+  if (!value) {
+    suggestions.style.display = "none";
+    return;
+  }
+
+  const matches = towns.filter(town =>
+    town.toLowerCase().includes(value)
+  );
+
+  if (!matches.length) {
+    suggestions.style.display = "none";
+    return;
+  }
+
+  matches.forEach(match => {
+
+    const div = document.createElement("div");
+
+    div.className = "suggestion-item";
+    div.textContent = match;
+
+    div.addEventListener("click", () => {
+      townInput.value = match;
+      suggestions.style.display = "none";
+    });
+
+    suggestions.appendChild(div);
+
+  });
+
+  suggestions.style.display = "block";
+
+});
+
+document.addEventListener("click", (e) => {
+
+  if (!e.target.closest(".form-group")) {
+    suggestions.style.display = "none";
+  }
+
+});
+
+// ===============================
 // SLUGIFY
 // ===============================
 function slugify(str) {
