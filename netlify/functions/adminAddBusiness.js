@@ -159,9 +159,12 @@ exports.handler = async (event) => {
     // SAVE
     // ======================================
 
-    await db
-      .collection("pending_submissions")
-      .add(doc);
+    await db.collection("businesses").add({
+  ...doc,
+  status: "approved",
+  verified: true,
+  approvedAt: admin.firestore.FieldValue.serverTimestamp()
+});
 
     // ======================================
     // SEND EMAIL
