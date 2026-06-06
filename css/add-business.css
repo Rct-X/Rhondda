@@ -210,19 +210,31 @@
   }
 }
 .suggestions{
+  position:absolute;
+  top:100%;
+  left:0;
+
+  width:100%;
+
   border:1px solid #ddd;
   border-top:none;
+
   max-height:220px;
   overflow-y:auto;
+
   background:#fff;
-  position:absolute;
-  width:100%;
+
   z-index:1000;
+
   display:none;
+
+  border-radius:0 0 14px 14px;
+
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
 
 .suggestion-item{
-  padding:12px;
+  padding:12px 14px;
   cursor:pointer;
 }
 
