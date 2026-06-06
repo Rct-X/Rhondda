@@ -167,147 +167,34 @@ if (searchInput) searchInput.addEventListener("keydown", e => {
   if (e.key === "Enter") searchDirectory();
 });
 
-// ===============================
-// CATEGORY AUTO-SUGGEST SEARCH
-// ===============================
+// =====================================
+// UNIFIED AUTO-SUGGEST (CATEGORIES + BUSINESSES)
+// =====================================
 
+const unifiedBox = document.getElementById("unifiedSuggestions");
+
+// Full category list (exact match to your HTML)
 const categories = [
-  "Accountants",
-  "Aerial Installers",
-  "Air Conditioning Services",
-  "Architects",
-  "Auto Electricians",
-
-  "Bakers",
-  "Barbers",
-  "Bathroom Fitters",
-  "Beauty Salons",
-  "Bedroom Fitters",
-  "Bike Repairs",
-  "Blinds & Shutters",
-  "Boiler Installers",
-  "Bricklayers",
-  "Builders",
-  "Building Supplies",
-  "Butchers",
-
-  "Cafes",
-  "Car Body Repairs",
-  "Car Dealers",
-  "Car Detailing",
-  "Car Hire",
-  "Car Mechanics",
-  "Car Valeting",
-  "Carpenters",
-  "Carpet Cleaners",
-  "Carpet Fitters",
-  "Caterers",
-  "Childcare Services",
-  "Chimney Sweeps",
-  "Cleaners",
-  "Computer Repairs",
-  "Conservatory Installers",
-  "Courier Services",
-
-  "Decorators",
-  "Dentists",
-  "Dog Groomers",
-  "Double Glazing",
-  "Drainage Services",
-  "Driving Schools",
-
-  "Electricians",
-  "Estate Agents",
-
-  "Fencing Contractors",
-  "Financial Advisors",
-  "Firewood Suppliers",
-  "Flooring Services",
-  "Florists",
-  "Funeral Directors",
-
-  "Garage Doors",
-  "Garden Centres",
-  "Gardeners",
-  "Gas Engineers",
-  "Graphic Designers",
-  "Greengrocers",
-  "Gutter Cleaning",
-  "Gyms",
-
-  "Hairdressers",
-  "Handyman Services",
-  "Heating Engineers",
-  "Home Care Services",
-  "House Clearances",
-
-  "Insurance Brokers",
-  "Interior Designers",
-
-  "Joiners",
-
-  "Kitchen Fitters",
-
-  "Landscapers",
-  "Laundry Services",
-  "Locksmiths",
-
-  "Man With A Van",
-  "Martial Arts Clubs",
-  "Massage Therapists",
-  "Mobile Phone Repairs",
-  "Mortgage Advisors",
-
-  "Nail Salons",
-
-  "Osteopaths",
-
-  "Painters & Decorators",
-  "Party Supplies",
-  "Paving Contractors",
-  "Personal Trainers",
-  "Pest Control",
-  "Pet Shops",
-  "Photographers",
-  "Physiotherapists",
-  "Pizza Shops",
-  "Plasterers",
-  "Plumbers",
-  "Pressure Washing",
-  "Printers",
-
-  "Removals",
-  "Restaurants",
-  "Roof Cleaners",
-  "Roofers",
-
-  "Scaffolding",
-  "Security Services",
-  "Shops",
-  "Skip Hire",
-  "Solar Panel Installers",
-  "Solicitors",
-  "Sports Clubs",
-  "Storage Services",
-
-  "Takeaways",
-  "Tattoo Studios",
-  "Taxi Services",
-  "Tilers",
-  "Travel Agents",
-  "Tree Surgeons",
-  "Tyres & Repairs",
-
-  "Upholstery Cleaning",
-
-  "Vets",
-
-  "Waste Collection",
-  "Wedding Services",
-  "Window Cleaners",
-  "Window Fitters",
-
-  "Yoga Classes"
+  "Accountants","Aerial Installers","Air Conditioning Services","Architects","Auto Electricians",
+  "Bakers","Barbers","Bathroom Fitters","Beauty Salons","Bedroom Fitters","Bike Repairs",
+  "Blinds & Shutters","Boiler Installers","Bricklayers","Builders","Building Supplies","Butchers",
+  "Cafes","Car Body Repairs","Car Dealers","Car Detailing","Car Hire","Car Mechanics","Car Valeting",
+  "Carpenters","Carpet Cleaners","Carpet Fitters","Caterers","Childcare Services","Chimney Sweeps",
+  "Cleaners","Computer Repairs","Conservatory Installers","Courier Services","Decorators","Dentists",
+  "Dog Groomers","Double Glazing","Drainage Services","Driving Schools","Electricians","Estate Agents",
+  "Fencing Contractors","Financial Advisors","Firewood Suppliers","Flooring Services","Florists",
+  "Funeral Directors","Garage Doors","Garden Centres","Gardeners","Gas Engineers","Graphic Designers",
+  "Greengrocers","Gutter Cleaning","Gyms","Hairdressers","Handyman Services","Heating Engineers",
+  "Home Care Services","House Clearances","Insurance Brokers","Interior Designers","Joiners",
+  "Kitchen Fitters","Landscapers","Laundry Services","Locksmiths","Man With A Van","Martial Arts Clubs",
+  "Massage Therapists","Mobile Phone Repairs","Mortgage Advisors","Nail Salons","Osteopaths",
+  "Painters & Decorators","Party Supplies","Paving Contractors","Personal Trainers","Pest Control",
+  "Pet Shops","Photographers","Physiotherapists","Pizza Shops","Plasterers","Plumbers",
+  "Pressure Washing","Printers","Removals","Restaurants","Roof Cleaners","Roofers","Scaffolding",
+  "Security Services","Shops","Skip Hire","Solar Panel Installers","Solicitors","Sports Clubs",
+  "Storage Services","Takeaways","Tattoo Studios","Taxi Services","Tilers","Travel Agents",
+  "Tree Surgeons","Tyres & Repairs","Upholstery Cleaning","Vets","Waste Collection","Wedding Services",
+  "Window Cleaners","Window Fitters","Yoga Classes"
 ];
 
 // Slugify (same as your add-business.js)
@@ -320,45 +207,86 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");
 }
 
-const catInput = document.getElementById("categorySearchInput");
-const catSuggestions = document.getElementById("categorySuggestions");
+// Listen to typing
+searchInput.addEventListener("input", async () => {
+  const term = searchInput.value.trim().toLowerCase();
+  unifiedBox.innerHTML = "";
 
-catInput.addEventListener("input", () => {
-  const value = catInput.value.toLowerCase();
-  catSuggestions.innerHTML = "";
-
-  if (!value) {
-    catSuggestions.style.display = "none";
+  if (!term) {
+    unifiedBox.style.display = "none";
     return;
   }
 
-  const matches = categories.filter(cat =>
-    cat.toLowerCase().includes(value)
+  // ============================
+  // CATEGORY MATCHES
+  // ============================
+  const matchedCategories = categories.filter(c =>
+    c.toLowerCase().includes(term)
   );
 
-  if (!matches.length) {
-    catSuggestions.style.display = "none";
+  // ============================
+  // BUSINESS MATCHES (Firestore)
+  // ============================
+  const businessMatches = [];
+  const q = db.collection("businesses").where("keywords", "array-contains", term);
+  const snap = await q.get();
+
+  snap.forEach(doc => {
+    const b = doc.data();
+    businessMatches.push(b);
+  });
+
+  // If nothing found
+  if (matchedCategories.length === 0 && businessMatches.length === 0) {
+    unifiedBox.style.display = "none";
     return;
   }
 
-  matches.forEach(match => {
-    const div = document.createElement("div");
-    div.className = "category-suggestion-item";
-    div.textContent = match;
+  // ============================
+  // BUILD SUGGESTION LIST
+  // SMART MIXED ORDERING
+  // ============================
 
-    div.addEventListener("click", () => {
-      const slug = slugify(match);
-      window.location.href = `/directory/${slug}`;
-    });
+  // Mix categories + businesses in alternating order
+  const maxLen = Math.max(matchedCategories.length, businessMatches.length);
 
-    catSuggestions.appendChild(div);
-  });
+  for (let i = 0; i < maxLen; i++) {
+    if (matchedCategories[i]) {
+      const cat = matchedCategories[i];
+      const div = document.createElement("div");
+      div.className = "unified-suggestion-item unified-suggestion-category";
+      div.textContent = cat;
 
-  catSuggestions.style.display = "block";
+      div.addEventListener("click", () => {
+        window.location.href = `/directory/${slugify(cat)}`;
+      });
+
+      unifiedBox.appendChild(div);
+    }
+
+    if (businessMatches[i]) {
+      const b = businessMatches[i];
+      const div = document.createElement("div");
+      div.className = "unified-suggestion-item unified-suggestion-business";
+      div.textContent = `${b.name} — ${b.town}`;
+
+      div.addEventListener("click", () => {
+        window.location.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+      });
+
+      unifiedBox.appendChild(div);
+    }
+  }
+
+  unifiedBox.style.display = "block";
 });
 
-document.addEventListener("click", (e) => {
-  if (!e.target.closest(".category-search")) {
-    catSuggestions.style.display = "none";
+// Hide suggestions when clicking outside
+document.addEventListener("click", e => {
+  if (!e.target.closest(".directory-search")) {
+    unifiedBox.style.display = "none";
   }
 });
+
+
+
