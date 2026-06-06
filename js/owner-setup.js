@@ -4,6 +4,7 @@ async function loadFirebaseConfig() {
 }
 
 let db, auth, bizRef;
+let existingAccount = false;
 
 function getParams() {
   const p = new URLSearchParams(window.location.search);
@@ -30,6 +31,23 @@ function getParams() {
 
   document.getElementById("email").value = email;
 
+  // Check if email already has an account
+  const methods = await auth.fetchSignInMethodsForEmail(email);
+  if (methods.length > 0) {
+    existingAccount = true;
+
+    document.getElementById("setupForm").innerHTML = `
+      <p>You already have an RCTX owner account.</p>
+      <p>Please log in to link this business to your dashboard.</p>
+
+      <label>Password</label>
+      <input type="password" id="password" required placeholder="Enter your password">
+
+      <button class="btn" id="loginBtn">Log In</button>
+    `;
+  }
+
+  // Load business
   const snap = await db.collection("businesses")
     .where("slug", "==", slug)
     .limit(1)
@@ -58,18 +76,28 @@ document.getElementById("setupForm").addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  status.textContent = "Creating your account…";
+  status.textContent = "Processing…";
 
   try {
-    const user = await auth.createUserWithEmailAndPassword(email, password);
+    let user;
 
+    if (existingAccount) {
+      // LOGIN FLOW
+      user = await auth.signInWithEmailAndPassword(email, password);
+    } else {
+      // SIGNUP FLOW
+      user = await auth.createUserWithEmailAndPassword(email, password);
+    }
+
+    // Link business to this owner
     await bizRef.update({
       ownerId: user.user.uid,
       ownerStatus: "active",
-      verified: true
+      verified: true,
+      claimedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    status.textContent = "Account created! Redirecting…";
+    status.textContent = "Success! Redirecting…";
 
     setTimeout(() => {
       window.location.href = "/owner-dashboard";
