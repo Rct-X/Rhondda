@@ -747,9 +747,19 @@ color:inherit;
 </div>
           <input list="towns" id="town" required placeholder="Town / Area">
 
-<datalist id="towns">
-  <option value="Treorchy"><option value="Treherbert"><option value="Treforest"><option value="Treforest Industrial Estate"><option value="Trealaw"><option value="Trehafod"><option value="Trebanog"><option value="Treorchy"><option value="Trealaw"><option value="Tonypandy"><option value="Tonyrefail"><option value="Tylorstown"><option value="Tyntetown"><option value="Treharris"><option value="Trecynon"><option value="Tonteg"><option value="Porth"><option value="Pontypridd"><option value="Penygraig"><option value="Penrhys"><option value="Penrhiwceiber"><option value="Pentre"><option value="Pontygwaith"><option value="Pontyclun"><option value="Pontcanna"><option value="Penywaun"><option value="Ferndale"><option value="Fernhill"><option value="Fochriw"><option value="Ystrad"><option value="Ynyshir"><option value="Ynysybwl"><option value="Abercynon"><option value="Aberaman"><option value="Aberdare"><option value="Abernant"><option value="Mountain Ash"><option value="Maerdy"><option value="Miskin"><option value="Mid Rhondda"><option value="Cwmparc"><option value="Cwmclydach"><option value="Clydach Vale"><option value="Cilfynydd"><option value="Church Village"><option value="Coedely"><option value="Beddau"><option value="Brynna"><option value="Bryncoch"><option value="Blaencwm"><option value="Blaenllechau"><option value="Llwynypia"><option value="Llwydcoed"><option value="Llantwit Fardre"><option value="Llanharan"><option value="Llantrisant"><option value="Hirwaun"><option value="Hawthorn"><option value="Gilfach Goch"><option value="Gelli"><option value="Dinas Rhondda"><option value="Cwmbach"><option value="Cymmer"><option value="Rhydyfelin"><option value="Rhydyfro"><option value="Rhondda"><option value="Williamstown">
-</datalist>
+<div class="form-group">
+  <label for="town">Town / Area *</label>
+
+  <input
+    type="text"
+    id="town"
+    required
+    autocomplete="off"
+    placeholder="Treorchy,Pontypridd etc"
+  >
+
+  <div id="townSuggestions" class="suggestions"></div>
+</div>
 
           <div class="form-group">
             <label for="phone">Phone</label>
