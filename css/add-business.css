@@ -43,7 +43,8 @@
   box-shadow: var(--shadow-soft);
   margin-top: 2rem;
 
-  max-width: 980px;   /* 🔥 wider form itself */
+  max-width: 1100px;
+  width:100%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -61,15 +62,15 @@
    FORM GRID (BETTER CONTROL)
 ============================ */
 .form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1rem 1.25rem;
   margin-bottom: 1.5rem;
 }
 
 /* make some fields full width */
 .form-group.full {
-  grid-column: 1 / -1;
+  grid-column: 1/-1;
 }
 
 /* ============================
@@ -100,7 +101,7 @@
 
 .form-group textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 100px;
 }
 
 /* focus state */
@@ -245,3 +246,4 @@
 .form-group{
   position:relative;
 }
+
