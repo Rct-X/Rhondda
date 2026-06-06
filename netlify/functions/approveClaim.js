@@ -60,9 +60,9 @@ exports.handler = async (event) => {
 
     // Update business to show it is now claimed
     await bizRef.update({
-  ownerId: claim.email,   // assign owner
-  ownerStatus: "claimed", // business is now owned
-  verified: true,         // mark as verified
+  ownerEmail: claim.email,
+  ownerStatus: "pending_signup",
+  verified: true,
   claimedAt: admin.firestore.FieldValue.serverTimestamp()
 });
 
