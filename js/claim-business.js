@@ -1,21 +1,34 @@
-// Load Firebase config
+// ===============================
+// LOAD FIREBASE CONFIG
+// ===============================
 async function loadFirebaseConfig() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
 }
 
-let db;
+let db = null;
 
-// Read ?b=slug
+// ===============================
+// READ ?b=slug
+// ===============================
 function getSlug() {
   const params = new URLSearchParams(window.location.search);
   return params.get("b");
 }
 
-// Load business info
+// ===============================
+// LOAD BUSINESS INFO
+// ===============================
 (async () => {
   const config = await loadFirebaseConfig();
-  firebase.initializeApp(config);
+
+  // Initialise Firebase safely (no duplicate app errors)
+  if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+  } else {
+    firebase.app();
+  }
+
   db = firebase.firestore();
 
   const slug = getSlug();
@@ -38,7 +51,9 @@ function getSlug() {
   `;
 })();
 
-// Submit claim
+// ===============================
+// SUBMIT CLAIM
+// ===============================
 document.getElementById("claimForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
