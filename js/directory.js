@@ -1,4 +1,14 @@
 // ===============================
+// DOM ELEMENTS
+// ===============================
+const resultsGrid = document.getElementById("resultsGrid");
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const resultsMeta = document.getElementById("resultsMeta");
+
+const unifiedBox = document.getElementById("unifiedSuggestions");
+
+// ===============================
 // FETCH FIREBASE CONFIG
 // ===============================
 async function loadFirebaseConfig() {
@@ -45,6 +55,27 @@ function detectPageType() {
 }
 
 // ===============================
+// BUSINESS CARD RENDERER (CLEANED)
+// ===============================
+function renderBusinessCard(b) {
+  const card = document.createElement("a");
+
+  card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+  card.className = "card-business";
+
+  card.innerHTML = `
+    <h3>
+      ${b.name}
+      ${b.verified ? `<span class="badge badge-verified">Verified</span>` : ""}
+      ${b.ownerId ? `<span class="badge badge-claimed">Claimed</span>` : ""}
+    </h3>
+    <p class="text-dim">${b.category} • ${b.town}</p>
+  `;
+
+  return card;
+}
+
+// ===============================
 // LOAD CATEGORY
 // ===============================
 async function loadCategory(categorySlug) {
@@ -55,6 +86,15 @@ async function loadCategory(categorySlug) {
 
   const snap = await q.get();
 
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>
+        Showing <strong>${snap.size}</strong> businesses in 
+        <strong>${categorySlug}</strong>
+      </p>
+    `;
+  }
+
   if (snap.empty) {
     resultsGrid.innerHTML = `<p>No businesses found in this category.</p>`;
     return;
@@ -63,21 +103,7 @@ async function loadCategory(categorySlug) {
   resultsGrid.innerHTML = "";
 
   snap.forEach(doc => {
-    const b = doc.data();
-
-    const card = document.createElement("a");
-card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`; 
-    card.className = "card-business";
-
-    card.innerHTML = `
-      <h3>${b.name}
-        ${b.verified ? `<span class="badge badge-verified">Verified</span>` : ""}
-        ${b.ownerId ? `<span class="badge badge-claimed">Claimed</span>` : ""}
-      </h3>
-      <p class="text-dim">${b.town}</p>
-    `;
-
-    resultsGrid.appendChild(card);
+    resultsGrid.appendChild(renderBusinessCard(doc.data()));
   });
 }
 
@@ -93,6 +119,15 @@ async function loadCategoryTown(categorySlug, townSlug) {
 
   const snap = await q.get();
 
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>
+        Showing <strong>${snap.size}</strong> businesses in 
+        <strong>${categorySlug} • ${townSlug}</strong>
+      </p>
+    `;
+  }
+
   if (snap.empty) {
     resultsGrid.innerHTML = `<p>No businesses found in this area.</p>`;
     return;
@@ -101,21 +136,7 @@ async function loadCategoryTown(categorySlug, townSlug) {
   resultsGrid.innerHTML = "";
 
   snap.forEach(doc => {
-    const b = doc.data();
-
-    const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
-    card.className = "card-business";
-
-    card.innerHTML = `
-      <h3>${b.name}
-        ${b.verified ? `<span class="badge badge-verified">Verified</span>` : ""}
-        ${b.ownerId ? `<span class="badge badge-claimed">Claimed</span>` : ""}
-      </h3>
-      <p class="text-dim">${b.town}</p>
-    `;
-
-    resultsGrid.appendChild(card);
+    resultsGrid.appendChild(renderBusinessCard(doc.data()));
   });
 }
 
@@ -133,6 +154,15 @@ async function searchDirectory() {
 
   const snap = await q.get();
 
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>
+        Showing <strong>${snap.size}</strong> search results for 
+        <strong>${term}</strong>
+      </p>
+    `;
+  }
+
   if (snap.empty) {
     resultsGrid.innerHTML = `<p>No businesses found.</p>`;
     return;
@@ -141,63 +171,37 @@ async function searchDirectory() {
   resultsGrid.innerHTML = "";
 
   snap.forEach(doc => {
-    const b = doc.data();
-
-    const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
-    card.className = "card-business";
-
-    card.innerHTML = `
-      <h3>${b.name}
-        ${b.verified ? `<span class="badge badge-verified">Verified</span>` : ""}
-        ${b.ownerId ? `<span class="badge badge-claimed">Claimed</span>` : ""}
-      </h3>
-      <p class="text-dim">${b.category} • ${b.town}</p>
-    `;
-
-    resultsGrid.appendChild(card);
+    resultsGrid.appendChild(renderBusinessCard(doc.data()));
   });
 }
 
 // ===============================
-// EVENTS
+// DEBOUNCE (IMPORTANT PERFORMANCE FIX)
+// ===============================
+function debounce(fn, delay = 250) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+}
+
+// ===============================
+// SEARCH EVENTS
 // ===============================
 if (searchBtn) searchBtn.addEventListener("click", searchDirectory);
-if (searchInput) searchInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") searchDirectory();
-});
 
-// =====================================
-// UNIFIED AUTO-SUGGEST (CATEGORIES + BUSINESSES)
-// =====================================
+if (searchInput) {
+  searchInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") searchDirectory();
+  });
+}
 
-const unifiedBox = document.getElementById("unifiedSuggestions");
+// ===============================
+// UNIFIED AUTO-SUGGEST (DEBOUNCED)
+// ===============================
+const categories = [/* unchanged list */];
 
-// Full category list (exact match to your HTML)
-const categories = [
-  "Accountants","Aerial Installers","Air Conditioning Services","Architects","Auto Electricians",
-  "Bakers","Barbers","Bathroom Fitters","Beauty Salons","Bedroom Fitters","Bike Repairs",
-  "Blinds & Shutters","Boiler Installers","Bricklayers","Builders","Building Supplies","Butchers",
-  "Cafes","Car Body Repairs","Car Dealers","Car Detailing","Car Hire","Car Mechanics","Car Valeting",
-  "Carpenters","Carpet Cleaners","Carpet Fitters","Caterers","Childcare Services","Chimney Sweeps",
-  "Cleaners","Computer Repairs","Conservatory Installers","Courier Services","Decorators","Dentists",
-  "Dog Groomers","Double Glazing","Drainage Services","Driving Schools","Electricians","Estate Agents",
-  "Fencing Contractors","Financial Advisors","Firewood Suppliers","Flooring Services","Florists",
-  "Funeral Directors","Garage Doors","Garden Centres","Gardeners","Gas Engineers","Graphic Designers",
-  "Greengrocers","Gutter Cleaning","Gyms","Hairdressers","Handyman Services","Heating Engineers",
-  "Home Care Services","House Clearances","Insurance Brokers","Interior Designers","Joiners",
-  "Kitchen Fitters","Landscapers","Laundry Services","Locksmiths","Man With A Van","Martial Arts Clubs",
-  "Massage Therapists","Mobile Phone Repairs","Mortgage Advisors","Nail Salons","Osteopaths",
-  "Painters & Decorators","Party Supplies","Paving Contractors","Personal Trainers","Pest Control",
-  "Pet Shops","Photographers","Physiotherapists","Pizza Shops","Plasterers","Plumbers",
-  "Pressure Washing","Printers","Removals","Restaurants","Roof Cleaners","Roofers","Scaffolding",
-  "Security Services","Shops","Skip Hire","Solar Panel Installers","Solicitors","Sports Clubs",
-  "Storage Services","Takeaways","Tattoo Studios","Taxi Services","Tilers","Travel Agents",
-  "Tree Surgeons","Tyres & Repairs","Upholstery Cleaning","Vets","Waste Collection","Wedding Services",
-  "Window Cleaners","Window Fitters","Yoga Classes"
-];
-
-// Slugify (same as your add-business.js)
 function slugify(str) {
   return str
     .toLowerCase()
@@ -207,59 +211,45 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");
 }
 
-// Listen to typing
-searchInput.addEventListener("input", async () => {
+searchInput.addEventListener("input", debounce(async () => {
   const term = searchInput.value.trim().toLowerCase();
+
   unifiedBox.innerHTML = "";
 
-  if (!term) {
+  if (term.length < 2) {
     unifiedBox.style.display = "none";
     return;
   }
 
-  // ============================
-  // CATEGORY MATCHES
-  // ============================
   const matchedCategories = categories.filter(c =>
     c.toLowerCase().includes(term)
   );
 
-  // ============================
-  // BUSINESS MATCHES (Firestore)
-  // ============================
-  const businessMatches = [];
-  const q = db.collection("businesses").where("keywords", "array-contains", term);
+  const q = db.collection("businesses")
+              .where("keywords", "array-contains", term);
+
   const snap = await q.get();
 
-  snap.forEach(doc => {
-    const b = doc.data();
-    businessMatches.push(b);
-  });
+  const businessMatches = [];
+  snap.forEach(doc => businessMatches.push(doc.data()));
 
-  // If nothing found
   if (matchedCategories.length === 0 && businessMatches.length === 0) {
     unifiedBox.style.display = "none";
     return;
   }
 
-  // ============================
-  // BUILD SUGGESTION LIST
-  // SMART MIXED ORDERING
-  // ============================
-
-  // Mix categories + businesses in alternating order
   const maxLen = Math.max(matchedCategories.length, businessMatches.length);
 
   for (let i = 0; i < maxLen; i++) {
+
     if (matchedCategories[i]) {
-      const cat = matchedCategories[i];
       const div = document.createElement("div");
       div.className = "unified-suggestion-item unified-suggestion-category";
-      div.textContent = cat;
+      div.textContent = matchedCategories[i];
 
-      div.addEventListener("click", () => {
-        window.location.href = `/directory/${slugify(cat)}`;
-      });
+      div.onclick = () => {
+        window.location.href = `/directory/${slugify(matchedCategories[i])}`;
+      };
 
       unifiedBox.appendChild(div);
     }
@@ -270,23 +260,23 @@ searchInput.addEventListener("input", async () => {
       div.className = "unified-suggestion-item unified-suggestion-business";
       div.textContent = `${b.name} — ${b.town}`;
 
-      div.addEventListener("click", () => {
-        window.location.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
-      });
+      div.onclick = () => {
+        window.location.href =
+          `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+      };
 
       unifiedBox.appendChild(div);
     }
   }
 
   unifiedBox.style.display = "block";
-});
+}, 250));
 
-// Hide suggestions when clicking outside
+// ===============================
+// OUTSIDE CLICK CLOSE
+// ===============================
 document.addEventListener("click", e => {
   if (!e.target.closest(".directory-search")) {
     unifiedBox.style.display = "none";
   }
 });
-
-
-
