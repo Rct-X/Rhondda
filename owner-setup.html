@@ -13,21 +13,35 @@
 
 <div class="setup-container">
 
-  <h1>Set Up Your Owner Account</h1>
+  <div class="header-box">
+    <h1>Welcome to Your RCTX Owner Account</h1>
+    <p class="intro-text">
+      Thanks for claiming your business on the RCTX Directory.  
+      You're just one step away from accessing your dashboard and keeping your listing up to date.
+    </p>
+  </div>
 
   <div id="businessInfo" class="biz-box">Loading business…</div>
 
-  <form id="setupForm">
+  <form id="setupForm" class="setup-form">
+    
     <label>Email</label>
     <input type="email" id="email" readonly>
 
     <label>Create Password</label>
-    <input type="password" id="password" required>
+    <input type="password" id="password" required placeholder="Choose a secure password">
 
     <button class="btn">Create Account</button>
   </form>
 
-  <p id="statusMsg"></p>
+  <p id="statusMsg" class="status-msg"></p>
+
+  <div class="footer-note">
+    <p>
+      Thank you again for joining the RCTX community —  
+      <strong>Eddie</strong>
+    </p>
+  </div>
 
 </div>
 
