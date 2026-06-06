@@ -33,18 +33,14 @@ function getParams() {
 
   // Check if email already has an account
   const methods = await auth.fetchSignInMethodsForEmail(email);
+
   if (methods.length > 0) {
     existingAccount = true;
 
-    document.getElementById("setupForm").innerHTML = `
-      <p>You already have an RCTX owner account.</p>
-      <p>Please log in to link this business to your dashboard.</p>
-
-      <label>Password</label>
-      <input type="password" id="password" required placeholder="Enter your password">
-
-      <button class="btn" id="loginBtn">Log In</button>
-    `;
+    // Change UI to "Set Password" mode
+    document.getElementById("passwordLabel").textContent = "Enter Password";
+    document.getElementById("mainActionBtn").textContent = "Log In";
+    document.getElementById("resetBtn").style.display = "block";
   }
 
   // Load business
@@ -69,6 +65,9 @@ function getParams() {
   `;
 })();
 
+// ===============================
+// FORM SUBMIT HANDLER
+// ===============================
 document.getElementById("setupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -104,7 +103,6 @@ document.getElementById("setupForm").addEventListener("submit", async (e) => {
     }, 1200);
 
   } catch (err) {
-    console.error(err);
     status.textContent = err.message;
   }
 });
@@ -112,16 +110,14 @@ document.getElementById("setupForm").addEventListener("submit", async (e) => {
 // ===============================
 // PASSWORD RESET HANDLER
 // ===============================
-document.addEventListener("click", async (e) => {
-  if (e.target.id === "resetBtn") {
-    const email = document.getElementById("email").value;
-    const status = document.getElementById("statusMsg");
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const status = document.getElementById("statusMsg");
 
-    try {
-      await auth.sendPasswordResetEmail(email);
-      status.textContent = "Password reset email sent. Check your inbox.";
-    } catch (err) {
-      status.textContent = err.message;
-    }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    status.textContent = "Password setup email sent. Check your inbox.";
+  } catch (err) {
+    status.textContent = err.message;
   }
 });
