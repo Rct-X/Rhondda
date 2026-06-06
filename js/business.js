@@ -28,11 +28,25 @@ function getPathParams() {
 
   try {
 
-    const config = await loadFirebaseConfig();
+    async function loadFirebaseConfig() {
+  const res = await fetch("/.netlify/functions/firebaseConfig");
+  return res.json();
+}
 
+let db = null;
+
+(async () => {
+  const config = await loadFirebaseConfig();
+
+  // Initialise Firebase only once
+  if (!firebase.apps.length) {
     firebase.initializeApp(config);
+  } else {
+    firebase.app(); // use existing instance
+  }
 
-    db = firebase.firestore();
+  db = firebase.firestore();
+})();
 
     const page = getPathParams();
 
