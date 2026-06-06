@@ -7,9 +7,12 @@ let auth;
 
 (async () => {
   const config = await loadFirebaseConfig();
-  firebase.initializeApp(config);
 
-  auth = firebase.auth();
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}
+
+auth = firebase.auth();
 })();
 
 document.getElementById("forgotForm").addEventListener("submit", async (e) => {
