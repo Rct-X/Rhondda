@@ -108,3 +108,20 @@ document.getElementById("setupForm").addEventListener("submit", async (e) => {
     status.textContent = err.message;
   }
 });
+
+// ===============================
+// PASSWORD RESET HANDLER
+// ===============================
+document.addEventListener("click", async (e) => {
+  if (e.target.id === "resetBtn") {
+    const email = document.getElementById("email").value;
+    const status = document.getElementById("statusMsg");
+
+    try {
+      await auth.sendPasswordResetEmail(email);
+      status.textContent = "Password reset email sent. Check your inbox.";
+    } catch (err) {
+      status.textContent = err.message;
+    }
+  }
+});
