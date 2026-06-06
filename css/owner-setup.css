@@ -1,55 +1,100 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-}
-
+/* Container */
 .setup-container {
-  max-width: 420px;
+  max-width: 480px;
   margin: 40px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  font-family: system-ui, sans-serif;
 }
 
-h1 {
-  margin-top: 0;
+/* Header */
+.header-box {
   text-align: center;
-}
-
-.biz-box {
-  background: #eee;
-  padding: 12px;
-  border-radius: 6px;
   margin-bottom: 20px;
 }
 
-label {
+.header-box h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.intro-text {
+  font-size: 15px;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+/* Business info box */
+.biz-box {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  font-size: 15px;
+  color: #374151;
+}
+
+/* Form */
+.setup-form label {
   display: block;
-  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #111827;
 }
 
-input {
+.setup-form input {
   width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s;
 }
 
+.setup-form input:focus {
+  border-color: #111827;
+  outline: none;
+}
+
+/* Button */
 .btn {
   width: 100%;
-  margin-top: 20px;
   padding: 12px;
-  background: #007bff;
-  color: #fff;
+  background: #111827;
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-#statusMsg {
-  margin-top: 15px;
+.btn:hover {
+  background: #000000;
+}
+
+/* Status message */
+.status-msg {
+  margin-top: 12px;
+  font-size: 15px;
   text-align: center;
+}
+
+/* Footer note */
+.footer-note {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.footer-note strong {
+  color: #111827;
 }
