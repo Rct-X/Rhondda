@@ -12,7 +12,11 @@ let db;
 // READ URL PATH PARAMETERS
 // ===============================
 function getPathParams() {
-  const parts = window.location.pathname.split("/").filter(Boolean);
+
+  const parts =
+    window.location.pathname
+      .split("/")
+      .filter(Boolean);
 
   return {
     category: parts[1],
@@ -28,27 +32,20 @@ function getPathParams() {
 
   try {
 
-    async function loadFirebaseConfig() {
-  const res = await fetch("/.netlify/functions/firebaseConfig");
-  return res.json();
-}
+    const config =
+      await loadFirebaseConfig();
 
-let db = null;
+    // Initialise Firebase only once
+    if (!firebase.apps.length) {
 
-(async () => {
-  const config = await loadFirebaseConfig();
+      firebase.initializeApp(config);
 
-  // Initialise Firebase only once
-  if (!firebase.apps.length) {
-    firebase.initializeApp(config);
-  } else {
-    firebase.app(); // use existing instance
-  }
+    }
 
-  db = firebase.firestore();
-})();
+    db = firebase.firestore();
 
-    const page = getPathParams();
+    const page =
+      getPathParams();
 
     if (
       !page.category ||
@@ -56,12 +53,14 @@ let db = null;
       !page.slug
     ) {
 
-      console.error("Missing URL parameters");
+      console.error(
+        "Missing URL parameters"
+      );
 
       return;
     }
 
-    loadBusiness(
+    await loadBusiness(
       page.category,
       page.town,
       page.slug
@@ -69,7 +68,10 @@ let db = null;
 
   } catch (err) {
 
-    console.error("Init error:", err);
+    console.error(
+      "Init error:",
+      err
+    );
   }
 
 })();
@@ -87,14 +89,16 @@ async function loadBusiness(
     .collection("businesses")
     .where("categorySlug", "==", categorySlug)
     .where("townSlug", "==", townSlug)
-    .where("slug", "==", slug);
+    .where("slug", "==", slug)
+    .limit(1);
 
   const snap = await q.get();
 
   if (snap.empty) {
 
     document.getElementById("businessName")
-      .textContent = "Business Not Found";
+      .textContent =
+        "Business Not Found";
 
     return;
   }
@@ -103,7 +107,10 @@ async function loadBusiness(
 
   window.currentBusiness = b;
 
-  console.log("[BUSINESS] Loaded:", b);
+  console.log(
+    "[BUSINESS] Loaded:",
+    b
+  );
 
   // ===============================
   // SEO
@@ -139,7 +146,7 @@ async function loadBusiness(
     );
 
   // ===============================
-  // OG IMAGE
+  // OG IMAGE MAP
   // ===============================
   const ogImageMap = {
 
@@ -221,12 +228,9 @@ async function loadBusiness(
     "https://rctx.co.uk/og/default-business.jpg";
 
   document.getElementById("ogImage")
-    ?.setAttribute("content", ogUrl);
-
-  document.querySelector('meta[property="og:url"]')
     ?.setAttribute(
       "content",
-      window.location.href
+      ogUrl
     );
 
   document.querySelector('link[rel="canonical"]')
@@ -254,18 +258,24 @@ async function loadBusiness(
 
   document.getElementById("businessPhone")
     .textContent =
-      b.phone || "Not provided";
+      b.phone ||
+      "Not provided";
 
   document.getElementById("businessAddress")
     .textContent =
-      b.address || "Not provided";
+      b.address ||
+      "Not provided";
 
+  // ===============================
+  // WEBSITE LINK
+  // ===============================
   const websiteEl =
     document.getElementById("businessWebsite");
 
   if (b.website) {
 
-    websiteEl.textContent = b.website;
+    websiteEl.textContent =
+      b.website;
 
     websiteEl.href =
       b.website.startsWith("http")
@@ -280,6 +290,9 @@ async function loadBusiness(
     websiteEl.removeAttribute("href");
   }
 
+  // ===============================
+  // SIDEBAR
+  // ===============================
   document.getElementById("businessTownSidebar")
     .textContent = b.town;
 
@@ -296,15 +309,11 @@ async function loadBusiness(
 
     if (b.logoUrl) {
 
-      console.log("[LOGO] Showing logo");
-
       logoEl.src = b.logoUrl;
 
       logoEl.style.display = "block";
 
     } else {
-
-      console.log("[LOGO] No logo");
 
       logoEl.style.display = "none";
     }
@@ -320,12 +329,10 @@ async function loadBusiness(
 
     galleryEl.innerHTML = "";
 
-    if (b.gallery && b.gallery.length) {
-
-      console.log(
-        "[GALLERY] Images:",
-        b.gallery.length
-      );
+    if (
+      b.gallery &&
+      b.gallery.length
+    ) {
 
       b.gallery.forEach(url => {
 
@@ -339,107 +346,159 @@ async function loadBusiness(
 
         img.loading = "lazy";
 
+        img.decoding = "async";
+
         galleryEl.appendChild(img);
+
       });
 
     } else {
-
-      console.log("[GALLERY] Empty");
 
       galleryEl.innerHTML =
         "<p>No photos added yet.</p>";
     }
   }
-// GALLERY CAROUSEL
-const scroller = document.getElementById("galleryScroller");
-const counter = document.getElementById("galleryCounter");
 
-if (b.gallery && b.gallery.length) {
+  // ===============================
+  // GALLERY CAROUSEL
+  // ===============================
+  const scroller =
+    document.getElementById("galleryScroller");
 
-  scroller.innerHTML = "";
+  const counter =
+    document.getElementById("galleryCounter");
 
-  b.gallery.forEach(url => {
-    const img = document.createElement("img");
-    img.src = url;
-    scroller.appendChild(img);
-  });
+  if (
+    scroller &&
+    counter
+  ) {
 
-  // Counter logic
-  let current = 1;
-  const total = b.gallery.length;
+    if (
+      b.gallery &&
+      b.gallery.length
+    ) {
 
-  counter.textContent = `${current} / ${total}`;
+      scroller.innerHTML = "";
 
-  scroller.addEventListener("scroll", () => {
-    const scrollLeft = scroller.scrollLeft;
-    const width = scroller.children[0].offsetWidth + 10; // image width + gap
-    current = Math.round(scrollLeft / width) + 1;
-    counter.textContent = `${current} / ${total}`;
-  });
+      b.gallery.forEach(url => {
 
-} else {
-  scroller.innerHTML = "<p>No photos added yet.</p>";
-  counter.textContent = "";
-}
+        const img =
+          document.createElement("img");
+
+        img.src = url;
+
+        img.loading = "lazy";
+
+        img.decoding = "async";
+
+        scroller.appendChild(img);
+
+      });
+
+      let current = 1;
+
+      const total =
+        b.gallery.length;
+
+      counter.textContent =
+        `${current} / ${total}`;
+
+      scroller.addEventListener(
+        "scroll",
+        () => {
+
+          const scrollLeft =
+            scroller.scrollLeft;
+
+          const width =
+            scroller.children[0]
+              .offsetWidth + 10;
+
+          current =
+            Math.round(
+              scrollLeft / width
+            ) + 1;
+
+          counter.textContent =
+            `${current} / ${total}`;
+        }
+      );
+
+    } else {
+
+      scroller.innerHTML =
+        "<p>No photos added yet.</p>";
+
+      counter.textContent = "";
+    }
+  }
+
   // ===============================
   // BADGES
   // ===============================
   if (b.verified) {
 
     document.getElementById("verifiedBadge")
-      .innerHTML =
-        `<span class="badge badge-verified">Verified</span>`;
+      .innerHTML += `
+        <span class="badge badge-verified">
+          Verified
+        </span>
+      `;
   }
 
   if (b.ownerId) {
 
     document.getElementById("claimedBadge")
-      .innerHTML =
-        `<span class="badge badge-claimed">Claimed</span>`;
+      .innerHTML += `
+        <span class="badge badge-claimed">
+          Claimed
+        </span>
+      `;
 
     document.getElementById("claimedMessage")
       .textContent =
         "This business listing has been claimed by the owner.";
   }
-// ===============================
-// WASTE LICENCE BADGE
-// ===============================
-if (b.wasteLicence) {
 
-  document.getElementById("verifiedBadge")
-    .innerHTML +=
-      `
-      <span class="badge badge-waste">
-        ♻️ Licensed Waste Carrier
-      </span>
+  if (b.wasteLicence) {
+
+    document.getElementById("verifiedBadge")
+      .innerHTML += `
+        <span class="badge badge-waste">
+          ♻️ Licensed Waste Carrier
+        </span>
       `;
-}
+  }
+
   // ===============================
   // HOURS
   // ===============================
   const hoursList =
     document.getElementById("businessHours");
 
-  hoursList.innerHTML = "";
+  if (hoursList) {
 
-  if (b.hours) {
+    hoursList.innerHTML = "";
 
-    Object.entries(b.hours)
-      .forEach(([day, hours]) => {
+    if (b.hours) {
 
-        const li =
-          document.createElement("li");
+      Object.entries(b.hours)
+        .forEach(([day, hours]) => {
 
-        li.textContent =
-          `${day}: ${hours}`;
+          const li =
+            document.createElement("li");
 
-        hoursList.appendChild(li);
-      });
+          li.textContent =
+            `${day}: ${hours}`;
 
-  } else {
+          hoursList.appendChild(li);
+        });
 
-    hoursList.innerHTML =
-      "<li>No hours provided.</li>";
+    } else {
+
+      hoursList.innerHTML =
+        "<li>No hours provided.</li>";
+    }
   }
 
   // ===============================
@@ -465,7 +524,7 @@ if (b.wasteLicence) {
   // ===============================
   // RELATED BUSINESSES
   // ===============================
-  loadRelated(
+  await loadRelated(
     b.categorySlug,
     b.townSlug,
     b.slug
@@ -484,6 +543,10 @@ async function loadRelated(
   const relatedGrid =
     document.getElementById("relatedGrid");
 
+  if (!relatedGrid) {
+    return;
+  }
+
   relatedGrid.innerHTML =
     `<p class="text-dim">Loading recommendations…</p>`;
 
@@ -492,15 +555,20 @@ async function loadRelated(
   const q1 = db
     .collection("businesses")
     .where("categorySlug", "==", categorySlug)
-    .where("townSlug", "==", townSlug);
+    .where("townSlug", "==", townSlug)
+    .limit(8);
 
-  const snap1 = await q1.get();
+  const snap1 =
+    await q1.get();
 
   snap1.forEach(doc => {
 
     const b = doc.data();
 
-    if (b.slug !== currentSlug) {
+    if (
+      b.slug !== currentSlug
+    ) {
+
       results.push(b);
     }
   });
@@ -509,9 +577,11 @@ async function loadRelated(
 
     const q2 = db
       .collection("businesses")
-      .where("categorySlug", "==", categorySlug);
+      .where("categorySlug", "==", categorySlug)
+      .limit(8);
 
-    const snap2 = await q2.get();
+    const snap2 =
+      await q2.get();
 
     snap2.forEach(doc => {
 
@@ -519,7 +589,9 @@ async function loadRelated(
 
       if (
         b.slug !== currentSlug &&
-        !results.some(r => r.slug === b.slug)
+        !results.some(
+          r => r.slug === b.slug
+        )
       ) {
 
         results.push(b);
@@ -527,7 +599,8 @@ async function loadRelated(
     });
   }
 
-  results = results.slice(0, 4);
+  results =
+    results.slice(0, 4);
 
   if (!results.length) {
 
@@ -561,7 +634,9 @@ async function loadRelated(
     `;
 
     relatedGrid.appendChild(card);
+
   });
+
 }
 
 // ===============================
@@ -570,7 +645,9 @@ async function loadRelated(
 setTimeout(() => {
 
   if (
-    sessionStorage.getItem("sharePopupShown")
+    sessionStorage.getItem(
+      "sharePopupShown"
+    )
   ) return;
 
   const popup =
@@ -591,71 +668,91 @@ setTimeout(() => {
 // ===============================
 // CLOSE POPUP
 // ===============================
-document.addEventListener("click", (e) => {
+document.addEventListener(
+  "click",
+  (e) => {
 
-  if (e.target.id === "closeSharePopup") {
+    if (
+      e.target.id ===
+      "closeSharePopup"
+    ) {
 
-    document.getElementById("sharePopup")
-      ?.classList.remove("show");
+      document.getElementById("sharePopup")
+        ?.classList.remove("show");
+    }
   }
-});
+);
 
 // ===============================
 // SHARE BUTTON
 // ===============================
-document.addEventListener("click", async (e) => {
+document.addEventListener(
+  "click",
+  async (e) => {
 
-  if (e.target.id !== "shareBusinessBtn") {
-    return;
-  }
+    if (
+      e.target.id !==
+      "shareBusinessBtn"
+    ) {
 
-  const b =
-    window.currentBusiness || {};
-
-  const shareData = {
-
-    title:
-      `${b.name || "Business"} | ${b.category || ""} in ${b.town || ""}`,
-
-    text:
-      `${b.name || ""} - ${b.category || ""} in ${b.town || ""}`,
-
-    url:
-      window.location.href
-  };
-
-  if (navigator.share) {
-
-    try {
-
-      await navigator.share(shareData);
-
-    } catch (err) {
-
-      console.log("Share cancelled");
+      return;
     }
 
-  } else {
+    const b =
+      window.currentBusiness || {};
 
-    try {
+    const shareData = {
 
-      await navigator.clipboard.writeText(
+      title:
+        `${b.name || "Business"} | ${b.category || ""} in ${b.town || ""}`,
+
+      text:
+        `${b.name || ""} - ${b.category || ""} in ${b.town || ""}`,
+
+      url:
         window.location.href
-      );
+    };
 
-      e.target.textContent =
-        "Link Copied!";
+    if (navigator.share) {
 
-      setTimeout(() => {
+      try {
+
+        await navigator.share(
+          shareData
+        );
+
+      } catch (err) {
+
+        console.log(
+          "Share cancelled"
+        );
+      }
+
+    } else {
+
+      try {
+
+        await navigator.clipboard
+          .writeText(
+            window.location.href
+          );
 
         e.target.textContent =
-          "Share This Business";
+          "Link Copied!";
 
-      }, 2000);
+        setTimeout(() => {
 
-    } catch (err) {
+          e.target.textContent =
+            "Share This Business";
 
-      alert("Could not copy link");
+        }, 2000);
+
+      } catch (err) {
+
+        alert(
+          "Could not copy link"
+        );
+      }
     }
   }
-});
+);
