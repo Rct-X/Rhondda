@@ -59,7 +59,6 @@ exports.handler = async (event) => {
     // ===============================
     const wasteCategories = [
       "Waste Collection",
-      "Man With A Van",
       "Removals"
     ];
 
