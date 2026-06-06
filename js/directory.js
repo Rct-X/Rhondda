@@ -5,22 +5,18 @@ const resultsGrid = document.getElementById("resultsGrid");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const resultsMeta = document.getElementById("resultsMeta");
-
 const unifiedBox = document.getElementById("unifiedSuggestions");
 
+let db;
+
 // ===============================
-// FETCH FIREBASE CONFIG
+// FIREBASE INIT
 // ===============================
 async function loadFirebaseConfig() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
 }
 
-let db;
-
-// ===============================
-// INIT FIREBASE + ROUTING
-// ===============================
 (async () => {
   const config = await loadFirebaseConfig();
   firebase.initializeApp(config);
@@ -38,7 +34,7 @@ let db;
 })();
 
 // ===============================
-// URL PARSER
+// ROUTER
 // ===============================
 function detectPageType() {
   const parts = window.location.pathname.split("/").filter(Boolean);
@@ -55,7 +51,7 @@ function detectPageType() {
 }
 
 // ===============================
-// BUSINESS CARD RENDERER (CLEANED)
+// RENDER CARD
 // ===============================
 function renderBusinessCard(b) {
   const card = document.createElement("a");
@@ -76,90 +72,18 @@ function renderBusinessCard(b) {
 }
 
 // ===============================
-// LOAD CATEGORY
+// CATEGORY LOAD
 // ===============================
 async function loadCategory(categorySlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug}…</p>`;
 
-  const q = db.collection("businesses")
-              .where("categorySlug", "==", categorySlug);
-
-  const snap = await q.get();
-
-  if (resultsMeta) {
-    resultsMeta.innerHTML = `
-      <p>
-        Showing <strong>${snap.size}</strong> businesses in 
-        <strong>${categorySlug}</strong>
-      </p>
-    `;
-  }
-
-  if (snap.empty) {
-    resultsGrid.innerHTML = `<p>No businesses found in this category.</p>`;
-    return;
-  }
-
-  resultsGrid.innerHTML = "";
-
-  snap.forEach(doc => {
-    resultsGrid.appendChild(renderBusinessCard(doc.data()));
-  });
-}
-
-// ===============================
-// LOAD CATEGORY + TOWN
-// ===============================
-async function loadCategoryTown(categorySlug, townSlug) {
-  resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
-
-  const q = db.collection("businesses")
-              .where("categorySlug", "==", categorySlug)
-              .where("townSlug", "==", townSlug);
-
-  const snap = await q.get();
+  const snap = await db.collection("businesses")
+    .where("categorySlug", "==", categorySlug)
+    .get();
 
   if (resultsMeta) {
     resultsMeta.innerHTML = `
-      <p>
-        Showing <strong>${snap.size}</strong> businesses in 
-        <strong>${categorySlug} • ${townSlug}</strong>
-      </p>
-    `;
-  }
-
-  if (snap.empty) {
-    resultsGrid.innerHTML = `<p>No businesses found in this area.</p>`;
-    return;
-  }
-
-  resultsGrid.innerHTML = "";
-
-  snap.forEach(doc => {
-    resultsGrid.appendChild(renderBusinessCard(doc.data()));
-  });
-}
-
-// ===============================
-// SEARCH HANDLER
-// ===============================
-async function searchDirectory() {
-  const term = searchInput.value.trim().toLowerCase();
-  if (!term) return;
-
-  resultsGrid.innerHTML = `<p class="text-dim">Searching…</p>`;
-
-  const q = db.collection("businesses")
-              .where("keywords", "array-contains", term);
-
-  const snap = await q.get();
-
-  if (resultsMeta) {
-    resultsMeta.innerHTML = `
-      <p>
-        Showing <strong>${snap.size}</strong> search results for 
-        <strong>${term}</strong>
-      </p>
+      <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug}</strong></p>
     `;
   }
 
@@ -169,25 +93,65 @@ async function searchDirectory() {
   }
 
   resultsGrid.innerHTML = "";
-
-  snap.forEach(doc => {
-    resultsGrid.appendChild(renderBusinessCard(doc.data()));
-  });
+  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
 }
 
 // ===============================
-// DEBOUNCE (IMPORTANT PERFORMANCE FIX)
+// CATEGORY + TOWN
 // ===============================
-function debounce(fn, delay = 250) {
-  let t;
-  return (...args) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn(...args), delay);
-  };
+async function loadCategoryTown(categorySlug, townSlug) {
+  resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
+
+  const snap = await db.collection("businesses")
+    .where("categorySlug", "==", categorySlug)
+    .where("townSlug", "==", townSlug)
+    .get();
+
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug} • ${townSlug}</strong></p>
+    `;
+  }
+
+  if (snap.empty) {
+    resultsGrid.innerHTML = `<p>No businesses found.</p>`;
+    return;
+  }
+
+  resultsGrid.innerHTML = "";
+  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
 }
 
 // ===============================
-// SEARCH EVENTS
+// SEARCH
+// ===============================
+async function searchDirectory() {
+  const term = searchInput.value.trim().toLowerCase();
+  if (!term) return;
+
+  resultsGrid.innerHTML = `<p class="text-dim">Searching…</p>`;
+
+  const snap = await db.collection("businesses")
+    .where("keywords", "array-contains", term)
+    .get();
+
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>Showing <strong>${snap.size}</strong> results for <strong>${term}</strong></p>
+    `;
+  }
+
+  if (snap.empty) {
+    resultsGrid.innerHTML = `<p>No businesses found.</p>`;
+    return;
+  }
+
+  resultsGrid.innerHTML = "";
+  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
+}
+
+// ===============================
+// EVENTS
 // ===============================
 if (searchBtn) searchBtn.addEventListener("click", searchDirectory);
 
@@ -198,42 +162,69 @@ if (searchInput) {
 }
 
 // ===============================
-// UNIFIED AUTO-SUGGEST (DEBOUNCED)
+// UNIFIED AUTOSUGGEST
 // ===============================
-const categories = [/* unchanged list */];
+const categories = [
+  "Accountants","Aerial Installers","Air Conditioning Services","Architects","Auto Electricians",
+  "Bakers","Barbers","Bathroom Fitters","Beauty Salons","Bedroom Fitters","Bike Repairs",
+  "Blinds & Shutters","Boiler Installers","Bricklayers","Builders","Building Supplies","Butchers",
+  "Cafes","Car Body Repairs","Car Dealers","Car Detailing","Car Hire","Car Mechanics","Car Valeting",
+  "Carpenters","Carpet Cleaners","Carpet Fitters","Caterers","Childcare Services","Chimney Sweeps",
+  "Cleaners","Computer Repairs","Conservatory Installers","Courier Services","Decorators","Dentists",
+  "Dog Groomers","Double Glazing","Drainage Services","Driving Schools","Electricians","Estate Agents",
+  "Fencing Contractors","Financial Advisors","Firewood Suppliers","Flooring Services","Florists",
+  "Funeral Directors","Garage Doors","Garden Centres","Gardeners","Gas Engineers","Graphic Designers",
+  "Greengrocers","Gutter Cleaning","Gyms","Hairdressers","Handyman Services","Heating Engineers",
+  "Home Care Services","House Clearances","Insurance Brokers","Interior Designers","Joiners",
+  "Kitchen Fitters","Landscapers","Laundry Services","Locksmiths","Man With A Van","Martial Arts Clubs",
+  "Massage Therapists","Mobile Phone Repairs","Mortgage Advisors","Nail Salons","Osteopaths",
+  "Painters & Decorators","Party Supplies","Paving Contractors","Personal Trainers","Pest Control",
+  "Pet Shops","Photographers","Physiotherapists","Pizza Shops","Plasterers","Plumbers",
+  "Pressure Washing","Printers","Removals","Restaurants","Roof Cleaners","Roofers","Scaffolding",
+  "Security Services","Shops","Skip Hire","Solar Panel Installers","Solicitors","Sports Clubs",
+  "Storage Services","Takeaways","Tattoo Studios","Taxi Services","Tilers","Travel Agents",
+  "Tree Surgeons","Tyres & Repairs","Upholstery Cleaning","Vets","Waste Collection","Wedding Services",
+  "Window Cleaners","Window Fitters","Yoga Classes"
+];
 
 function slugify(str) {
-  return str
-    .toLowerCase()
+  return str.toLowerCase()
     .trim()
     .replace(/&/g, "and")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
+function debounce(fn, delay = 250) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+}
+
 searchInput.addEventListener("input", debounce(async () => {
   const term = searchInput.value.trim().toLowerCase();
 
-  unifiedBox.innerHTML = "";
-
-  if (term.length < 2) {
+  if (!term) {
     unifiedBox.style.display = "none";
     return;
   }
+
+  unifiedBox.innerHTML = "";
 
   const matchedCategories = categories.filter(c =>
     c.toLowerCase().includes(term)
   );
 
-  const q = db.collection("businesses")
-              .where("keywords", "array-contains", term);
-
-  const snap = await q.get();
+  const snap = await db.collection("businesses")
+    .where("keywords", "array-contains", term)
+    .get();
 
   const businessMatches = [];
   snap.forEach(doc => businessMatches.push(doc.data()));
 
-  if (matchedCategories.length === 0 && businessMatches.length === 0) {
+  if (!matchedCategories.length && !businessMatches.length) {
     unifiedBox.style.display = "none";
     return;
   }
@@ -256,6 +247,7 @@ searchInput.addEventListener("input", debounce(async () => {
 
     if (businessMatches[i]) {
       const b = businessMatches[i];
+
       const div = document.createElement("div");
       div.className = "unified-suggestion-item unified-suggestion-business";
       div.textContent = `${b.name} — ${b.town}`;
@@ -270,10 +262,10 @@ searchInput.addEventListener("input", debounce(async () => {
   }
 
   unifiedBox.style.display = "block";
-}, 250));
+}, 200));
 
 // ===============================
-// OUTSIDE CLICK CLOSE
+// CLOSE ON OUTSIDE CLICK
 // ===============================
 document.addEventListener("click", e => {
   if (!e.target.closest(".directory-search")) {
