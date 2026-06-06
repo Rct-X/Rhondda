@@ -10,6 +10,29 @@ export async function handler(event) {
     const listingUrl = `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${slug}`;
     const unsubscribeUrl = `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
 
+    // ======================================
+    // SAFE‑HOUR SCHEDULING (9am–8pm)
+    // ======================================
+    const now = new Date();
+    const hour = now.getHours();
+
+    let scheduledAt = null;
+
+    // If it's before 9am or after 8pm → schedule for next 9am
+    if (hour < 9 || hour >= 20) {
+      const sendTime = new Date();
+
+      // Set to 9am today
+      sendTime.setHours(9, 0, 0, 0);
+
+      // If it's already past 9am (evening), schedule for tomorrow
+      if (hour >= 20) {
+        sendTime.setDate(sendTime.getDate() + 1);
+      }
+
+      scheduledAt = sendTime.toISOString();
+    }
+
     // FULL HTML TEMPLATE (SEEDING VERSION)
     let htmlTemplate = `
 <!DOCTYPE html>
@@ -134,17 +157,18 @@ export async function handler(event) {
       .replace(/{{listingUrl}}/g, listingUrl)
       .replace(/{{unsubscribeUrl}}/g, unsubscribeUrl);
 
-    // Send email
+    // Send email (or schedule it)
     await resend.emails.send({
       from: "RCTX Directory <support@rctx.co.uk>",
       to: email,
       subject: "Your Business Has Been Added to RCTX 🎉",
-      html: finalHtml
+      html: finalHtml,
+      ...(scheduledAt && { scheduled_at: scheduledAt })
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true, message: "Email sent" })
+      body: JSON.stringify({ success: true, message: "Email sent or scheduled" })
     };
 
   } catch (err) {
