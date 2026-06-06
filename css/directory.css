@@ -1,20 +1,20 @@
   /* Directory Search */
-.directory-search {
-  margin-top: 1.5rem;
-  display: flex;
-  gap: .75rem;
-  justify-content: center;
-  position: relative;
-}
-
 .directory-search input {
   width: 100%;
-  max-width: 420px;
-  padding: .85rem 1.2rem;
-  border-radius: var(--radius-full);
+  max-width: 520px;
+  padding: .95rem 1.25rem;
+  border-radius: 999px;
   border: 1px solid var(--border);
   font-size: 1rem;
   background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  transition: all .2s ease;
+}
+
+.directory-search input:focus {
+  outline: none;
+  border-color: rgba(37, 99, 235, 0.5);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12);
 }
 
 /* Category Grid */
@@ -43,44 +43,66 @@
 .results-grid {
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.results {
+  padding: 3rem 0;
+  background: #f9fafb;
 }
 
 .card-business {
-  padding: 1.5rem;
+  position: relative;
+  padding: 1.25rem 1.25rem 1rem;
   background: var(--card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  transition: transform .2s ease;
+  transition: all .25s ease;
+  border: 1px solid transparent;
 }
 
 .card-business:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border-color: rgba(37, 99, 235, 0.15);
 }
 
 .card-business h3 {
-  margin-bottom: .5rem;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
+  margin-bottom: .4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+}
+
+.card-business p {
+  margin: 0;
+  font-size: .95rem;
+  color: var(--text-soft);
 }
 
 .card-business .badge {
-  display: inline-block;
-  padding: .25rem .6rem;
-  border-radius: var(--radius-full);
-  font-size: .75rem;
-  font-weight: 600;
-  margin-left: .5rem;
+  display: inline-flex;
+  align-items: center;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .2px;
 }
 
 .badge-verified {
-  background: #facc15;
-  color: #111;
+  background: rgba(250, 204, 21, 0.15);
+  color: #a16207;
+  border: 1px solid rgba(250, 204, 21, 0.4);
 }
 
 .badge-claimed {
-  background: #2563eb;
-  color: #fff;
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+  border: 1px solid rgba(37, 99, 235, 0.3);
 }
 /* ==========================
    ADD BUSINESS SECTION
@@ -187,26 +209,28 @@
 .unified-suggestions {
   position: absolute;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   width: 100%;
   top: 100%;
   left: 0;
-  margin-top: 4px;
+  margin-top: 8px;
   display: none;
   z-index: 50;
-  max-height: 300px;
+  max-height: 320px;
   overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .unified-suggestion-item {
-  padding: 10px 14px;
+  padding: 11px 14px;
   cursor: pointer;
-  border-bottom: 1px solid #f1f1f1;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background .15s ease;
 }
 
 .unified-suggestion-item:hover {
-  background: #f7f9fc;
+  background: #f3f6ff;
 }
 
 .unified-suggestion-category {
@@ -216,4 +240,35 @@
 
 .unified-suggestion-business {
   color: #333;
+}
+
+.category-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.category-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(37,99,235,0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.category-card:hover::after {
+  opacity: 1;
+}
+.categories,
+.results,
+.directory-content,
+.add-business {
+  position: relative;
+}
+
+.results-meta {
+  margin: 1rem 0 0;
+  color: var(--text-soft);
+  font-size: .95rem;
 }
