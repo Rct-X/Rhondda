@@ -4,7 +4,6 @@ async function loadFirebaseConfig() {
 }
 
 let db, auth, bizRef;
-let existingAccount = false;
 
 function getParams() {
   const p = new URLSearchParams(window.location.search);
@@ -35,16 +34,7 @@ auth = firebase.auth();
   document.getElementById("email").value = email;
 
   // Check if email already has an account
-  const methods = await auth.fetchSignInMethodsForEmail(email);
-
-  if (methods.length > 0) {
-    existingAccount = true;
-
-    // Change UI to "Set Password" mode
-    document.getElementById("passwordLabel").textContent = "Enter Password";
-    document.getElementById("mainActionBtn").textContent = "Log In";
-    document.getElementById("resetBtn").style.display = "block";
-  }
+  
 
   // Load business
   const snap = await db.collection("businesses")
@@ -71,22 +61,80 @@ auth = firebase.auth();
 // ===============================
 // FORM SUBMIT HANDLER
 // ===============================
-document.getElementById("setupForm").addEventListener("submit", async (e) => {
+document.getElementById("setupForm")
+.addEventListener("submit", async (e) => {
+
   e.preventDefault();
 
-  const status = document.getElementById("statusMsg");
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const status =
+    document.getElementById("statusMsg");
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value.trim();
 
   status.textContent = "Processing…";
 
   try {
+
+    let cred;
+
+    try {
+
+      // FIRST TRY CREATE ACCOUNT
+      cred = await auth
+        .createUserWithEmailAndPassword(
+          email,
+          password
+        );
+
+    } catch (err) {
+
+      // IF ACCOUNT EXISTS -> LOGIN
+      if (
+        err.code === "auth/email-already-in-use"
+      ) {
+
+        cred = await auth
+          .signInWithEmailAndPassword(
+            email,
+            password
+          );
+
+      } else {
+
+        throw err;
+      }
+    }
+
+    await bizRef.update({
+      ownerId: cred.user.uid,
+      ownerEmail: email,
+      ownerStatus: "active",
+      verified: true,
+      claimedAt:
+        firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    status.textContent =
+      "Success! Redirecting…";
+
+    setTimeout(() => {
+      window.location.href =
+        "/owner-dashboard";
+    }, 1200);
+
+  } catch (err) {
+
+    status.textContent = err.message;
+  }
+});
+
+  try {
     let user;
 
-    if (existingAccount) {
-      // LOGIN FLOW
-      user = await auth.signInWithEmailAndPassword(email, password);
-    } else {
       // SIGNUP FLOW
       user = await auth.createUserWithEmailAndPassword(email, password);
     }
