@@ -78,22 +78,145 @@ exports.handler = async (event) => {
     const townSlug = slugify(town);
     const slug = slugify(name);
 
-    const keywords = new Set();
+    // ===============================
+// CATEGORY SEARCH ALIASES
+// ===============================
+const categoryAliases = {
 
-    // Base keywords
-    keywords.add(name.toLowerCase());
-    keywords.add(category.toLowerCase());
-    keywords.add(town.toLowerCase());
-    keywords.add(`${category.toLowerCase()} ${town.toLowerCase()}`);
+  "Electricians": [
+    "electrician",
+    "electricians",
+    "sparky",
+    "electrics",
+    "electrical",
+    "rewire",
+    "fuse board",
+    "consumer unit"
+  ],
 
-    // Extra keywords
-    if (extraKeywords) {
-      extraKeywords
-        .split(",")
-        .map(k => k.trim().toLowerCase())
-        .filter(Boolean)
-        .forEach(k => keywords.add(k));
-    }
+  "Driving Schools": [
+    "driving school",
+    "driving schools",
+    "driving lessons",
+    "driving instructor",
+    "learn to drive"
+  ],
+
+  "Plumbers": [
+    "plumber",
+    "plumbing",
+    "boiler",
+    "heating",
+    "pipes"
+  ],
+
+  "Roofers": [
+    "roofer",
+    "roofing",
+    "roof repair",
+    "flat roof"
+  ],
+
+  "Painters & Decorators": [
+    "painter",
+    "decorator",
+    "painting",
+    "decorating"
+  ],
+
+  "Handyman Services": [
+    "handyman",
+    "odd jobs",
+    "maintenance",
+    "repairs"
+  ],
+
+  "Car Mechanics": [
+    "mechanic",
+    "garage",
+    "car repair",
+    "vehicle repair"
+  ],
+
+  "Tyres & Repairs": [
+    "tyres",
+    "tires",
+    "puncture",
+    "wheel alignment"
+  ],
+
+  "Cleaners": [
+    "cleaner",
+    "cleaning",
+    "domestic cleaning",
+    "house cleaner"
+  ],
+
+  "Man With A Van": [
+    "man with a van",
+    "van man",
+    "moving",
+    "small removals"
+  ]
+
+};
+
+// ===============================
+// BUILD KEYWORDS
+// ===============================
+const keywords = new Set();
+
+// Core searchable text
+[
+  name,
+  category,
+  town,
+  description
+].forEach(value => {
+
+  if (!value) return;
+
+  value
+    .toLowerCase()
+    .split(/[\s,.-]+/)
+    .forEach(word => {
+
+      if (word.length > 1) {
+        keywords.add(word);
+      }
+
+    });
+
+});
+
+// Full phrases
+keywords.add(name.toLowerCase());
+keywords.add(category.toLowerCase());
+keywords.add(town.toLowerCase());
+
+keywords.add(
+  `${category.toLowerCase()} ${town.toLowerCase()}`
+);
+
+// Category aliases
+if (categoryAliases[category]) {
+
+  categoryAliases[category].forEach(alias => {
+    keywords.add(alias.toLowerCase());
+  });
+
+}
+
+// Extra keywords
+if (extraKeywords) {
+
+  extraKeywords
+    .split(",")
+    .map(k => k.trim().toLowerCase())
+    .filter(Boolean)
+    .forEach(k => keywords.add(k));
+
+}
 
     const doc = {
       name,
