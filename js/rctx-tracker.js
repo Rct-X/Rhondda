@@ -162,15 +162,18 @@
   // ============================
 function track(eventName = "page_view") {
 
-  const payload = {
-    clientId: CLIENT_ID,
-    businessId: getBusinessId(),
-    page: window.location.pathname,
-    event: eventName,
-    device: getDevice(),
-    referrer: document.referrer || "direct",
-    ts: Date.now()
-  };
+const biz = getBusinessContext();
+
+const payload = {
+  clientId: CLIENT_ID,
+  businessId: biz?.businessId || null,
+  area: biz?.area || null,
+  page: window.location.pathname,
+  event: eventName,
+  device: getDevice(),
+  referrer: document.referrer || "direct",
+  ts: Date.now()
+};
 
   console.log("[TRACKER] Sending:", payload);
 
