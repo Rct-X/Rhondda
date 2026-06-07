@@ -322,6 +322,16 @@ function renderDashboard(visits){
         ? Math.round((data.mobile / data.total) * 100)
         : 0;
 
+ const conversions =
+  (data.events.whatsapp +
+   data.events.phone +
+   data.events.form);
+
+const conversionRate =
+  data.total
+    ? ((conversions / data.total) * 100).toFixed(1)
+    : 0;
+    
     const topSources =
       Object.entries(data.sources)
       .sort((a,b)=>b[1]-a[1])
@@ -381,7 +391,13 @@ function renderDashboard(visits){
         <ul class="small">
           ${topSources}
         </ul>
+<div class="stat">
+  Conversions: ${conversions}
+</div>
 
+<div class="stat">
+  Conversion rate: ${conversionRate}%
+</div>
       </div>
 
     `;
