@@ -138,7 +138,10 @@ function setupSidebarNavigation() {
 
       setActiveTab(tab);
 
-      const section = tab.replace("Tab", "").replace("tab", "").toLowerCase();
+      const section = tab
+        .replace("Tab", "")
+        .replace("tab", "")
+        .toLowerCase();
 
       await openSection(section);
     });
@@ -162,7 +165,7 @@ window.openSection = async function (section) {
   }
 
   // ===========================
-  // DASHBOARD (MODERATION)
+  // DASHBOARD (MODERATION ONLY)
   // ===========================
 
   if (section === "dashboard") {
@@ -173,24 +176,6 @@ window.openSection = async function (section) {
       db: window.db,
       auth: window.auth
     });
-  }
-
-  // ===========================
-  // ANALYTICS
-  // ===========================
-
-  if (section === "analytics") {
-
-    const analytics = await import("./analytics.js");
-
-    await analytics.initAnalytics({
-      auth: window.auth
-    });
-
-    // expose globals used by inline buttons
-    window.setRange = analytics.setRange;
-    window.deleteAnalyticsRange = analytics.deleteAnalyticsRange;
-    window.deleteAllAnalytics = analytics.deleteAllAnalytics;
   }
 
   // ===========================
