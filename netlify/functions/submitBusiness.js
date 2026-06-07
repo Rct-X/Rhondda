@@ -1,4 +1,3 @@
-// netlify/functions/submitBusiness.js
 const admin = require("firebase-admin");
 
 if (!admin.apps.length) {
@@ -13,6 +12,9 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// ======================================
+// SLUGIFY
+// ======================================
 function slugify(str) {
   return str
     .toString()
@@ -23,7 +25,94 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");
 }
 
+// ======================================
+// CATEGORY SEARCH ALIASES
+// ======================================
+const categoryAliases = {
+  "Electricians": [
+    "electrician",
+    "sparky",
+    "rewire",
+    "electrical",
+    "fuse board"
+  ],
+  "Plumbers": [
+    "plumber",
+    "boiler repair",
+    "leak",
+    "blocked sink"
+  ],
+  "Driving Schools": [
+    "driving lessons",
+    "driving instructor",
+    "learn to drive",
+    "driving school"
+  ],
+  "Handyman Services": [
+    "handyman",
+    "odd jobs",
+    "home repairs",
+    "maintenance"
+  ]
+};
+
+// ======================================
+// KEYWORD BUILDER
+// ======================================
+function buildKeywords({ name, category, town, description = "", extraKeywords = "" }) {
+
+  const keywords = new Set();
+
+  const add = (v) => {
+    if (!v) return;
+
+    v.toLowerCase()
+      .split(/[\s,.-]+/)
+      .forEach(word => {
+        if (word.length > 1) keywords.add(word);
+      });
+  };
+
+  // core fields
+  add(name);
+  add(category);
+  add(town);
+  add(description);
+
+  // full phrases
+  keywords.add(name.toLowerCase());
+  keywords.add(category.toLowerCase());
+  keywords.add(town.toLowerCase());
+  keywords.add(`${category.toLowerCase()} ${town.toLowerCase()}`);
+
+  // category aliases
+  const aliasKey = Object.keys(categoryAliases).find(
+    k => k.toLowerCase() === category.toLowerCase()
+  );
+
+  if (aliasKey) {
+    categoryAliases[aliasKey].forEach(a => {
+      keywords.add(a.toLowerCase());
+    });
+  }
+
+  // extra keywords
+  if (extraKeywords) {
+    extraKeywords
+      .split(",")
+      .map(k => k.trim().toLowerCase())
+      .filter(Boolean)
+      .forEach(k => keywords.add(k));
+  }
+
+  return Array.from(keywords);
+}
+
+// ======================================
+// HANDLER
+// ======================================
 exports.handler = async (event) => {
+
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -79,97 +168,19 @@ exports.handler = async (event) => {
     const slug = slugify(name);
 
     // ===============================
-// CATEGORY SEARCH ALIASES
-// ===============================
-const categoryAliases = {
-
-  "Electricians": [
-    "electrician",
-    "sparky",
-    "rewire",
-    "electrical",
-    "fuse board"
-  ],
-
-  "Plumbers": [
-    "plumber",
-    "boiler repair",
-    "leak",
-    "blocked sink"
-  ],
-
-  "Driving Schools": [
-    "driving lessons",
-    "driving instructor",
-    "learn to drive",
-    "driving school"
-  ],
-
-  "Handyman Services": [
-    "handyman",
-    "odd jobs",
-    "home repairs",
-    "maintenance"
-  ]
-
-};
-// ===============================
-// BUILD KEYWORDS
-// ===============================
-const keywords = new Set();
-
-// Core searchable text
-[
-  name,
-  category,
-  town,
-  description
-].forEach(value => {
-
-  if (!value) return;
-
-  value
-    .toLowerCase()
-    .split(/[\s,.-]+/)
-    .forEach(word => {
-
-      if (word.length > 1) {
-        keywords.add(word);
-      }
-
+    // BUILD KEYWORDS (NEW FUNCTION)
+    // ===============================
+    const keywords = buildKeywords({
+      name,
+      category,
+      town,
+      description,
+      extraKeywords
     });
 
-});
-
-// Full phrases
-keywords.add(name.toLowerCase());
-keywords.add(category.toLowerCase());
-keywords.add(town.toLowerCase());
-
-keywords.add(
-  `${category.toLowerCase()} ${town.toLowerCase()}`
-);
-
-// Category aliases
-if (categoryAliases[category]) {
-
-  categoryAliases[category].forEach(alias => {
-    keywords.add(alias.toLowerCase());
-  });
-
-}
-
-// Extra keywords
-if (extraKeywords) {
-
-  extraKeywords
-    .split(",")
-    .map(k => k.trim().toLowerCase())
-    .filter(Boolean)
-    .forEach(k => keywords.add(k));
-
-}
-
+    // ===============================
+    // DOCUMENT
+    // ===============================
     const doc = {
       name,
       slug,
@@ -177,17 +188,16 @@ if (extraKeywords) {
       categorySlug,
       town,
       townSlug,
-      
+
       email: email || null,
       phone: phone || null,
       website: website || null,
       address: address || null,
 
       description,
-
       wasteLicence: wasteLicence || null,
 
-      keywords: Array.from(keywords),
+      keywords,
 
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       status: "pending"
