@@ -180,12 +180,9 @@ if (searchInput) {
 // ROTATING PLACEHOLDER (HYBRID UX)
 // ===============================
 const placeholders = [
-  "Search electricians in Pontypridd...",
-  "Search plumbers in Tonypandy...",
-  "Search builders in Treorchy...",
-  "Search cleaners near you...",
-  "Search barbers in Porth...",
-  "Search any local service..."
+  "Find electricians in Pontypridd...",
+  "Find plumbers in Tonypandy...",
+  "Find builders in Treorchy..."
 ];
 
 let i = 0;
