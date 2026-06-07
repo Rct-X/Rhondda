@@ -1,5 +1,10 @@
 const admin = require("firebase-admin");
 
+// ======================================
+// IMPORT SHARED CATEGORY ALIASES
+// ======================================
+const categoryAliases = require("../../shared/categoryAliases");
+
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
@@ -25,38 +30,49 @@ function slugify(str = "") {
     .replace(/^-+|-+$/g, "");
 }
 
-const categoryAliases = {
+// ======================================
+// KEYWORD BUILDER (same as submitBusiness.js)
+// ======================================
+function buildKeywords({ name, category, town, description = "" }) {
 
-  "Electricians": [
-    "electrician",
-    "sparky",
-    "rewire",
-    "electrical",
-    "fuse board"
-  ],
+  const keywords = new Set();
 
-  "Plumbers": [
-    "plumber",
-    "boiler repair",
-    "leak",
-    "blocked sink"
-  ],
+  const add = (v) => {
+    if (!v) return;
 
-  "Driving Schools": [
-    "driving lessons",
-    "driving instructor",
-    "learn to drive",
-    "driving school"
-  ],
+    v.toLowerCase()
+      .split(/[\s,.-]+/)
+      .forEach(word => {
+        if (word.length > 1) keywords.add(word);
+      });
+  };
 
-  "Handyman Services": [
-    "handyman",
-    "odd jobs",
-    "home repairs",
-    "maintenance"
-  ]
+  // core fields
+  add(name);
+  add(category);
+  add(town);
+  add(description);
 
-};
+  // full phrases
+  keywords.add(name.toLowerCase());
+  keywords.add(category.toLowerCase());
+  keywords.add(town.toLowerCase());
+  keywords.add(`${category.toLowerCase()} ${town.toLowerCase()}`);
+
+  // category aliases
+  const aliasKey = Object.keys(categoryAliases).find(
+    k => k.toLowerCase() === category.toLowerCase()
+  );
+
+  if (aliasKey) {
+    categoryAliases[aliasKey].forEach(a => {
+      keywords.add(a.toLowerCase());
+    });
+  }
+
+  return Array.from(keywords);
+}
+
 // ======================================
 // HANDLER
 // ======================================
@@ -100,14 +116,14 @@ exports.handler = async (event) => {
     const categorySlug = slugify(category);
 
     // ======================================
-    // KEYWORDS
+    // KEYWORDS (shared builder)
     // ======================================
-    const keywords = [
-      name.toLowerCase(),
-      category.toLowerCase(),
-      town.toLowerCase(),
-      `${category.toLowerCase()} ${town.toLowerCase()}`
-    ];
+    const keywords = buildKeywords({
+      name,
+      category,
+      town,
+      description
+    });
 
     // ======================================
     // DOCUMENT (SEED ONLY - NO APPROVAL)
@@ -134,7 +150,6 @@ exports.handler = async (event) => {
 
       source: "admin_seed",
 
-      // 🔴 IMPORTANT: ALWAYS PENDING
       status: "pending",
       verified: false,
       approvedAt: null,
