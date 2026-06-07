@@ -270,21 +270,35 @@ transition:transform .25s ease,opacity .25s ease;
 .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* ===== MOBILE ===== */
-
 @media (max-width:768px){
 
-.container{padding-inline:1rem}
+.container{
+    padding-inline:1rem;
+}
 
-.logo{font-size:1.95rem}
-.logo-tag{font-size:.55rem}
+.logo{
+    font-size:1.95rem;
+}
+
+.logo-tag{
+    font-size:.55rem;
+}
+
+}
 
 @media (max-width:480px){
-.logo{font-size:1.75rem}
+
+.logo{
+    font-size:1.75rem;
+}
 
 .logo-wrap{
-text-decoration:none;
-color:inherit;
+    text-decoration:none;
+    color:inherit;
 }
+
+}
+
 
 /* =========================
    DESKTOP FIX (CRITICAL)
