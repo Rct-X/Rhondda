@@ -23,6 +23,36 @@ padding:0 1rem;
 }
 
 /* =========================================
+   LOGO
+========================================= */
+
+.logo-wrap{
+display:flex;
+flex-direction:column;
+text-decoration:none;
+}
+
+.logo{
+font-size:1.9rem;
+font-weight:900;
+letter-spacing:-1px;
+line-height:1;
+color:#0f172a;
+}
+
+.logo span{
+color:#2563eb;
+}
+
+.logo-tag{
+margin-top:.15rem;
+font-size:.72rem;
+font-weight:700;
+letter-spacing:.18em;
+text-transform:uppercase;
+color:#64748b;
+}
+/* =========================================
    ADMIN TOPBAR
 ========================================= */
 
@@ -48,9 +78,15 @@ font-size:.95rem;
 }
 
 .admin-nav{
-display:flex;
-flex-wrap:wrap;
-gap:.75rem;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+@media (max-width: 768px){
+  .admin-nav{
+    flex-direction:row;
+    flex-wrap:wrap;
+  }
 }
 
 /* =========================================
