@@ -32,7 +32,9 @@ const townInput = document.getElementById("town");
 const suggestions = document.getElementById("townSuggestions");
 
 townInput.addEventListener("input", () => {
+
   const value = townInput.value.toLowerCase();
+
   suggestions.innerHTML = "";
 
   if (!value) {
@@ -50,7 +52,9 @@ townInput.addEventListener("input", () => {
   }
 
   matches.forEach(match => {
+
     const div = document.createElement("div");
+
     div.className = "suggestion-item";
     div.textContent = match;
 
@@ -60,19 +64,23 @@ townInput.addEventListener("input", () => {
     });
 
     suggestions.appendChild(div);
+
   });
 
   suggestions.style.display = "block";
+
 });
 
 document.addEventListener("click", (e) => {
+
   if (!e.target.closest(".form-group")) {
     suggestions.style.display = "none";
   }
+
 });
 
 // ===============================
-// SLUGIFY (still used for duplicate check)
+// SLUGIFY
 // ===============================
 function slugify(str) {
   return str
@@ -110,6 +118,8 @@ function toggleWasteLicenceField() {
 
 if (categorySelect) {
   categorySelect.addEventListener("change", toggleWasteLicenceField);
+
+  // Run immediately on page load
   toggleWasteLicenceField();
 }
 
@@ -117,6 +127,7 @@ if (categorySelect) {
 // FORM SUBMIT
 // ===============================
 if (form) {
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -130,56 +141,101 @@ if (form) {
     const category = document.getElementById("category").value;
     const town = document.getElementById("town").value;
     const email = document.getElementById("email").value.trim();
+
     const phone = document.getElementById("phone").value.trim();
-
     let website = document.getElementById("website").value.trim();
-    if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
-      website = `https://${website}`;
-    }
 
+// Add https:// automatically
+if (
+  website &&
+  !website.startsWith("http://") &&
+  !website.startsWith("https://")
+) {
+  website = `https://${website}`;
+}
     const address = document.getElementById("address").value.trim();
+
     const description = document.getElementById("description").value.trim();
+
     const extraKeywords = document.getElementById("extraKeywords").value.trim();
+
     const wasteLicence = document.getElementById("wasteLicence").value.trim();
+
     const consent = document.getElementById("consent").checked;
-
-    const slug = slugify(name);
-
+const slug = slugify(name);
+const townSlug = slugify(town);
+const categorySlug = slugify(category);
     // ===============================
     // VALIDATION
     // ===============================
-    if (!name || !category || !town || !description || !consent) {
-      formMessage.textContent = "Please fill in all required fields.";
+    if (
+      !name ||
+      !category ||
+      !town ||
+      !description ||
+      !consent
+    ) {
+      formMessage.textContent =
+        "Please fill in all required fields.";
+
       formMessage.classList.add("error");
+
       return;
     }
 
-    if (wasteCategories.includes(category) && !wasteLicence) {
-      formMessage.textContent = "Please enter your waste carrier licence number.";
+    // Waste licence required
+    if (
+      wasteCategories.includes(category) &&
+      !wasteLicence
+    ) {
+      formMessage.textContent =
+        "Please enter your waste carrier licence number.";
+
       formMessage.classList.add("error");
+
       return;
     }
 
     // ===============================
     // CHECK IF BUSINESS EXISTS
     // ===============================
+
     try {
-      const checkRes = await fetch("/.netlify/functions/checkBusinessExists", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug })
-      });
+
+      const checkRes = await fetch(
+        "/.netlify/functions/checkBusinessExists",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            slug
+          })
+        }
+      );
 
       const checkData = await checkRes.json();
 
       if (checkData.exists) {
-        formMessage.textContent = "This business is already listed or awaiting approval.";
+
+        formMessage.textContent =
+          "This business is already listed or awaiting approval.";
+
         formMessage.classList.add("error");
+
         return;
       }
+
     } catch (err) {
-      formMessage.textContent = "Could not verify business. Please try again.";
+
+      formMessage.textContent =
+        "Could not verify business. Please try again.";
+
       formMessage.classList.add("error");
+
       return;
     }
 
@@ -190,48 +246,80 @@ if (form) {
     submitBtn.textContent = "Submitting…";
 
     try {
-      const res = await fetch("/.netlify/functions/submitBusiness", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          category,
-          town,
-          phone,
-          website,
-          address,
-          description,
-          extraKeywords,
-          wasteLicence
-        })
-      });
+
+      const res = await fetch(
+        "/.netlify/functions/submitBusiness",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+  name,
+  email,            
+  category,
+  categorySlug,
+  town,
+  townSlug,
+  slug,
+  phone,
+  website,
+  address,
+  description,
+  extraKeywords,
+  wasteLicence
+})
+        }
+      );
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong.");
+        throw new Error(
+          data.error || "Something went wrong."
+        );
       }
 
       formMessage.innerHTML = `
-        <strong>Thank you! Your business has been submitted for review.</strong>
-        <br><br>
-        Need a professional website for your business?
-        <br><br>
-        <a href="/pricing" class="inline-link">Websites from £30/month →</a>
-      `;
+  <strong>
+    Thank you! Your business has been submitted for review.
+  </strong>
+
+  <br><br>
+
+  Need a professional website for your business?
+
+  <br><br>
+
+  <a
+    href="/pricing"
+    class="inline-link">
+    Websites from £30/month →
+  </a>
+`;
 
       formMessage.classList.add("success");
+
       form.reset();
+
+      // Reset hidden field state
       toggleWasteLicenceField();
 
     } catch (err) {
-      formMessage.textContent = err.message || "Something went wrong. Please try again.";
+
+      formMessage.textContent =
+        err.message || "Something went wrong. Please try again.";
+
       formMessage.classList.add("error");
 
     } finally {
+
       submitBtn.disabled = false;
       submitBtn.textContent = "Submit Business";
     }
+
   });
+
 }
