@@ -122,9 +122,7 @@ import "https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js";
 
 async function initFirebase(){
 
-  const res =
-    await fetch("/.netlify/functions/firebaseConfig");
-
+  const res = await fetch("/.netlify/functions/firebaseConfig");
   const config = await res.json();
 
   if(!firebase.apps.length){
@@ -133,6 +131,10 @@ async function initFirebase(){
 
   return firebase.auth();
 }
+
+// ======================================
+// STATE
+// ======================================
 
 let RANGE = 30;
 
@@ -185,17 +187,9 @@ function detectSource(referrer){
 
 function getTimestamp(v){
 
-  if(typeof v?.ts === "number"){
-    return v.ts;
-  }
-
-  if(v?.timestamp?._seconds){
-    return v.timestamp._seconds * 1000;
-  }
-
-  if(v?.timestamp?.toMillis){
-    return v.timestamp.toMillis();
-  }
+  if(typeof v?.ts === "number") return v.ts;
+  if(v?.timestamp?._seconds) return v.timestamp._seconds * 1000;
+  if(v?.timestamp?.toMillis) return v.timestamp.toMillis();
 
   return 0;
 }
@@ -209,11 +203,8 @@ function filterByDate(visits, days){
   const now = Date.now();
 
   return visits.filter(v => {
-
     const t = getTimestamp(v);
-
     return t && (now - t <= days * 86400000);
-
   });
 }
 
@@ -225,201 +216,171 @@ function renderDashboard(visits){
 
   visits = filterByDate(visits, RANGE);
 
-  document.getElementById("totalVisits").innerText =
-    visits.length;
+  const totalVisitsEl = document.getElementById("totalVisits");
+  const totalClientsEl = document.getElementById("totalClients");
+
+  if(totalVisitsEl) {
+    totalVisitsEl.innerText = visits.length;
+  }
 
   const clients = {};
 
-  visits.forEach(v => {
+  for(const v of visits){
 
-    const client = v.clientId || "unknown";
+    const clientId = v.clientId || "unknown";
 
-    if(!clients[client]){
+    if(!clients[clientId]){
 
-      clients[client] = {
-        total:0,
-        mobile:0,
-        desktop:0,
-        tablet:0,
-        other:0,
-        pages:{},
-        sources:{},
-        events:{
-          whatsapp:0,
-          phone:0,
-          form:0
+      clients[clientId] = {
+        total: 0,
+        mobile: 0,
+        desktop: 0,
+        tablet: 0,
+        other: 0,
+        pages: {},
+        pageConversions: {},
+        sources: {},
+        events: {
+          whatsapp: 0,
+          phone: 0,
+          form: 0
         }
       };
     }
 
-    clients[client].total++;
+    const c = clients[clientId];
 
-    // DEVICE SPLIT
+    c.total++;
 
-    const device =
-      (v.device || "").toLowerCase();
+    // DEVICE
+    const device = (v.device || "").toLowerCase();
 
-    if(device.includes("mobile")){
-      clients[client].mobile++;
-    }
-    else if(device.includes("desktop")){
-      clients[client].desktop++;
-    }
-    else if(device.includes("tablet")){
-      clients[client].tablet++;
-    }
-    else{
-      clients[client].other++;
-    }
+    if(device.includes("mobile")) c.mobile++;
+    else if(device.includes("desktop")) c.desktop++;
+    else if(device.includes("tablet")) c.tablet++;
+    else c.other++;
 
-    // SOURCES
+    // PAGE
+    const page = v.page || "/";
 
-    const source =
-      detectSource(v.referrer);
+    c.pages[page] = (c.pages[page] || 0) + 1;
 
-    clients[client].sources[source] =
-      (clients[client].sources[source] || 0) + 1;
-
-    // PAGES
-const page = v.page || "/";
-const event = v.event;
-    
-
-    clients[client].pages[page] =
-      (clients[client].pages[page] || 0) + 1;
+    // SOURCE
+    const source = detectSource(v.referrer);
+    c.sources[source] = (c.sources[source] || 0) + 1;
 
     // EVENTS
+    if(v.event === "whatsapp_click") c.events.whatsapp++;
+    if(v.event === "phone_tap") c.events.phone++;
+    if(v.event === "form_submit") c.events.form++;
 
-    if(v.event === "whatsapp_click"){
-      clients[client].events.whatsapp++;
+    // CONVERSION ATTRIBUTION PER PAGE
+    if(
+      v.event === "whatsapp_click" ||
+      v.event === "phone_tap" ||
+      v.event === "form_submit"
+    ){
+      c.pageConversions[page] =
+        (c.pageConversions[page] || 0) + 1;
     }
+  }
 
-    if(v.event === "phone_tap"){
-      clients[client].events.phone++;
-    }
+  if(totalClientsEl){
+    totalClientsEl.innerText = Object.keys(clients).length;
+  }
 
-    if(v.event === "form_submit"){
-      clients[client].events.form++;
-    }
-
-  });
-
-  document.getElementById("totalClients").innerText =
-    Object.keys(clients).length;
-
-  const wrap =
-    document.getElementById("clients");
+  const wrap = document.getElementById("clients");
+  if(!wrap) return;
 
   wrap.innerHTML = "";
 
-  Object.entries(clients).forEach(([name,data]) => {
+  for(const [name, data] of Object.entries(clients)){
 
     const topPage =
       Object.entries(data.pages)
-      .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+        .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+
+    const topConvertingPage =
+      Object.entries(data.pageConversions)
+        .sort((a,b)=>b[1]-a[1])[0]?.[0] || "N/A";
 
     const mobilePercent =
       data.total
         ? Math.round((data.mobile / data.total) * 100)
         : 0;
 
- const conversions =
-  (data.events.whatsapp +
-   data.events.phone +
-   data.events.form);
+    const conversions =
+      data.events.whatsapp +
+      data.events.phone +
+      data.events.form;
 
-const conversionRate =
-  data.total
-    ? ((conversions / data.total) * 100).toFixed(1)
-    : 0;
-    
+    const conversionRate =
+      data.total
+        ? ((conversions / data.total) * 100).toFixed(1)
+        : 0;
+
     const topSources =
       Object.entries(data.sources)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,5)
-      .map(([src,count]) =>
-        `<li>${src}: ${count}</li>`
-      )
-      .join("");
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,5)
+        .map(([src,count]) => `<li>${src}: ${count}</li>`)
+        .join("");
 
     wrap.innerHTML += `
-
       <div class="client">
 
         <h3>${name}</h3>
 
-        <div class="stat">
-          ${data.total} visits
-        </div>
+        <div class="stat">${data.total} visits</div>
 
-        <div class="stat">
-          Most viewed page: ${topPage}
-        </div>
+        <div class="stat">Most viewed page: ${topPage}</div>
 
-        <div class="stat">
-          ${mobilePercent}% mobile users
-        </div>
+        <div class="stat">Top converting page: ${topConvertingPage}</div>
 
-        <div class="stat">
-          📱 ${data.mobile}
-          |
-          💻 ${data.desktop}
-          |
-          📟 ${data.tablet}
-          |
-          ❓ ${data.other}
-        </div>
+        <div class="stat">${mobilePercent}% mobile users</div>
 
-        <div class="stat">
-          WhatsApp leads:
-          ${data.events.whatsapp}
-        </div>
+        <div class="stat">📱 ${data.mobile} | 💻 ${data.desktop} | 📟 ${data.tablet} | ❓ ${data.other}</div>
 
-        <div class="stat">
-          Phone taps:
-          ${data.events.phone}
-        </div>
+        <div class="stat">WhatsApp leads: ${data.events.whatsapp}</div>
+        <div class="stat">Phone taps: ${data.events.phone}</div>
+        <div class="stat">Form submits: ${data.events.form}</div>
 
-        <div class="stat">
-          Form submits:
-          ${data.events.form}
-        </div>
+        <div class="stat">Conversions: ${conversions}</div>
+        <div class="stat">Conversion rate: ${conversionRate}%</div>
 
-        <div class="stat">
-          Top traffic sources:
-        </div>
+        <div class="stat">Top traffic sources:</div>
+        <ul class="small">${topSources}</ul>
 
-        <ul class="small">
-          ${topSources}
-        </ul>
-<div class="stat">
-  Conversions: ${conversions}
-</div>
-
-<div class="stat">
-  Conversion rate: ${conversionRate}%
-</div>
       </div>
-
     `;
-  });
+  }
 }
 
-window.deleteAnalyticsRange = async function (all = false) {
+// ======================================
+// DELETE ANALYTICS
+// ======================================
+
+window.deleteAnalyticsRange = async function(all = false){
 
   const startEl = document.getElementById("analyticsStart");
   const endEl = document.getElementById("analyticsEnd");
 
-  const token = await firebase.auth().currentUser.getIdToken();
+  const user = firebase.auth().currentUser;
+  if(!user){
+    alert("Not logged in");
+    return;
+  }
+
+  const token = await user.getIdToken();
 
   let payload = { all };
 
-  if (!all) {
+  if(!all){
 
     const start = startEl?.value;
     const end = endEl?.value;
 
-    if (!start || !end) {
+    if(!start || !end){
       alert("Please select start and end dates");
       return;
     }
@@ -428,11 +389,11 @@ window.deleteAnalyticsRange = async function (all = false) {
     payload.end = end;
   }
 
-  if (!confirm(all ? "Delete ALL analytics?" : "Delete selected range?")) {
+  if(!confirm(all ? "Delete ALL analytics?" : "Delete selected range?")){
     return;
   }
 
-  try {
+  try{
 
     const res = await fetch(
       "/.netlify/functions/deleteAnalyticsRange",
@@ -448,20 +409,20 @@ window.deleteAnalyticsRange = async function (all = false) {
 
     const data = await res.json();
 
-    if (!res.ok) {
+    if(!res.ok){
       throw new Error(data.error || "Delete failed");
     }
 
     alert(data.message || "Deleted");
 
-    // refresh dashboard
     window.location.reload();
 
-  } catch (err) {
+  }catch(err){
     console.error(err);
     alert("Delete failed");
   }
 };
+
 // ======================================
 // INIT
 // ======================================
@@ -470,73 +431,54 @@ async function init(){
 
   try{
 
-    const auth =
-      await initFirebase();
+    const auth = await initFirebase();
 
     auth.onAuthStateChanged(async user => {
 
-      // NOT LOGGED IN
       if(!user){
-
         window.location.href = "/admin";
-
         return;
       }
 
-      // ONLY YOUR EMAIL
-      if(
-        user.email !==
-        "epickering45@googlemail.com"
-      ){
-
+      if(user.email !== "epickering45@googlemail.com"){
         alert("Unauthorized");
-
         window.location.href = "/";
-
         return;
       }
 
-      // GET TOKEN
-      const token =
-        await user.getIdToken();
+      const token = await user.getIdToken();
 
-      // SECURE FETCH
-      const response =
-        await fetch(
-          "/.netlify/functions/getAnalytics",
-          {
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
+      const response = await fetch(
+        "/.netlify/functions/getAnalytics",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        );
+        }
+      );
 
       if(!response.ok){
         throw new Error("Failed loading analytics");
       }
 
-      const visits =
-        await response.json();
+      const visits = await response.json();
 
       window.__visits = visits;
 
       renderDashboard(visits);
 
-      document
-        .getElementById("f30")
-        .classList.add("active");
-
+      document.getElementById("f30")?.classList.add("active");
     });
 
   }catch(err){
 
     console.error(err);
 
-    document.getElementById("totalVisits").innerText =
-      "Error";
+    const v = document.getElementById("totalVisits");
+    const c = document.getElementById("totalClients");
 
-    document.getElementById("totalClients").innerText =
-      "Error";
+    if(v) v.innerText = "Error";
+    if(c) c.innerText = "Error";
   }
 }
 
