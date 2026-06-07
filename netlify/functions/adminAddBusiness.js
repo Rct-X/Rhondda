@@ -25,6 +25,38 @@ function slugify(str = "") {
     .replace(/^-+|-+$/g, "");
 }
 
+const categoryAliases = {
+
+  "Electricians": [
+    "electrician",
+    "sparky",
+    "rewire",
+    "electrical",
+    "fuse board"
+  ],
+
+  "Plumbers": [
+    "plumber",
+    "boiler repair",
+    "leak",
+    "blocked sink"
+  ],
+
+  "Driving Schools": [
+    "driving lessons",
+    "driving instructor",
+    "learn to drive",
+    "driving school"
+  ],
+
+  "Handyman Services": [
+    "handyman",
+    "odd jobs",
+    "home repairs",
+    "maintenance"
+  ]
+
+};
 // ======================================
 // HANDLER
 // ======================================
