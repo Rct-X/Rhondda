@@ -579,11 +579,19 @@ color:inherit;
     min-height: 72px;
     align-items: center;
 }
+      .owner-login-link {
+  font-size: .85rem;
+  opacity: .7;
+}
+
+.owner-login-link:hover {
+  opacity: 1;
+  color: var(--accent);
+}
 </style>
 </head>
 
 <body class="business-page">
-
 <nav class="navbar" aria-label="Main navigation">
     <div class="container">
 
@@ -637,7 +645,11 @@ color:inherit;
                         <li><a href="/add-business">Add Your Business</a></li>
                     </ul>
                 </li>
- <li><a href="/contact">Get in Touch</a></li>
+ <li><a href="/contact">Get in Touch</a></li><li class="owner-login">
+  <a href="/owner-login" class="owner-login-link">
+    Business Login
+  </a>
+</li>
                 <!-- CTA (IMPORTANT) -->
                 <li class="nav-cta">
                     <p>Business websites from £30/month</p>
