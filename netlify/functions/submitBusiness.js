@@ -142,7 +142,7 @@ exports.handler = async (event) => {
     const slug = slugify(name);
 
     // ===============================
-    // BUILD KEYWORDS (NEW FUNCTION)
+    // BUILD KEYWORDS
     // ===============================
     const keywords = buildKeywords({
       name,
