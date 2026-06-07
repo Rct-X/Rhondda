@@ -1,12 +1,6 @@
 /* =========================
    NAVBAR (UNCHANGED)
 ========================= */
-.nav-group.open .nav-sub {
-    display: flex !important;
-   
-}
-
-
 .navbar{
 position:sticky;
 top:0;
@@ -63,12 +57,10 @@ min-height:var(--nav-height);
 }
 
 .nav-sub {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 .5rem 0;
     display: none;
     flex-direction: column;
-    gap: .75rem;
+    gap: .5rem;
+    padding-left: .5rem;
 }
 
 .nav-group.open .nav-sub {
