@@ -1,106 +1,52 @@
 // =====================================
-// SEARCH ALIASES / INTENT ENGINE
+// BUILD FRONTEND SEARCH ALIASES
+// FROM SHARED CATEGORY ALIASES
 // =====================================
 
-window.searchAliases = {
+window.searchAliases = {};
 
-  // =========================
-  // ELECTRICIANS
-  // =========================
-  "sparky": "electricians",
-  "electrician": "electricians",
-  "electricians": "electricians",
-  "rewire": "electricians",
-  "fuse board": "electricians",
+const categoryAliases = {
 
-  // =========================
-  // PLUMBERS
-  // =========================
-  "plumber": "plumbers",
-  "plumbers": "plumbers",
-  "boiler repair": "plumbers",
-  "leak": "plumbers",
-  "blocked sink": "plumbers",
+  "Electricians": [
+    "electrician",
+    "electricians",
+    "sparky",
+    "rewire",
+    "electrical",
+    "fuse board"
+  ],
 
-  // =========================
-  // DRIVING SCHOOLS
-  // =========================
-  "driving lessons": "driving schools",
-  "driving instructor": "driving schools",
-  "learn to drive": "driving schools",
-  "driving school": "driving schools",
+  "Plumbers": [
+    "plumber",
+    "plumbers",
+    "boiler repair",
+    "leak",
+    "blocked sink"
+  ],
 
-  // =========================
-  // TAKEAWAYS
-  // =========================
-  "chippy": "takeaways",
-  "chip shop": "takeaways",
-  "pizza": "takeaways",
-  "kebab": "takeaways",
-  "fast food": "takeaways",
+  "Driving Schools": [
+    "driving lessons",
+    "driving instructor",
+    "learn to drive",
+    "driving school"
+  ],
 
-  // =========================
-  // BARBERS
-  // =========================
-  "barber": "barbers",
-  "barber shop": "barbers",
-  "skin fade": "barbers",
+  "Handyman Services": [
+    "handyman",
+    "odd jobs",
+    "home repairs",
+    "maintenance"
+  ]
 
-  // =========================
-  // HAIRDRESSERS
-  // =========================
-  "hair salon": "hairdressers",
-  "hairdresser": "hairdressers",
-  "hairdressers": "hairdressers",
-
-  // =========================
-  // CLEANERS
-  // =========================
-  "cleaner": "cleaners",
-  "house cleaner": "cleaners",
-  "deep clean": "cleaners",
-
-  // =========================
-  // MAN WITH A VAN
-  // =========================
-  "man and van": "man with a van",
-  "small removals": "man with a van",
-
-  // =========================
-  // REMOVALS
-  // =========================
-  "moving company": "removals",
-  "house move": "removals",
-
-  // =========================
-  // ROOFERS
-  // =========================
-  "roof repair": "roofers",
-  "roofer": "roofers",
-
-  // =========================
-  // GARDENERS
-  // =========================
-  "grass cutting": "gardeners",
-  "hedge trimming": "gardeners",
-  "gardener": "gardeners",
-
-  // =========================
-  // TYRES
-  // =========================
-  "puncture": "tyres & repairs",
-  "tyres": "tyres & repairs",
-
-  // =========================
-  // CAFES
-  // =========================
-  "coffee shop": "cafes",
-  "breakfast": "cafes",
-
-  // =========================
-  // GYMS
-  // =========================
-  "fitness": "gyms",
-  "gym": "gyms",
-  "personal training": "gyms"
 };
+
+// Build intent map automatically
+Object.entries(categoryAliases).forEach(([category, aliases]) => {
+
+  const slug = category.toLowerCase();
+
+  aliases.forEach(alias => {
+    window.searchAliases[alias.toLowerCase()] = slug;
+  });
+
+});
