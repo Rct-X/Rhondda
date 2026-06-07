@@ -97,7 +97,36 @@ h1{
 
 <script type="module">
 
+// ======================================
+// FIREBASE SDK
+// ======================================
+
+import "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
+import "https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js";
+
+// ======================================
+// FIREBASE INIT
+// ======================================
+
+async function initFirebase(){
+
+  const res =
+    await fetch("/.netlify/functions/firebaseConfig");
+
+  const config = await res.json();
+
+  if(!firebase.apps.length){
+    firebase.initializeApp(config);
+  }
+
+  return firebase.auth();
+}
+
 let RANGE = 30;
+
+// ======================================
+// RANGE FILTER
+// ======================================
 
 window.setRange = function(days){
 
@@ -109,11 +138,14 @@ window.setRange = function(days){
 
   document
     .getElementById("f" + days)
-    .classList.add("active");
+    ?.classList.add("active");
 
   renderDashboard(window.__visits || []);
-
 };
+
+// ======================================
+// SOURCE DETECTION
+// ======================================
 
 function detectSource(referrer){
 
@@ -135,19 +167,47 @@ function detectSource(referrer){
   return "Other";
 }
 
+// ======================================
+// TIMESTAMP FIX
+// ======================================
+
+function getTimestamp(v){
+
+  if(typeof v?.ts === "number"){
+    return v.ts;
+  }
+
+  if(v?.timestamp?._seconds){
+    return v.timestamp._seconds * 1000;
+  }
+
+  if(v?.timestamp?.toMillis){
+    return v.timestamp.toMillis();
+  }
+
+  return 0;
+}
+
+// ======================================
+// DATE FILTER
+// ======================================
+
 function filterByDate(visits, days){
 
   const now = Date.now();
 
   return visits.filter(v => {
 
-    const t = v.timestamp || 0;
+    const t = getTimestamp(v);
 
-    return now - t <= days * 86400000;
+    return t && (now - t <= days * 86400000);
 
   });
-
 }
+
+// ======================================
+// DASHBOARD RENDER
+// ======================================
 
 function renderDashboard(visits){
 
@@ -167,6 +227,9 @@ function renderDashboard(visits){
       clients[client] = {
         total:0,
         mobile:0,
+        desktop:0,
+        tablet:0,
+        other:0,
         pages:{},
         sources:{},
         events:{
@@ -175,10 +238,29 @@ function renderDashboard(visits){
           form:0
         }
       };
-
     }
 
     clients[client].total++;
+
+    // DEVICE SPLIT
+
+    const device =
+      (v.device || "").toLowerCase();
+
+    if(device.includes("mobile")){
+      clients[client].mobile++;
+    }
+    else if(device.includes("desktop")){
+      clients[client].desktop++;
+    }
+    else if(device.includes("tablet")){
+      clients[client].tablet++;
+    }
+    else{
+      clients[client].other++;
+    }
+
+    // SOURCES
 
     const source =
       detectSource(v.referrer);
@@ -186,14 +268,14 @@ function renderDashboard(visits){
     clients[client].sources[source] =
       (clients[client].sources[source] || 0) + 1;
 
-    if(v.device === "Mobile"){
-      clients[client].mobile++;
-    }
+    // PAGES
 
     const page = v.page || "/";
 
     clients[client].pages[page] =
       (clients[client].pages[page] || 0) + 1;
+
+    // EVENTS
 
     if(v.event === "whatsapp_click"){
       clients[client].events.whatsapp++;
@@ -223,10 +305,10 @@ function renderDashboard(visits){
       Object.entries(data.pages)
       .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
 
-const mobilePercent =
-  data.total
-    ? Math.round((data.mobile / data.total) * 100)
-    : 0;
+    const mobilePercent =
+      data.total
+        ? Math.round((data.mobile / data.total) * 100)
+        : 0;
 
     const topSources =
       Object.entries(data.sources)
@@ -256,15 +338,28 @@ const mobilePercent =
         </div>
 
         <div class="stat">
-          WhatsApp leads: ${data.events.whatsapp}
+          📱 ${data.mobile}
+          |
+          💻 ${data.desktop}
+          |
+          📟 ${data.tablet}
+          |
+          ❓ ${data.other}
         </div>
 
         <div class="stat">
-          Phone taps: ${data.events.phone}
+          WhatsApp leads:
+          ${data.events.whatsapp}
         </div>
 
         <div class="stat">
-          Form submits: ${data.events.form}
+          Phone taps:
+          ${data.events.phone}
+        </div>
+
+        <div class="stat">
+          Form submits:
+          ${data.events.form}
         </div>
 
         <div class="stat">
@@ -278,44 +373,85 @@ const mobilePercent =
       </div>
 
     `;
-
   });
-
 }
+
+// ======================================
+// INIT
+// ======================================
 
 async function init(){
 
   try{
 
-    const response =
-      await fetch("/.netlify/functions/getAnalytics");
+    const auth =
+      await initFirebase();
 
-    if(!response.ok){
-  throw new Error("Failed to load analytics");
-}
+    auth.onAuthStateChanged(async user => {
 
-const visits = await response.json();
+      // NOT LOGGED IN
+      if(!user){
 
-    window.__visits = visits;
+        window.location.href = "/admin";
 
-    renderDashboard(visits);
+        return;
+      }
 
-    document
-      .getElementById("f30")
-      .classList.add("active");
+      // ONLY YOUR EMAIL
+      if(
+        user.email !==
+        "epickering45@googlemail.com"
+      ){
+
+        alert("Unauthorized");
+
+        window.location.href = "/";
+
+        return;
+      }
+
+      // GET TOKEN
+      const token =
+        await user.getIdToken();
+
+      // SECURE FETCH
+      const response =
+        await fetch(
+          "/.netlify/functions/getAnalytics",
+          {
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }
+        );
+
+      if(!response.ok){
+        throw new Error("Failed loading analytics");
+      }
+
+      const visits =
+        await response.json();
+
+      window.__visits = visits;
+
+      renderDashboard(visits);
+
+      document
+        .getElementById("f30")
+        .classList.add("active");
+
+    });
 
   }catch(err){
 
-    console.error("Dashboard failed:", err);
-    
+    console.error(err);
+
     document.getElementById("totalVisits").innerText =
-  "Error";
+      "Error";
 
-document.getElementById("totalClients").innerText =
-  "Error";
-
+    document.getElementById("totalClients").innerText =
+      "Error";
   }
-
 }
 
 init();
