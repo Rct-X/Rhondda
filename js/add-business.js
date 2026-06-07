@@ -2,6 +2,26 @@ const form = document.getElementById("addBusinessForm");
 const formMessage = document.getElementById("formMessage");
 const submitBtn = document.getElementById("submitBtn");
 
+window.searchAliases = {};
+
+fetch("/.netlify/functions/getCategoryAliases")
+  .then(res => res.json())
+  .then(categoryAliases => {
+
+    Object.entries(categoryAliases).forEach(([category, aliases]) => {
+      const slug = category.toLowerCase();
+
+      aliases.forEach(alias => {
+        window.searchAliases[alias.toLowerCase()] = slug;
+      });
+
+      // Also map the category name itself
+      window.searchAliases[category.toLowerCase()] = slug;
+    });
+
+  })
+  .catch(err => console.error("Alias load error", err));
+
 // ===============================
 // TOWN AUTOCOMPLETE
 // ===============================
