@@ -147,15 +147,24 @@ document.querySelectorAll("#sidebar nav button")
 
       console.log("[UI] Switching tab:", tab);
 
+      // REMOVE ACTIVE TAB CONTENT
       document.querySelectorAll(".tab")
         .forEach(t => t.classList.remove("active"));
 
+      // ACTIVATE NEW TAB CONTENT
       document.getElementById("tab-" + tab)
         .classList.add("active");
+
+      // REMOVE ACTIVE STATE FROM ALL BUTTONS
+      document.querySelectorAll("#sidebar nav button")
+        .forEach(b => b.classList.remove("active"));
+
+      // ADD ACTIVE STATE TO CLICKED BUTTON
+      btn.classList.add("active");
+
     });
 
   });
-
 /* ===========================
    OVERVIEW
 =========================== */
@@ -584,7 +593,7 @@ function loadGalleryPreview() {
 
   console.log(
     "[GALLERY] Gallery images:",
-    business.gallery.length
+    (business.gallery || []).length
   );
 }
 
@@ -1005,3 +1014,6 @@ document.getElementById("logoutBtn")
 
     console.log("[AUTH] Signed out");
   });
+  
+  document.querySelector('#sidebar nav button[data-tab="overview"]')
+  ?.classList.add("active");
