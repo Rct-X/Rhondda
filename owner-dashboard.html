@@ -15,7 +15,10 @@
 <div id="dashboard">
 
   <aside id="sidebar">
-    <h2>RCTX Dashboard</h2>
+    <div class="sidebar-brand">
+  <div class="sidebar-logo">RCTX<span>.</span></div>
+  <p>Owner Dashboard</p>
+</div>
     <nav>
       <button data-tab="overview">Overview</button>
       <button data-tab="details">Edit Details</button>
@@ -30,13 +33,44 @@
   <main id="content">
 
     <!-- OVERVIEW -->
-    <section id="tab-overview" class="tab active">
+ <section id="tab-overview" class="tab active">
+
+  <div class="dashboard-hero">
+
+    <div>
       <h1 id="bizName"></h1>
-      <p id="bizCategory"></p>
-      <p id="bizTown"></p>
-      <p id="bizStatus"></p>
-      <p id="pendingNotice" style="color:#b36b00;"></p>
-    </section>
+
+      <p class="hero-sub">
+        Manage your business listing
+      </p>
+    </div>
+
+    <div class="hero-badge">
+      <span id="bizStatus"></span>
+    </div>
+
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <span>Category</span>
+      <strong id="bizCategory"></strong>
+    </div>
+
+    <div class="stat-card">
+      <span>Town</span>
+      <strong id="bizTown"></strong>
+    </div>
+
+    <div class="stat-card">
+      <span>Approval Status</span>
+      <strong id="pendingNotice"></strong>
+    </div>
+
+  </div>
+
+</section>
 
     <!-- PREVIEW -->
     <section id="tab-preview" class="tab">
