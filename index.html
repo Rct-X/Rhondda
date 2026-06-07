@@ -956,17 +956,35 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 <script src="/js/rctx-tracker.js" defer></script>
 <script>
 async function loadPartial(id, file) {
+  const container = document.getElementById(id);
+  if (!container) return;
+
   const html = await fetch(file).then(r => r.text());
-  document.getElementById(id).innerHTML = html;
+  container.innerHTML = html;
 }
 
-// Load header immediately
-loadPartial("nav", "/partials/nav.html");
+function initNav() {
+  const btn = document.getElementById("hamburgerBtn");
+  const menu = document.getElementById("mobileMenu");
 
-// Load footer slightly later (lazy-ish)
-setTimeout(() => {
-  loadPartial("footer", "/partials/footer.html");
-}, 50);
+  if (!btn || !menu) return;
+
+  if (btn.dataset.initialised === "true") return;
+  btn.dataset.initialised = "true";
+
+  btn.addEventListener("click", () => {
+    const open = menu.classList.toggle("open");
+    btn.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", String(open));
+  });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadPartial("nav", "/partials/nav.html");
+  initNav();
+
+  await loadPartial("footer", "/partials/footer.html");
+});
 </script>
 </body>
                                          </html>
