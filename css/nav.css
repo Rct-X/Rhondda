@@ -1,6 +1,11 @@
 /* =========================
    NAVBAR (UNCHANGED)
 ========================= */
+.nav-group.open .nav-sub {
+    display: flex !important;
+    flex-direction: column;
+}
+
 
 .navbar{
 position:sticky;
