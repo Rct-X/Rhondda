@@ -78,7 +78,7 @@ exports.handler = async (event) => {
     const recent = await db
       .collection("analytics")
       .where("ip", "==", ip)
-      .where("page", "==", data.page)
+      .where("businessId", "==", data.businessId || null)
       .where("event", "==", data.event)
       .limit(5)
       .get();
