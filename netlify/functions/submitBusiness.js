@@ -1,5 +1,10 @@
 const admin = require("firebase-admin");
 
+// ======================================
+// IMPORT SHARED CATEGORY ALIASES
+// ======================================
+const categoryAliases = require("../../shared/categoryAliases");
+
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
@@ -24,37 +29,6 @@ function slugify(str) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
-
-// ======================================
-// CATEGORY SEARCH ALIASES
-// ======================================
-const categoryAliases = {
-  "Electricians": [
-    "electrician",
-    "sparky",
-    "rewire",
-    "electrical",
-    "fuse board"
-  ],
-  "Plumbers": [
-    "plumber",
-    "boiler repair",
-    "leak",
-    "blocked sink"
-  ],
-  "Driving Schools": [
-    "driving lessons",
-    "driving instructor",
-    "learn to drive",
-    "driving school"
-  ],
-  "Handyman Services": [
-    "handyman",
-    "odd jobs",
-    "home repairs",
-    "maintenance"
-  ]
-};
 
 // ======================================
 // KEYWORD BUILDER
@@ -85,7 +59,7 @@ function buildKeywords({ name, category, town, description = "", extraKeywords =
   keywords.add(town.toLowerCase());
   keywords.add(`${category.toLowerCase()} ${town.toLowerCase()}`);
 
-  // category aliases
+  // category aliases (from shared file)
   const aliasKey = Object.keys(categoryAliases).find(
     k => k.toLowerCase() === category.toLowerCase()
   );
