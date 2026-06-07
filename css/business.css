@@ -337,13 +337,14 @@ line-height:1;
 
 .business-content{
   position:relative;
+   overflow:hidden;
 }
 
 .business-content::before{
   content:"";
   position:absolute;
   top:0;
-  right:-200px;
+  right:-0px;
   width:420px;
   height:420px;
   background:
@@ -353,4 +354,8 @@ line-height:1;
       transparent 70%
     );
   pointer-events:none;
+}
+html,
+body{
+  overflow-x:hidden;
 }
