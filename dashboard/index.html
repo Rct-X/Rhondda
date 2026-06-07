@@ -281,8 +281,9 @@ function renderDashboard(visits){
       (clients[client].sources[source] || 0) + 1;
 
     // PAGES
-
-    const page = v.page || "/";
+const page = v.page || "/";
+const event = v.event;
+    
 
     clients[client].pages[page] =
       (clients[client].pages[page] || 0) + 1;
