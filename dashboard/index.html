@@ -385,6 +385,63 @@ function renderDashboard(visits){
   });
 }
 
+window.deleteAnalyticsRange = async function (all = false) {
+
+  const startEl = document.getElementById("analyticsStart");
+  const endEl = document.getElementById("analyticsEnd");
+
+  const token = await firebase.auth().currentUser.getIdToken();
+
+  let payload = { all };
+
+  if (!all) {
+
+    const start = startEl?.value;
+    const end = endEl?.value;
+
+    if (!start || !end) {
+      alert("Please select start and end dates");
+      return;
+    }
+
+    payload.start = start;
+    payload.end = end;
+  }
+
+  if (!confirm(all ? "Delete ALL analytics?" : "Delete selected range?")) {
+    return;
+  }
+
+  try {
+
+    const res = await fetch(
+      "/.netlify/functions/deleteAnalyticsRange",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Delete failed");
+    }
+
+    alert(data.message || "Deleted");
+
+    // refresh dashboard
+    window.location.reload();
+
+  } catch (err) {
+    console.error(err);
+    alert("Delete failed");
+  }
+};
 // ======================================
 // INIT
 // ======================================
