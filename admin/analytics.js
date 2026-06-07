@@ -6,16 +6,19 @@ let RANGE = 30;
 
 export async function initAnalytics({ auth }) {
 
+  console.log("[ANALYTICS] init");
+
   window.setRange = setRange;
   window.deleteAnalyticsRange = deleteAnalyticsRange;
   window.deleteAllAnalytics = deleteAllAnalytics;
 
   setActiveFilterButton(RANGE);
+
   await loadAnalytics(auth);
 }
 
 // =========================
-// UI
+// BUTTON UI
 // =========================
 
 function setActiveFilterButton(days) {
@@ -34,7 +37,7 @@ function setRange(days) {
 }
 
 // =========================
-// TIMESTAMP FIX (CRITICAL)
+// TIMESTAMP NORMALISER
 // =========================
 
 function getTimestamp(v) {
@@ -49,7 +52,7 @@ function getTimestamp(v) {
 }
 
 // =========================
-// DEVICE NORMALISATION
+// DEVICE NORMALISER
 // =========================
 
 function normaliseDevice(device) {
@@ -66,7 +69,29 @@ function normaliseDevice(device) {
 }
 
 // =========================
-// FILTER
+// SOURCE DETECTION
+// =========================
+
+function detectSource(referrer) {
+
+  if (!referrer || referrer === "direct") return "Direct";
+
+  const r = referrer.toLowerCase();
+
+  if (r.includes("google")) return "Google";
+  if (r.includes("facebook")) return "Facebook";
+  if (r.includes("instagram")) return "Instagram";
+  if (r.includes("tiktok")) return "TikTok";
+  if (r.includes("linkedin")) return "LinkedIn";
+  if (r.includes("twitter") || r.includes("x.com")) return "X / Twitter";
+  if (r.includes("whatsapp")) return "WhatsApp";
+  if (r.includes("rctx.co.uk")) return "RCTX Website";
+
+  return "Other";
+}
+
+// =========================
+// FILTER BY DATE
 // =========================
 
 function filterByDate(visits, days) {
@@ -87,26 +112,22 @@ function renderDashboard(visits) {
 
   visits = filterByDate(visits, RANGE);
 
-  // =====================
-  // GLOBAL STATS (NEW)
-  // =====================
+  const clients = {};
 
+  // GLOBAL DEVICE COUNTERS
   let global = {
-    total: visits.length,
+    total: 0,
     mobile: 0,
     desktop: 0,
     tablet: 0,
     other: 0
   };
 
-  const clients = {};
-
   visits.forEach(v => {
 
     const clientId = v.clientId || "unknown";
 
     if (!clients[clientId]) {
-
       clients[clientId] = {
         total: 0,
         mobile: 0,
@@ -126,52 +147,38 @@ function renderDashboard(visits) {
     const client = clients[clientId];
 
     client.total++;
+    global.total++;
 
+    // DEVICE
     const device = normaliseDevice(v.device);
 
-    if (device === "Mobile") {
-      client.mobile++;
-      global.mobile++;
-    }
+    if (device === "Mobile") { client.mobile++; global.mobile++; }
+    if (device === "Desktop") { client.desktop++; global.desktop++; }
+    if (device === "Tablet") { client.tablet++; global.tablet++; }
+    if (device === "Other") { client.other++; global.other++; }
 
-    if (device === "Desktop") {
-      client.desktop++;
-      global.desktop++;
-    }
-
-    if (device === "Tablet") {
-      client.tablet++;
-      global.tablet++;
-    }
-
-    if (device === "Other") {
-      client.other++;
-      global.other++;
-    }
-
+    // PAGE
     const page = v.page || "/";
     client.pages[page] = (client.pages[page] || 0) + 1;
 
+    // SOURCE
     const source = detectSource(v.referrer);
     client.sources[source] = (client.sources[source] || 0) + 1;
 
+    // EVENTS
     if (v.event === "whatsapp_click") client.events.whatsapp++;
     if (v.event === "phone_tap") client.events.phone++;
     if (v.event === "form_submit") client.events.form++;
-
   });
 
-  // =====================
-  // UPDATE GLOBAL UI
-  // =====================
+  // UPDATE TOP STATS
+  const totalVisitsEl = document.getElementById("totalVisits");
+  const totalClientsEl = document.getElementById("totalClients");
 
-  document.getElementById("totalVisits").innerText = visits.length;
-  document.getElementById("totalClients").innerText = Object.keys(clients).length;
+  if (totalVisitsEl) totalVisitsEl.innerText = visits.length;
+  if (totalClientsEl) totalClientsEl.innerText = Object.keys(clients).length;
 
-  // =====================
-  // CLIENT RENDER
-  // =====================
-
+  // RENDER CLIENTS
   const wrap = document.getElementById("clients");
   if (!wrap) return;
 
@@ -203,7 +210,7 @@ function renderDashboard(visits) {
             ❓ ${data.other} other
           </p>
 
-          <p>Mobile %: ${mobilePercent}%</p>
+          <p>Mobile: ${mobilePercent}%</p>
 
           <p>Top page: ${topPage}</p>
 
@@ -215,5 +222,47 @@ function renderDashboard(visits) {
       `;
     });
 
-  console.log("[ANALYTICS] Global device split:", global);
+  console.log("[ANALYTICS] global:", global);
 }
+
+// =========================
+// LOAD DATA
+// =========================
+
+async function loadAnalytics(auth) {
+
+  try {
+
+    const token = await auth.currentUser.getIdToken();
+
+    const res = await fetch("/.netlify/functions/getAnalytics", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) throw new Error("Failed load");
+
+    const visits = await res.json();
+
+    window.__visits = visits;
+
+    renderDashboard(visits);
+
+  } catch (err) {
+
+    console.error("[ANALYTICS]", err);
+
+    const wrap = document.getElementById("clients");
+    if (wrap) {
+      wrap.innerHTML = "<p>Failed to load analytics</p>";
+    }
+  }
+}
+
+// =========================
+// PLACEHOLDERS
+// =========================
+
+async function deleteAnalyticsRange() {}
+async function deleteAllAnalytics() {}
