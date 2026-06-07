@@ -85,82 +85,34 @@ const categoryAliases = {
 
   "Electricians": [
     "electrician",
-    "electricians",
     "sparky",
-    "electrics",
-    "electrical",
     "rewire",
-    "fuse board",
-    "consumer unit"
-  ],
-
-  "Driving Schools": [
-    "driving school",
-    "driving schools",
-    "driving lessons",
-    "driving instructor",
-    "learn to drive"
+    "electrical",
+    "fuse board"
   ],
 
   "Plumbers": [
     "plumber",
-    "plumbing",
-    "boiler",
-    "heating",
-    "pipes"
+    "boiler repair",
+    "leak",
+    "blocked sink"
   ],
 
-  "Roofers": [
-    "roofer",
-    "roofing",
-    "roof repair",
-    "flat roof"
-  ],
-
-  "Painters & Decorators": [
-    "painter",
-    "decorator",
-    "painting",
-    "decorating"
+  "Driving Schools": [
+    "driving lessons",
+    "driving instructor",
+    "learn to drive",
+    "driving school"
   ],
 
   "Handyman Services": [
     "handyman",
     "odd jobs",
-    "maintenance",
-    "repairs"
-  ],
-
-  "Car Mechanics": [
-    "mechanic",
-    "garage",
-    "car repair",
-    "vehicle repair"
-  ],
-
-  "Tyres & Repairs": [
-    "tyres",
-    "tires",
-    "puncture",
-    "wheel alignment"
-  ],
-
-  "Cleaners": [
-    "cleaner",
-    "cleaning",
-    "domestic cleaning",
-    "house cleaner"
-  ],
-
-  "Man With A Van": [
-    "man with a van",
-    "van man",
-    "moving",
-    "small removals"
+    "home repairs",
+    "maintenance"
   ]
 
 };
-
 // ===============================
 // BUILD KEYWORDS
 // ===============================
