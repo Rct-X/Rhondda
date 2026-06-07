@@ -30,19 +30,19 @@
     return;
   }
 
-  function getBusinessId() {
+  function getBusinessContext() {
 
   const parts =
     window.location.pathname.split("/").filter(Boolean);
 
-  // expected format:
-  // /directory/treorchy/joes-plumbs
-
-  if (parts[0] === "directory") {
-    return parts[parts.length - 1]; // joes-plumbs
+  if (parts[0] !== "directory") {
+    return null;
   }
 
-  return null;
+  return {
+    area: parts[1] || null,
+    businessId: parts[2] || null
+  };
   }
   // ============================
   // DEVICE DETECTION
@@ -160,26 +160,22 @@
   // ============================
   // TRACK FUNCTION
   // ============================
-  function track(eventName = "page_view") {
+function track(eventName = "page_view") {
 
-    const payload = {
-const payload = {
-  clientId: CLIENT_ID,
-  businessId: getBusinessId(),
-  page: window.location.pathname,
-  event: eventName,
-  device: getDevice(),
-  referrer: document.referrer || "direct",
-  ts: Date.now()
-};
+  const payload = {
+    clientId: CLIENT_ID,
+    businessId: getBusinessId(),
+    page: window.location.pathname,
+    event: eventName,
+    device: getDevice(),
+    referrer: document.referrer || "direct",
+    ts: Date.now()
+  };
 
-    console.log(
-      "[TRACKER] Sending:",
-      payload
-    );
+  console.log("[TRACKER] Sending:", payload);
 
-    sendEvent(payload);
-  }
+  sendEvent(payload);
+}
 
   // ============================
   // PAGE VIEW
