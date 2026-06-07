@@ -428,7 +428,27 @@ align-items:center;
 min-height:auto;
 padding:3rem 0;
 }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .8rem;
+  border-radius: 999px;
 
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+
+  color: #facc15;
+  background: linear-gradient(
+    90deg,
+    rgba(250, 204, 21, .18),
+    rgba(249, 115, 22, .10)
+  );
+
+  border: 1px solid rgba(250, 204, 21, .25);
+  box-shadow: 0 6px 20px rgba(250, 204, 21, .12);
+}
 .hero .container{
 display:flex;
 flex-direction:column;
@@ -436,6 +456,43 @@ align-items:center;
 justify-content:center;
 max-width:860px;
 text-align:center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .85rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: .2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #facc15, #f97316);
+  color: #0f172a;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid rgba(15, 23, 42, .2);
+  color: #0f172a;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-secondary:hover {
+  background: rgba(15, 23, 42, .05);
+}
+.hero-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
 .hero-price{
@@ -491,6 +548,15 @@ color:#334155;
 .logo-wrap{
 text-decoration:none;
 color:inherit;
+}
+.owner-login-link {
+  font-size: .85rem;
+  opacity: .7;
+}
+
+.owner-login-link:hover {
+  opacity: 1;
+  color: var(--accent);
 }
 
 /* =========================
@@ -784,7 +850,11 @@ color:inherit;
                         <li><a href="/add-business">Add Your Business</a></li>
                     </ul>
                 </li>
- <li><a href="/contact">Get in Touch</a></li>
+ <li><a href="/contact">Get in Touch</a></li><li class="owner-login">
+  <a href="/owner-login" class="owner-login-link">
+    Business Login
+  </a>
+</li>
                 <!-- CTA (IMPORTANT) -->
                 <li class="nav-cta">
                     <p>Business websites from £30/month</p>
@@ -1445,4 +1515,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
- </html>
+</html>
