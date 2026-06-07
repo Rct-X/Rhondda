@@ -27,18 +27,47 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 // =========================
+// VERIFY ADMIN USER
+// =========================
+async function verifyUser(event) {
+
+  const authHeader =
+    event.headers.authorization || "";
+
+  if (!authHeader.startsWith("Bearer ")) {
+    throw new Error("Missing token");
+  }
+
+  const token =
+    authHeader.replace("Bearer ", "");
+
+  const decoded =
+    await admin.auth().verifyIdToken(token);
+
+  // YOUR ADMIN EMAIL
+  if (decoded.email !== "epickering45@googlemail.com") {
+    throw new Error("Unauthorized");
+  }
+
+  return decoded;
+}
+
+// =========================
 // GET ANALYTICS
 // =========================
-exports.handler = async () => {
+exports.handler = async (event) => {
 
   try {
 
+    // VERIFY ADMIN
+    await verifyUser(event);
+
     const snapshot =
       await db
-      .collection("analytics")
-      .orderBy("timestamp", "desc")
-      .limit(5000)
-      .get();
+        .collection("analytics")
+        .orderBy("timestamp", "desc")
+        .limit(5000)
+        .get();
 
     const analytics =
       snapshot.docs.map(doc => ({
@@ -70,10 +99,10 @@ exports.handler = async () => {
 
     return {
 
-      statusCode: 500,
+      statusCode: 401,
 
       body: JSON.stringify({
-        error: err.message
+        error: "Unauthorized"
       })
 
     };
