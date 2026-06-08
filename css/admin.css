@@ -452,6 +452,7 @@ grid-template-columns:1fr;
   border:1px solid rgba(255,255,255,.06);
   border-radius:18px;
   padding:1.2rem;
+  color:#fff;
 }
 
 .stat-label{
@@ -459,9 +460,13 @@ grid-template-columns:1fr;
   font-size:.9rem;
   opacity:.7;
   margin-bottom:.6rem;
+  color:#cbd5e1;
 }
 
 .stat-card strong{
+  display:block;
   font-size:2rem;
   line-height:1;
+  color:#fff;
+  font-weight:800;
 }
