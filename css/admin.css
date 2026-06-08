@@ -470,3 +470,101 @@ grid-template-columns:1fr;
   color:#fff;
   font-weight:800;
 }
+/* =========================================
+   MARKETING RESULTS
+========================================= */
+
+.status{
+  margin-top:1rem;
+  padding:1rem;
+  border-radius:18px;
+  font-size:.95rem;
+  line-height:1.7;
+}
+
+.status.success{
+  background:#ecfdf5;
+  border:1px solid #bbf7d0;
+  color:#166534;
+}
+
+.status.error{
+  background:#fef2f2;
+  border:1px solid #fecaca;
+  color:#991b1b;
+}
+
+.result-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.75rem;
+  margin-top:1rem;
+}
+
+.result-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:.8rem 1rem;
+
+  background:#2563eb;
+  color:#fff;
+
+  border-radius:12px;
+
+  text-decoration:none;
+  font-weight:700;
+}
+
+.copy-btn{
+  border:none;
+
+  padding:.8rem 1rem;
+
+  border-radius:12px;
+
+  background:#111827;
+  color:#fff;
+
+  font-weight:700;
+  cursor:pointer;
+}
+
+.link-preview{
+  margin-top:1rem;
+
+  padding:.85rem 1rem;
+
+  border-radius:14px;
+
+  background:#f8fafc;
+
+  border:1px solid #e2e8f0;
+
+  font-size:.82rem;
+
+  word-break:break-all;
+
+  color:#475569;
+}
+
+.email-status{
+  margin-top:1rem;
+  font-size:.88rem;
+  opacity:.8;
+}
+
+.checkbox-wrap{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+
+  font-weight:700;
+  color:#334155;
+}
+
+.checkbox-wrap input{
+  width:auto !important;
+  margin:0 !important;
+}
