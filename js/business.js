@@ -224,8 +224,8 @@ async function loadBusiness(
   };
 
   const ogUrl =
-    ogImageMap[b.categorySlug] ||
-    "https://rctx.co.uk/og/default-business.jpg";
+  ogImageMap[(b.categorySlug || "").toLowerCase()] ||
+  "https://rctx.co.uk/og/default-business.jpg";
 
   document.getElementById("ogImage")
     ?.setAttribute(
@@ -250,6 +250,17 @@ async function loadBusiness(
 
   document.getElementById("businessTown")
     .textContent = b.town;
+    
+ const phoneBtn = document.getElementById("businessPhoneBtn");
+if (phoneBtn) phoneBtn.href = b.phone ? `tel:${b.phone}` : "#";
+
+const webBtn = document.getElementById("businessWebsiteBtn");
+if (webBtn) {
+  webBtn.href = b.website?.startsWith("http")
+    ? b.website
+    : `https://${b.website || ""}`;
+}
+
 
   document.getElementById("businessDescription")
     .textContent =
@@ -623,15 +634,12 @@ async function loadRelated(
     card.className =
       "related-card";
 
-    card.innerHTML = `
-      <h3>${b.name}</h3>
-
-      <p class="text-dim">
-        ${b.category}
-        •
-        ${b.town}
-      </p>
-    `;
+  card.innerHTML = `
+  <div class="related-thumb"></div>
+  <h3>${b.name}</h3>
+  <p class="text-dim">${b.category} • ${b.town}</p>
+  <span class="view-link">View Business →</span>
+`;
 
     relatedGrid.appendChild(card);
 
