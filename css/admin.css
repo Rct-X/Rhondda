@@ -438,3 +438,30 @@ grid-template-columns:1fr;
 }
 
 }
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+  gap:1rem;
+  margin-bottom:1.5rem;
+}
+
+.stat-card{
+  background:#111827;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:1.2rem;
+}
+
+.stat-label{
+  display:block;
+  font-size:.9rem;
+  opacity:.7;
+  margin-bottom:.6rem;
+}
+
+.stat-card strong{
+  font-size:2rem;
+  line-height:1;
+}
