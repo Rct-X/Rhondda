@@ -1,3 +1,4 @@
+import { categories } from "./business-signUp-cats.js";
 const form = document.getElementById("addBusinessForm");
 const formMessage = document.getElementById("formMessage");
 const submitBtn = document.getElementById("submitBtn");
