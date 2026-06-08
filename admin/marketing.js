@@ -184,57 +184,52 @@ Contact them for local quotes and availability.
     // SUCCESS UI
     // ======================================
 
-    result.innerHTML = `
+result.innerHTML = `
+  <div class="status success">
 
-      <div class="status success">
+    <strong>Business added successfully 🎉</strong>
 
-        <strong>
-          Business added successfully 🎉
-        </strong>
+    <p style="margin-top:8px;">
+      Listing has been created and is now live in the directory.
+    </p>
 
-        <div class="result-actions">
+    <div class="result-actions">
 
-          <a
-            href="${listingUrl}"
-            target="_blank"
-            class="result-link"
-          >
-            Open Listing
-          </a>
+      <a
+        href="${listingUrl}"
+        target="_blank"
+        class="result-link"
+      >
+        View Listing
+      </a>
 
-          <a
-            href="${googleSearch}"
-            target="_blank"
-            class="result-link"
-          >
-            Google Search
-          </a>
+      <a
+        href="${googleSearch}"
+        target="_blank"
+        class="result-link"
+      >
+        Search on Google
+      </a>
 
-          <button
-            class="copy-btn"
-            onclick="navigator.clipboard.writeText('${fullUrl}')"
-          >
-            Copy Link
-          </button>
+      <button
+        class="copy-btn"
+        onclick="navigator.clipboard.writeText('${fullUrl}')"
+      >
+        Copy Link
+      </button>
 
-        </div>
+    </div>
 
-        <div class="link-preview">
-          ${fullUrl}
-        </div>
+    <div class="link-preview">
+      ${fullUrl}
+    </div>
 
-        <div class="email-status">
+    <div class="email-status">
+      ${sendEmail ? "Email sent/scheduled ✉️" : "No email sent"}
+    </div>
 
-          ${
-            sendEmail
-              ? "Intro email scheduled/sent ✉️"
-              : "Business added without email."
-          }
-
-        </div>
-
-      </div>
-    `;
+  </div>
+`;
 
     // ======================================
     // CLEAR FORM
@@ -249,11 +244,6 @@ Contact them for local quotes and availability.
     // ======================================
     // OPEN LISTING
     // ======================================
-
-    window.open(
-      listingUrl,
-      "_blank"
-    );
 
   } catch (err) {
 
