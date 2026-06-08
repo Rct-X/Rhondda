@@ -1,6 +1,7 @@
 // ======================================
 // MODERATION.JS
-// Lazy-loaded moderation module
+// Optimised moderation module
+// Lower Firestore reads version
 // ======================================
 
 let db;
@@ -32,12 +33,57 @@ export async function initModeration(services){
   window.rejectPendingChanges =
     rejectPendingChanges;
 
-  // Load all moderation data
+  // Load moderation data
   await Promise.all([
+    loadDashboardStats(),
     loadPending(),
     loadClaims(),
     loadPendingChanges()
   ]);
+}
+
+// ======================================
+// DASHBOARD STATS
+// ======================================
+
+async function loadDashboardStats(){
+
+  try{
+
+    const res = await fetch(
+      "/.netlify/functions/getDashboardStats"
+    );
+
+    const data = await res.json();
+
+    document.getElementById(
+      "totalBusinesses"
+    ).textContent =
+      data.totalBusinesses || 0;
+
+    document.getElementById(
+      "pendingCount"
+    ).textContent =
+      data.pendingSubmissions || 0;
+
+    document.getElementById(
+      "claimedCount"
+    ).textContent =
+      data.pendingClaims || 0;
+
+    document.getElementById(
+      "townCount"
+    ).textContent =
+      data.townCount || 0;
+
+  } catch(err){
+
+    console.error(
+      "[DASHBOARD] Stats failed:",
+      err
+    );
+
+  }
 }
 
 // ======================================
@@ -59,19 +105,11 @@ async function loadPending(){
 
   try{
 
-    console.log(
-      "[PENDING] Loading submissions"
-    );
-
     const snap = await db
       .collection("pending_submissions")
       .orderBy("createdAt", "desc")
+      .limit(25)
       .get();
-
-    console.log(
-      "[PENDING] Found:",
-      snap.size
-    );
 
     if(snap.empty){
 
@@ -93,6 +131,8 @@ async function loadPending(){
         document.createElement("div");
 
       item.className = "pending-item";
+
+      item.dataset.pendingId = id;
 
       item.innerHTML = `
         <div class="pending-top">
@@ -247,18 +287,12 @@ async function loadClaims(){
 
   try{
 
-    console.log("[CLAIMS] Loading");
-
     const snap = await db
       .collection("claims")
       .where("status", "==", "pending")
       .orderBy("createdAt", "desc")
+      .limit(25)
       .get();
-
-    console.log(
-      "[CLAIMS] Found:",
-      snap.size
-    );
 
     if(snap.empty){
 
@@ -280,6 +314,8 @@ async function loadClaims(){
         document.createElement("div");
 
       item.className = "pending-item";
+
+      item.dataset.claimId = id;
 
       item.innerHTML = `
         <h3>
@@ -361,19 +397,11 @@ async function loadPendingChanges(){
 
   try{
 
-    console.log(
-      "[PENDING_CHANGES] Loading"
-    );
-
     const snap = await db
       .collection("pending_changes")
       .orderBy("submittedAt", "desc")
+      .limit(25)
       .get();
-
-    console.log(
-      "[PENDING_CHANGES] Found:",
-      snap.size
-    );
 
     if(snap.empty){
 
@@ -395,6 +423,8 @@ async function loadPendingChanges(){
         document.createElement("div");
 
       item.className = "pending-item";
+
+      item.dataset.changeId = id;
 
       item.innerHTML = `
         <h3>
@@ -487,11 +517,6 @@ async function approveBusiness(id){
 
   try{
 
-    console.log(
-      "[ADMIN] Approving business:",
-      id
-    );
-
     const token =
       await auth.currentUser.getIdToken();
 
@@ -515,7 +540,11 @@ async function approveBusiness(id){
       );
     }
 
-    await loadPending();
+    document
+      .querySelector(
+        `[data-pending-id="${id}"]`
+      )
+      ?.remove();
 
   } catch(err){
 
@@ -534,11 +563,6 @@ async function approveBusiness(id){
 async function rejectBusiness(id){
 
   try{
-
-    console.log(
-      "[ADMIN] Rejecting business:",
-      id
-    );
 
     const token =
       await auth.currentUser.getIdToken();
@@ -563,7 +587,11 @@ async function rejectBusiness(id){
       );
     }
 
-    await loadPending();
+    document
+      .querySelector(
+        `[data-pending-id="${id}"]`
+      )
+      ?.remove();
 
   } catch(err){
 
@@ -582,11 +610,6 @@ async function rejectBusiness(id){
 async function approveClaim(id){
 
   try{
-
-    console.log(
-      "[ADMIN] Approving claim:",
-      id
-    );
 
     const token =
       await auth.currentUser.getIdToken();
@@ -613,7 +636,11 @@ async function approveClaim(id){
       );
     }
 
-    await loadClaims();
+    document
+      .querySelector(
+        `[data-claim-id="${id}"]`
+      )
+      ?.remove();
 
   } catch(err){
 
@@ -632,11 +659,6 @@ async function approveClaim(id){
 async function rejectClaim(id){
 
   try{
-
-    console.log(
-      "[ADMIN] Rejecting claim:",
-      id
-    );
 
     const token =
       await auth.currentUser.getIdToken();
@@ -663,7 +685,11 @@ async function rejectClaim(id){
       );
     }
 
-    await loadClaims();
+    document
+      .querySelector(
+        `[data-claim-id="${id}"]`
+      )
+      ?.remove();
 
   } catch(err){
 
@@ -682,11 +708,6 @@ async function rejectClaim(id){
 async function approvePendingChanges(id){
 
   try{
-
-    console.log(
-      "[ADMIN] Approving changes:",
-      id
-    );
 
     const token =
       await auth.currentUser.getIdToken();
@@ -713,7 +734,11 @@ async function approvePendingChanges(id){
       );
     }
 
-    await loadPendingChanges();
+    document
+      .querySelector(
+        `[data-change-id="${id}"]`
+      )
+      ?.remove();
 
   } catch(err){
 
@@ -732,11 +757,6 @@ async function approvePendingChanges(id){
 async function rejectPendingChanges(id){
 
   try{
-
-    console.log(
-      "[ADMIN] Rejecting changes:",
-      id
-    );
 
     const token =
       await auth.currentUser.getIdToken();
@@ -761,7 +781,11 @@ async function rejectPendingChanges(id){
       );
     }
 
-    await loadPendingChanges();
+    document
+      .querySelector(
+        `[data-change-id="${id}"]`
+      )
+      ?.remove();
 
   } catch(err){
 
