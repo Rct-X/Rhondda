@@ -119,27 +119,37 @@
 /* ============================
    BADGES
 ============================ */
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:.45rem .8rem;
-  border-radius:999px;
-  font-size:.72rem;
-  font-weight:700;
-  letter-spacing:.02em;
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.08);
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: .45rem .9rem;
+  border-radius: 999px;
+
+  font-size: .75rem;
+  font-weight: 800;          /* Fatter + more confident */
+  letter-spacing: .03em;
+
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* Subtle lift */
 }
 
+/* Verified (Gold) */
 .badge-verified {
   background: #facc15;
   color: #111;
+  border-color: rgba(0,0,0,0.15);
 }
 
+/* Claimed (Blue) */
 .badge-claimed {
   background: #2563eb;
   color: #fff;
+  border-color: rgba(255,255,255,0.25);
 }
 
 /* ============================
@@ -364,21 +374,25 @@ body{
 .business-trust-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1.5rem 0;
-  font-size: 1.1rem;
+  gap: .5rem;
+  margin: .75rem 0;
+  font-size: .85rem; /* Smaller font */
   font-weight: 700;
-  letter-spacing: .5px;
-  color: #F5D061; /* Brighter gold for dark background */
-  background: #1A1F2C; /* Deep slate dark background */
-  padding: .75rem 1.25rem;
-  border-radius: 12px;
-  border: 1px solid rgba(245, 208, 97, 0.2); /* Subtle gold border */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #1E293B; /* Dark text for high contrast */
+  background: #F1F5F9; /* Clean, light-grey background */
+  padding: .35rem .75rem; /* Tighter padding */
+  border-radius: 6px;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
 }
+/* Tiny divider between the items */
+.business-trust-bar span:not(:last-child)::after {
+  content: "•";
+  margin-left: .5rem;
+  color: #94A3B8;
+}
+
 
 .quick-actions{
   display:flex;
