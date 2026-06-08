@@ -4,223 +4,468 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function handler(event) {
   try {
-    const { name, email, businessName, slug } = JSON.parse(event.body);
 
-    // Correct URL for claim approval
-    const setupUrl = `https://rctx.co.uk/owner-setup?b=${slug}&email=${email}`;
-    const unsubscribeUrl = `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
+    const {
+      name,
+      email,
+      businessName,
+      slug
+    } = JSON.parse(event.body);
 
-    // FULL HTML TEMPLATE
-    let htmlTemplate = `
+    const setupUrl =
+      `https://rctx.co.uk/owner-setup?b=${slug}&email=${encodeURIComponent(email)}`;
+
+    const unsubscribeUrl =
+      `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
+
+    // ======================================
+    // IMPROVED CLAIM APPROVED EMAIL
+    // ======================================
+
+    const htmlTemplate = `
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Your RCTX Business Claim Has Been Approved</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<head>
 
-    <!--[if mso]>
-    <style type="text/css">
-      body, table, td, p, a, li {
-        font-family: Arial, Helvetica, sans-serif !important;
-      }
-    </style>
-    <![endif]-->
+<meta charset="UTF-8">
 
-    <style type="text/css">
-      body, table, td, a {
-        -webkit-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-      }
-      table, td {
-        mso-table-lspace: 0pt;
-        mso-table-rspace: 0pt;
-      }
-      img {
-        -ms-interpolation-mode: bicubic;
-      }
-      img {
-        border: 0;
-        height: auto;
-        line-height: 100%;
-        outline: none;
-        text-decoration: none;
-      }
-      table {
-        border-collapse: collapse !important;
-      }
-      body {
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-      }
-      .btn:hover {
-        background-color: #020617 !important;
-      }
-      @media screen and (max-width: 600px) {
-        .container {
-          width: 100% !important;
-          max-width: 100% !important;
-          padding: 20px 16px 24px !important;
-        }
-        .mobile-padding {
-          padding: 12px 12px !important;
-        }
-      }
-    </style>
-  </head>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
 
-  <body style="background-color: #f3f4f6; margin: 0 !important; padding: 0 !important; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<title>
+  Your RCTX Claim Has Been Approved
+</title>
 
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #f3f4f6;">
-      <tr>
-        <td class="mobile-padding" align="center" style="padding: 24px 12px;">
+<style>
 
-          <table class="container" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; padding: 24px 20px 28px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);">
+body{
+  margin:0;
+  padding:0;
+  background:#f1f5f9;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
 
-            <!-- Heading -->
-            <tr>
-              <td align="left" style="font-size: 22px; font-weight: 700; line-height: 1.3; color: #111827; padding-bottom: 12px;">
-                Welcome to RCTX 🎉
-              </td>
-            </tr>
+table{
+  border-collapse:collapse;
+}
 
-            <!-- Salutation -->
-            <tr>
-              <td align="left" style="font-size: 15px; line-height: 1.6; color: #374151; padding-bottom: 12px;">
-                Hi <strong style="font-weight: 600; color: #111827;">{{name}}</strong>,
-              </td>
-            </tr>
+img{
+  border:0;
+  display:block;
+}
 
-            <!-- Body -->
-            <tr>
-              <td align="left" style="font-size: 15px; line-height: 1.6; color: #374151; padding-bottom: 12px;">
-                Great news — your claim for
-                <strong style="font-weight: 600; color: #111827;">{{businessName}}</strong>
-                has been approved and your listing is now officially part of the RCTX Directory.
-              </td>
-            </tr>
+.wrapper{
+  width:100%;
+  background:#f1f5f9;
+  padding:40px 16px;
+}
 
-            <tr>
-              <td align="left" style="font-size: 15px; line-height: 1.6; color: #374151; padding-bottom: 22px;">
-                Thank you for joining our growing community of local businesses.
-                We're excited to have you on board.
-              </td>
-            </tr>
+.container{
+  width:100%;
+  max-width:620px;
+  margin:0 auto;
+  background:#ffffff;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:
+    0 20px 60px rgba(15,23,42,.10);
+}
 
-            <!-- Button -->
-            <tr>
-              <td align="left" style="padding-bottom: 18px;">
-                <table border="0" cellpadding="0" cellspacing="0" role="presentation">
-                  <tr>
-                    <td align="center" bgcolor="#111827" style="border-radius: 999px;">
-                      <a
-                        class="btn"
-                        href="{{setupUrl}}"
-                        target="_blank"
-                        style="display: inline-block; padding: 10px 20px; font-size: 15px; font-weight: 600; color: #ffffff !important; text-decoration: none; border-radius: 999px; line-height: 100%;"
-                      >
-                        Set Up Your Owner Account
-                      </a>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+.hero{
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a 0%,
+      #1e293b 100%
+    );
+  padding:42px 34px;
+}
 
-            <!-- Fallback URL -->
-            <tr>
-              <td align="left" style="font-size: 14px; line-height: 1.5; color: #374151; padding-bottom: 22px;">
-                Or copy and paste this link into your browser:<br>
+.logo{
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:-1px;
+  color:#ffffff;
+  margin:0;
+}
+
+.logo span{
+  color:#3b82f6;
+}
+
+.hero-title{
+  margin:28px 0 12px;
+  font-size:32px;
+  line-height:1.15;
+  font-weight:800;
+  color:#ffffff;
+}
+
+.hero-text{
+  margin:0;
+  font-size:15px;
+  line-height:1.7;
+  color:rgba(255,255,255,.82);
+}
+
+.content{
+  padding:36px 34px 12px;
+}
+
+.text{
+  font-size:15px;
+  line-height:1.8;
+  color:#475569;
+  margin:0 0 18px;
+}
+
+.text strong{
+  color:#0f172a;
+}
+
+.highlight{
+  margin:28px 0;
+  padding:24px;
+  border-radius:22px;
+  background:
+    linear-gradient(
+      180deg,
+      #f8fafc 0%,
+      #eff6ff 100%
+    );
+  border:1px solid #dbeafe;
+}
+
+.highlight-title{
+  margin:0 0 16px;
+  font-size:17px;
+  font-weight:800;
+  color:#0f172a;
+}
+
+.feature{
+  margin-bottom:12px;
+  font-size:14px;
+  color:#334155;
+}
+
+.feature:last-child{
+  margin-bottom:0;
+}
+
+.button-wrap{
+  padding:10px 0 28px;
+}
+
+.btn{
+  display:inline-block;
+  padding:15px 28px;
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
+  border-radius:999px;
+  color:#ffffff !important;
+  text-decoration:none;
+  font-size:15px;
+  font-weight:700;
+}
+
+.link-box{
+  margin-top:6px;
+  padding:16px;
+  background:#f8fafc;
+  border-radius:16px;
+  border:1px solid #e2e8f0;
+  word-break:break-all;
+}
+
+.link-box a{
+  color:#2563eb;
+  text-decoration:none;
+  font-size:13px;
+  line-height:1.7;
+}
+
+.footer{
+  padding:28px 34px 34px;
+}
+
+.footer-inner{
+  border-top:1px solid #e2e8f0;
+  padding-top:22px;
+}
+
+.footer-text{
+  margin:0 0 10px;
+  font-size:13px;
+  line-height:1.7;
+  color:#64748b;
+}
+
+.footer-small{
+  margin-top:18px;
+  font-size:11px;
+  line-height:1.7;
+  color:#94a3b8;
+}
+
+.footer-small a{
+  color:#64748b;
+}
+
+@media screen and (max-width:600px){
+
+  .wrapper{
+    padding:20px 10px;
+  }
+
+  .hero{
+    padding:34px 24px;
+  }
+
+  .content{
+    padding:28px 24px 8px;
+  }
+
+  .footer{
+    padding:24px;
+  }
+
+  .hero-title{
+    font-size:26px;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <table
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    role="presentation"
+  >
+    <tr>
+      <td align="center">
+
+        <table
+          class="container"
+          width="100%"
+          cellpadding="0"
+          cellspacing="0"
+          role="presentation"
+        >
+
+          <!-- HERO -->
+          <tr>
+            <td class="hero">
+
+              <h1 class="logo">
+                RCT<span>X</span>
+              </h1>
+
+              <h2 class="hero-title">
+                Your Claim Has Been Approved 🎉
+              </h2>
+
+              <p class="hero-text">
+                Your business is now officially connected
+                to your RCTX owner account.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- CONTENT -->
+          <tr>
+            <td class="content">
+
+              <p class="text">
+                Hi <strong>{{name}}</strong>,
+              </p>
+
+              <p class="text">
+                Great news — your ownership claim for
+                <strong>{{businessName}}</strong>
+                has now been approved.
+              </p>
+
+              <p class="text">
+                You can now finish setting up your owner
+                account and start managing your business
+                listing directly from your dashboard.
+              </p>
+
+              <!-- FEATURES -->
+              <div class="highlight">
+
+                <h3 class="highlight-title">
+                  Once set up, you’ll be able to:
+                </h3>
+
+                <div class="feature">
+                  ✅ Upload your logo and business photos
+                </div>
+
+                <div class="feature">
+                  ✅ Edit contact information and description
+                </div>
+
+                <div class="feature">
+                  ✅ Add website and social links
+                </div>
+
+                <div class="feature">
+                  ✅ Update opening hours and services
+                </div>
+
+                <div class="feature">
+                  ✅ Keep your listing fresh and professional
+                </div>
+
+              </div>
+
+              <!-- BUTTON -->
+              <div class="button-wrap">
+
                 <a
                   href="{{setupUrl}}"
                   target="_blank"
-                  style="color: #2563eb; text-decoration: underline; word-break: break-all;"
+                  class="btn"
+                >
+                  Set Up Owner Account
+                </a>
+
+              </div>
+
+              <!-- LINK -->
+              <div class="link-box">
+
+                <a
+                  href="{{setupUrl}}"
+                  target="_blank"
                 >
                   {{setupUrl}}
                 </a>
-              </td>
-            </tr>
 
-            <!-- Features -->
-            <tr>
-              <td align="left" style="font-size: 15px; line-height: 1.6; color: #374151; padding-bottom: 10px;">
-                Once your account is set up, you’ll be able to:
-              </td>
-            </tr>
+              </div>
 
-            <tr>
-              <td align="left" style="padding-bottom: 22px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
-                  <tr><td valign="top" width="20">•</td><td>Add your business logo</td></tr>
-                  <tr><td valign="top" width="20">•</td><td>Upload up to 3 photos</td></tr>
-                  <tr><td valign="top" width="20">•</td><td>Update your business details</td></tr>
-                  <tr><td valign="top" width="20">•</td><td>Manage opening hours</td></tr>
-                  <tr><td valign="top" width="20">•</td><td>Add your website and social links</td></tr>
-                  <tr><td valign="top" width="20">•</td><td>Keep your listing looking fresh and professional</td></tr>
-                </table>
-              </td>
-            </tr>
+              <p
+                class="text"
+                style="margin-top:26px;"
+              >
+                If you need help with anything,
+                simply reply to this email and
+                we’ll help you get set up.
+              </p>
 
-            <!-- Support -->
-            <tr>
-              <td align="left" style="font-size: 15px; line-height: 1.6; color: #374151; padding-bottom: 18px;">
-                If you need any help at all, just reply to this email — we’re here to support you.
-              </td>
-            </tr>
+            </td>
+          </tr>
 
-            <!-- Footer -->
-            <tr>
-              <td align="left" style="border-top: 1px solid #e5e7eb; padding-top: 18px; font-size: 13px; line-height: 1.6; color: #6b7280;">
-                — <strong style="font-weight: 600; color: #111827;">The RCTX Directory Team</strong><br>
-                <a href="mailto:support@rctx.co.uk" style="color: #6b7280; text-decoration: none;">support@rctx.co.uk</a>
+          <!-- FOOTER -->
+          <tr>
+            <td class="footer">
 
-                <p style="margin: 16px 0 0 0; font-size: 11px; line-height: 1.4; color: #9ca3af;">
-                  You received this mandatory operational email because your business claim was approved.<br>
-                  © 2026 RCTX Directory. All rights reserved.
-                  <a href="{{unsubscribeUrl}}" style="color: #6b7280; text-decoration: underline;">Unsubscribe</a>
+              <div class="footer-inner">
+
+                <p class="footer-text">
+                  — <strong>The RCTX Directory Team</strong>
                 </p>
-              </td>
-            </tr>
 
-          </table>
+                <p class="footer-text">
+                  support@rctx.co.uk
+                </p>
 
-        </td>
-      </tr>
-    </table>
+                <p class="footer-small">
+                  You received this operational email
+                  because your business ownership claim
+                  was approved on RCTX Directory.
+                  <br><br>
 
-  </body>
+                  © 2026 RCTX Directory.
+                  All rights reserved.
+                  <br>
+
+                  <a href="{{unsubscribeUrl}}">
+                    Unsubscribe
+                  </a>
+
+                </p>
+
+              </div>
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</div>
+
+</body>
 </html>
 `;
 
-    // Replace placeholders
+    // ======================================
+    // REPLACE VARIABLES
+    // ======================================
+
     const finalHtml = htmlTemplate
       .replace(/{{name}}/g, name || "Business Owner")
       .replace(/{{businessName}}/g, businessName || "Your Business")
       .replace(/{{setupUrl}}/g, setupUrl)
       .replace(/{{unsubscribeUrl}}/g, unsubscribeUrl);
 
-    // Send email
+    // ======================================
+    // SEND EMAIL
+    // ======================================
+
     await resend.emails.send({
       from: "RCTX Directory <support@rctx.co.uk>",
       to: email,
-      subject: "Your RCTX Business Claim Has Been Approved",
+      subject: "Your RCTX Business Claim Has Been Approved 🎉",
       html: finalHtml
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true, message: "Email sent" })
+      body: JSON.stringify({
+        success: true,
+        message: "Email sent"
+      })
     };
 
   } catch (err) {
+
     console.error("EMAIL ERROR:", err);
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: err.message })
+      body: JSON.stringify({
+        success: false,
+        error: err.message
+      })
     };
+
   }
 }
