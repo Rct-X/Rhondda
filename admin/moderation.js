@@ -14,6 +14,11 @@ let auth;
 export async function initModeration(services) {
 
   console.log("[MODERATION] Initialising moderation module");
+  console.log("[MODERATION] DOM CHECK", {
+  pendingList: document.getElementById("pendingList"),
+  claimsList: document.getElementById("claimsList"),
+  changesList: document.getElementById("pendingChangesList")
+});
 
   try {
 
