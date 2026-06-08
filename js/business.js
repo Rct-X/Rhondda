@@ -245,11 +245,16 @@ async function loadBusiness(
   document.getElementById("businessName")
     .textContent = b.name;
 
-  document.getElementById("businessCategory")
-    .textContent = b.category;
+document.getElementById("businessCategory").textContent = b.category;
+document.getElementById("businessTown").textContent = b.town;
 
-  document.getElementById("businessTown")
-    .textContent = b.town;
+const catInline = document.getElementById("businessCategoryInline");
+if (catInline) catInline.textContent = b.category;
+
+const townInline = document.getElementById("businessTownInline");
+if (townInline) townInline.textContent = b.town;
+
+document.querySelector(".business-subtitle")?.classList.add("loaded");
     
  const phoneBtn = document.getElementById("businessPhoneBtn");
 if (phoneBtn) phoneBtn.href = b.phone ? `tel:${b.phone}` : "#";
