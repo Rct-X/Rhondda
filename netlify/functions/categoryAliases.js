@@ -609,7 +609,7 @@ module.exports = {
     "property maintenance"
   ],
 
-// =========================
+  // =========================
   // HEATING ENGINEERS
   // =========================
   "Heating Engineers": [
@@ -832,7 +832,104 @@ module.exports = {
     "wasp nest removal"
   ],
 
+ ",
+    "deep tissue massage",
+    "sports massage"
+  ],
+
   // =========================
+  // MOBILE PHONE REPAIRS
+  // =========================
+  "Mobile Phone Repairs": [
+    "phone repair",
+    "screen repair",
+    "mobile repair",
+    "iphone repair"
+  ],
+
+  // =========================
+  // MORTGAGE ADVISORS
+  // =========================
+  "Mortgage Advisors": [
+    "mortgage advisor",
+    "mortgage broker",
+    "remortgage",
+    "home loan"
+  ],
+
+  // =========================
+  // NAIL SALONS
+  // =========================
+  "Nail Salons": [
+    "nail salon",
+    "nails",
+    "manicure",
+    "pedicure",
+    "gel nails",
+    "acrylic nails"
+  ],
+
+  // =========================
+  // OSTEOPATHS
+  // =========================
+  "Osteopaths": [
+    "osteopath",
+    "back pain",
+    "joint pain",
+    "osteopathy"
+  ],
+
+  // =========================
+  // PAINTERS & DECORATORS
+  // =========================
+  "Painters & Decorators": [
+    "painter",
+    "decorator",
+    "painting",
+    "decorating"
+  ],
+
+  // =========================
+  // PARTY SUPPLIES
+  // =========================
+  "Party Supplies": [
+    "party supplies",
+    "party shop",
+    "balloons",
+    "party decorations"
+  ],
+
+  // =========================
+  // PAVING CONTRACTORS
+  // =========================
+  "Paving Contractors": [
+    "paving",
+    "driveways",
+    "patios",
+    "block paving"
+  ],
+
+  // =========================
+  // PERSONAL TRAINERS
+  // =========================
+  "Personal Trainers": [
+    "personal trainer",
+    "pt",
+    "fitness coach",
+    "workout plan"
+  ],
+
+  // =========================
+  // PEST CONTROL
+  // =========================
+  "Pest Control": [
+    "pest control",
+    "exterminator",
+    "rat control",
+    "wasp nest removal"
+  ],
+
+    // =========================
   // PET SHOPS
   // =========================
   "Pet Shops": [
@@ -1080,7 +1177,7 @@ module.exports = {
     "minicab",
     "airport taxi",
     "private hire"
-  ]
+  ],
 
   // =========================
   // TILERS
@@ -1197,4 +1294,5 @@ module.exports = {
     "yoga studio",
     "yoga class"
   ]
+
 };
