@@ -11,29 +11,7 @@ let auth;
 // INIT
 // ======================================
 
-export async function initModeration(services){
-
-  console.log(
-    "[MODERATION] Initialising moderation module"
-  );
-
-  db = services.db;
-  auth = services.auth;
-
-  // Global access for onclick handlers
-  window.approveBusiness = approveBusiness;
-  window.rejectBusiness = rejectBusiness;
-
-  window.approveClaim = approveClaim;
-  window.rejectClaim = rejectClaim;
-
-  window.approvePendingChanges =
-    approvePendingChanges;
-
-  window.rejectPendingChanges =
-    rejectPendingChanges;
-
-  // export async function initModeration(services){
+export async function initModeration(services) {
 
   console.log("[MODERATION] Initialising moderation module");
 
@@ -47,27 +25,29 @@ export async function initModeration(services){
       auth: !!auth
     });
 
+    // Global access for onclick handlers
     window.approveBusiness = approveBusiness;
     window.rejectBusiness = rejectBusiness;
+
     window.approveClaim = approveClaim;
     window.rejectClaim = rejectClaim;
+
     window.approvePendingChanges = approvePendingChanges;
     window.rejectPendingChanges = rejectPendingChanges;
 
     console.log("[MODERATION] Starting data loads");
 
-    await loadDashboardStats().catch(e => console.error("dashboard failed", e));
-await loadPending().catch(e => console.error("pending failed", e));
-await loadClaims().catch(e => console.error("claims failed", e));
-await loadPendingChanges().catch(e => console.error("changes failed", e));
+    await Promise.all([
+      loadDashboardStats().catch(e => console.error("dashboard failed", e)),
+      loadPending().catch(e => console.error("pending failed", e)),
+      loadClaims().catch(e => console.error("claims failed", e)),
+      loadPendingChanges().catch(e => console.error("changes failed", e))
     ]);
 
     console.log("[MODERATION] All loads complete");
 
   } catch (err) {
-
     console.error("[MODERATION] INIT FAILED:", err);
-
   }
 }
 
@@ -75,43 +55,20 @@ await loadPendingChanges().catch(e => console.error("changes failed", e));
 // DASHBOARD STATS
 // ======================================
 
-async function loadDashboardStats(){
+async function loadDashboardStats() {
 
-  try{
+  try {
 
-    const res = await fetch(
-      "/.netlify/functions/getDashboardStats"
-    );
-
+    const res = await fetch("/.netlify/functions/getDashboardStats");
     const data = await res.json();
 
-    document.getElementById(
-      "totalBusinesses"
-    ).textContent =
-      data.totalBusinesses || 0;
+    document.getElementById("totalBusinesses").textContent = data.totalBusinesses || 0;
+    document.getElementById("pendingCount").textContent = data.pendingSubmissions || 0;
+    document.getElementById("claimedCount").textContent = data.pendingClaims || 0;
+    document.getElementById("townCount").textContent = data.townCount || 0;
 
-    document.getElementById(
-      "pendingCount"
-    ).textContent =
-      data.pendingSubmissions || 0;
-
-    document.getElementById(
-      "claimedCount"
-    ).textContent =
-      data.pendingClaims || 0;
-
-    document.getElementById(
-      "townCount"
-    ).textContent =
-      data.townCount || 0;
-
-  } catch(err){
-
-    console.error(
-      "[DASHBOARD] Stats failed:",
-      err
-    );
-
+  } catch (err) {
+    console.error("[DASHBOARD] Stats failed:", err);
   }
 }
 
@@ -119,20 +76,14 @@ async function loadDashboardStats(){
 // LOAD PENDING SUBMISSIONS
 // ======================================
 
-async function loadPending(){
+async function loadPending() {
 
-  const list =
-    document.getElementById("pendingList");
+  const list = document.getElementById("pendingList");
+  if (!list || !db) return;
 
-  if(!list || !db){
-    return;
-  }
+  list.innerHTML = `<p>Loading submissions...</p>`;
 
-  list.innerHTML = `
-    <p>Loading submissions...</p>
-  `;
-
-  try{
+  try {
 
     const snap = await db
       .collection("pending_submissions")
@@ -140,12 +91,8 @@ async function loadPending(){
       .limit(25)
       .get();
 
-    if(snap.empty){
-
-      list.innerHTML = `
-        <p>No pending submissions.</p>
-      `;
-
+    if (snap.empty) {
+      list.innerHTML = `<p>No pending submissions.</p>`;
       return;
     }
 
@@ -156,144 +103,43 @@ async function loadPending(){
       const b = doc.data();
       const id = doc.id;
 
-      const item =
-        document.createElement("div");
-
+      const item = document.createElement("div");
       item.className = "pending-item";
-
       item.dataset.pendingId = id;
 
       item.innerHTML = `
-        <div class="pending-top">
+        <h3>${b.name || "Unnamed Business"}</h3>
 
-          <div>
+        <p><strong>Category:</strong> ${b.category || "N/A"}</p>
+        <p><strong>Town:</strong> ${b.town || "N/A"}</p>
 
-            <h3>
-              ${b.name || "Unnamed Business"}
-            </h3>
+        <p><strong>Phone:</strong> ${b.phone || "N/A"}</p>
 
-            <div class="pending-meta">
+        <p><strong>Website:</strong>
+          ${b.website ? `<a href="${b.website}" target="_blank">${b.website}</a>` : "N/A"}
+        </p>
 
-              <span>
-                ${b.category || "No category"}
-              </span>
+        <p><strong>Address:</strong> ${b.address || "N/A"}</p>
 
-              <span>
-                ${b.town || "No town"}
-              </span>
+        <p><strong>Description:</strong><br>${b.description || "N/A"}</p>
 
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="pending-content">
-
-          <p>
-            <strong>Phone:</strong>
-            ${b.phone || "N/A"}
-          </p>
-
-          <p>
-            <strong>Website:</strong>
-
-            ${
-              b.website
-                ? `
-                  <a
-                    href="${b.website}"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    ${b.website}
-                  </a>
-                `
-                : "N/A"
-            }
-          </p>
-
-          <p>
-            <strong>Address:</strong>
-            ${b.address || "N/A"}
-          </p>
-
-          <p>
-            <strong>Description:</strong><br>
-            ${b.description || "N/A"}
-          </p>
-
-          ${
-            b.wasteLicence
-              ? `
-                <p>
-                  <strong>Waste Licence:</strong>
-                  ${b.wasteLicence}
-                </p>
-              `
-              : ""
-          }
-
-          ${
-            b.keywords?.length
-              ? `
-                <p>
-                  <strong>Keywords:</strong>
-                  ${b.keywords.join(", ")}
-                </p>
-              `
-              : ""
-          }
-
-          ${
-            b.createdAt
-              ? `
-                <p class="pending-date">
-                  Submitted:
-                  ${new Date(
-                    b.createdAt.seconds * 1000
-                  ).toLocaleString()}
-                </p>
-              `
-              : ""
-          }
-
-        </div>
+        ${b.createdAt ? `
+          <p><strong>Submitted:</strong>
+          ${new Date(b.createdAt.seconds * 1000).toLocaleString()}</p>
+        ` : ""}
 
         <div class="pending-actions">
-
-          <button
-            class="btn btn-success"
-            onclick="approveBusiness('${id}')">
-
-            Approve
-
-          </button>
-
-          <button
-            class="btn btn-danger"
-            onclick="rejectBusiness('${id}')">
-
-            Reject
-
-          </button>
-
+          <button class="btn btn-success" onclick="approveBusiness('${id}')">Approve</button>
+          <button class="btn btn-danger" onclick="rejectBusiness('${id}')">Reject</button>
         </div>
       `;
 
       list.appendChild(item);
-
     });
 
-  } catch(err){
-
-    console.error(
-      "[PENDING] Failed:",
-      err
-    );
-
-    list.innerHTML = `
-      <p>Error loading submissions.</p>
-    `;
+  } catch (err) {
+    console.error("[PENDING] Failed:", err);
+    list.innerHTML = `<p>Error loading submissions.</p>`;
   }
 }
 
@@ -301,20 +147,14 @@ async function loadPending(){
 // LOAD CLAIMS
 // ======================================
 
-async function loadClaims(){
+async function loadClaims() {
 
-  const list =
-    document.getElementById("claimsList");
+  const list = document.getElementById("claimsList");
+  if (!list || !db) return;
 
-  if(!list || !db){
-    return;
-  }
+  list.innerHTML = `<p>Loading claims...</p>`;
 
-  list.innerHTML = `
-    <p>Loading claims...</p>
-  `;
-
-  try{
+  try {
 
     const snap = await db
       .collection("claims")
@@ -323,12 +163,8 @@ async function loadClaims(){
       .limit(25)
       .get();
 
-    if(snap.empty){
-
-      list.innerHTML = `
-        <p>No pending claims.</p>
-      `;
-
+    if (snap.empty) {
+      list.innerHTML = `<p>No pending claims.</p>`;
       return;
     }
 
@@ -339,69 +175,30 @@ async function loadClaims(){
       const c = doc.data();
       const id = doc.id;
 
-      const item =
-        document.createElement("div");
-
+      const item = document.createElement("div");
       item.className = "pending-item";
-
       item.dataset.claimId = id;
 
       item.innerHTML = `
-        <h3>
-          Claim for:
-          ${c.slug || "Unknown"}
-        </h3>
+        <h3>Claim for: ${c.slug || "Unknown"}</h3>
 
-        <p>
-          <strong>Name:</strong>
-          ${c.name || "N/A"}
-        </p>
+        <p><strong>Name:</strong> ${c.name || "N/A"}</p>
+        <p><strong>Email:</strong> ${c.email || "N/A"}</p>
 
-        <p>
-          <strong>Email:</strong>
-          ${c.email || "N/A"}
-        </p>
-
-        <p>
-          <strong>Message:</strong><br>
-          ${c.message || "No message"}
-        </p>
+        <p><strong>Message:</strong><br>${c.message || "No message"}</p>
 
         <div class="pending-actions">
-
-          <button
-            class="btn btn-success"
-            onclick="approveClaim('${id}')">
-
-            Approve Claim
-
-          </button>
-
-          <button
-            class="btn btn-danger"
-            onclick="rejectClaim('${id}')">
-
-            Reject Claim
-
-          </button>
-
+          <button class="btn btn-success" onclick="approveClaim('${id}')">Approve Claim</button>
+          <button class="btn btn-danger" onclick="rejectClaim('${id}')">Reject Claim</button>
         </div>
       `;
 
       list.appendChild(item);
-
     });
 
-  } catch(err){
-
-    console.error(
-      "[CLAIMS] Failed:",
-      err
-    );
-
-    list.innerHTML = `
-      <p>Error loading claims.</p>
-    `;
+  } catch (err) {
+    console.error("[CLAIMS] Failed:", err);
+    list.innerHTML = `<p>Error loading claims.</p>`;
   }
 }
 
@@ -409,22 +206,14 @@ async function loadClaims(){
 // LOAD PENDING OWNER CHANGES
 // ======================================
 
-async function loadPendingChanges(){
+async function loadPendingChanges() {
 
-  const list =
-    document.getElementById(
-      "pendingChangesList"
-    );
+  const list = document.getElementById("pendingChangesList");
+  if (!list || !db) return;
 
-  if(!list || !db){
-    return;
-  }
+  list.innerHTML = `<p>Loading owner edits...</p>`;
 
-  list.innerHTML = `
-    <p>Loading owner edits...</p>
-  `;
-
-  try{
+  try {
 
     const snap = await db
       .collection("pending_changes")
@@ -432,12 +221,8 @@ async function loadPendingChanges(){
       .limit(25)
       .get();
 
-    if(snap.empty){
-
-      list.innerHTML = `
-        <p>No pending owner edits.</p>
-      `;
-
+    if (snap.empty) {
+      list.innerHTML = `<p>No pending owner edits.</p>`;
       return;
     }
 
@@ -448,416 +233,210 @@ async function loadPendingChanges(){
       const data = doc.data();
       const id = doc.id;
 
-      const item =
-        document.createElement("div");
-
+      const item = document.createElement("div");
       item.className = "pending-item";
-
       item.dataset.changeId = id;
 
       item.innerHTML = `
-        <h3>
-          Pending Changes
-        </h3>
+        <h3>Pending Changes</h3>
 
-        <p>
-          <strong>Business ID:</strong>
-          ${data.businessId || id}
-        </p>
+        <p><strong>Business ID:</strong> ${data.businessId || id}</p>
+        <p><strong>Owner:</strong> ${data.ownerId || "Unknown"}</p>
+        <p><strong>Status:</strong> ${data.status || "Pending"}</p>
 
-        <p>
-          <strong>Owner:</strong>
-          ${data.ownerId || "Unknown"}
-        </p>
+        ${data.submittedAt ? `
+          <p><strong>Submitted:</strong>
+          ${new Date(data.submittedAt.seconds * 1000).toLocaleString()}</p>
+        ` : ""}
 
-        <p>
-          <strong>Status:</strong>
-          ${data.status || "Pending"}
-        </p>
-
-        ${
-          data.submittedAt
-            ? `
-              <p class="pending-date">
-                Submitted:
-                ${new Date(
-                  data.submittedAt.seconds * 1000
-                ).toLocaleString()}
-              </p>
-            `
-            : ""
-        }
-
-        <details class="pending-json">
-
-          <summary>
-            View Submitted Data
-          </summary>
-
-          <pre>
-${JSON.stringify(data, null, 2)}
-          </pre>
-
+        <details>
+          <summary>View Data</summary>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
         </details>
 
         <div class="pending-actions">
-
-          <button
-            class="btn btn-success"
-            onclick="approvePendingChanges('${id}')">
-
-            Approve
-
-          </button>
-
-          <button
-            class="btn btn-danger"
-            onclick="rejectPendingChanges('${id}')">
-
-            Reject
-
-          </button>
-
+          <button class="btn btn-success" onclick="approvePendingChanges('${id}')">Approve</button>
+          <button class="btn btn-danger" onclick="rejectPendingChanges('${id}')">Reject</button>
         </div>
       `;
 
       list.appendChild(item);
-
     });
 
-  } catch(err){
-
-    console.error(
-      "[PENDING_CHANGES] Failed:",
-      err
-    );
-
-    list.innerHTML = `
-      <p>Error loading owner edits.</p>
-    `;
+  } catch (err) {
+    console.error("[PENDING_CHANGES] Failed:", err);
+    list.innerHTML = `<p>Error loading owner edits.</p>`;
   }
 }
 
 // ======================================
-// APPROVE BUSINESS
+// APPROVAL HELPERS (FIXED TOKEN HANDLING)
 // ======================================
 
-async function approveBusiness(id){
-
-  try{
-
-    const token =
-      const user = auth.currentUser;
-
-if (!user) {
-  throw new Error("No authenticated user");
+async function getToken() {
+  const user = auth?.currentUser;
+  if (!user) throw new Error("No authenticated user");
+  return await user.getIdToken();
 }
 
-const token = await user.getIdToken();
+// ======================================
+// BUSINESS ACTIONS
+// ======================================
 
-    const res = await fetch(
-      "/.netlify/functions/approveBusiness",
-      {
-        method: "POST",
+async function approveBusiness(id) {
 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
+  try {
 
-        body: JSON.stringify({ id })
-      }
-    );
+    const token = await getToken();
 
-    if(!res.ok){
-      throw new Error(
-        "Approve request failed"
-      );
-    }
+    const res = await fetch("/.netlify/functions/approveBusiness", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ id })
+    });
 
-    document
-      .querySelector(
-        `[data-pending-id="${id}"]`
-      )
-      ?.remove();
+    if (!res.ok) throw new Error("Approve request failed");
 
-  } catch(err){
+    document.querySelector(`[data-pending-id="${id}"]`)?.remove();
 
+  } catch (err) {
     console.error(err);
+    alert("Failed to approve business");
+  }
+}
 
-    alert(
-      "Failed to approve business"
-    );
+async function rejectBusiness(id) {
+
+  try {
+
+    const token = await getToken();
+
+    const res = await fetch("/.netlify/functions/rejectBusiness", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ id })
+    });
+
+    if (!res.ok) throw new Error("Reject request failed");
+
+    document.querySelector(`[data-pending-id="${id}"]`)?.remove();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to reject business");
   }
 }
 
 // ======================================
-// REJECT BUSINESS
+// CLAIM ACTIONS
 // ======================================
 
-async function rejectBusiness(id){
+async function approveClaim(id) {
 
-  try{
+  try {
 
-    const token =
-      const user = auth.currentUser;
+    const token = await getToken();
 
-if (!user) {
-  throw new Error("No authenticated user");
+    const res = await fetch("/.netlify/functions/approveClaim", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ claimId: id })
+    });
+
+    if (!res.ok) throw new Error("Approve claim failed");
+
+    document.querySelector(`[data-claim-id="${id}"]`)?.remove();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to approve claim");
+  }
 }
 
-const token = await user.getIdToken();
+async function rejectClaim(id) {
 
-    const res = await fetch(
-      "/.netlify/functions/rejectBusiness",
-      {
-        method: "POST",
+  try {
 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
+    const token = await getToken();
 
-        body: JSON.stringify({ id })
-      }
-    );
+    const res = await fetch("/.netlify/functions/rejectClaim", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ claimId: id })
+    });
 
-    if(!res.ok){
-      throw new Error(
-        "Reject request failed"
-      );
-    }
+    if (!res.ok) throw new Error("Reject claim failed");
 
-    document
-      .querySelector(
-        `[data-pending-id="${id}"]`
-      )
-      ?.remove();
+    document.querySelector(`[data-claim-id="${id}"]`)?.remove();
 
-  } catch(err){
-
+  } catch (err) {
     console.error(err);
-
-    alert(
-      "Failed to reject business"
-    );
+    alert("Failed to reject claim");
   }
 }
 
 // ======================================
-// APPROVE CLAIM
+// OWNER CHANGE ACTIONS
 // ======================================
 
-async function approveClaim(id){
+async function approvePendingChanges(id) {
 
-  try{
+  try {
 
-    const token =
-      const user = auth.currentUser;
+    const token = await getToken();
 
-if (!user) {
-  throw new Error("No authenticated user");
-}
+    const res = await fetch("/.netlify/functions/approvePendingChanges", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ businessId: id })
+    });
 
-const token = await user.getIdToken();
+    if (!res.ok) throw new Error("Approve changes failed");
 
-    const res = await fetch(
-      "/.netlify/functions/approveClaim",
-      {
-        method: "POST",
+    document.querySelector(`[data-change-id="${id}"]`)?.remove();
 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-
-        body: JSON.stringify({
-          claimId: id
-        })
-      }
-    );
-
-    if(!res.ok){
-      throw new Error(
-        "Approve claim failed"
-      );
-    }
-
-    document
-      .querySelector(
-        `[data-claim-id="${id}"]`
-      )
-      ?.remove();
-
-  } catch(err){
-
+  } catch (err) {
     console.error(err);
-
-    alert(
-      "Failed to approve claim"
-    );
+    alert("Failed to approve changes");
   }
 }
 
-// ======================================
-// REJECT CLAIM
-// ======================================
+async function rejectPendingChanges(id) {
 
-async function rejectClaim(id){
+  try {
 
-  try{
+    const token = await getToken();
 
-    const token =
-      const user = auth.currentUser;
+    const res = await fetch("/.netlify/functions/rejectPendingChanges", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ id })
+    });
 
-if (!user) {
-  throw new Error("No authenticated user");
-}
+    if (!res.ok) throw new Error("Reject changes failed");
 
-const token = await user.getIdToken();
+    document.querySelector(`[data-change-id="${id}"]`)?.remove();
 
-    const res = await fetch(
-      "/.netlify/functions/rejectClaim",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-
-        body: JSON.stringify({
-          claimId: id
-        })
-      }
-    );
-
-    if(!res.ok){
-      throw new Error(
-        "Reject claim failed"
-      );
-    }
-
-    document
-      .querySelector(
-        `[data-claim-id="${id}"]`
-      )
-      ?.remove();
-
-  } catch(err){
-
+  } catch (err) {
     console.error(err);
-
-    alert(
-      "Failed to reject claim"
-    );
-  }
-}
-
-// ======================================
-// APPROVE OWNER CHANGES
-// ======================================
-
-async function approvePendingChanges(id){
-
-  try{
-
-    const token =
-      const user = auth.currentUser;
-
-if (!user) {
-  throw new Error("No authenticated user");
-}
-
-const token = await user.getIdToken();
-
-    const res = await fetch(
-      "/.netlify/functions/approvePendingChanges",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-
-        body: JSON.stringify({
-          businessId: id
-        })
-      }
-    );
-
-    if(!res.ok){
-      throw new Error(
-        "Approve changes failed"
-      );
-    }
-
-    document
-      .querySelector(
-        `[data-change-id="${id}"]`
-      )
-      ?.remove();
-
-  } catch(err){
-
-    console.error(err);
-
-    alert(
-      "Failed to approve changes"
-    );
-  }
-}
-
-// ======================================
-// REJECT OWNER CHANGES
-// ======================================
-
-async function rejectPendingChanges(id){
-
-  try{
-
-    const token =
-      const user = auth.currentUser;
-
-if (!user) {
-  throw new Error("No authenticated user");
-}
-
-const token = await user.getIdToken();
-
-    const res = await fetch(
-      "/.netlify/functions/rejectPendingChanges",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-
-        body: JSON.stringify({ id })
-      }
-    );
-
-    if(!res.ok){
-      throw new Error(
-        "Reject changes failed"
-      );
-    }
-
-    document
-      .querySelector(
-        `[data-change-id="${id}"]`
-      )
-      ?.remove();
-
-  } catch(err){
-
-    console.error(err);
-
-    alert(
-      "Failed to reject changes"
-    );
+    alert("Failed to reject changes");
   }
 }
