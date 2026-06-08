@@ -3,29 +3,43 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function handler(event) {
+
   try {
-    const { name, email, businessName, slug, townSlug, categorySlug } = JSON.parse(event.body);
 
-    // Correct URL to the LIVE LISTING
-    const listingUrl = `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${slug}`;
-    const unsubscribeUrl = `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
+    const {
+      name,
+      email,
+      businessName,
+      slug,
+      townSlug,
+      categorySlug
+    } = JSON.parse(event.body);
 
     // ======================================
-    // SAFE‑HOUR SCHEDULING (9am–8pm)
+    // URLS
     // ======================================
+
+    const listingUrl =
+      `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${slug}`;
+
+    const unsubscribeUrl =
+      `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
+
+    // ======================================
+    // SAFE-HOUR SCHEDULING (9AM–8PM)
+    // ======================================
+
     const now = new Date();
     const hour = now.getHours();
 
     let scheduledAt = null;
 
-    // If it's before 9am or after 8pm → schedule for next 9am
     if (hour < 9 || hour >= 20) {
+
       const sendTime = new Date();
 
-      // Set to 9am today
       sendTime.setHours(9, 0, 0, 0);
 
-      // If it's already past 9am (evening), schedule for tomorrow
       if (hour >= 20) {
         sendTime.setDate(sendTime.getDate() + 1);
       }
@@ -33,150 +47,455 @@ export async function handler(event) {
       scheduledAt = sendTime.toISOString();
     }
 
-    // FULL HTML TEMPLATE (SEEDING VERSION)
-    let htmlTemplate = `
+    // ======================================
+    // HTML EMAIL
+    // ======================================
+
+    const htmlTemplate = `
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>Your Business Has Been Added to RCTX 🎉</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <style type="text/css">
-      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-      img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
-      table { border-collapse: collapse !important; }
-      body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-      .btn:hover { background-color: #020617 !important; }
-      @media screen and (max-width: 600px) {
-        .container { width: 100% !important; max-width: 100% !important; padding: 20px 16px 24px !important; }
-        .mobile-padding { padding: 12px 12px !important; }
-      }
-    </style>
-  </head>
+<head>
 
-  <body style="background-color: #f3f4f6; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <table width="100%" style="background-color: #f3f4f6;">
-      <tr>
-        <td class="mobile-padding" align="center" style="padding: 24px 12px;">
+<title>Your Business Has Been Added</title>
 
-          <table class="container" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; padding: 24px 20px 28px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);">
+<style>
 
-            <!-- Heading -->
-            <tr>
-              <td style="font-size: 22px; font-weight: 700; color: #111827; padding-bottom: 12px;">
-                Your Business Has Been Added to RCTX 🎉
-              </td>
-            </tr>
+body{
+  margin:0;
+  padding:0;
+  background:#f1f5f9;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
 
-            <!-- Salutation -->
-            <tr>
-              <td style="font-size: 15px; color: #374151; padding-bottom: 12px;">
-                Hi <strong>{{name}}</strong>,
-              </td>
-            </tr>
+.wrapper{
+  width:100%;
+  background:#f1f5f9;
+  padding:32px 14px;
+  box-sizing:border-box;
+}
 
-            <!-- Body -->
-            <tr>
-              <td style="font-size: 15px; color: #374151; padding-bottom: 12px;">
-                I’ve added <strong>{{businessName}}</strong> to the RCTX Directory — a free local platform helping people across Rhondda find trusted local businesses.
-              </td>
-            </tr>
+.container{
+  max-width:620px;
+  margin:auto;
+  background:#ffffff;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:
+    0 20px 50px rgba(15,23,42,.08);
+}
 
-            <tr>
-              <td style="font-size: 15px; color: #374151; padding-bottom: 22px;">
-                You can view your listing using the button below.  
-                If you'd like to take ownership of it, just click the <strong>"Claim this business"</strong> button on your listing page.
-              </td>
-            </tr>
+.hero{
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1e293b
+    );
 
-            <!-- Button -->
-            <tr>
-              <td style="padding-bottom: 18px;">
-                <table role="presentation">
-                  <tr>
-                    <td align="center" bgcolor="#111827" style="border-radius: 999px;">
-                      <a href="{{listingUrl}}" target="_blank"
-                        style="display: inline-block; padding: 10px 20px; font-size: 15px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 999px;">
-                        View Your Listing
-                      </a>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+  padding:42px 28px;
+  text-align:center;
+}
 
-            <!-- Fallback URL -->
-            <tr>
-              <td style="font-size: 14px; color: #374151; padding-bottom: 22px;">
-                Or copy and paste this link:<br>
-                <a href="{{listingUrl}}" target="_blank" style="color: #2563eb; word-break: break-all;">
-                  {{listingUrl}}
-                </a>
-              </td>
-            </tr>
+.logo{
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:-1px;
+  color:#ffffff;
+  margin-bottom:10px;
+}
 
-            <!-- Support -->
-            <tr>
-              <td style="font-size: 15px; color: #374151; padding-bottom: 18px;">
-                If you’d like anything updated or need help claiming your listing, just reply to this email — I’m here to help.
-              </td>
-            </tr>
+.logo span{
+  color:#3b82f6;
+}
 
-            <!-- Footer -->
-            <tr>
-              <td style="border-top: 1px solid #e5e7eb; padding-top: 18px; font-size: 13px; color: #6b7280;">
-                — <strong>The RCTX Directory Team</strong><br>
-                <a href="mailto:support@rctx.co.uk" style="color: #6b7280;">support@rctx.co.uk</a>
+.hero h1{
+  margin:0;
+  font-size:30px;
+  line-height:1.15;
+  color:#ffffff;
+  font-weight:800;
+}
 
-                <p style="margin-top: 16px; font-size: 11px; color: #9ca3af;">
-                  You received this email because your business was added to the RCTX Directory.<br>
-                  © 2026 RCTX Directory. All rights reserved.
-                  <a href="{{unsubscribeUrl}}" style="color: #6b7280; text-decoration: underline;">Unsubscribe</a>
-                </p>
-              </td>
-            </tr>
+.hero p{
+  margin:14px 0 0;
+  font-size:16px;
+  line-height:1.7;
+  color:rgba(255,255,255,.82);
+}
 
-          </table>
+.content{
+  padding:34px 28px 30px;
+}
 
-        </td>
-      </tr>
-    </table>
+.greeting{
+  font-size:16px;
+  color:#334155;
+  margin:0 0 20px;
+}
 
-  </body>
+.text{
+  font-size:16px;
+  line-height:1.8;
+  color:#475569;
+  margin:0 0 18px;
+}
+
+.highlight-box{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(37,99,235,.08),
+      rgba(59,130,246,.04)
+    );
+
+  border:1px solid rgba(37,99,235,.12);
+
+  border-radius:18px;
+
+  padding:20px;
+  margin:28px 0;
+}
+
+.highlight-box h3{
+  margin:0 0 10px;
+  font-size:18px;
+  color:#0f172a;
+}
+
+.highlight-box p{
+  margin:0;
+  font-size:15px;
+  line-height:1.7;
+  color:#475569;
+}
+
+.button-wrap{
+  text-align:center;
+  padding:10px 0 30px;
+}
+
+.button{
+  display:inline-block;
+
+  padding:16px 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
+
+  color:#ffffff !important;
+
+  text-decoration:none;
+
+  border-radius:999px;
+
+  font-size:15px;
+  font-weight:700;
+
+  box-shadow:
+    0 10px 25px rgba(37,99,235,.28);
+}
+
+.link-box{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  padding:16px;
+  margin-top:12px;
+  word-break:break-word;
+}
+
+.link-box a{
+  color:#2563eb;
+  font-size:14px;
+  text-decoration:none;
+}
+
+.footer{
+  border-top:1px solid #e2e8f0;
+  padding:24px 28px 28px;
+}
+
+.footer p{
+  margin:0 0 12px;
+  font-size:13px;
+  line-height:1.7;
+  color:#64748b;
+}
+
+.footer a{
+  color:#64748b;
+}
+
+.small{
+  font-size:11px !important;
+  color:#94a3b8 !important;
+}
+
+@media screen and (max-width:600px){
+
+  .wrapper{
+    padding:14px;
+  }
+
+  .hero{
+    padding:34px 22px;
+  }
+
+  .hero h1{
+    font-size:24px;
+  }
+
+  .content{
+    padding:28px 20px 24px;
+  }
+
+  .footer{
+    padding:22px 20px 24px;
+  }
+
+  .button{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="hero">
+
+      <div class="logo">
+        RCT<span>X</span>
+      </div>
+
+      <h1>
+        Your Business Is Now Live 🎉
+      </h1>
+
+      <p>
+        We've added your business to the
+        RCTX Directory so local customers
+        can discover and contact you.
+      </p>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <p class="greeting">
+        Hi <strong>{{name}}</strong>,
+      </p>
+
+      <p class="text">
+        Your business
+        <strong>{{businessName}}</strong>
+        has now been added to the
+        RCTX Directory.
+      </p>
+
+      <p class="text">
+        RCTX helps local people across
+        Rhondda Cynon Taf discover trusted
+        businesses and services nearby.
+      </p>
+
+      <div class="highlight-box">
+
+        <h3>
+          Claim Your Listing
+        </h3>
+
+        <p>
+          You can take ownership of your
+          listing directly from the page
+          using the
+          <strong>
+            "Claim this business"
+          </strong>
+          button.
+        </p>
+
+      </div>
+
+      <!-- BUTTON -->
+      <div class="button-wrap">
+
+        <a
+          href="{{listingUrl}}"
+          target="_blank"
+          class="button"
+        >
+          View Your Listing
+        </a>
+
+      </div>
+
+      <!-- LINK -->
+      <div class="link-box">
+
+        <a
+          href="{{listingUrl}}"
+          target="_blank"
+        >
+          {{listingUrl}}
+        </a>
+
+      </div>
+
+      <p class="text" style="margin-top:28px;">
+        Need changes or want help claiming
+        your listing? Simply reply to this
+        email and we'll help you out.
+      </p>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+
+      <p>
+        <strong>RCTX Directory</strong><br>
+        Helping local businesses get found online.
+      </p>
+
+      <p>
+        Email:
+        <a href="mailto:support@rctx.co.uk">
+          support@rctx.co.uk
+        </a>
+      </p>
+
+      <p class="small">
+        You received this email because
+        your business was added to the
+        RCTX Directory.
+      </p>
+
+      <p class="small">
+        © 2026 RCTX Directory.
+        All rights reserved.
+      </p>
+
+      <p class="small">
+        <a href="{{unsubscribeUrl}}">
+          Unsubscribe
+        </a>
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
 </html>
 `;
 
-    // Replace placeholders
-    const finalHtml = htmlTemplate
-      .replace(/{{name}}/g, name || "Business Owner")
-      .replace(/{{businessName}}/g, businessName || "Your Business")
-      .replace(/{{listingUrl}}/g, listingUrl)
-      .replace(/{{unsubscribeUrl}}/g, unsubscribeUrl);
+    // ======================================
+    // REPLACE VARIABLES
+    // ======================================
 
-    // Send email (or schedule it)
+    const finalHtml = htmlTemplate
+
+      .replace(
+        /{{name}}/g,
+        name || "Business Owner"
+      )
+
+      .replace(
+        /{{businessName}}/g,
+        businessName || "Your Business"
+      )
+
+      .replace(
+        /{{listingUrl}}/g,
+        listingUrl
+      )
+
+      .replace(
+        /{{unsubscribeUrl}}/g,
+        unsubscribeUrl
+      );
+
+    // ======================================
+    // SEND EMAIL
+    // ======================================
+
     await resend.emails.send({
-      from: "RCTX Directory <support@rctx.co.uk>",
+
+      from:
+        "RCTX Directory <support@rctx.co.uk>",
+
       to: email,
-      subject: "Your Business Has Been Added to RCTX 🎉",
+
+      subject:
+        "Your Business Has Been Added to RCTX 🎉",
+
       html: finalHtml,
-      ...(scheduledAt && { scheduled_at: scheduledAt })
+
+      ...(scheduledAt && {
+        scheduled_at: scheduledAt
+      })
+
     });
 
     return {
+
       statusCode: 200,
-      body: JSON.stringify({ success: true, message: "Email sent or scheduled" })
+
+      body: JSON.stringify({
+        success: true,
+        message: "Email sent or scheduled"
+      })
+
     };
 
   } catch (err) {
-    console.error("EMAIL ERROR:", err);
+
+    console.error(
+      "EMAIL ERROR:",
+      err
+    );
 
     return {
+
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: err.message })
+
+      body: JSON.stringify({
+        success: false,
+        error: err.message
+      })
+
     };
+
   }
+
 }
