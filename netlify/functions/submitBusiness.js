@@ -81,7 +81,7 @@ exports.handler = async (event) => {
     // ===============================
 // CATEGORY SEARCH ALIASES
 // ===============================
-const categoryAliases = require("../shared/categoryAliases");
+const categoryAliases = require("./categoryAliases");
 
 // ===============================
 // BUILD KEYWORDS
