@@ -33,13 +33,42 @@ export async function initModeration(services){
   window.rejectPendingChanges =
     rejectPendingChanges;
 
-  // Load moderation data
-  await Promise.all([
-    loadDashboardStats(),
-    loadPending(),
-    loadClaims(),
-    loadPendingChanges()
-  ]);
+  // export async function initModeration(services){
+
+  console.log("[MODERATION] Initialising moderation module");
+
+  try {
+
+    db = services.db;
+    auth = services.auth;
+
+    console.log("[MODERATION] Services assigned", {
+      db: !!db,
+      auth: !!auth
+    });
+
+    window.approveBusiness = approveBusiness;
+    window.rejectBusiness = rejectBusiness;
+    window.approveClaim = approveClaim;
+    window.rejectClaim = rejectClaim;
+    window.approvePendingChanges = approvePendingChanges;
+    window.rejectPendingChanges = rejectPendingChanges;
+
+    console.log("[MODERATION] Starting data loads");
+
+    await loadDashboardStats().catch(e => console.error("dashboard failed", e));
+await loadPending().catch(e => console.error("pending failed", e));
+await loadClaims().catch(e => console.error("claims failed", e));
+await loadPendingChanges().catch(e => console.error("changes failed", e));
+    ]);
+
+    console.log("[MODERATION] All loads complete");
+
+  } catch (err) {
+
+    console.error("[MODERATION] INIT FAILED:", err);
+
+  }
 }
 
 // ======================================
@@ -518,7 +547,13 @@ async function approveBusiness(id){
   try{
 
     const token =
-      await auth.currentUser.getIdToken();
+      const user = auth.currentUser;
+
+if (!user) {
+  throw new Error("No authenticated user");
+}
+
+const token = await user.getIdToken();
 
     const res = await fetch(
       "/.netlify/functions/approveBusiness",
@@ -565,7 +600,13 @@ async function rejectBusiness(id){
   try{
 
     const token =
-      await auth.currentUser.getIdToken();
+      const user = auth.currentUser;
+
+if (!user) {
+  throw new Error("No authenticated user");
+}
+
+const token = await user.getIdToken();
 
     const res = await fetch(
       "/.netlify/functions/rejectBusiness",
@@ -612,7 +653,13 @@ async function approveClaim(id){
   try{
 
     const token =
-      await auth.currentUser.getIdToken();
+      const user = auth.currentUser;
+
+if (!user) {
+  throw new Error("No authenticated user");
+}
+
+const token = await user.getIdToken();
 
     const res = await fetch(
       "/.netlify/functions/approveClaim",
@@ -661,7 +708,13 @@ async function rejectClaim(id){
   try{
 
     const token =
-      await auth.currentUser.getIdToken();
+      const user = auth.currentUser;
+
+if (!user) {
+  throw new Error("No authenticated user");
+}
+
+const token = await user.getIdToken();
 
     const res = await fetch(
       "/.netlify/functions/rejectClaim",
@@ -710,7 +763,13 @@ async function approvePendingChanges(id){
   try{
 
     const token =
-      await auth.currentUser.getIdToken();
+      const user = auth.currentUser;
+
+if (!user) {
+  throw new Error("No authenticated user");
+}
+
+const token = await user.getIdToken();
 
     const res = await fetch(
       "/.netlify/functions/approvePendingChanges",
@@ -759,7 +818,13 @@ async function rejectPendingChanges(id){
   try{
 
     const token =
-      await auth.currentUser.getIdToken();
+      const user = auth.currentUser;
+
+if (!user) {
+  throw new Error("No authenticated user");
+}
+
+const token = await user.getIdToken();
 
     const res = await fetch(
       "/.netlify/functions/rejectPendingChanges",
