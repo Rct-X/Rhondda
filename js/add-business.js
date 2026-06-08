@@ -112,9 +112,17 @@ categoryInput.addEventListener("input", () => {
     return;
   }
 
-  const matches = categories.filter(cat =>
+  const matches = categories
+  .filter(cat =>
     cat.toLowerCase().includes(value)
-  );
+  )
+  .sort((a, b) => {
+
+    const aStarts = a.toLowerCase().startsWith(value);
+    const bStarts = b.toLowerCase().startsWith(value);
+
+    return bStarts - aStarts;
+  });
 
   if (!matches.length) {
     categorySuggestions.style.display = "none";
@@ -128,9 +136,14 @@ categoryInput.addEventListener("input", () => {
     div.textContent = match;
 
     div.addEventListener("click", () => {
-      categoryInput.value = match;
-      categorySuggestions.style.display = "none";
-    });
+
+  categoryInput.value = match;
+
+  categorySuggestions.style.display = "none";
+
+  toggleWasteLicenceField();
+
+});
 
     categorySuggestions.appendChild(div);
 
@@ -140,6 +153,18 @@ categoryInput.addEventListener("input", () => {
 
 });
 
+
+document.addEventListener("click", (e) => {
+
+  if (!e.target.closest(".form-group")) {
+
+    suggestions.style.display = "none";
+
+    categorySuggestions.style.display = "none";
+
+  }
+
+});
 // ===============================
 // SLUGIFY
 // ===============================
@@ -178,9 +203,12 @@ function toggleWasteLicenceField() {
 }
 
 if (categorySelect) {
-  categorySelect.addEventListener("change", toggleWasteLicenceField);
 
-  // Run immediately on page load
+  categorySelect.addEventListener(
+    "input",
+    toggleWasteLicenceField
+  );
+
   toggleWasteLicenceField();
 }
 
@@ -226,6 +254,17 @@ if (
 const slug = slugify(name);
 const townSlug = slugify(town);
 const categorySlug = slugify(category);
+
+    if (!categories.includes(category)) {
+
+  formMessage.textContent =
+    "Please select a valid category from the list.";
+
+  formMessage.classList.add("error");
+
+  return;
+    }
+    
     // ===============================
     // VALIDATION
     // ===============================
