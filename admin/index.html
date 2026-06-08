@@ -384,145 +384,203 @@ Add inside <main class="admin-container">
 
   <div class="marketing-grid">
 
-    <!-- QUICK ADD -->
-    <div class="marketing-card">
+<!-- QUICK ADD -->
+<div class="marketing-card">
 
-      <h3>Quick Add Business</h3>
+  <h3>Quick Add Business</h3>
 
-      <div class="form-grid">
+  <div class="form-grid">
 
-        <div class="field">
-          <label for="name">Business Name</label>
-          <input id="name" placeholder="Example Plumbing Ltd">
-        </div>
+    <div class="field">
+      <label for="name">
+        Business Name
+      </label>
 
-        <div class="field">
-          <label for="email">Email (optional)</label>
-          <input id="email" placeholder="name@email.com">
-        </div>
+      <input
+        id="name"
+        placeholder="Example Plumbing Ltd"
+      >
+    </div>
 
-        <div class="field">
-          <label for="phone">Phone (optional)</label>
-          <input id="phone" placeholder="07400 000000">
-        </div>
+    <div class="field">
+      <label for="email">
+        Email (optional)
+      </label>
 
-        <div class="field">
-          <label for="town">Town</label>
-          <input id="town" placeholder="Tonypandy">
-        </div>
+      <input
+        id="email"
+        placeholder="name@email.com"
+      >
+    </div>
 
-        <div class="field full">
-          <label for="category">Category</label>
+    <div class="field">
+      <label for="phone">
+        Phone (optional)
+      </label>
 
-          <select id="category">
+      <input
+        id="phone"
+        placeholder="07400 000000"
+      >
+    </div>
 
-            <option value="">
-              Select Category
-            </option>
+    <div class="field">
+      <label for="town">
+        Town
+      </label>
 
-            <option value="plumbers">Plumbers</option>
-            <option value="electricians">Electricians</option>
-            <option value="builders">Builders</option>
-            <option value="roofers">Roofers</option>
-            <option value="painters-decorators">
-              Painters & Decorators
-            </option>
+      <input
+        id="town"
+        placeholder="Tonypandy"
+      >
+    </div>
 
-            <option value="handyman-services">
-              Handyman Services
-            </option>
+    <div class="field full">
 
-            <option value="cleaners">
-              Cleaners
-            </option>
+      <label for="category">
+        Category
+      </label>
 
-            <option value="window-cleaners">
-              Window Cleaners
-            </option>
+      <select id="category">
 
-            <option value="gardeners">
-              Gardeners
-            </option>
+        <option value="">
+          Select Category
+        </option>
 
-            <option value="waste-collection">
-              Waste Collection
-            </option>
+        <option value="plumbers">
+          Plumbers
+        </option>
 
-            <option value="man-with-a-van">
-              Man With A Van
-            </option>
+        <option value="electricians">
+          Electricians
+        </option>
 
-            <option value="removals">
-              Removals
-            </option>
+        <option value="builders">
+          Builders
+        </option>
 
-            <option value="car-mechanics">
-              Car Mechanics
-            </option>
+        <option value="roofers">
+          Roofers
+        </option>
 
-            <option value="tyres">
-              Tyres & Repairs
-            </option>
+        <option value="painters-decorators">
+          Painters & Decorators
+        </option>
 
-            <option value="barbers">
-              Barbers
-            </option>
+        <option value="handyman-services">
+          Handyman Services
+        </option>
 
-            <option value="hairdressers">
-              Hairdressers
-            </option>
+        <option value="cleaners">
+          Cleaners
+        </option>
 
-            <option value="beauty-salons">
-              Beauty Salons
-            </option>
+        <option value="window-cleaners">
+          Window Cleaners
+        </option>
 
-            <option value="dog-groomers">
-              Dog Groomers
-            </option>
+        <option value="gardeners">
+          Gardeners
+        </option>
 
-            <option value="cafes">
-              Cafes
-            </option>
+        <option value="waste-collection">
+          Waste Collection
+        </option>
 
-            <option value="restaurants">
-              Restaurants
-            </option>
+        <option value="man-with-a-van">
+          Man With A Van
+        </option>
 
-            <option value="takeaways">
-              Takeaways
-            </option>
+        <option value="removals">
+          Removals
+        </option>
 
-            <option value="shops">
-              Shops
-            </option>
+        <option value="car-mechanics">
+          Car Mechanics
+        </option>
 
-            <option value="gyms">
-              Gyms
-            </option>
+        <option value="tyres">
+          Tyres & Repairs
+        </option>
 
-            <option value="photographers">
-              Photographers
-            </option>
+        <option value="barbers">
+          Barbers
+        </option>
 
-          </select>
-        </div>
+        <option value="hairdressers">
+          Hairdressers
+        </option>
 
-      </div>
+        <option value="beauty-salons">
+          Beauty Salons
+        </option>
 
-      <div class="marketing-actions">
+        <option value="dog-groomers">
+          Dog Groomers
+        </option>
 
-        <button
-          onclick="addBusiness()"
-          class="btn btn-primary"
-        >
-          Add Business & Send Email
-        </button>
+        <option value="cafes">
+          Cafes
+        </option>
 
-      </div>
+        <option value="restaurants">
+          Restaurants
+        </option>
 
-      <p id="result" class="admin-message"></p>
+        <option value="takeaways">
+          Takeaways
+        </option>
+
+        <option value="shops">
+          Shops
+        </option>
+
+        <option value="gyms">
+          Gyms
+        </option>
+
+        <option value="photographers">
+          Photographers
+        </option>
+
+      </select>
 
     </div>
+
+    <!-- SEND EMAIL -->
+    <div class="field full">
+
+      <label class="checkbox-wrap">
+
+        <input
+          type="checkbox"
+          id="sendEmail"
+          checked
+        >
+
+        Send intro email
+
+      </label>
+
+    </div>
+
+  </div>
+
+  <div class="marketing-actions">
+
+    <button
+      id="addBusinessBtn"
+      onclick="addBusiness()"
+      class="btn btn-primary"
+    >
+      Add Business
+    </button>
+
+  </div>
+
+  <div id="result"></div>
+
+</div>
 
   </div>
 
