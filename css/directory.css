@@ -1,4 +1,4 @@
-  /* Directory Search */
+    /* Directory Search */
 .directory-search input {
   width: 100%;
   max-width: 520px;
@@ -353,4 +353,81 @@
 
 .category-tile {
   -webkit-tap-highlight-color: transparent;
+}
+/* =========================
+   ADD BUSINESS BUTTON
+========================= */
+
+.Abtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:.72rem 1.15rem;
+
+  background:linear-gradient(
+    135deg,
+    #14b8a6,
+    #0f766e
+  );
+
+  color:#fff;
+  text-decoration:none;
+
+  font-size:.92rem;
+  font-weight:700;
+  letter-spacing:.2px;
+  line-height:1;
+
+  border-radius:10px;
+
+  box-shadow:
+    0 6px 18px rgba(20,184,166,.22),
+    inset 0 1px 0 rgba(255,255,255,.12);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+
+  cursor:pointer;
+  border:none;
+  white-space:nowrap;
+}
+
+/* Hover */
+.Abtn:hover{
+  transform:translateY(-1px);
+
+  background:linear-gradient(
+    135deg,
+    #2dd4bf,
+    #0f766e
+  );
+
+  box-shadow:
+    0 10px 22px rgba(20,184,166,.28),
+    inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+/* Active */
+.Abtn:active{
+  transform:translateY(0);
+}
+
+/* Focus */
+.Abtn:focus-visible{
+  outline:3px solid rgba(20,184,166,.28);
+  outline-offset:2px;
+}
+
+/* Mobile */
+@media (max-width:768px){
+
+  .Abtn{
+    padding:.8rem 1rem;
+    font-size:.9rem;
+    border-radius:9px;
+  }
+
 }
