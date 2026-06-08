@@ -411,3 +411,15 @@ body{
   font-size:1.05rem;
   line-height:1.7;
 }
+#businessCategoryInline,
+#businessTownInline {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all .3s ease;
+}
+
+.loaded #businessCategoryInline,
+.loaded #businessTownInline {
+  opacity: 1;
+  transform: translateY(0);
+}
