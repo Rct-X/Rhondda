@@ -376,12 +376,6 @@ body{
   justify-content: center;
   text-transform: uppercase;
 }
-/* Tiny divider between the items */
-.business-trust-bar span:not(:last-child)::after {
-  content: "•";
-  margin-left: .5rem;
-  color: #94A3B8;
-}
 
 
 .quick-actions{
