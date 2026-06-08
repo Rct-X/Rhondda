@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 // ======================================
 // IMPORT SHARED CATEGORY ALIASES
 // ======================================
-const categoryAliases = require("../../shared/categoryAliases");
+const categoryAliases = require("./categoryAliases");
 
 if (!admin.apps.length) {
   admin.initializeApp({
