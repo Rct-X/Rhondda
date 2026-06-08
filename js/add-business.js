@@ -142,16 +142,29 @@ fetch("/.netlify/functions/getCategoryAliases")
 
     Object.entries(categoryAliases).forEach(([category, aliases]) => {
 
-      const slug = slugify(category);
+  const slug = slugify(category);
 
-      aliases.forEach(alias => {
-        window.searchAliases[alias.toLowerCase()] = slug;
-      });
+  if (Array.isArray(aliases)) {
 
-      // Also map category itself
-      window.searchAliases[category.toLowerCase()] = slug;
+    aliases.forEach(alias => {
+
+      if (typeof alias === "string") {
+
+        window.searchAliases[
+          alias.toLowerCase()
+        ] = slug;
+
+      }
 
     });
+
+  }
+
+  window.searchAliases[
+    category.toLowerCase()
+  ] = slug;
+
+});
 
   })
   .catch(err => {
