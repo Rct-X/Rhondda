@@ -101,6 +101,53 @@ document.addEventListener("click", (e) => {
 });
 
 // ===============================
+// CATEGORY AUTOCOMPLETE
+// ===============================
+const categoryInput = document.getElementById("category");
+const categorySuggestions = document.getElementById("categorySuggestions");
+
+categoryInput.addEventListener("input", () => {
+  const value = categoryInput.value.toLowerCase();
+  categorySuggestions.innerHTML = "";
+
+  if (!value) {
+    categorySuggestions.style.display = "none";
+    return;
+  }
+
+  const matches = categories.filter(cat =>
+    cat.toLowerCase().includes(value)
+  );
+
+  if (!matches.length) {
+    categorySuggestions.style.display = "none";
+    return;
+  }
+
+  matches.forEach(match => {
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.textContent = match;
+
+    div.addEventListener("click", () => {
+      categoryInput.value = match;
+      categorySuggestions.style.display = "none";
+    });
+
+    categorySuggestions.appendChild(div);
+  });
+
+  categorySuggestions.style.display = "block";
+});
+
+// Hide suggestions when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".form-group")) {
+    categorySuggestions.style.display = "none";
+  }
+});
+
+// ===============================
 // SLUGIFY
 // ===============================
 function slugify(str) {
