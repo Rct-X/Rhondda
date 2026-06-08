@@ -272,3 +272,85 @@
   color: var(--text-soft);
   font-size: .95rem;
 }
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* DESKTOP = 4 */
+  gap: 1rem;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================
+   CATEGORY TILE
+============================ */
+
+.category-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.25s ease;
+}
+
+/* Hover (desktop only effect naturally) */
+.category-tile:hover {
+  transform: scale(1.03);
+}
+
+/* ============================
+   IMAGE
+============================ */
+
+.category-tile img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+/* Mobile tighter crop */
+@media (max-width: 600px) {
+  .category-tile img {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* ============================
+   LABEL OVERLAY
+============================ */
+
+.category-tile span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+
+  font-weight: 600;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* ============================
+   TOUCH OPTIMISATION
+============================ */
+
+.category-tile {
+  -webkit-tap-highlight-color: transparent;
+}
