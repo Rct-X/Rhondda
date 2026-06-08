@@ -26,7 +26,8 @@ export async function handler(event) {
       `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
 
     // ======================================
-    // SAFE-HOUR SCHEDULING (9AM–8PM)
+    // SAFE-HOUR SCHEDULING
+    // 9AM → 8PM
     // ======================================
 
     const now = new Date();
@@ -48,7 +49,7 @@ export async function handler(event) {
     }
 
     // ======================================
-    // HTML EMAIL
+    // EMAIL TEMPLATE
     // ======================================
 
     const htmlTemplate = `
@@ -58,9 +59,15 @@ export async function handler(event) {
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Your Business Has Been Added</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+  We've Added Your Business to RCTX
+</title>
 
 <style>
 
@@ -135,6 +142,12 @@ body{
   color:rgba(255,255,255,.82);
 }
 
+.hero-small{
+  margin-top:16px !important;
+  font-size:13px !important;
+  color:rgba(255,255,255,.66) !important;
+}
+
 .content{
   padding:34px 28px 30px;
 }
@@ -152,6 +165,10 @@ body{
   margin:0 0 18px;
 }
 
+.text strong{
+  color:#0f172a;
+}
+
 .highlight-box{
   background:
     linear-gradient(
@@ -164,12 +181,13 @@ body{
 
   border-radius:18px;
 
-  padding:20px;
-  margin:28px 0;
+  padding:22px;
+
+  margin:30px 0;
 }
 
 .highlight-box h3{
-  margin:0 0 10px;
+  margin:0 0 12px;
   font-size:18px;
   color:#0f172a;
 }
@@ -177,13 +195,13 @@ body{
 .highlight-box p{
   margin:0;
   font-size:15px;
-  line-height:1.7;
+  line-height:1.8;
   color:#475569;
 }
 
 .button-wrap{
   text-align:center;
-  padding:10px 0 30px;
+  padding:12px 0 30px;
 }
 
 .button{
@@ -294,14 +312,21 @@ body{
         RCT<span>X</span>
       </div>
 
+      <p class="hero-small">
+        Supporting local businesses across
+        Rhondda Cynon Taf & the South Wales Valleys
+      </p>
+
       <h1>
-        Your Business Is Now Live 🎉
+        We've Added Your Business 👋
       </h1>
 
       <p>
-        We've added your business to the
-        RCTX Directory so local customers
-        can discover and contact you.
+        Sorry to drop in unannounced —
+        we’ve added your business to the
+        RCTX Directory to help more local
+        people discover trusted businesses
+        across the Valleys.
       </p>
 
     </div>
@@ -314,32 +339,56 @@ body{
       </p>
 
       <p class="text">
-        Your business
+
+        We recently added
         <strong>{{businessName}}</strong>
-        has now been added to the
-        RCTX Directory.
+        to the RCTX Directory —
+        a growing local platform helping
+        people across Rhondda Cynon Taf
+        discover trusted local trades,
+        shops and services nearby.
+
       </p>
 
       <p class="text">
-        RCTX helps local people across
-        Rhondda Cynon Taf discover trusted
-        businesses and services nearby.
+
+        The listing is completely free
+        and gives local customers another
+        place to discover your business online.
+
       </p>
 
+      <p class="text">
+
+        We know business owners are busy,
+        so we’ve already created the page
+        to save you the hassle.
+
+      </p>
+
+      <!-- CLAIM BOX -->
       <div class="highlight-box">
 
         <h3>
-          Claim Your Listing
+          Want Control Of The Listing?
         </h3>
 
         <p>
-          You can take ownership of your
-          listing directly from the page
-          using the
+
+          You can claim ownership of the
+          page in under a minute using the
           <strong>
             "Claim this business"
           </strong>
-          button.
+          button directly on the listing.
+
+          <br><br>
+
+          Once claimed, you’ll be able to
+          upload photos, edit details,
+          add social links and keep the
+          page updated yourself.
+
         </p>
 
       </div>
@@ -369,10 +418,22 @@ body{
 
       </div>
 
-      <p class="text" style="margin-top:28px;">
-        Need changes or want help claiming
-        your listing? Simply reply to this
-        email and we'll help you out.
+      <p
+        class="text"
+        style="margin-top:28px;"
+      >
+
+        If anything needs changing,
+        or you'd rather we update the
+        listing for you, just reply to
+        this email and we'll sort it.
+
+      </p>
+
+      <p class="text">
+
+        Thanks for supporting local 👍
+
       </p>
 
     </div>
@@ -457,7 +518,7 @@ body{
       to: email,
 
       subject:
-        "Your Business Has Been Added to RCTX 🎉",
+        `We've added ${businessName} to RCTX 👋`,
 
       html: finalHtml,
 
