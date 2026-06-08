@@ -168,15 +168,17 @@ document.addEventListener("click", (e) => {
 // ===============================
 // CATEGORY AUTOCOMPLETE
 // ===============================
-const categoryInput = document.getElementById("category");
+const categoryInput = document.getElementById("category");        // hidden real value
+const categorySearch = document.getElementById("categorySearch"); // visible search box
 const categorySuggestions = document.getElementById("categorySuggestions");
 
-categoryInput.addEventListener("input", () => {
-  const value = categoryInput.value.toLowerCase();
+categorySearch.addEventListener("input", () => {
+  const value = categorySearch.value.toLowerCase();
   categorySuggestions.innerHTML = "";
 
   if (!value) {
     categorySuggestions.style.display = "none";
+    categoryInput.value = "";
     return;
   }
 
@@ -195,8 +197,12 @@ categoryInput.addEventListener("input", () => {
     div.textContent = match;
 
     div.addEventListener("click", () => {
-      categoryInput.value = match;
+      categorySearch.value = match;  // visible
+      categoryInput.value = match;   // hidden
       categorySuggestions.style.display = "none";
+
+      // Trigger waste licence logic
+      toggleWasteLicenceField();
     });
 
     categorySuggestions.appendChild(div);
