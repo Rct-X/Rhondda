@@ -27,9 +27,10 @@
   <meta name="twitter:image" content="https://rctx.co.uk/images/add-business.jpg">
 
   <!-- Styles -->
-    <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/add-business.css">
   <link rel="stylesheet" href="/website-checker/style.css">
+
   <!-- Theme -->
   <meta name="theme-color" content="#0b0f19">
 
@@ -48,420 +49,404 @@
     }
   }
   </script>
- <link rel="preload"
-      href="/site/fonts/BricolageGrotesque-Bold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin>
 
-<link rel="preload"
-      href="/site/fonts/Poppins-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin>
-  
-  
+  <link
+    rel="preload"
+    href="/site/fonts/BricolageGrotesque-Bold.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  >
+
+  <link
+    rel="preload"
+    href="/site/fonts/Poppins-Regular.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  >
 </head>
+
 <body class="add-business-page">
 
-<nav class="navbar" aria-label="Main navigation">
+  <nav class="navbar" aria-label="Main navigation">
     <div class="container">
 
-        <div class="nav-flex">
+      <div class="nav-flex">
 
-            <a href="/" class="logo-wrap" aria-label="RCTX Home">
-                <div class="logo">
-                    RCT<span>X</span>
-                </div>
-                <div class="logo-tag">
-                    Web Design
-                </div>
-            </a>
+        <a href="/" class="logo-wrap" aria-label="RCTX Home">
+          <div class="logo">
+            RCT<span>X</span>
+          </div>
 
-            <button
-                class="hamburger"
-                id="hamburgerBtn"
-                type="button"
-                aria-label="Open navigation menu"
-                aria-expanded="false"
-                aria-controls="mobileMenu">
+          <div class="logo-tag">
+            Web Design
+          </div>
+        </a>
 
-                <span></span>
-                <span></span>
-                <span></span>
+        <button
+          class="hamburger"
+          id="hamburgerBtn"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
+        <ul class="nav-links" id="mobileMenu">
+
+          <!-- WEB DESIGN GROUP -->
+          <li class="nav-group">
+
+            <button class="nav-group-title" type="button">
+              Web Design
             </button>
 
-            <ul class="nav-links" id="mobileMenu">
-
-                <!-- WEB DESIGN GROUP -->
-                <li class="nav-group">
-                    <button class="nav-group-title" type="button">
-                        Web Design
-                    </button>
-
-                    <ul class="nav-sub">
-                        <li><a href="/pricing">View Pricing</a></li>
-                        <li><a href="/about">About RCTX</a></li>
-                    </ul>
-                </li>
-
-                <!-- DIRECTORY GROUP -->
-                <li class="nav-group">
-                    <button class="nav-group-title" type="button">
-                        Directory
-                    </button>
-
-                    <ul class="nav-sub">
-                        <li><a href="/directory">Find Businesses</a></li>
-                        <li><a href="/add-business">Add Your Business</a></li>
-                    </ul>
-                </li>
- <li><a href="/contact">Get in Touch</a></li><li class="owner-login">
-  <a href="/owner-login" class="owner-login-link">
-    Business Login
-  </a>
-</li>
-                <!-- CTA (IMPORTANT) -->
-                <li class="nav-cta">
-                    <p>Business websites from £30/month</p>
-                    <a href="/pricing" class="nav-cta-btn">
-                        View Pricing
-                    </a>
-                </li>
-
+            <ul class="nav-sub">
+              <li><a href="/pricing">View Pricing</a></li>
+              <li><a href="/about">About RCTX</a></li>
             </ul>
 
-        </div>
+          </li>
 
-    </div>
-</nav>
+          <!-- DIRECTORY GROUP -->
+          <li class="nav-group">
 
-<main>
-  <section class="hero-small">
-    <div class="container">
-      <h1>Add Your Business to the RCTX Directory</h1>
-      <p class="text-dim">
-        Get your local business listed in our Rhondda Cynon Taf directory. It’s free to submit and we’ll review every listing.
-      </p>
-    </div>
-  </section>
+            <button class="nav-group-title" type="button">
+              Directory
+            </button>
 
-  <section class="section">
-    <div class="container">
-      <div class="verification-box">
-  <h3>We Verify Every Listing</h3>
-  <p>
-    To keep RCTX trustworthy for everyone in the Rhondda, every business is checked by Eddie before approval.
-    If your email link doesn’t open properly, just drop a message to 
-    <strong>support@rctx.co.uk</strong>.
-  </p>
-  <p>
-    Thanks for choosing to join us at RCTX — we’re proud to support local businesses.
-  </p>
+            <ul class="nav-sub">
+              <li><a href="/directory">Find Businesses</a></li>
+              <li><a href="/add-business">Add Your Business</a></li>
+            </ul>
+
+          </li>
+
+          <li>
+            <a href="/contact">Get in Touch</a>
+          </li>
+
+          <li class="owner-login">
+            <a href="/owner-login" class="owner-login-link">
+              Business Login
+            </a>
+          </li>
+
+          <!-- CTA -->
+          <li class="nav-cta">
+            <p>Business websites from £30/month</p>
+
+            <a href="/pricing" class="nav-cta-btn">
+              View Pricing
+            </a>
+          </li>
+
+        </ul>
+
       </div>
 
-      <form id="addBusinessForm" class="card form-card">
-        <h2>Business Details</h2>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="name">Business Name *</label>
-            <input type="text" id="name" required>
-          </div>
-<div class="form-group">
-  <label for="email">Your Email (required)</label>
-  <input 
-    type="email" 
-    id="email" 
-    name="email" 
-    required 
-    placeholder="you@example.com"
-  >
-</div>
-          <div class="form-group">
-  <label for="category">Category *</label>
-
-  <select id="category" required>
-
-    <option value="">Select a category</option>
-
-    <option value="Accountants">Accountants</option>
-    <option value="Aerial Installers">Aerial Installers</option>
-    <option value="Air Conditioning Services">Air Conditioning Services</option>
-    <option value="Architects">Architects</option>
-    <option value="Auto Electricians">Auto Electricians</option>
-
-    <option value="Bakers">Bakers</option>
-    <option value="Barbers">Barbers</option>
-    <option value="Bathroom Fitters">Bathroom Fitters</option>
-    <option value="Beauty Salons">Beauty Salons</option>
-    <option value="Bedroom Fitters">Bedroom Fitters</option>
-    <option value="Bike Repairs">Bike Repairs</option>
-    <option value="Blinds & Shutters">Blinds & Shutters</option>
-    <option value="Boiler Installers">Boiler Installers</option>
-    <option value="Bricklayers">Bricklayers</option>
-    <option value="Builders">Builders</option>
-    <option value="Building Supplies">Building Supplies</option>
-    <option value="Butchers">Butchers</option>
-
-    <option value="Cafes">Cafes</option>
-    <option value="Car Body Repairs">Car Body Repairs</option>
-    <option value="Car Dealers">Car Dealers</option>
-    <option value="Car Detailing">Car Detailing</option>
-    <option value="Car Hire">Car Hire</option>
-    <option value="Car Mechanics">Car Mechanics</option>
-    <option value="Car Valeting">Car Valeting</option>
-    <option value="Carpenters">Carpenters</option>
-    <option value="Carpet Cleaners">Carpet Cleaners</option>
-    <option value="Carpet Fitters">Carpet Fitters</option>
-    <option value="Caterers">Caterers</option>
-    <option value="Childcare Services">Childcare Services</option>
-    <option value="Chimney Sweeps">Chimney Sweeps</option>
-    <option value="Cleaners">Cleaners</option>
-    <option value="Computer Repairs">Computer Repairs</option>
-    <option value="Conservatory Installers">Conservatory Installers</option>
-    <option value="Courier Services">Courier Services</option>
-
-    <option value="Decorators">Decorators</option>
-    <option value="Dentists">Dentists</option>
-    <option value="Dog Groomers">Dog Groomers</option>
-    <option value="Double Glazing">Double Glazing</option>
-    <option value="Drainage Services">Drainage Services</option>
-    <option value="Driving Schools">Driving Schools</option>
-
-    <option value="Electricians">Electricians</option>
-    <option value="Estate Agents">Estate Agents</option>
-
-    <option value="Fencing Contractors">Fencing Contractors</option>
-    <option value="Financial Advisors">Financial Advisors</option>
-    <option value="Firewood Suppliers">Firewood Suppliers</option>
-    <option value="Flooring Services">Flooring Services</option>
-    <option value="Florists">Florists</option>
-    <option value="Funeral Directors">Funeral Directors</option>
-
-    <option value="Garage Doors">Garage Doors</option>
-    <option value="Garden Centres">Garden Centres</option>
-    <option value="Gardeners">Gardeners</option>
-    <option value="Gas Engineers">Gas Engineers</option>
-    <option value="Graphic Designers">Graphic Designers</option>
-    <option value="Greengrocers">Greengrocers</option>
-    <option value="Gutter Cleaning">Gutter Cleaning</option>
-    <option value="Gyms">Gyms</option>
-
-    <option value="Hairdressers">Hairdressers</option>
-    <option value="Handyman Services">Handyman Services</option>
-    <option value="Heating Engineers">Heating Engineers</option>
-    <option value="Home Care Services">Home Care Services</option>
-    <option value="House Clearances">House Clearances</option>
-
-    <option value="Insurance Brokers">Insurance Brokers</option>
-    <option value="Interior Designers">Interior Designers</option>
-
-    <option value="Joiners">Joiners</option>
-
-    
-    <option value="Kitchen Fitters">Kitchen Fitters</option>
-
-    <option value="Landscapers">Landscapers</option>
-    <option value="Laundry Services">Laundry Services</option>
-    <option value="Locksmiths">Locksmiths</option>
-
-    <option value="Man With A Van">Man With A Van</option>
-    <option value="Martial Arts Clubs">Martial Arts Clubs</option>
-    <option value="Massage Therapists">Massage Therapists</option>
-    <option value="Mobile Phone Repairs">Mobile Phone Repairs</option>
-    <option value="Mortgage Advisors">Mortgage Advisors</option>
-
-    <option value="Nail Salons">Nail Salons</option>
-
-    <option value="Osteopaths">Osteopaths</option>
-
-    <option value="Painters & Decorators">Painters & Decorators</option>
-    <option value="Party Supplies">Party Supplies</option>
-    <option value="Paving Contractors">Paving Contractors</option>
-    <option value="Personal Trainers">Personal Trainers</option>
-    <option value="Pest Control">Pest Control</option>
-    <option value="Pet Shops">Pet Shops</option>
-    <option value="Photographers">Photographers</option>
-    <option value="Physiotherapists">Physiotherapists</option>
-    <option value="Pizza Shops">Pizza Shops</option>
-    <option value="Plasterers">Plasterers</option>
-    <option value="Plumbers">Plumbers</option>
-    <option value="Pressure Washing">Pressure Washing</option>
-    <option value="Printers">Printers</option>
-
-    <option value="Removals">Removals</option>
-    <option value="Restaurants">Restaurants</option>
-    <option value="Roof Cleaners">Roof Cleaners</option>
-    <option value="Roofers">Roofers</option>
-
-    <option value="Scaffolding">Scaffolding</option>
-    <option value="Security Services">Security Services</option>
-    <option value="Shops">Shops</option>
-    <option value="Skip Hire">Skip Hire</option>
-    <option value="Solar Panel Installers">Solar Panel Installers</option>
-    <option value="Solicitors">Solicitors</option>
-    <option value="Sports Clubs">Sports Clubs</option>
-    <option value="Storage Services">Storage Services</option>
-
-    <option value="Takeaways">Takeaways</option>
-    <option value="Tattoo Studios">Tattoo Studios</option>
-    <option value="Taxi Services">Taxi Services</option>
-    <option value="Tilers">Tilers</option>
-    <option value="Travel Agents">Travel Agents</option>
-    <option value="Tree Surgeons">Tree Surgeons</option>
-    <option value="Tyres & Repairs">Tyres & Repairs</option>
-
-    <option value="Upholstery Cleaning">Upholstery Cleaning</option>
-
-    <option value="Vets">Vets</option>
-
-    <option value="Waste Collection">Waste Collection</option>
-    <option value="Wedding Services">Wedding Services</option>
-    <option value="Window Cleaners">Window Cleaners</option>
-    <option value="Window Fitters">Window Fitters</option>
-
-    <option value="Yoga Classes">Yoga Classes</option>
-
-  </select>
-          </div>
-<div class="form-group" id="wasteLicenceGroup" style="display:none;">
-  <label for="wasteLicence">
-    Waste Carrier Licence Number *
-  </label>
-
-  <input
-    type="text"
-    id="wasteLicence"
-    placeholder="CBDU123456">
-
-  <p class="text-xs text-dim">
-    Required for waste collection, house clearance and rubbish removal businesses.
-  </p>
-</div>
-
-<div class="form-group">
-  <label for="town">Town / Area *</label>
-
-  <input
-    type="text"
-    id="town"
-    required
-    autocomplete="off"
-    placeholder="Treorchy,Pontypridd etc"
-  >
-
-  <div id="townSuggestions" class="suggestions"></div>
-</div>
-
-          <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" placeholder="01443…">
-          </div>
-
-          <div class="form-group">
-            <label for="website">Website</label>
-            <input type="text" id="website" placeholder="rctx.co.uk">
-          </div>
-
-          <div class="form-group">
-  <label for="address">
-    Public Business Address (Optional)
-  </label>
-
-  <input
-    type="text"
-    id="address"
-    placeholder="Only if customers can visit"
-  >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="description">Short Description *</label>
-          <textarea id="description" rows="4" required placeholder="Tell people what you do, who you help, and what makes you different."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="extraKeywords">Extra Keywords (optional)</label>
-          <input type="text" id="extraKeywords" placeholder="barber, skin fade, kids cuts, beard trim">
-          <p class="text-xs text-dim">We’ll also auto-generate keywords from your business name, category and town.</p>
-        </div>
-
-        <div class="form-group checkbox-group">
-          <label>
-            <input type="checkbox" id="consent" required>
-            I confirm I am the owner or have permission to submit this business.
-          </label>
-        </div>
-
-        <div id="formMessage" class="form-message"></div>
-
-        <button type="submit" class="btn btn-primary" id="submitBtn">
-          Submit Business
-        </button>
-      </form>
-
     </div>
-  </section>
-</main>
+  </nav>
 
-<footer class="site-footer">
+  <main>
+
+    <section class="hero-small">
+      <div class="container">
+
+        <h1>Add Your Business to the RCTX Directory</h1>
+
+        <p class="text-dim">
+          Get your local business listed in our Rhondda Cynon Taf directory.
+          It’s free to submit and we’ll review every listing.
+        </p>
+
+      </div>
+    </section>
+
+    <section class="section">
+
+      <div class="container">
+
+        <div class="verification-box">
+
+          <h3>We Verify Every Listing</h3>
+
+          <p>
+            To keep RCTX trustworthy for everyone in the Rhondda,
+            every business is checked by Eddie before approval.
+            If your email link doesn’t open properly, just drop a message to
+            <strong>support@rctx.co.uk</strong>.
+          </p>
+
+          <p>
+            Thanks for choosing to join us at RCTX — we’re proud to support local businesses.
+          </p>
+
+        </div>
+
+        <form id="addBusinessForm" class="card form-card">
+
+          <h2>Business Details</h2>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="name">Business Name *</label>
+              <input type="text" id="name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Your Email *</label>
+
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="you@example.com"
+              >
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="form-group">
+
+              <label for="category">Category *</label>
+
+              <!-- Hidden real category value -->
+              <input type="hidden" id="category">
+
+              <!-- Search input -->
+              <input
+                type="text"
+                id="categorySearch"
+                placeholder="Start typing…"
+                autocomplete="off"
+                required
+              >
+
+              <div id="categorySuggestions" class="suggestions"></div>
+
+            </div>
+
+            <!-- WASTE LICENCE -->
+            <div
+              class="form-group"
+              id="wasteLicenceGroup"
+              style="display:none;"
+            >
+
+              <label for="wasteLicence">
+                Waste Carrier Licence Number *
+              </label>
+
+              <input
+                type="text"
+                id="wasteLicence"
+                placeholder="CBDU123456"
+              >
+
+              <p class="text-xs text-dim">
+                Required for waste collection, house clearance and rubbish removal businesses.
+              </p>
+
+            </div>
+
+            <!-- TOWN -->
+            <div class="form-group">
+
+              <label for="town">Town / Area *</label>
+
+              <input
+                type="text"
+                id="town"
+                required
+                autocomplete="off"
+                placeholder="Treorchy, Pontypridd etc"
+              >
+
+              <div id="townSuggestions" class="suggestions"></div>
+
+            </div>
+
+            <!-- PHONE -->
+            <div class="form-group">
+
+              <label for="phone">Phone</label>
+
+              <input
+                type="tel"
+                id="phone"
+                placeholder="01443…"
+              >
+
+            </div>
+
+            <!-- WEBSITE -->
+            <div class="form-group">
+
+              <label for="website">Website</label>
+
+              <input
+                type="text"
+                id="website"
+                placeholder="rctx.co.uk"
+              >
+
+            </div>
+
+            <!-- ADDRESS -->
+            <div class="form-group">
+
+              <label for="address">
+                Public Business Address (Optional)
+              </label>
+
+              <input
+                type="text"
+                id="address"
+                placeholder="Only if customers can visit"
+              >
+
+            </div>
+
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="form-group">
+
+            <label for="description">Short Description *</label>
+
+            <textarea
+              id="description"
+              rows="4"
+              required
+              placeholder="Tell people what you do, who you help, and what makes you different."
+            ></textarea>
+
+          </div>
+
+          <!-- EXTRA KEYWORDS -->
+          <div class="form-group">
+
+            <label for="extraKeywords">
+              Extra Keywords (optional)
+            </label>
+
+            <input
+              type="text"
+              id="extraKeywords"
+              placeholder="barber, skin fade, kids cuts, beard trim"
+            >
+
+            <p class="text-xs text-dim">
+              We’ll also auto-generate keywords from your business name,
+              category and town.
+            </p>
+
+          </div>
+
+          <!-- CONSENT -->
+          <div class="form-group checkbox-group">
+
+            <label>
+              <input type="checkbox" id="consent" required>
+
+              I confirm I am the owner or have permission
+              to submit this business.
+            </label>
+
+          </div>
+
+          <div id="formMessage" class="form-message"></div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="submitBtn"
+          >
+            Submit Business
+          </button>
+
+        </form>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
 
     <div class="container footer-inner">
 
-        <div class="footer-brand">
-            <div class="footer-logo">
-                RCT<span>X</span>
-            </div>
+      <div class="footer-brand">
 
-            <p>
-                Modern websites for businesses across
-                Rhondda Cynon Taf.
-            </p>
+        <div class="footer-logo">
+          RCT<span>X</span>
         </div>
 
-        <div class="footer-contact">
-            <h3>Contact</h3>
+        <p>
+          Modern websites for businesses across
+          Rhondda Cynon Taf.
+        </p>
 
-            <a href="tel:+447434745240">
-                07434 745240
-            </a>
+      </div>
 
-            <a href="mailto:support@rctx.co.uk">
-                support@rctx.co.uk
-            </a>
-            
-       <a href="https://wa.me/447434745240" class="footer-cta-mobile">
-    Message Eddie Directly
-</a>
-        </div>
+      <div class="footer-contact">
 
-        <div class="footer-links">
-            <h3>Legal</h3>
+        <h3>Contact</h3>
 
-            <a href="/policy/privacy-policy.html">
-                Privacy Policy
-            </a>
+        <a href="tel:+447434745240">
+          07434 745240
+        </a>
 
-            <a href="/policy/terms.html">
-                Terms & Conditions
-            </a>
-        </div>
+        <a href="mailto:support@rctx.co.uk">
+          support@rctx.co.uk
+        </a>
+
+        <a
+          href="https://wa.me/447434745240"
+          class="footer-cta-mobile"
+        >
+          Message Eddie Directly
+        </a>
+
+      </div>
+
+      <div class="footer-links">
+
+        <h3>Legal</h3>
+
+        <a href="/policy/privacy-policy.html">
+          Privacy Policy
+        </a>
+
+        <a href="/policy/terms.html">
+          Terms & Conditions
+        </a>
+
+      </div>
 
     </div>
 
     <div class="footer-bottom">
-        © <span id="year"></span> RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
+      © <span id="year"></span>
+      RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
     </div>
 
-</footer>
+  </footer>
 
-<script src="/js/add-business.js"></script>
-<script defer src="/js/footer-nav-faq.js"></script>
+  <script src="/js/add-business.js"></script>
+  <script defer src="/js/footer-nav-faq.js"></script>
+
   <script>
-window.RCTX_CLIENT_ID = "-MAIN SITE-";
+    window.RCTX_CLIENT_ID = "-MAIN SITE-";
   </script>
+
 </body>
 </html>
