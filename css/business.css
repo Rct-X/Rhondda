@@ -1,4 +1,4 @@
-/* ============================
+  /* ============================
    BUSINESS HEADER
 ============================ */
 .business-header{
@@ -277,16 +277,17 @@ border:none;
 line-height:1;
 }
 .biz-logo{
-  width:110px;
-  height:110px;
-  object-fit:cover;
-  border-radius:24px;
+  width:120px;
+  height:120px;
+  border-radius:28px;
   background:#fff;
-  padding:10px;
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.15),
-    inset 0 0 0 1px rgba(255,255,255,.08);
-  margin-bottom:1.25rem;
+  padding:12px;
+  margin-bottom:1rem;
+  transition:transform .2s ease;
+}
+
+.biz-logo:hover{
+  transform:scale(1.05);
 }
 
 #galleryWrapper {
@@ -358,4 +359,57 @@ line-height:1;
 html,
 body{
   overflow-x:hidden;
+}
+
+.business-trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #F5D061; /* Brighter gold for dark background */
+  background: #1A1F2C; /* Deep slate dark background */
+  padding: .75rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 208, 97, 0.2); /* Subtle gold border */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.quick-actions{
+  display:flex;
+  gap:.75rem;
+  margin-bottom:1.5rem;
+  flex-wrap:wrap;
+}
+
+.qa-btn{
+  flex:1;
+  text-align:center;
+  padding:.9rem 1rem;
+  border-radius:14px;
+  background:rgba(37,99,235,.12);
+  border:1px solid rgba(37,99,235,.25);
+  color:var(--text);
+  font-weight:600;
+  text-decoration:none;
+}
+.related-thumb{
+  height:90px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  margin-bottom:.75rem;
+}
+.business-info h2{
+  font-size:2rem;
+}
+
+.business-info p,
+.business-contact li{
+  font-size:1.05rem;
+  line-height:1.7;
 }
