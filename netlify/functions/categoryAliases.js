@@ -832,11 +832,12 @@ module.exports = {
     "wasp nest removal"
   ],
 
- ",
-    "deep tissue massage",
-    "sports massage"
-  ],
-
+"Massage Therapist": [
+  "massage",
+  "deep tissue massage",
+  "sports massage"
+],
+  
   // =========================
   // MOBILE PHONE REPAIRS
   // =========================
