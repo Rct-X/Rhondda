@@ -1,4 +1,4 @@
-const categoryAliases = require("/shared/categoryAliases.js");
+const categoryAliases = require("./categoryAliases");
 
 exports.handler = async () => {
 
