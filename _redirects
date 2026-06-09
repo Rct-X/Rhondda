@@ -2,8 +2,7 @@
 # OG PREVIEWS + DIRECTORY ROUTING
 # -----------------------------------------
 
-# All directory requests go to OG function
-/directory/*   /.netlify/functions/og-listing/:splat   200
+
 
 # Business SPA page (fallback route)
 /directory/:category/:town/:slug   /directory/business.html   200
