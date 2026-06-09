@@ -8,28 +8,15 @@ async function loadFirebaseConfig() {
 
 let db;
 
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-function setHTML(id, html) {
-  const el = document.getElementById(id);
-  if (el) el.innerHTML = html;
-}
-
 // ===============================
-// GET URL PARAMS (CLEAN)
+// READ URL PATH PARAMETERS
 // ===============================
 function getPathParams() {
-  const parts = window.location.pathname
-    .split("/")
-    .filter(Boolean);
 
-  // Expect: /directory/category/town/slug
-  if (parts.length !== 4 || parts[0] !== "directory") {
-    return null;
-  }
+  const parts =
+    window.location.pathname
+      .split("/")
+      .filter(Boolean);
 
   return {
     category: parts[1],
@@ -42,27 +29,34 @@ function getPathParams() {
 // INIT FIREBASE + LOAD BUSINESS
 // ===============================
 (async () => {
+
   try {
-    const config = await loadFirebaseConfig();
 
-if (!window.firebase) {
-  throw new Error("Firebase SDK not loaded");
-}
+    const config =
+      await loadFirebaseConfig();
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(config);
-}
+    // Initialise Firebase only once
+    if (!firebase.apps.length) {
 
-if (!firebase.firestore) {
-  throw new Error("Firestore not loaded");
-}
+      firebase.initializeApp(config);
 
-db = firebase.firestore();
+    }
 
-    const page = getPathParams();
+    db = firebase.firestore();
 
-    if (!page) {
-      console.error("Invalid URL structure");
+    const page =
+      getPathParams();
+
+    if (
+      !page.category ||
+      !page.town ||
+      !page.slug
+    ) {
+
+      console.error(
+        "Missing URL parameters"
+      );
+
       return;
     }
 
@@ -73,8 +67,13 @@ db = firebase.firestore();
     );
 
   } catch (err) {
-    console.error("Init error:", err);
-  }
+
+console.error(
+      "Init error:",
+      err
+    );
+  } 
+
 })();
 
 // ===============================
@@ -124,7 +123,8 @@ async function loadBusiness(
   // ===============================
   // MAIN CONTENT
   // ===============================
-  setText("businessName", b.name);
+  document.getElementById("businessName")
+    .textContent = b.name;
 
 document.getElementById("businessCategory").textContent = b.category;
 document.getElementById("businessTown").textContent = b.town;
@@ -333,26 +333,39 @@ if (webBtn) {
   // ===============================
   // BADGES
   // ===============================
-  const badges = [];
+  if (b.verified) {
 
-// VERIFIED
-if (b.verified) {
-  badges.push(`<span class="badge badge-verified">Verified</span>`);
-}
+    document.getElementById("verifiedBadge")
+      .innerHTML += `
+        <span class="badge badge-verified">
+          Verified
+        </span>
+      `;
+  }
 
-// CLAIMED
-if (b.ownerId) {
-  badges.push(`<span class="badge badge-claimed">Claimed</span>`);
-  setText("claimedMessage", "This business listing has been claimed by the owner.");
-}
+  if (b.ownerId) {
 
-// WASTE LICENCE
-if (b.wasteLicence) {
-  badges.push(`<span class="badge badge-waste">♻️ Licensed Waste Carrier</span>`);
-}
+    document.getElementById("claimedBadge")
+      .innerHTML += `
+        <span class="badge badge-claimed">
+          Claimed
+        </span>
+      `;
 
-// APPLY ONCE (clean DOM)
-setHTML("verifiedBadge", badges.join(" "));
+    document.getElementById("claimedMessage")
+      .textContent =
+        "This business listing has been claimed by the owner.";
+  }
+
+  if (b.wasteLicence) {
+
+    document.getElementById("verifiedBadge")
+      .innerHTML += `
+        <span class="badge badge-waste">
+          ♻️ Licensed Waste Carrier
+        </span>
+      `;
+  }
 
   // ===============================
   // HOURS
@@ -453,9 +466,7 @@ async function loadRelated(
       b.slug !== currentSlug
     ) {
 
-      if (!results.some(r => r.slug === b.slug)) {
-  results.push(b);
-}
+      results.push(b);
     }
   });
 
