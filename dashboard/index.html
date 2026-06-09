@@ -326,6 +326,11 @@ function renderDashboard(visits){
         .map(([src,count]) => `<li>${src}: ${count}</li>`)
         .join("");
 
+    const pageList = Object.entries(data.pages)
+  .sort((a,b)=>b[1]-a[1])
+  .map(([p,count]) => `<li>${p}: ${count}</li>`)
+  .join("");
+
     wrap.innerHTML += `
       <div class="client">
 
@@ -334,6 +339,9 @@ function renderDashboard(visits){
         <div class="stat">${data.total} visits</div>
 
         <div class="stat">Most viewed page: ${topPage}</div>
+
+<div class="stat">All page views:</div>
+<ul class="small">${pageList}</ul>
 
         <div class="stat">Top converting page: ${topConvertingPage}</div>
 
