@@ -95,10 +95,12 @@ exports.handler = async (event) => {
     // HUMAN VISITOR → REDIRECT TO REAL PAGE
     // ----------------------
     if (!isBot) {
-      return {
-        statusCode: 302,
-        headers: { Location: finalUrl },
-      };
+  return {
+    statusCode: 302,
+    headers: {
+      Location: `/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}`
+    }
+  };
     }
 
     // ----------------------
