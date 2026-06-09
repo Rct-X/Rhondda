@@ -11,18 +11,35 @@ let db;
 // ===============================
 // READ URL PATH PARAMETERS
 // ===============================
-function getPathParams() {
+function getBusinessParams() {
+  const url = new URL(window.location.href);
 
-  const parts =
-    window.location.pathname
-      .split("/")
-      .filter(Boolean);
+  // 1️⃣ Query params (OG redirect)
+  const categoryQP = url.searchParams.get("category");
+  const townQP = url.searchParams.get("town");
+  const slugQP = url.searchParams.get("slug");
 
-  return {
-    category: parts[1],
-    town: parts[2],
-    slug: parts[3]
-  };
+  if (categoryQP && townQP && slugQP) {
+    return {
+      category: categoryQP,
+      town: townQP,
+      slug: slugQP
+    };
+  }
+
+  // 2️⃣ Pretty URL fallback
+  const parts = window.location.pathname.split("/").filter(Boolean);
+
+  // Expected: /directory/category/town/slug
+  if (parts.length >= 4) {
+    return {
+      category: parts[1],
+      town: parts[2],
+      slug: parts[3]
+    };
+  }
+
+  return null;
 }
 
 // ===============================
@@ -44,27 +61,14 @@ function getPathParams() {
 
     db = firebase.firestore();
 
-    const page =
-      getPathParams();
+const page = getBusinessParams();
 
-    if (
-      !page.category ||
-      !page.town ||
-      !page.slug
-    ) {
+if (!page) {
+  console.error("Missing business parameters");
+  return;
+}
 
-      console.error(
-        "Missing URL parameters"
-      );
-
-      return;
-    }
-
-    await loadBusiness(
-      page.category,
-      page.town,
-      page.slug
-    );
+await loadBusiness(page.category, page.town, page.slug);
 
   } catch (err) {
 
