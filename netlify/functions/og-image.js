@@ -3,14 +3,10 @@ const { Resvg } = require("@resvg/resvg-js");
 const fs = require("fs");
 const path = require("path");
 
-const FONT_FILE = path.resolve(
-  __dirname,
-  "../fonts/Inter-Bold.ttf"
-);
+// Load Inter Bold font
+const FONT_FILE = path.resolve(__dirname, "../fonts/Inter-Bold.ttf");
 
-// ----------------------
-// Helper: escape HTML
-// ----------------------
+// Escape HTML
 function escape(str = "") {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -28,9 +24,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: "Missing slug" };
     }
 
-    // ----------------------
     // Fetch business
-    // ----------------------
     const url = `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents/businesses`;
     const res = await fetch(url);
     const data = await res.json();
@@ -56,67 +50,91 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: "Business not found" };
     }
 
-    // ----------------------
-    // SVG TEMPLATE (with embedded font)
-    // ----------------------
+    // CATEGORY COLOURS
+    const categoryColors = {
+      "Cleaning": ["#4CAF50", "#2E7D32"],
+      "Trades": ["#FF9800", "#F57C00"],
+      "Beauty": ["#E91E63", "#AD1457"],
+      "Food": ["#9C27B0", "#6A1B9A"],
+      "Tech": ["#2196F3", "#1565C0"],
+    };
+
+    const [c1, c2] = categoryColors[business.category] || ["#1B2B5A", "#3A6EA5"];
+
+    // SVG TEMPLATE
     const svg = `
 <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+
 <style>
   .title {
     font-family: Inter;
-    font-size: 70px;
+    font-size: 80px;
     font-weight: 700;
     fill: white;
+    filter: url(#softGlow);
   }
 
   .sub {
     font-family: Inter;
-    font-size: 40px;
-    fill: #D0D8E0;
+    font-size: 42px;
+    fill: #E3E9F0;
   }
 
   .brand {
     font-family: Inter;
-    font-size: 32px;
-    fill: #8FA3B8;
+    font-size: 34px;
+    fill: #C7D4E5;
+  }
+
+  .cta {
+    font-family: Inter;
+    font-size: 36px;
+    font-weight: 700;
+    fill: #000;
   }
 </style>
 
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0A1A2F"/>
-      <stop offset="100%" stop-color="#1E3A5F"/>
-    </linearGradient>
-  </defs>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="${c1}"/>
+    <stop offset="100%" stop-color="${c2}"/>
+  </linearGradient>
 
-  <rect width="1200" height="630" fill="url(#bg)" rx="20"/>
+  <filter id="softGlow">
+    <feGaussianBlur stdDeviation="12" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
 
-  <text x="60" y="200" class="title">${escape(business.name)}</text>
+<rect width="1200" height="630" fill="url(#bg)" rx="28"/>
 
-  <text x="60" y="300" class="sub">
-    ${escape(business.category)} in ${escape(business.town)}
-  </text>
+<text x="60" y="200" class="title">${escape(business.name)}</text>
 
-  <text x="60" y="580" class="brand">RCTX Directory</text>
+<text x="60" y="300" class="sub">
+  ${escape(business.category)} in ${escape(business.town)}
+</text>
+
+<!-- CTA BUTTON -->
+<rect x="60" y="480" width="380" height="90" rx="14" fill="#FFEB3B"/>
+<text x="90" y="540" class="cta">View Business →</text>
+
+<text x="60" y="610" class="brand">RCTX Directory</text>
 
 </svg>
 `;
 
-    // ----------------------
     // Render PNG
-    // ----------------------
     const resvg = new Resvg(svg, {
-  fitTo: {
-    mode: "width",
-    value: 1200
-  },
-
-  font: {
-    loadSystemFonts: false,
-    defaultFontFamily: "Inter",
-    fontFiles: [FONT_FILE]
-  }
-});
+      fitTo: { mode: "width", value: 1200 },
+      font: {
+        loadSystemFonts: false,
+        defaultFontFamily: "Inter",
+        fontFiles: [FONT_FILE]
+      }
+    });
 
     const png = resvg.render().asPng();
 
