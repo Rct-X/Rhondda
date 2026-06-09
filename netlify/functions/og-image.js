@@ -1,5 +1,15 @@
 const fetch = require("node-fetch");
 const { Resvg } = require("@resvg/resvg-js");
+const fs = require("fs");
+const path = require("path");
+
+// ----------------------
+// Load Base64 font from file
+// ----------------------
+const FONT_BASE64 = fs.readFileSync(
+  path.join(__dirname, "../fonts/inter-base64.txt"),
+  "utf8"
+);
 
 // ----------------------
 // Helper: escape HTML
@@ -50,10 +60,34 @@ exports.handler = async (event) => {
     }
 
     // ----------------------
-    // SVG TEMPLATE
+    // SVG TEMPLATE (with embedded font)
     // ----------------------
     const svg = `
 <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      src: url('data:font/ttf;base64,${FONT_BASE64}') format('truetype');
+    }
+    .title {
+      font-family: 'Inter';
+      font-size: 70px;
+      font-weight: 700;
+      fill: white;
+    }
+    .sub {
+      font-family: 'Inter';
+      font-size: 40px;
+      fill: #D0D8E0;
+    }
+    .brand {
+      font-family: 'Inter';
+      font-size: 32px;
+      fill: #8FA3B8;
+    }
+  </style>
+
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0A1A2F"/>
@@ -63,27 +97,14 @@ exports.handler = async (event) => {
 
   <rect width="1200" height="630" fill="url(#bg)" rx="20"/>
 
-  <text x="60" y="200"
-        font-size="70"
-        font-family="Arial, sans-serif"
-        fill="white"
-        font-weight="700">
-    ${escape(business.name)}
-  </text>
+  <text x="60" y="200" class="title">${escape(business.name)}</text>
 
-  <text x="60" y="300"
-        font-size="40"
-        font-family="Arial, sans-serif"
-        fill="#D0D8E0">
+  <text x="60" y="300" class="sub">
     ${escape(business.category)} in ${escape(business.town)}
   </text>
 
-  <text x="60" y="580"
-        font-size="32"
-        font-family="Arial, sans-serif"
-        fill="#8FA3B8">
-    RCTX Directory
-  </text>
+  <text x="60" y="580" class="brand">RCTX Directory</text>
+
 </svg>
 `;
 
