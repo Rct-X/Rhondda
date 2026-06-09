@@ -1,13 +1,18 @@
 # -----------------------------------------
-# OG FUNCTION FIRST (GLOBAL)
+# OG FUNCTION FOR BUSINESS PAGES ONLY
 # -----------------------------------------
-/directory/*   /.netlify/functions/og-listing/:splat   200
+
+/directory/:category/:town/:slug   /.netlify/functions/og-listing/:splat   200
 
 
 # -----------------------------------------
 # NORMAL USER ROUTING (SPA)
 # -----------------------------------------
+
+# Business SPA page
 /directory/:category/:town/:slug   /directory/business.html   200
+
+# Category + town pages
 /directory/*                       /directory.html            200
 
 
