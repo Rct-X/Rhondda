@@ -1,14 +1,32 @@
 # -----------------------------------------
-# OG PREVIEWS + DIRECTORY ROUTING
+# OG PREVIEWS FOR SOCIAL MEDIA BOTS ONLY
 # -----------------------------------------
 
+/user-agent:facebookexternalhit/*
+/directory/*   /.netlify/functions/og-listing/:splat   200
+
+/user-agent:Twitterbot/*
+/directory/*   /.netlify/functions/og-listing/:splat   200
+
+/user-agent:WhatsApp/*
+/directory/*   /.netlify/functions/og-listing/:splat   200
+
+/user-agent:LinkedInBot/*
+/directory/*   /.netlify/functions/og-listing/:splat   200
+
+/user-agent:Applebot/*
+/directory/*   /.netlify/functions/og-listing/:splat   200
 
 
-# Business SPA page (fallback route)
+# -----------------------------------------
+# NORMAL USER ROUTING (SPA)
+# -----------------------------------------
+
 /directory/:category/:town/:slug   /directory/business.html   200
+/directory/*                       /directory.html            200
 
-# Category + town pages fallback
-/directory/*   /directory.html   200
 
-# Sitemap
+# -----------------------------------------
+# SITEMAP
+# -----------------------------------------
 /sitemap.xml   /.netlify/functions/sitemap   200
