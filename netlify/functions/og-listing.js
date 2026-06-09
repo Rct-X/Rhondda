@@ -117,7 +117,7 @@ exports.handler = async (event) => {
 
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<meta property="og:image" content="${image}">
+<meta property="og:image" content="https://rctx.co.uk/.netlify/functions/og-image?slug=${businessSlug}">
 <meta property="og:url" content="${finalUrl}">
 <meta property="og:type" content="website">
 
