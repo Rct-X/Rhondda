@@ -32,9 +32,3 @@
   from = "/sitemap.xml"
   to = "/sitemap.xml"
   status = 200
-
-[[redirects]]
-  from = "/directory/*"
-  to = "/.netlify/functions/og-listing/:splat"
-  status = 200
-  force = true
