@@ -1,6 +1,8 @@
 const admin = require("firebase-admin");
 
-// Init Firebase safely
+// ----------------------
+// Firebase Init
+// ----------------------
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault(),
@@ -9,38 +11,63 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// ----------------------
+// Helper: safe HTML escape (prevents broken meta tags)
+// ----------------------
+function escapeHtml(str = "") {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// ----------------------
+// Handler
+// ----------------------
 exports.handler = async (event) => {
-
-  const path = event.path.split("/.netlify/functions/og-listing")[1]; 
-  console.log("OG FUNCTION HIT:", path);
-
-  // /directory/category/town/business-slug
-  const parts = path.split("/").filter(Boolean);
-
-  const categorySlug = parts[1] || "";
-  const townSlug = parts[2] || "";
-  const businessSlug = parts[3] || "";
-
-  console.log("PARSED:", {
-    categorySlug,
-    townSlug,
-    businessSlug
-  });
-
-  if (!businessSlug) {
-    return {
-      statusCode: 400,
-      body: "Invalid URL structure"
-    };
-  }
-
   try {
-    // STEP 1: pull all (DEBUG SAFE VERSION)
+    let path = event.path || "";
+
+    console.log("OG FUNCTION HIT:", path);
+
+    // Remove Netlify function prefix if present
+    path = path.replace("/.netlify/functions/og-listing", "");
+
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
+
+    // Expected:
+    // /directory/category/town/business
+    const parts = path.split("/").filter(Boolean);
+
+    const categorySlug = parts[1] || parts[0] || "";
+    const townSlug = parts[2] || "";
+    const businessSlug = parts[3] || parts[2] || parts[1] || parts[0] || "";
+
+    console.log("PARSED:", {
+      categorySlug,
+      townSlug,
+      businessSlug
+    });
+
+    if (!businessSlug) {
+      return {
+        statusCode: 400,
+        body: "Invalid URL structure"
+      };
+    }
+
+    // ----------------------
+    // Firestore lookup (safe + simple scan version)
+    // ----------------------
     const snap = await db.collection("businesses").get();
 
     let business = null;
 
-    snap.forEach(doc => {
+    snap.forEach((doc) => {
       const data = doc.data();
 
       if (data.slug === businessSlug) {
@@ -48,9 +75,8 @@ exports.handler = async (event) => {
       }
     });
 
-    // STEP 2: fallback check (sometimes slug is missing)
     if (!business) {
-      console.log("NO MATCH FOUND FOR:", businessSlug);
+      console.log("NO MATCH FOUND:", businessSlug);
 
       return {
         statusCode: 404,
@@ -60,12 +86,15 @@ exports.handler = async (event) => {
 
     console.log("BUSINESS FOUND:", business.name);
 
+    // ----------------------
     // OG VALUES
-    const title = business.name || "RCTX Listing";
+    // ----------------------
+    const title = escapeHtml(business.name || "RCTX Listing");
 
-    const description =
+    const description = escapeHtml(
       business.description ||
-      `Find ${categorySlug.replace("-", " ")} in ${townSlug.replace("-", " ")} on RCTX`;
+      `Find ${categorySlug.replace(/-/g, " ")} in ${townSlug.replace(/-/g, " ")} on RCTX`
+    );
 
     const image =
       business.logo ||
@@ -74,6 +103,9 @@ exports.handler = async (event) => {
 
     const url = `https://rctx.co.uk${path}`;
 
+    // ----------------------
+    // Return HTML with OG tags
+    // ----------------------
     return {
       statusCode: 200,
       headers: {
@@ -94,12 +126,15 @@ exports.handler = async (event) => {
 
 <meta name="twitter:card" content="summary_large_image">
 
+</head>
+<body>
+
 <script>
-window.location.href = "${url}";
+  // redirect real users to frontend page
+  window.location.href = "${url}";
 </script>
 
-</head>
-<body></body>
+</body>
 </html>
 `
     };
