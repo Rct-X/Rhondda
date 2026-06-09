@@ -7,7 +7,7 @@ const path = require("path");
 // Load Base64 font from file
 // ----------------------
 const FONT_BASE64 = fs.readFileSync(
-  path.join(__dirname, "../fonts/inter-base64.txt"),
+  path.join(__dirname, "./fonts/inter-base64.txt"),
   "utf8"
 );
 
