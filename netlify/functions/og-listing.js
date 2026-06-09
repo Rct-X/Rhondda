@@ -1,115 +1,98 @@
-const admin = require("firebase-admin");
-
-// Init Firebase safely
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
-}
-
-const db = admin.firestore();
-
 exports.handler = async (event) => {
-
-  const path = event.path.split("/.netlify/functions/og-listing")[1]; 
-  console.log("OG FUNCTION HIT:", path);
-
-  // /directory/category/town/business-slug
-  const parts = path.split("/").filter(Boolean);
-
-  const categorySlug = parts[1] || "";
-  const townSlug = parts[2] || "";
-  const businessSlug = parts[3] || "";
-
-  console.log("PARSED:", {
-    categorySlug,
-    townSlug,
-    businessSlug
-  });
-
-  if (!businessSlug) {
-    return {
-      statusCode: 400,
-      body: "Invalid URL structure"
-    };
-  }
-
   try {
-    // STEP 1: pull all (DEBUG SAFE VERSION)
-    const snap = await db.collection("businesses").get();
+    const base = "https://rctx.co.uk";
+    const project = process.env.RN_FIREBASE_PROJECT_ID;
 
+    // Extract path
+    const fullUrl = event.rawUrl || "";
+    const match = fullUrl.match(/\/directory\/.*$/);
+
+    if (!match) {
+      return { statusCode: 400, body: "Invalid directory URL" };
+    }
+
+    const path = match[0];
+    const parts = path.split("/").filter(Boolean);
+
+    const categorySlug = parts[1];
+    const townSlug = parts[2];
+    const businessSlug = parts[3];
+
+    if (!businessSlug) {
+      return { statusCode: 400, body: "Missing business slug" };
+    }
+
+    // Fetch ALL businesses (REST API)
+    const url = `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents/businesses`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.documents) {
+      return { statusCode: 404, body: "No businesses found" };
+    }
+
+    // Find matching business
     let business = null;
 
-    snap.forEach(doc => {
-      const data = doc.data();
-
-      if (data.slug === businessSlug) {
-        business = data;
+    data.documents.forEach(doc => {
+      const f = doc.fields;
+      if (f.slug?.stringValue === businessSlug) {
+        business = {
+          name: f.name?.stringValue,
+          description: f.description?.stringValue,
+          categorySlug: f.categorySlug?.stringValue,
+          townSlug: f.townSlug?.stringValue,
+          image: f.image?.stringValue,
+          logo: f.logo?.stringValue
+        };
       }
     });
 
-    // STEP 2: fallback check (sometimes slug is missing)
     if (!business) {
-      console.log("NO MATCH FOUND FOR:", businessSlug);
-
-      return {
-        statusCode: 404,
-        body: `Business not found: ${businessSlug}`
-      };
+      return { statusCode: 404, body: "Business not found" };
     }
 
-    console.log("BUSINESS FOUND:", business.name);
-
-    // OG VALUES
+    // OG values
     const title = business.name || "RCTX Listing";
-
     const description =
       business.description ||
-      `Find ${categorySlug.replace("-", " ")} in ${townSlug.replace("-", " ")} on RCTX`;
+      `Find ${categorySlug.replace(/-/g, " ")} in ${townSlug.replace(/-/g, " ")} on RCTX`;
 
     const image =
       business.logo ||
       business.image ||
-      `https://rctx.co.uk/images/categories/${categorySlug}.webp`;
+      `${base}/images/categories/${categorySlug}.webp`;
 
-    const url = `https://rctx.co.uk${path}`;
+    const finalUrl = `${base}${path}`;
 
+    // Return OG HTML
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "text/html"
-      },
+      headers: { "Content-Type": "text/html" },
       body: `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-
 <title>${title}</title>
 
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
 <meta property="og:image" content="${image}">
-<meta property="og:url" content="${url}">
+<meta property="og:url" content="${finalUrl}">
 <meta property="og:type" content="website">
 
 <meta name="twitter:card" content="summary_large_image">
-
-<script>
-window.location.href = "${url}";
-</script>
-
 </head>
-<body></body>
+<body>
+<script>
+  window.location.href = "${finalUrl}";
+</script>
+</body>
 </html>
 `
     };
 
   } catch (err) {
-    console.log("FUNCTION ERROR:", err);
-
-    return {
-      statusCode: 500,
-      body: "Server error in OG function"
-    };
+    return { statusCode: 500, body: "Server error" };
   }
 };
