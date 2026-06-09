@@ -3,12 +3,9 @@ const { Resvg } = require("@resvg/resvg-js");
 const fs = require("fs");
 const path = require("path");
 
-// ----------------------
-// Load Base64 font from file
-// ----------------------
-const FONT_BASE64 = fs.readFileSync(
-  path.join(__dirname, "../fonts/inter-base64.txt"),
-  "utf8"
+const FONT_FILE = path.resolve(
+  __dirname,
+  "../fonts/Inter-Bold.ttf"
 );
 
 // ----------------------
@@ -64,29 +61,26 @@ exports.handler = async (event) => {
     // ----------------------
     const svg = `
 <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .title {
+    font-family: Inter;
+    font-size: 70px;
+    font-weight: 700;
+    fill: white;
+  }
 
-  <style>
-    @font-face {
-      font-family: 'Inter';
-      src: url('data:font/ttf;base64,${FONT_BASE64}') format('truetype');
-    }
-    .title {
-      font-family: 'Inter';
-      font-size: 70px;
-      font-weight: 700;
-      fill: white;
-    }
-    .sub {
-      font-family: 'Inter';
-      font-size: 40px;
-      fill: #D0D8E0;
-    }
-    .brand {
-      font-family: 'Inter';
-      font-size: 32px;
-      fill: #8FA3B8;
-    }
-  </style>
+  .sub {
+    font-family: Inter;
+    font-size: 40px;
+    fill: #D0D8E0;
+  }
+
+  .brand {
+    font-family: Inter;
+    font-size: 32px;
+    fill: #8FA3B8;
+  }
+</style>
 
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -112,8 +106,17 @@ exports.handler = async (event) => {
     // Render PNG
     // ----------------------
     const resvg = new Resvg(svg, {
-      fitTo: { mode: "width", value: 1200 }
-    });
+  fitTo: {
+    mode: "width",
+    value: 1200
+  },
+
+  font: {
+    loadSystemFonts: false,
+    defaultFontFamily: "Inter",
+    fontFiles: [FONT_FILE]
+  }
+});
 
     const png = resvg.render().asPng();
 
