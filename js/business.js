@@ -1,42 +1,3 @@
-function getBusinessParams() {
-  const url = new URL(window.location.href);
-
-  // 1️⃣ Try query params first (OG redirect)
-  const categoryQP = url.searchParams.get("category");
-  const townQP = url.searchParams.get("town");
-  const slugQP = url.searchParams.get("slug");
-
-  if (categoryQP && townQP && slugQP) {
-    return {
-      category: categoryQP,
-      town: townQP,
-      slug: slugQP
-    };
-  }
-
-  // 2️⃣ Fallback to pretty URL
-  const parts = window.location.pathname.split("/").filter(Boolean);
-
-  // Expected: /directory/category/town/slug
-  if (parts.length >= 4) {
-    return {
-      category: parts[1],
-      town: parts[2],
-      slug: parts[3]
-    };
-  }
-
-  return null;
-}
-
-const params = getBusinessParams();
-
-if (!params) {
-  console.error("Missing business parameters");
-} else {
-  loadBusiness(params.category, params.town, params.slug);
-}
-
 // ===============================
 // FETCH FIREBASE CONFIG
 // ===============================
@@ -47,15 +8,28 @@ async function loadFirebaseConfig() {
 
 let db;
 
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function setHTML(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
 // ===============================
-// READ URL PATH PARAMETERS
+// GET URL PARAMS (CLEAN)
 // ===============================
 function getPathParams() {
+  const parts = window.location.pathname
+    .split("/")
+    .filter(Boolean);
 
-  const parts =
-    window.location.pathname
-      .split("/")
-      .filter(Boolean);
+  // Expect: /directory/category/town/slug
+  if (parts.length !== 4 || parts[0] !== "directory") {
+    return null;
+  }
 
   return {
     category: parts[1],
@@ -68,34 +42,27 @@ function getPathParams() {
 // INIT FIREBASE + LOAD BUSINESS
 // ===============================
 (async () => {
-
   try {
+    const config = await loadFirebaseConfig();
 
-    const config =
-      await loadFirebaseConfig();
+if (!window.firebase) {
+  throw new Error("Firebase SDK not loaded");
+}
 
-    // Initialise Firebase only once
-    if (!firebase.apps.length) {
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}
 
-      firebase.initializeApp(config);
+if (!firebase.firestore) {
+  throw new Error("Firestore not loaded");
+}
 
-    }
+db = firebase.firestore();
 
-    db = firebase.firestore();
+    const page = getPathParams();
 
-    const page =
-      getPathParams();
-
-    if (
-      !page.category ||
-      !page.town ||
-      !page.slug
-    ) {
-
-      console.error(
-        "Missing URL parameters"
-      );
-
+    if (!page) {
+      console.error("Invalid URL structure");
       return;
     }
 
@@ -106,13 +73,8 @@ function getPathParams() {
     );
 
   } catch (err) {
-
-console.error(
-      "Init error:",
-      err
-    );
-  } 
-
+    console.error("Init error:", err);
+  }
 })();
 
 // ===============================
@@ -160,125 +122,9 @@ async function loadBusiness(
     );
 
   // ===============================
-  // OG TAGS
-  // ===============================
-  document.querySelector('meta[property="og:title"]')
-    ?.setAttribute(
-      "content",
-      `${b.name} | ${b.category} in ${b.town}`
-    );
-
-  document.querySelector('meta[property="og:description"]')
-    ?.setAttribute(
-      "content",
-      `${b.name} - trusted ${b.category} in ${b.town}. View full details on RCTX Directory.`
-    );
-
-  document.querySelector('meta[property="og:url"]')
-    ?.setAttribute(
-      "content",
-      window.location.href
-    );
-
-  // ===============================
-  // OG IMAGE MAP
-  // ===============================
-  const ogImageMap = {
-
-    plumbers:
-      "https://rctx.co.uk/og/plumbers.jpg",
-
-    electricians:
-      "https://rctx.co.uk/og/electricians.jpg",
-
-    builders:
-      "https://rctx.co.uk/og/builders.jpg",
-
-    roofers:
-      "https://rctx.co.uk/og/roofers.jpg",
-
-    "painters-decorators":
-      "https://rctx.co.uk/og/painters-decorators.jpg",
-
-    handyman:
-      "https://rctx.co.uk/og/handyman.jpg",
-
-    cleaners:
-      "https://rctx.co.uk/og/cleaners.jpg",
-
-    "window-cleaners":
-      "https://rctx.co.uk/og/window-cleaners.jpg",
-
-    gardeners:
-      "https://rctx.co.uk/og/gardeners.jpg",
-
-    "waste-collection":
-      "https://rctx.co.uk/og/waste-collection.jpg",
-
-    "man-with-a-van":
-      "https://rctx.co.uk/og/man-with-a-van.jpg",
-
-    removals:
-      "https://rctx.co.uk/og/removals.jpg",
-
-    "car-mechanics":
-      "https://rctx.co.uk/og/car-mechanics.jpg",
-
-    tyres:
-      "https://rctx.co.uk/og/tyres.jpg",
-
-    barbers:
-      "https://rctx.co.uk/og/barbers.jpg",
-
-    hairdressers:
-      "https://rctx.co.uk/og/hairdressers.jpg",
-
-    "beauty-salons":
-      "https://rctx.co.uk/og/beauty-salons.jpg",
-
-    "dog-groomers":
-      "https://rctx.co.uk/og/dog-groomers.jpg",
-
-    cafes:
-      "https://rctx.co.uk/og/cafes.jpg",
-
-    restaurants:
-      "https://rctx.co.uk/og/restaurants.jpg",
-
-    takeaways:
-      "https://rctx.co.uk/og/takeaways.jpg",
-
-    shops:
-      "https://rctx.co.uk/og/shops.jpg",
-
-    gyms:
-      "https://rctx.co.uk/og/gyms.jpg",
-
-    photographers:
-      "https://rctx.co.uk/og/photographers.jpg"
-  };
-
-  const ogUrl =
-  ogImageMap[(b.categorySlug || "").toLowerCase()] ||
-  "https://rctx.co.uk/og/default-business.jpg";
-
-  document.getElementById("ogImage")
-    ?.setAttribute(
-      "content",
-      ogUrl
-    );
-
-  document.querySelector('link[rel="canonical"]')
-    ?.setAttribute(
-      "href",
-      window.location.href
-    );
-
-  // ===============================
   // MAIN CONTENT
   // ===============================
-  document.getElementById("businessName")
-    .textContent = b.name;
+  setText("businessName", b.name);
 
 document.getElementById("businessCategory").textContent = b.category;
 document.getElementById("businessTown").textContent = b.town;
@@ -487,39 +333,26 @@ if (webBtn) {
   // ===============================
   // BADGES
   // ===============================
-  if (b.verified) {
+  const badges = [];
 
-    document.getElementById("verifiedBadge")
-      .innerHTML += `
-        <span class="badge badge-verified">
-          Verified
-        </span>
-      `;
-  }
+// VERIFIED
+if (b.verified) {
+  badges.push(`<span class="badge badge-verified">Verified</span>`);
+}
 
-  if (b.ownerId) {
+// CLAIMED
+if (b.ownerId) {
+  badges.push(`<span class="badge badge-claimed">Claimed</span>`);
+  setText("claimedMessage", "This business listing has been claimed by the owner.");
+}
 
-    document.getElementById("claimedBadge")
-      .innerHTML += `
-        <span class="badge badge-claimed">
-          Claimed
-        </span>
-      `;
+// WASTE LICENCE
+if (b.wasteLicence) {
+  badges.push(`<span class="badge badge-waste">♻️ Licensed Waste Carrier</span>`);
+}
 
-    document.getElementById("claimedMessage")
-      .textContent =
-        "This business listing has been claimed by the owner.";
-  }
-
-  if (b.wasteLicence) {
-
-    document.getElementById("verifiedBadge")
-      .innerHTML += `
-        <span class="badge badge-waste">
-          ♻️ Licensed Waste Carrier
-        </span>
-      `;
-  }
+// APPLY ONCE (clean DOM)
+setHTML("verifiedBadge", badges.join(" "));
 
   // ===============================
   // HOURS
@@ -620,7 +453,9 @@ async function loadRelated(
       b.slug !== currentSlug
     ) {
 
-      results.push(b);
+      if (!results.some(r => r.slug === b.slug)) {
+  results.push(b);
+}
     }
   });
 
