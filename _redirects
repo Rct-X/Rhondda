@@ -1,40 +1,15 @@
 # -----------------------------------------
-# OG PREVIEWS FOR SOCIAL MEDIA BOTS ONLY
+# OG PREVIEWS + DIRECTORY ROUTING
 # -----------------------------------------
 
-# Facebook
-/user-agent:facebookexternalhit/*
+# All directory requests go to OG function
 /directory/*   /.netlify/functions/og-listing/:splat   200
 
-# Twitter
-/user-agent:Twitterbot/*
-/directory/*   /.netlify/functions/og-listing/:splat   200
-
-# WhatsApp
-/user-agent:WhatsApp/*
-/directory/*   /.netlify/functions/og-listing/:splat   200
-
-# LinkedIn
-/user-agent:LinkedInBot/*
-/directory/*   /.netlify/functions/og-listing/:splat   200
-
-# iMessage (Apple)
-/user-agent:Applebot/*
-/directory/*   /.netlify/functions/og-listing/:splat   200
-
-
-# -----------------------------------------
-# NORMAL USER ROUTING (SPA)
-# -----------------------------------------
-
-# Business pages
+# Business SPA page (fallback route)
 /directory/:category/:town/:slug   /directory/business.html   200
 
-# Category + town pages
-/directory/*                       /directory.html            200
+# Category + town pages fallback
+/directory/*   /directory.html   200
 
-
-# -----------------------------------------
-# SITEMAP
-# -----------------------------------------
+# Sitemap
 /sitemap.xml   /.netlify/functions/sitemap   200
