@@ -35,5 +35,6 @@
 
 [[redirects]]
   from = "/directory/*"
-  to = "/.netlify/functions/og-listing"
+  to = "/.netlify/functions/og-listing/:splat"
   status = 200
+  force = true
