@@ -68,11 +68,11 @@ function getPathParams() {
 
   } catch (err) {
 
-    console.error(
+console.error(
       "Init error:",
       err
     );
-  }
+  } 
 
 })();
 
@@ -107,10 +107,6 @@ async function loadBusiness(
 
   window.currentBusiness = b;
 
-  console.log(
-    "[BUSINESS] Loaded:",
-    b
-  );
 
   // ===============================
   // SEO
@@ -655,29 +651,27 @@ async function loadRelated(
 // ===============================
 // SHARE POPUP
 // ===============================
+let autoClose;
+
 setTimeout(() => {
 
-  if (
-    sessionStorage.getItem(
-      "sharePopupShown"
-    )
-  ) return;
+  const popup = document.getElementById("sharePopup");
+  if (!popup) return;
 
-  const popup =
-    document.getElementById("sharePopup");
+  popup.classList.add("show");
 
-  if (popup) {
-
-    popup.classList.add("show");
-
-    sessionStorage.setItem(
-      "sharePopupShown",
-      "true"
-    );
-  }
+  autoClose = setTimeout(() => {
+    popup.classList.remove("show");
+  }, 4000);
 
 }, 6000);
 
+// if user clicks inside popup, stop auto-close
+document.addEventListener("click", (e) => {
+  if (e.target.closest("#sharePopup")) {
+    clearTimeout(autoClose);
+  }
+});
 // ===============================
 // CLOSE POPUP
 // ===============================
