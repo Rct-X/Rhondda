@@ -1,5 +1,29 @@
-exports.handler = async (event, context) => {
+exports.handler = async () => {
   const base = "https://rctx.co.uk";
+  const project = process.env.RN_FIREBASE_PROJECT_ID;
+
+  const fetchCollection = async (name) => {
+    const url = `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents/${name}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.documents) return [];
+
+    return data.documents.map(doc => {
+      const f = doc.fields;
+      return {
+        slug: f.slug?.stringValue,
+        categorySlug: f.categorySlug?.stringValue,
+        townSlug: f.townSlug?.stringValue,
+        updatedAt: f.approvedAt?.timestampValue || f.createdAt?.timestampValue
+      };
+    });
+  };
+
+  // Fetch all businesses
+  const businesses = await fetchCollection("businesses");
+
+  const urls = [];
 
   // Static pages
   const staticPages = [
@@ -15,34 +39,6 @@ exports.handler = async (event, context) => {
     "/policy/terms"
   ];
 
-  // TODO: Replace these with real dynamic data later
-  const categories = [
-    "handyman-services",
-    "driving-lessons",
-    "cleaners",
-    "plumbers",
-    "gardeners",
-    "electricians",
-    "hairdressers",
-    "builders"
-  ];
-
-  const towns = [
-    "treorchy",
-    "treherbert",
-    "tonypandy",
-    "penygraig",
-    "fernhill"
-  ];
-
-  const businesses = [
-    // Example only — replace with Firestore later
-    { category: "plumbers", town: "treorchy", slug: "rctx-plumbing", updatedAt: Date.now() }
-  ];
-
-  const urls = [];
-
-  // Static pages
   staticPages.forEach(path => {
     urls.push({
       loc: `${base}${path}`,
@@ -50,29 +46,13 @@ exports.handler = async (event, context) => {
     });
   });
 
-  // Category pages
-  categories.forEach(c => {
-    urls.push({
-      loc: `${base}/directory/${c}`,
-      lastmod: new Date().toISOString()
-    });
-  });
-
-  // Category + Town pages
-  categories.forEach(c => {
-    towns.forEach(t => {
-      urls.push({
-        loc: `${base}/directory/${c}/${t}`,
-        lastmod: new Date().toISOString()
-      });
-    });
-  });
-
   // Business pages
   businesses.forEach(b => {
+    if (!b.categorySlug || !b.townSlug || !b.slug) return;
+
     urls.push({
-      loc: `${base}/directory/${b.category}/${b.town}/${b.slug}`,
-      lastmod: new Date(b.updatedAt).toISOString()
+      loc: `${base}/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`,
+      lastmod: b.updatedAt || new Date().toISOString()
     });
   });
 
