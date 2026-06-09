@@ -3,8 +3,14 @@
 
 [functions]
   directory = "netlify/functions"
-  node_bundler = "esbuild"
   included_files = ["netlify/fonts/**"]
+
+# Use zisi ONLY for resvg functions
+[functions."og-image"]
+  node_bundler = "zisi"
+
+[functions."og-listing"]
+  node_bundler = "zisi"
 
 [[headers]]
   for = "/js/rctx-tracker.js"
