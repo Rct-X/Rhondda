@@ -1,3 +1,42 @@
+function getBusinessParams() {
+  const url = new URL(window.location.href);
+
+  // 1️⃣ Try query params first (OG redirect)
+  const categoryQP = url.searchParams.get("category");
+  const townQP = url.searchParams.get("town");
+  const slugQP = url.searchParams.get("slug");
+
+  if (categoryQP && townQP && slugQP) {
+    return {
+      category: categoryQP,
+      town: townQP,
+      slug: slugQP
+    };
+  }
+
+  // 2️⃣ Fallback to pretty URL
+  const parts = window.location.pathname.split("/").filter(Boolean);
+
+  // Expected: /directory/category/town/slug
+  if (parts.length >= 4) {
+    return {
+      category: parts[1],
+      town: parts[2],
+      slug: parts[3]
+    };
+  }
+
+  return null;
+}
+
+const params = getBusinessParams();
+
+if (!params) {
+  console.error("Missing business parameters");
+} else {
+  loadBusiness(params.category, params.town, params.slug);
+}
+
 // ===============================
 // FETCH FIREBASE CONFIG
 // ===============================
