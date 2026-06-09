@@ -26,15 +26,13 @@ function getPathParams() {
     .split("/")
     .filter(Boolean);
 
-  // Expect: /directory/category/town/slug
-  if (parts.length !== 4 || parts[0] !== "directory") {
-    return null;
-  }
+  const dirIndex = parts.indexOf("directory");
+  if (dirIndex === -1) return null;
 
   return {
-    category: parts[1],
-    town: parts[2],
-    slug: parts[3]
+    category: parts[dirIndex + 1] || null,
+    town: parts[dirIndex + 2] || null,
+    slug: parts[dirIndex + 3] || null
   };
 }
 
