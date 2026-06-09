@@ -11,8 +11,7 @@ const db = admin.firestore();
 
 exports.handler = async (event) => {
 
-  const path = event.path || "";
-
+  const path = event.path.split("/.netlify/functions/og-listing")[1]; 
   console.log("OG FUNCTION HIT:", path);
 
   // /directory/category/town/business-slug
