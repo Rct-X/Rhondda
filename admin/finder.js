@@ -2,17 +2,20 @@
 // SMART FINDER MODULE
 // ======================================
 
-console.log("[FINDER] module loaded");
+console.log("[FINDER] Loaded");
 
-// expose init only (NO auto globals)
+// expose to admin.js + HTML
+window.findBusinesses = findBusinesses;
+window.autoSeedBusiness = autoSeedBusiness;
+window.refreshPlacesUsage = refreshPlacesUsage;
+
+// ======================================
+// INIT (called from admin.js)
+// ======================================
+
 export function initFinder() {
   console.log("[FINDER] init");
 
-  window.findBusinesses = findBusinesses;
-  window.autoSeedBusiness = autoSeedBusiness;
-  window.refreshPlacesUsage = refreshPlacesUsage;
-
-  // optional: run usage once when opened
   refreshPlacesUsage();
 }
 
@@ -34,6 +37,7 @@ function slugify(str = "") {
 // ======================================
 
 async function findBusinesses() {
+
   const category = document.getElementById("finderCategory")?.value?.trim();
   const town = document.getElementById("finderTown")?.value?.trim();
   const resultsBox = document.getElementById("finderResults");
@@ -48,6 +52,7 @@ async function findBusinesses() {
   const query = `${category} ${town}`;
 
   try {
+
     const res = await fetch(
       `/.netlify/functions/placesProxy?query=${encodeURIComponent(query)}`
     );
@@ -59,9 +64,9 @@ async function findBusinesses() {
       return;
     }
 
-    const results = json.data?.results || [];
+    const results = json.data.results;
 
-    if (!results.length) {
+    if (!results || results.length === 0) {
       resultsBox.innerHTML = `<div class="status error">No businesses found.</div>`;
       return;
     }
@@ -69,8 +74,13 @@ async function findBusinesses() {
     let html = `<div class="finder-list">`;
 
     for (const biz of results) {
+
       const phone = biz.phone || "";
       const website = biz.website || "";
+
+      // ======================================
+      // EMAIL SCRAPER
+      // ======================================
 
       let emailInfo = {
         emailFound: false,
@@ -79,7 +89,6 @@ async function findBusinesses() {
         socialLinks: []
       };
 
-      // email scrape (optional)
       if (website) {
         try {
           emailInfo = await fetch("/.netlify/functions/emailScraper", {
@@ -92,15 +101,18 @@ async function findBusinesses() {
         }
       }
 
+      // ======================================
+      // SCORE
+      // ======================================
+
       let score = scoreBusiness(biz);
 
       if (!emailInfo.emailFound) score += 20;
       else score -= 10;
 
-      const safeName = biz.name.replace(/'/g, "\\'");
-
       html += `
         <div class="finder-item">
+
           <div class="finder-info">
             <strong>${biz.name}</strong><br>
             ${biz.formatted_address || ""}
@@ -110,13 +122,16 @@ async function findBusinesses() {
               Reviews: ${biz.user_ratings_total || 0} |
               Phone: ${phone || "None"} |
               Email: ${emailInfo.emailFound ? emailInfo.email : "None"} |
+              Verified: ${emailInfo.emailVerified ? "Yes" : "No"} |
+              Social: ${emailInfo.socialLinks?.length || 0} |
               Score: <strong>${score}</strong>
             </div>
           </div>
 
-          <button class="btn btn-small"
+          <button
+            class="btn btn-small"
             onclick="autoSeedBusiness(
-              '${safeName}',
+              '${biz.name.replace(/'/g, "\\'")}',
               '${town}',
               '${slugify(category)}',
               ${score},
@@ -126,6 +141,7 @@ async function findBusinesses() {
           >
             Auto-Add
           </button>
+
         </div>
       `;
     }
@@ -136,16 +152,17 @@ async function findBusinesses() {
     refreshPlacesUsage();
 
   } catch (err) {
-    console.error("[FINDER] search error", err);
+    console.error("[FINDER] Search error", err);
     resultsBox.innerHTML = `<div class="status error">Search failed.</div>`;
   }
 }
 
 // ======================================
-// SCORING
+// SCORING ENGINE
 // ======================================
 
 function scoreBusiness(biz) {
+
   let score = 0;
 
   if (!biz.website) score += 40;
@@ -160,21 +177,24 @@ function scoreBusiness(biz) {
 }
 
 // ======================================
-// AUTO SEED
+// AUTO SEED BUSINESS
 // ======================================
 
 async function autoSeedBusiness(name, town, category, score, email = "", phone = "") {
+
   if (score < 50) {
-    alert("Skipped: too strong online presence.");
+    alert("This business has too strong an online presence. Skipped.");
     return;
   }
 
   const slug = slugify(name);
   const townSlug = slugify(town);
 
-  const description = generateDescription(name, category, town);
+  // IMPORTANT: fallback description (so it never breaks)
+  const description = `${name} provides ${category.replace(/-/g, " ")} services in ${town}.`;
 
   try {
+
     const res = await fetch("/.netlify/functions/adminAddBusiness", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -202,20 +222,22 @@ async function autoSeedBusiness(name, town, category, score, email = "", phone =
     alert(`Added: ${name}`);
 
   } catch (err) {
-    console.error("[FINDER] auto seed error", err);
-    alert("Failed to add business");
+    console.error("[FINDER] Auto seed error", err);
+    alert("Failed to add business.");
   }
 }
 
 // ======================================
-// USAGE
+// USAGE WIDGET
 // ======================================
 
 async function refreshPlacesUsage() {
+
   const box = document.getElementById("placesUsageBox");
   if (!box) return;
 
   try {
+
     const res = await fetch("/.netlify/functions/getPlacesUsage");
     const json = await res.json();
 
@@ -234,8 +256,14 @@ async function refreshPlacesUsage() {
         <p><strong>Reset:</strong> ${resetTime}</p>
       </div>
     `;
+
   } catch (err) {
     console.error("[FINDER] usage error", err);
     box.innerHTML = `<div class="status error">Error loading usage.</div>`;
   }
 }
+
+// auto init for safety
+document.addEventListener("DOMContentLoaded", () => {
+  refreshPlacesUsage();
+});
