@@ -72,6 +72,22 @@ exports.handler = async (event) => {
       };
     }
 
+    const ip = (event.headers["x-forwarded-for"] || "")
+  .split(",")[0]
+  .trim();
+
+// =========================
+// BLOCKED INTERNAL IPS
+// =========================
+const blockedIps =
+  (process.env.TRACKING_BLOCK_IPS || "")
+    .split(",")
+    .map(ip => ip.trim())
+    .filter(Boolean);
+
+const isBlockedIp =
+  blockedIps.includes(ip);
+    
     // =========================
     // DUPLICATE REFRESH FILTER
     // =========================
