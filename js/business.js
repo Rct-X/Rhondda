@@ -577,17 +577,17 @@ setTimeout(() => {
 // ===============================
 // SHARE BUTTON
 function shareBusiness() {
-    const url = window.location.href;  // <-- FULL URL including slug + params
-    const title = document.title;
+  const url = window.location.href;  // full correct URL
+  const title = document.title;
 
-    if (navigator.share) {
-      navigator.share({
-        title: title,
-        text: "Check out this local business on RCTX:",
-        url: url
-      });
-    } else {
-      navigator.clipboard.writeText(url);
-      alert("Link copied to clipboard!");
-    }
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      text: "Check out this local business on RCTX:",
+      url: url
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url);
+    alert("Link copied to clipboard!");
+  }
 }
