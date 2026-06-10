@@ -184,11 +184,14 @@ window.openSection = async function (section) {
 
   if (section === "marketing") {
 
-    const marketing = await import("./marketing.js");
+  const marketing = await import("./marketing.js");
 
-    await marketing.initMarketing({
-      db: window.db,
-      auth: window.auth
-    });
+  await marketing.initMarketing({
+    db: window.db,
+    auth: window.auth
+  });
+
+  const finder = await import("./finder.js");
+
+  finder.initFinder?.(); // 👈 important
   }
-};
