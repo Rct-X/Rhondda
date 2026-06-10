@@ -258,6 +258,39 @@ Add inside <main class="admin-container">
 
   <h3>Quick Add Business</h3>
 
+      <div class="marketing-card">
+
+  <h3>Smart Business Finder</h3>
+  <p>Automatically find businesses with weak online presence and seed them into the directory.</p>
+
+  <div class="form-grid">
+
+    <div class="field">
+      <label>Category</label>
+      <input id="finderCategory" placeholder="plumber, barber, cafe">
+    </div>
+
+    <div class="field">
+      <label>Town</label>
+      <input id="finderTown" placeholder="Treorchy">
+    </div>
+
+  </div>
+
+  <div class="marketing-actions">
+    <button class="btn btn-primary" onclick="findBusinesses()">Find Businesses</button>
+  </div>
+
+  <div id="finderResults"></div>
+
+      </div>
+      <div class="marketing-card">
+  <h3>Google Places Usage</h3>
+  <div id="placesUsageBox">
+    <div class="status loading">Loading usage...</div>
+  </div>
+      </div>
+
   <div class="form-grid">
 
     <div class="field">
@@ -482,6 +515,6 @@ Add inside <main class="admin-container">
 </main>
 
 <script type="module" src="admin.js"></script>
-
+<script src="admin/finder.js"></script>
 </body>
 </html>
