@@ -14,7 +14,24 @@ let db;
 function getBusinessParams() {
   const url = new URL(window.location.href);
 
-  // 1️⃣ Query params (OG redirect)
+  // 🔥 1️⃣ FIX FACEBOOK / INSTAGRAM / MESSENGER WRAPPED LINKS
+  // Facebook wraps links like:
+  // https://l.facebook.com/l.php?u=https%3A%2F%2Frctx.co.uk%2Fdirectory%2F...
+  const fbWrapped = url.searchParams.get("u");
+  if (fbWrapped) {
+    const real = new URL(fbWrapped);
+    const realParts = real.pathname.split("/").filter(Boolean);
+
+    if (realParts.length >= 4) {
+      return {
+        category: realParts[1],
+        town: realParts[2],
+        slug: realParts[3]
+      };
+    }
+  }
+
+  // 2️⃣ Query params (OG redirect)
   const categoryQP = url.searchParams.get("category");
   const townQP = url.searchParams.get("town");
   const slugQP = url.searchParams.get("slug");
@@ -27,10 +44,9 @@ function getBusinessParams() {
     };
   }
 
-  // 2️⃣ Pretty URL fallback
+  // 3️⃣ Pretty URL fallback
   const parts = window.location.pathname.split("/").filter(Boolean);
 
-  // Expected: /directory/category/town/slug
   if (parts.length >= 4) {
     return {
       category: parts[1],
