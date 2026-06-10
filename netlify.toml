@@ -1,17 +1,22 @@
 [build]
   publish = "."
+  functions = "netlify/functions"
 
 [functions]
-  directory = "netlify/functions"
   included_files = ["netlify/fonts/**"]
 
-# Use zisi ONLY for resvg functions
+# -----------------------------
+# FUNCTION BUNDLING
+# -----------------------------
 [functions."og-image"]
   node_bundler = "zisi"
 
 [functions."og-listing"]
   node_bundler = "zisi"
 
+# -----------------------------
+# HEADERS
+# -----------------------------
 [[headers]]
   for = "/js/rctx-tracker.js"
   [headers.values]
@@ -30,24 +35,34 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 
+# -----------------------------
+# SITEMAP
+# -----------------------------
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+
+# -----------------------------
+# ROBOTS
+# -----------------------------
 [[redirects]]
   from = "/robots.txt"
   to = "/robots.txt"
   status = 200
 
+# -----------------------------
+# BUSINESS PAGE ROUTE (MAIN)
+# -----------------------------
 [[redirects]]
-  from = "/sitemap.xml"
-  to = "/sitemap.xml"
+  from = "/directory/:category/:town/:slug"
+  to = "/directory/business.html"
   status = 200
 
-[prerender]
-  enabled = true
-  crawl = true
-  include = [
-    "/directory/*"
-  ]
-
+# -----------------------------
+# CATEGORY / DIRECTORY PAGES
+# -----------------------------
 [[redirects]]
   from = "/directory/*"
-  to = "/business.html"
+  to = "/directory.html"
   status = 200
