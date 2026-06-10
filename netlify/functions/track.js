@@ -64,12 +64,21 @@ exports.handler = async (event) => {
 
     const isBot = botWords.some(word => userAgent.includes(word));
 
-    if (isBot) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ ignored: "bot" })
-      };
+    if (isBot || isBlockedIp) {
+
+  console.log(
+    "[TRACKER] Ignored:",
+    isBot ? "bot" : "blocked-ip",
+    ip
+  );
+
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({
+      ignored: isBot ? "bot" : "blocked-ip"
+    })
+  };
     }
 
     const ip = (event.headers["x-forwarded-for"] || "")
