@@ -2,14 +2,22 @@
 // SMART FINDER MODULE
 // ======================================
 
-console.log("[FINDER] Loaded");
+console.log("[FINDER] module loaded");
 
-window.findBusinesses = findBusinesses;
-window.autoSeedBusiness = autoSeedBusiness;
-window.refreshPlacesUsage = refreshPlacesUsage;
+// expose init only (NO auto globals)
+export function initFinder() {
+  console.log("[FINDER] init");
+
+  window.findBusinesses = findBusinesses;
+  window.autoSeedBusiness = autoSeedBusiness;
+  window.refreshPlacesUsage = refreshPlacesUsage;
+
+  // optional: run usage once when opened
+  refreshPlacesUsage();
+}
 
 // ======================================
-// SLUGIFY (needed for category + name)
+// SLUGIFY
 // ======================================
 
 function slugify(str = "") {
@@ -43,16 +51,17 @@ async function findBusinesses() {
     const res = await fetch(
       `/.netlify/functions/placesProxy?query=${encodeURIComponent(query)}`
     );
+
     const json = await res.json();
 
     if (!json.ok) {
-      resultsBox.innerHTML = `<div class="status error">Error: ${json.error}</div>`;
+      resultsBox.innerHTML = `<div class="status error">${json.error}</div>`;
       return;
     }
 
-    const results = json.data.results;
+    const results = json.data?.results || [];
 
-    if (!results || results.length === 0) {
+    if (!results.length) {
       resultsBox.innerHTML = `<div class="status error">No businesses found.</div>`;
       return;
     }
@@ -60,16 +69,8 @@ async function findBusinesses() {
     let html = `<div class="finder-list">`;
 
     for (const biz of results) {
-      // ======================================
-      // PHONE + WEBSITE (already enriched by proxy)
-      // ======================================
-
       const phone = biz.phone || "";
       const website = biz.website || "";
-
-      // ======================================
-      // EMAIL SCRAPING (website + social)
-      // ======================================
 
       let emailInfo = {
         emailFound: false,
@@ -78,6 +79,7 @@ async function findBusinesses() {
         socialLinks: []
       };
 
+      // email scrape (optional)
       if (website) {
         try {
           emailInfo = await fetch("/.netlify/functions/emailScraper", {
@@ -86,17 +88,16 @@ async function findBusinesses() {
             body: JSON.stringify({ url: website })
           }).then(r => r.json());
         } catch (err) {
-          console.error("Email scrape failed", err);
+          console.error("[FINDER] email scrape failed", err);
         }
       }
 
-      // ======================================
-      // SCORING
-      // ======================================
-
       let score = scoreBusiness(biz);
+
       if (!emailInfo.emailFound) score += 20;
       else score -= 10;
+
+      const safeName = biz.name.replace(/'/g, "\\'");
 
       html += `
         <div class="finder-item">
@@ -109,24 +110,21 @@ async function findBusinesses() {
               Reviews: ${biz.user_ratings_total || 0} |
               Phone: ${phone || "None"} |
               Email: ${emailInfo.emailFound ? emailInfo.email : "None"} |
-              Verified: ${emailInfo.emailVerified ? "Yes" : "No"} |
-              Social: ${emailInfo.socialLinks?.length || 0} |
               Score: <strong>${score}</strong>
             </div>
           </div>
 
-          <button
-            class="btn btn-small"
+          <button class="btn btn-small"
             onclick="autoSeedBusiness(
-  '${biz.name.replace(/'/g, "\\'")}',
-  '${town}',
-  '${slugify(category)}',
-  ${score},
-  '${emailInfo.email || ""}',
-  '${phone || ""}'
-)"
+              '${safeName}',
+              '${town}',
+              '${slugify(category)}',
+              ${score},
+              '${emailInfo.email || ""}',
+              '${phone || ""}'
+            )"
           >
-            Auto‑Add
+            Auto-Add
           </button>
         </div>
       `;
@@ -138,13 +136,13 @@ async function findBusinesses() {
     refreshPlacesUsage();
 
   } catch (err) {
-    console.error("[FINDER] Search error", err);
+    console.error("[FINDER] search error", err);
     resultsBox.innerHTML = `<div class="status error">Search failed.</div>`;
   }
 }
 
 // ======================================
-// SCORING ENGINE
+// SCORING
 // ======================================
 
 function scoreBusiness(biz) {
@@ -162,17 +160,18 @@ function scoreBusiness(biz) {
 }
 
 // ======================================
-// AUTO SEED BUSINESS
+// AUTO SEED
 // ======================================
 
 async function autoSeedBusiness(name, town, category, score, email = "", phone = "") {
   if (score < 50) {
-    alert("This business has too strong an online presence. Skipped.");
+    alert("Skipped: too strong online presence.");
     return;
   }
 
   const slug = slugify(name);
   const townSlug = slugify(town);
+
   const description = generateDescription(name, category, town);
 
   try {
@@ -196,20 +195,20 @@ async function autoSeedBusiness(name, town, category, score, email = "", phone =
     const data = await res.json();
 
     if (!res.ok) {
-      alert("Error: " + data.error);
+      alert(data.error || "Failed to add business");
       return;
     }
 
     alert(`Added: ${name}`);
 
   } catch (err) {
-    console.error("[FINDER] Auto seed error", err);
-    alert("Failed to add business.");
+    console.error("[FINDER] auto seed error", err);
+    alert("Failed to add business");
   }
 }
 
 // ======================================
-// USAGE WIDGET
+// USAGE
 // ======================================
 
 async function refreshPlacesUsage() {
@@ -229,18 +228,14 @@ async function refreshPlacesUsage() {
 
     box.innerHTML = `
       <div class="usage-stats">
-        <p><strong>Today:</strong> ${today} searches</p>
-        <p><strong>Total:</strong> ${total} searches</p>
-        <p><strong>7‑day avg:</strong> ${(avg7 || 0).toFixed(1)} / day</p>
-        <p><strong>Daily reset:</strong> ${resetTime}</p>
+        <p><strong>Today:</strong> ${today}</p>
+        <p><strong>Total:</strong> ${total}</p>
+        <p><strong>7-day avg:</strong> ${(avg7 || 0).toFixed(1)}</p>
+        <p><strong>Reset:</strong> ${resetTime}</p>
       </div>
     `;
   } catch (err) {
-    console.error("[FINDER] Usage widget error", err);
+    console.error("[FINDER] usage error", err);
     box.innerHTML = `<div class="status error">Error loading usage.</div>`;
   }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  refreshPlacesUsage();
-});
