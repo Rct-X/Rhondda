@@ -154,7 +154,7 @@ const doc = {
   // AUTO APPROVE ADMIN SEEDED LISTINGS
   // ======================================
   status: "approved",
-  verified: true,
+  verified: false,
   approvedAt: admin.firestore.FieldValue.serverTimestamp(),
 
   ownerId: null,
