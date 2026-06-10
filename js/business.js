@@ -97,9 +97,11 @@ function extractFromPath(pathname) {
         .toLowerCase(),
 
     slug:
-      decodeURIComponent(parts[dirIndex + 3])
-        .trim()
-        .toLowerCase()
+  decodeURIComponent(parts[dirIndex + 3])
+    .split("?")[0]        // 🔥 remove fbclid
+    .split("&")[0]        // 🔥 remove any other tracking params
+    .trim()
+    .toLowerCase()
   };
 
 }
