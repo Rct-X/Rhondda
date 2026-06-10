@@ -48,35 +48,29 @@ async function findBusinesses() {
 
     for (const biz of results) {
       // ======================================
-      // FETCH PLACE DETAILS (PHONE NUMBER)
+      // PHONE + WEBSITE (already enriched by proxy)
       // ======================================
 
-      let phone = "";
-      try {
-        const detailsRes = await fetch(
-          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${biz.place_id}&fields=formatted_phone_number,international_phone_number,website&key=YOUR_API_KEY`
-        );
-        const details = await detailsRes.json();
-        phone =
-          details.result?.formatted_phone_number ||
-          details.result?.international_phone_number ||
-          "";
-      } catch (err) {
-        console.warn("Phone lookup failed", err);
-      }
+      const phone = biz.phone || "";
+      const website = biz.website || "";
 
       // ======================================
-      // EMAIL SCRAPING
+      // EMAIL SCRAPING (website + social)
       // ======================================
 
-      let emailInfo = { emailFound: false, email: "", emailVerified: false, socialLinks: [] };
+      let emailInfo = {
+        emailFound: false,
+        email: "",
+        emailVerified: false,
+        socialLinks: []
+      };
 
-      if (biz.website) {
+      if (website) {
         try {
           emailInfo = await fetch("/.netlify/functions/emailScraper", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: biz.website })
+            body: JSON.stringify({ url: website })
           }).then(r => r.json());
         } catch (err) {
           console.error("Email scrape failed", err);
@@ -98,7 +92,7 @@ async function findBusinesses() {
             ${biz.formatted_address || ""}
 
             <div class="finder-meta">
-              Website: ${biz.website ? "Yes" : "No"} |
+              Website: ${website ? "Yes" : "No"} |
               Reviews: ${biz.user_ratings_total || 0} |
               Phone: ${phone || "None"} |
               Email: ${emailInfo.emailFound ? emailInfo.email : "None"} |
