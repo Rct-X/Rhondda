@@ -105,13 +105,13 @@ async function findBusinesses() {
           <button
             class="btn btn-small"
             onclick="autoSeedBusiness(
-              '${biz.name.replace(/'/g, "\\'")}',
-              '${town}',
-              '${category}',
-              ${score},
-              '${emailInfo.email || ""}',
-              '${phone || ""}'
-            )"
+  '${biz.name.replace(/'/g, "\\'")}',
+  '${town}',
+  '${slugify(category)}',
+  ${score},
+  '${emailInfo.email || ""}',
+  '${phone || ""}'
+)"
           >
             Auto‑Add
           </button>
