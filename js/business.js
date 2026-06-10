@@ -577,7 +577,7 @@ setTimeout(() => {
 // ===============================
 // SHARE BUTTON
 function shareBusiness() {
-    const url = window.location.origin + window.location.pathname;
+    const url = window.location.href;  // <-- FULL URL including slug + params
     const title = document.title;
 
     if (navigator.share) {
