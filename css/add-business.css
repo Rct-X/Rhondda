@@ -1,4 +1,4 @@
-/* ============================
+    /* ============================
    PAGE WRAPPER
 ============================ */
 .add-business-page {
@@ -24,6 +24,31 @@
   max-width: 700px;
   line-height: 1.6;
   color: var(--text-soft);
+}
+
+.hero-points{
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: .5rem;
+  color: var(--text-soft);
+}
+
+.hero-cta{
+  display: inline-block;
+  margin-top: .5rem;
+  padding: .9rem 1.3rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .15s ease;
+}
+
+.hero-cta:hover{
+  transform: translateY(-2px);
 }
 
 /* ============================
@@ -272,4 +297,17 @@
   font-size: 0.95rem;
   line-height: 1.5;
   color: #333;
+}
+
+.form-intro{
+  margin-bottom: 1.5rem;
+}
+
+.form-intro h2{
+  margin-bottom: .4rem;
+}
+
+.form-intro p{
+  color: var(--text-soft);
+  max-width: 700px;
 }
