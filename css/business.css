@@ -1,4 +1,4 @@
-  /* ============================
+    /* ============================
    BUSINESS HEADER
 ============================ */
 .business-header{
@@ -361,23 +361,6 @@ body{
   overflow-x:hidden;
 }
 
-.business-trust-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin: .75rem 0;
-  font-size: .85rem; /* Smaller font */
-  font-weight: 700;
-  color: #1E293B; /* Dark text for high contrast */
-  background: #F1F5F9; /* Clean, light-grey background */
-  padding: .35rem .75rem; /* Tighter padding */
-  border-radius: 6px;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-}
-
-
 .quick-actions{
   display:flex;
   gap:.75rem;
@@ -423,3 +406,56 @@ body{
   opacity: 1;
   transform: translateY(0);
 }
+.share-panel {
+  max-width: 420px;
+  margin: 12px auto 20px;
+}
+.action-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1;
+  
+  }
+
+   /* Premium Hover Physics */
+    .icon { cursor: pointer; transition: transform 0.4s cubic-bezier(0.34, 1.7, 0.64, 1); }
+    .icon:hover { transform: scale(1.14); filter: drop-shadow(0 12px 20px rgba(15,23,42,0.12)); }
+    
+    /* Elegant Clean Font Configurations */
+    .heading { font-family: system-ui, -apple-system, sans-serif; font-size: 21px; fill: #0f172a; text-anchor: middle; font-weight: 800; letter-spacing: -0.5px; opacity: 0; }
+    .subheading { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; fill: #64748b; text-anchor: middle; font-weight: 500; opacity: 0; }
+    .label { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; fill: #334155; text-anchor: middle; font-weight: 700; letter-spacing: -0.2px; }
+    .badge-text { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #2563eb; font-weight: 800; letter-spacing: 0.5px; }
+
+    /* Cinematic Premium Entry Animations */
+    @keyframes entryText {
+      0% { opacity: 0; transform: translateY(-12px); filter: blur(6px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    
+    @keyframes entryButtons {
+      0% { opacity: 0; transform: translateY(40px) scale(0.6); filter: blur(8px); }
+      65% { transform: translateY(-6px) scale(1.04); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes successPop {
+      0% { opacity: 0; transform: scale(0.8) translateY(10px); filter: blur(4px); }
+      15% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+      85% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+      100% { opacity: 0; transform: scale(0.8) translateY(-10px); filter: blur(4px); }
+    }
+
+    /* Staggered Timings */
+    .text-main { animation: entryText 0.9s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
+    .text-sub { animation: entryText 0.9s cubic-bezier(0.215, 0.610, 0.355, 1) 0.15s forwards; }
+    .verified-badge { animation: entryText 0.9s cubic-bezier(0.215, 0.610, 0.355, 1) 0.3s forwards; opacity: 0; }
+
+    .btn-fb { animation: entryButtons 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.35s forwards; opacity: 0; transform-origin: 65px 152px; }
+    .btn-wa { animation: entryButtons 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.48s forwards; opacity: 0; transform-origin: 162px 152px; }
+    .btn-em { animation: entryButtons 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.61s forwards; opacity: 0; transform-origin: 258px 152px; }
+    .btn-cp { animation: entryButtons 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.74s forwards; opacity: 0; transform-origin: 355px 152px; }
+
+    /* Dynamic UI Pop-up */
+    .toast { text-anchor: middle; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 800; fill: #ffffff; }
+    .toast-container { display: none; transform-origin: 210px 135px; }
