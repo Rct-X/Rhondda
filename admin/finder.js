@@ -172,7 +172,7 @@ async function refreshPlacesUsage() {
       <div class="usage-stats">
         <p><strong>Today:</strong> ${today} searches</p>
         <p><strong>Total:</strong> ${total} searches</p>
-        <p><strong>7‑day avg:</strong> ${avg7.toFixed(1)} / day</p>
+        <p><strong>7‑day avg:</strong> ${(avg7 || 0).toFixed(1)} / day</p>
         <p><strong>Daily reset:</strong> ${resetTime}</p>
       </div>
     `;
