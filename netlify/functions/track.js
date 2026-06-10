@@ -64,39 +64,14 @@ exports.handler = async (event) => {
 
     const isBot = botWords.some(word => userAgent.includes(word));
 
-    if (isBot || isBlockedIp) {
-
-  console.log(
-    "[TRACKER] Ignored:",
-    isBot ? "bot" : "blocked-ip",
-    ip
-  );
-
-  return {
-    statusCode: 200,
-    headers,
-    body: JSON.stringify({
-      ignored: isBot ? "bot" : "blocked-ip"
-    })
-  };
+    if (isBot) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ ignored: "bot" })
+      };
     }
 
-    const ip = (event.headers["x-forwarded-for"] || "")
-  .split(",")[0]
-  .trim();
-
-// =========================
-// BLOCKED INTERNAL IPS
-// =========================
-const blockedIps =
-  (process.env.TRACKING_BLOCK_IPS || "")
-    .split(",")
-    .map(ip => ip.trim())
-    .filter(Boolean);
-
-const isBlockedIp =
-  blockedIps.includes(ip);
-    
     // =========================
     // DUPLICATE REFRESH FILTER
     // =========================
