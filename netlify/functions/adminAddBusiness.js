@@ -126,38 +126,41 @@ exports.handler = async (event) => {
     });
 
     // ======================================
-    // DOCUMENT (SEED ONLY - NO APPROVAL)
-    // ======================================
-    const doc = {
-      name,
-      slug,
+// DOCUMENT
+// ======================================
+const doc = {
+  name,
+  slug,
 
-      town,
-      townSlug,
+  town,
+  townSlug,
 
-      category,
-      categorySlug,
+  category,
+  categorySlug,
 
-      email: email || null,
-      phone: phone || null,
-      website: website || null,
-      address: address || town,
+  email: email || null,
+  phone: phone || null,
+  website: website || null,
+  address: address || town,
 
-      description: description || "",
-      wasteLicence: wasteLicence || null,
+  description: description || "",
+  wasteLicence: wasteLicence || null,
 
-      keywords,
+  keywords,
 
-      source: "admin_seed",
+  source: "admin_seed",
 
-      status: "pending",
-      verified: false,
-      approvedAt: null,
+  // ======================================
+  // AUTO APPROVE ADMIN SEEDED LISTINGS
+  // ======================================
+  status: "approved",
+  verified: true,
+  approvedAt: admin.firestore.FieldValue.serverTimestamp(),
 
-      ownerId: null,
+  ownerId: null,
 
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
-    };
+  createdAt: admin.firestore.FieldValue.serverTimestamp()
+};
 
     await db.collection("businesses").add(doc);
 
