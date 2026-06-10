@@ -153,11 +153,45 @@
   <div id="galleryCounter"></div>
     </div>
     
-    <div class="action-stack">
+    
 <div class="quick-actions">
   <a id="businessPhoneBtn" class="qa-btn">Call</a>
   <a id="businessWebsiteBtn" class="qa-btn" target="_blank">Website</a>
 </div>
+
+    <div class="business-info">
+
+      <h2>About</h2>
+      <p id="businessDescription">Loading…</p>
+      <h3>Contact</h3>
+      <ul class="business-contact">
+        <li><strong>Phone:</strong> <span id="businessPhone"></span></li>
+        <li><strong>Website:</strong> <a id="businessWebsite" href="#" target="_blank"></a></li>
+        <li><strong>Address:</strong> <span id="businessAddress"></span></li>
+      </ul>
+
+      <h3>Opening Hours</h3>
+      <ul id="businessHours" class="business-hours"></ul>
+
+    </div>
+
+    <aside class="business-sidebar">
+      <div class="business-card">
+        <h3>Location</h3>
+        <p id="businessTownSidebar"></p>
+        <p id="claimedMessage" class="claimed-message"></p>
+      </div>
+
+      <div class="business-card">
+        <h3>Category</h3>
+        <p id="businessCategorySidebar"></p>
+      </div>
+
+      <div class="business-card">
+        <h3>Claim This Business</h3>
+        <a href="#" id="claimBtn" class="btn btn-primary">Claim Listing</a>
+      </div>
+    </aside>
 <div class="share-panel" style="width:100%; max-width:460px; padding:0 10px; margin:40px auto; box-sizing:border-box;">
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 240" width="100%" height="100%" style="overflow: visible;">
@@ -261,8 +295,6 @@
   </g>
 </svg>
 
-</div>
-
 <script>
   // Scopes dynamic system path links cleanly
 const url = window.location.origin + window.location.pathname;
@@ -292,41 +324,6 @@ const url = window.location.origin + window.location.pathname;
   }
 </script>
 </div>
-
-    <div class="business-info">
-
-      <h2>About</h2>
-      <p id="businessDescription">Loading…</p>
-      <h3>Contact</h3>
-      <ul class="business-contact">
-        <li><strong>Phone:</strong> <span id="businessPhone"></span></li>
-        <li><strong>Website:</strong> <a id="businessWebsite" href="#" target="_blank"></a></li>
-        <li><strong>Address:</strong> <span id="businessAddress"></span></li>
-      </ul>
-
-      <h3>Opening Hours</h3>
-      <ul id="businessHours" class="business-hours"></ul>
-
-    </div>
-
-    <aside class="business-sidebar">
-      <div class="business-card">
-        <h3>Location</h3>
-        <p id="businessTownSidebar"></p>
-        <p id="claimedMessage" class="claimed-message"></p>
-      </div>
-
-      <div class="business-card">
-        <h3>Category</h3>
-        <p id="businessCategorySidebar"></p>
-      </div>
-
-      <div class="business-card">
-        <h3>Claim This Business</h3>
-        <a href="#" id="claimBtn" class="btn btn-primary">Claim Listing</a>
-      </div>
-    </aside>
-
   </div>
 </section>
 
@@ -420,4 +417,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-  </html>
+</html>
