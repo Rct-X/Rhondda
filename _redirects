@@ -1,22 +1,11 @@
-# -----------------------------------------
-# OG FUNCTION FOR BUSINESS PAGES ONLY
-# -----------------------------------------
+# Sitemap
+/sitemap.xml   /.netlify/functions/sitemap   200
 
-/directory/:category/:town/:slug   /.netlify/functions/og-listing/:splat   200
+# Robots
+/robots.txt    /robots.txt   200
 
-
-# -----------------------------------------
-# NORMAL USER ROUTING (SPA)
-# -----------------------------------------
-
-# Business SPA page
+# Business page (SPA route)
 /directory/:category/:town/:slug   /directory/business.html   200
 
-# Category + town pages
-/directory/*                       /directory.html            200
-
-
-# -----------------------------------------
-# SITEMAP
-# -----------------------------------------
-/sitemap.xml   /.netlify/functions/sitemap   200
+# Category + directory pages
+/directory/*   /directory.html   200
