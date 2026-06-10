@@ -45,16 +45,16 @@ exports.handler = async () => {
     const avg7 = days.length ? sum / days.length : 0;
 
     return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ok: true,
-        total: data.total || 0,
-        today: todayCount,
-        daily,
-        avg7,
-        resetTime: "08:00 UK (midnight Pacific)",
-      }),
-    };
+  statusCode: 200,
+  body: JSON.stringify({
+    ok: true,
+    total: 0,
+    today: 0,
+    daily: {},
+    avg7: 0,
+    resetTime: "08:00 UK (midnight Pacific)",
+  }),
+};
   } catch (err) {
     console.error("getPlacesUsage error", err);
     return {
