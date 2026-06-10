@@ -4,13 +4,12 @@
 
 console.log("[FINDER] Loaded");
 
-// Make functions available globally
 window.findBusinesses = findBusinesses;
 window.autoSeedBusiness = autoSeedBusiness;
 window.refreshPlacesUsage = refreshPlacesUsage;
 
 // ======================================
-// FIND BUSINESSES (via Netlify Proxy)
+// FIND BUSINESSES
 // ======================================
 
 async function findBusinesses() {
@@ -34,24 +33,40 @@ async function findBusinesses() {
     const json = await res.json();
 
     if (!json.ok) {
-      resultsBox.innerHTML = `<div class="status error">Error: ${json.error || "Failed to search"}</div>`;
+      resultsBox.innerHTML = `<div class="status error">Error: ${json.error}</div>`;
       return;
     }
 
-    const data = json.data;
+    const results = json.data.results;
 
-    if (!data.results || data.results.length === 0) {
+    if (!results || results.length === 0) {
       resultsBox.innerHTML = `<div class="status error">No businesses found.</div>`;
       return;
     }
 
     let html = `<div class="finder-list">`;
 
-    for (const biz of data.results) {
-      let score = scoreBusiness(biz);
+    for (const biz of results) {
+      // ======================================
+      // FETCH PLACE DETAILS (PHONE NUMBER)
+      // ======================================
+
+      let phone = "";
+      try {
+        const detailsRes = await fetch(
+          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${biz.place_id}&fields=formatted_phone_number,international_phone_number,website&key=YOUR_API_KEY`
+        );
+        const details = await detailsRes.json();
+        phone =
+          details.result?.formatted_phone_number ||
+          details.result?.international_phone_number ||
+          "";
+      } catch (err) {
+        console.warn("Phone lookup failed", err);
+      }
 
       // ======================================
-      // EMAIL SCRAPING (website + social media)
+      // EMAIL SCRAPING
       // ======================================
 
       let emailInfo = { emailFound: false, email: "", emailVerified: false, socialLinks: [] };
@@ -64,11 +79,15 @@ async function findBusinesses() {
             body: JSON.stringify({ url: biz.website })
           }).then(r => r.json());
         } catch (err) {
-          console.error("[FINDER] Email scrape failed", err);
+          console.error("Email scrape failed", err);
         }
       }
 
-      // Adjust score based on email availability
+      // ======================================
+      // SCORING
+      // ======================================
+
+      let score = scoreBusiness(biz);
       if (!emailInfo.emailFound) score += 20;
       else score -= 10;
 
@@ -81,6 +100,7 @@ async function findBusinesses() {
             <div class="finder-meta">
               Website: ${biz.website ? "Yes" : "No"} |
               Reviews: ${biz.user_ratings_total || 0} |
+              Phone: ${phone || "None"} |
               Email: ${emailInfo.emailFound ? emailInfo.email : "None"} |
               Verified: ${emailInfo.emailVerified ? "Yes" : "No"} |
               Social: ${emailInfo.socialLinks?.length || 0} |
@@ -95,7 +115,8 @@ async function findBusinesses() {
               '${town}',
               '${category}',
               ${score},
-              '${emailInfo.email || ""}'
+              '${emailInfo.email || ""}',
+              '${phone || ""}'
             )"
           >
             Auto‑Add
@@ -107,7 +128,6 @@ async function findBusinesses() {
     html += `</div>`;
     resultsBox.innerHTML = html;
 
-    // Refresh usage widget after each search
     refreshPlacesUsage();
 
   } catch (err) {
@@ -138,7 +158,7 @@ function scoreBusiness(biz) {
 // AUTO SEED BUSINESS
 // ======================================
 
-async function autoSeedBusiness(name, town, category, score, email = "") {
+async function autoSeedBusiness(name, town, category, score, email = "", phone = "") {
   if (score < 50) {
     alert("This business has too strong an online presence. Skipped.");
     return;
@@ -159,7 +179,7 @@ async function autoSeedBusiness(name, town, category, score, email = "") {
         slug,
         townSlug,
         email,
-        phone: "",
+        phone,
         sendEmail: true,
         source: "smart_seed",
         description
@@ -214,7 +234,6 @@ async function refreshPlacesUsage() {
   }
 }
 
-// Auto-load usage on admin open
 document.addEventListener("DOMContentLoaded", () => {
   refreshPlacesUsage();
 });
