@@ -48,23 +48,55 @@ async function findBusinesses() {
     let html = `<div class="finder-list">`;
 
     for (const biz of data.results) {
-      const score = scoreBusiness(biz);
+      let score = scoreBusiness(biz);
+
+      // ======================================
+      // EMAIL SCRAPING (website + social media)
+      // ======================================
+
+      let emailInfo = { emailFound: false, email: "", emailVerified: false, socialLinks: [] };
+
+      if (biz.website) {
+        try {
+          emailInfo = await fetch("/.netlify/functions/emailScraper", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: biz.website })
+          }).then(r => r.json());
+        } catch (err) {
+          console.error("[FINDER] Email scrape failed", err);
+        }
+      }
+
+      // Adjust score based on email availability
+      if (!emailInfo.emailFound) score += 20;
+      else score -= 10;
 
       html += `
         <div class="finder-item">
           <div class="finder-info">
             <strong>${biz.name}</strong><br>
             ${biz.formatted_address || ""}
+
             <div class="finder-meta">
               Website: ${biz.website ? "Yes" : "No"} |
               Reviews: ${biz.user_ratings_total || 0} |
+              Email: ${emailInfo.emailFound ? emailInfo.email : "None"} |
+              Verified: ${emailInfo.emailVerified ? "Yes" : "No"} |
+              Social: ${emailInfo.socialLinks?.length || 0} |
               Score: <strong>${score}</strong>
             </div>
           </div>
 
           <button
             class="btn btn-small"
-            onclick="autoSeedBusiness('${biz.name.replace(/'/g, "\\'")}', '${town}', '${category}', ${score})"
+            onclick="autoSeedBusiness(
+              '${biz.name.replace(/'/g, "\\'")}',
+              '${town}',
+              '${category}',
+              ${score},
+              '${emailInfo.email || ""}'
+            )"
           >
             Auto‑Add
           </button>
@@ -106,7 +138,7 @@ function scoreBusiness(biz) {
 // AUTO SEED BUSINESS
 // ======================================
 
-async function autoSeedBusiness(name, town, category, score) {
+async function autoSeedBusiness(name, town, category, score, email = "") {
   if (score < 50) {
     alert("This business has too strong an online presence. Skipped.");
     return;
@@ -126,7 +158,7 @@ async function autoSeedBusiness(name, town, category, score) {
         category,
         slug,
         townSlug,
-        email: "",
+        email,
         phone: "",
         sendEmail: true,
         source: "smart_seed",
