@@ -46,3 +46,8 @@
   include = [
     "/directory/*"
   ]
+
+[[redirects]]
+  from = "/directory/*"
+  to = "/business.html"
+  status = 200
