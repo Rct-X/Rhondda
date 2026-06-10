@@ -1,55 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1"
+>
 
 <title>Local Business | RCTX Directory</title>
 
-<meta name="description" content="View trusted local business information on the RCTX Directory.">
+<meta
+  name="description"
+  content="View trusted local business information on the RCTX Directory."
+>
 
-<meta name="robots" content="index,follow,max-image-preview:large">
+<meta
+  name="robots"
+  content="index,follow,max-image-preview:large"
+>
 
-<link rel="canonical" href="">
+<!-- CANONICAL -->
+<link
+  rel="canonical"
+  id="canonicalUrl"
+  href=""
+>
 
 <!-- OPEN GRAPH -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="RCTX Directory">
+<meta
+  property="og:type"
+  content="website"
+>
 
-<meta property="og:title" content="Local Business | RCTX Directory">
-<meta property="og:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
+<meta
+  property="og:site_name"
+  content="RCTX Directory"
+>
 
-<!-- STATIC OG IMAGE FOR ALL BUSINESS PAGES -->
-<meta property="og:image" content="https://rctx.co.uk/.netlify/functions/og-image?slug={{slug}}">
-<meta property="og:image:alt" content="Find local services in Rhondda Cynon Taf on the RCTX Directory">
-<link rel="canonical" href="https://rctx.co.uk/directory/{{category}}/{{town}}/{{slug}}">
-<meta property="og:url" content="https://rctx.co.uk/directory/{{category}}/{{town}}/{{slug}}">
-<meta property="og:url" content="">
-<meta name="prerender-status-code" content="200">
+<meta
+  property="og:title"
+  content="Local Business | RCTX Directory"
+>
+
+<meta
+  property="og:description"
+  content="Find trusted local businesses across Rhondda Cynon Taf."
+>
+
+<meta
+  property="og:url"
+  id="ogUrl"
+  content=""
+>
+
+<meta
+  property="og:image"
+  id="ogImage"
+  content="https://rctx.co.uk/images/find-rctx.jpg"
+>
+
+<meta
+  property="og:image:alt"
+  content="Find local services in Rhondda Cynon Taf on the RCTX Directory"
+>
+
 <!-- TWITTER -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Local Business | RCTX Directory">
-<meta name="twitter:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
-<meta name="twitter:image" content="https://rctx.co.uk/images/find-rctx.jpg">
-  <link rel="stylesheet" href="/css/site.css">
-    <link rel="stylesheet" href="/css/business.css">
-  <link rel="stylesheet" href="/website-checker/style.css">
-  
-    <!-- Firebase v8 compat (matches your code) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<meta
+  name="twitter:card"
+  content="summary_large_image"
+>
 
- <link rel="preload"
-      href="/site/fonts/BricolageGrotesque-Bold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin>
+<meta
+  name="twitter:title"
+  content="Local Business | RCTX Directory"
+>
 
-<link rel="preload"
-      href="/site/fonts/Poppins-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin>
+<meta
+  name="twitter:description"
+  content="Find trusted local businesses across Rhondda Cynon Taf."
+>
+
+<meta
+  name="twitter:image"
+  content="https://rctx.co.uk/images/find-rctx.jpg"
+>
+
+<!-- PRERENDER -->
+<meta
+  name="prerender-status-code"
+  content="200"
+>
+
+<!-- CSS -->
+<link
+  rel="stylesheet"
+  href="/css/site.css"
+>
+
+<link
+  rel="stylesheet"
+  href="/css/business.css"
+>
+
+<link
+  rel="stylesheet"
+  href="/website-checker/style.css"
+>
+
+<!-- FONTS -->
+<link
+  rel="preload"
+  href="/site/fonts/BricolageGrotesque-Bold.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+>
+
+<link
+  rel="preload"
+  href="/site/fonts/Poppins-Regular.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+>
+
+<!-- FIREBASE -->
+<script
+  defer
+  src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"
+></script>
+
+<script
+  defer
+  src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"
+></script>
 
 </head>
 
@@ -131,7 +217,11 @@
 
 <section class="business-header">
   <div class="container">
-    <img id="businessLogo" class="biz-logo">
+    <img id="businessLogo"
+     class="biz-logo"
+     src="/images/placeholder-logo.webp"
+     alt=""
+     loading="lazy">
     <h1 id="businessName">Business Name</h1>
 <p class="business-subtitle">
   Local <span id="businessCategoryInline"></span> in <span id="businessTownInline"></span>
@@ -277,7 +367,7 @@
 
 </footer>
 
-<script src="/js/business.js"></script>
+<script defer src="/js/business.js"></script>
 
 <script defer src="/js/footer-nav-faq.js"></script>
 <!-- SHARE POPUP -->
