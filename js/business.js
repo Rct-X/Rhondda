@@ -524,11 +524,30 @@ async function loadRelated(
     card.className =
       "related-card";
 
-  card.innerHTML = `
-  <div class="related-thumb"></div>
+  const thumb =
+  b.logoUrl ||
+  (b.gallery && b.gallery[0]) ||
+  "/images/fallback-business.webp";
+
+card.innerHTML = `
+  <div class="related-thumb">
+    <img
+      src="${thumb}"
+      alt="${b.name}"
+      loading="lazy"
+      decoding="async"
+    >
+  </div>
+
   <h3>${b.name}</h3>
-  <p class="text-dim">${b.category} • ${b.town}</p>
-  <span class="view-link">View Business →</span>
+
+  <p class="text-dim">
+    ${b.category} • ${b.town}
+  </p>
+
+  <span class="view-link">
+    View Business →
+  </span>
 `;
 
     relatedGrid.appendChild(card);
@@ -555,100 +574,20 @@ setTimeout(() => {
 
 }, 6000);
 
-// if user clicks inside popup, stop auto-close
-document.addEventListener("click", (e) => {
-  if (e.target.closest("#sharePopup")) {
-    clearTimeout(autoClose);
-  }
-});
-// ===============================
-// CLOSE POPUP
-// ===============================
-document.addEventListener(
-  "click",
-  (e) => {
-
-    if (
-      e.target.id ===
-      "closeSharePopup"
-    ) {
-
-      document.getElementById("sharePopup")
-        ?.classList.remove("show");
-    }
-  }
-);
-
 // ===============================
 // SHARE BUTTON
-// ===============================
-document.addEventListener(
-  "click",
-  async (e) => {
-
-    if (
-      e.target.id !==
-      "shareBusinessBtn"
-    ) {
-
-      return;
-    }
-
-    const b =
-      window.currentBusiness || {};
-
-    const shareData = {
-
-      title:
-        `${b.name || "Business"} | ${b.category || ""} in ${b.town || ""}`,
-
-      text:
-        `${b.name || ""} - ${b.category || ""} in ${b.town || ""}`,
-
-      url:
-        window.location.href
-    };
+function shareBusiness() {
+    const url = window.location.origin + window.location.pathname;
+    const title = document.title;
 
     if (navigator.share) {
-
-      try {
-
-        await navigator.share(
-          shareData
-        );
-
-      } catch (err) {
-
-        console.log(
-          "Share cancelled"
-        );
-      }
-
+      navigator.share({
+        title: title,
+        text: "Check out this local business on RCTX:",
+        url: url
+      });
     } else {
-
-      try {
-
-        await navigator.clipboard
-          .writeText(
-            window.location.href
-          );
-
-        e.target.textContent =
-          "Link Copied!";
-
-        setTimeout(() => {
-
-          e.target.textContent =
-            "Share This Business";
-
-        }, 2000);
-
-      } catch (err) {
-
-        alert(
-          "Could not copy link"
-        );
-      }
+      navigator.clipboard.writeText(url);
+      alert("Link copied to clipboard!");
     }
-  }
-);
+}
