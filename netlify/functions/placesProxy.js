@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
       return { statusCode: 400, body: "Missing query" };
     }
 
-    const apiKey = process.env.GOOGLE_PLACES_API;
+    const apiKey = process.env.GOOGLE_PLACES_KEY;
     if (!apiKey) {
       return { statusCode: 500, body: "Missing API key" };
     }
