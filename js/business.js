@@ -11,64 +11,97 @@ let db;
 // ===============================
 // READ URL PATH PARAMETERS
 // ===============================
+
 function getBusinessParams() {
+
   const url = new URL(window.location.href);
 
-  // 🔥 1️⃣ FACEBOOK / INSTAGRAM / MESSENGER WRAPPED LINKS (l.php?u=...)
+  // ===============================
+  // FACEBOOK WRAPPED LINKS
+  // ===============================
   const fbWrapped = url.searchParams.get("u");
+
   if (fbWrapped) {
-    const real = new URL(fbWrapped);
-    const realParts = real.pathname.split("/").filter(Boolean);
 
-    if (realParts.length >= 4) {
-      return {
-        category: realParts[1],
-        town: realParts[2],
-        slug: realParts[3]
-      };
+    try {
+
+      const real = new URL(decodeURIComponent(fbWrapped));
+
+      return extractFromPath(real.pathname);
+
+    } catch (e) {
+
+      console.error("Facebook wrapped URL parse failed", e);
+
     }
   }
 
-  // 🔥 2️⃣ FACEBOOK FBCID WRAPPING (normal URL but with ?fbclid=...)
-  // Example:
-  // https://rctx.co.uk/directory/.../slug?fbclid=IwAR...
-  if (url.searchParams.has("fbclid")) {
-    const cleanParts = url.pathname.split("/").filter(Boolean);
-
-    if (cleanParts.length >= 4) {
-      return {
-        category: cleanParts[1],
-        town: cleanParts[2],
-        slug: cleanParts[3]
-      };
-    }
-  }
-
-  // 3️⃣ Query params (OG redirect)
+  // ===============================
+  // QUERY PARAMS
+  // ===============================
   const categoryQP = url.searchParams.get("category");
   const townQP = url.searchParams.get("town");
   const slugQP = url.searchParams.get("slug");
 
   if (categoryQP && townQP && slugQP) {
+
     return {
-      category: categoryQP,
-      town: townQP,
-      slug: slugQP
+      category: categoryQP.trim().toLowerCase(),
+      town: townQP.trim().toLowerCase(),
+      slug: slugQP.trim().toLowerCase()
     };
   }
 
-  // 4️⃣ Pretty URL fallback
-  const parts = url.pathname.split("/").filter(Boolean);
+  // ===============================
+  // NORMAL PATH
+  // ===============================
+  return extractFromPath(url.pathname);
 
-  if (parts.length >= 4) {
-    return {
-      category: parts[1],
-      town: parts[2],
-      slug: parts[3]
-    };
+}
+
+
+// ===============================
+// PATH EXTRACTOR
+// ===============================
+function extractFromPath(pathname) {
+
+  const clean = pathname
+    .replace(/\/+/g, "/")
+    .replace(/\/$/, "");
+
+  const parts = clean
+    .split("/")
+    .filter(Boolean);
+
+  const dirIndex =
+    parts.indexOf("directory");
+
+  if (dirIndex === -1) {
+    return null;
   }
 
-  return null;
+  if (parts.length < dirIndex + 4) {
+    return null;
+  }
+
+  return {
+
+    category:
+      decodeURIComponent(parts[dirIndex + 1])
+        .trim()
+        .toLowerCase(),
+
+    town:
+      decodeURIComponent(parts[dirIndex + 2])
+        .trim()
+        .toLowerCase(),
+
+    slug:
+      decodeURIComponent(parts[dirIndex + 3])
+        .trim()
+        .toLowerCase()
+  };
+
 }
 
 // ===============================
