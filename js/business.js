@@ -14,9 +14,7 @@ let db;
 function getBusinessParams() {
   const url = new URL(window.location.href);
 
-  // 🔥 1️⃣ FIX FACEBOOK / INSTAGRAM / MESSENGER WRAPPED LINKS
-  // Facebook wraps links like:
-  // https://l.facebook.com/l.php?u=https%3A%2F%2Frctx.co.uk%2Fdirectory%2F...
+  // 🔥 1️⃣ FACEBOOK / INSTAGRAM / MESSENGER WRAPPED LINKS (l.php?u=...)
   const fbWrapped = url.searchParams.get("u");
   if (fbWrapped) {
     const real = new URL(fbWrapped);
@@ -31,7 +29,22 @@ function getBusinessParams() {
     }
   }
 
-  // 2️⃣ Query params (OG redirect)
+  // 🔥 2️⃣ FACEBOOK FBCID WRAPPING (normal URL but with ?fbclid=...)
+  // Example:
+  // https://rctx.co.uk/directory/.../slug?fbclid=IwAR...
+  if (url.searchParams.has("fbclid")) {
+    const cleanParts = url.pathname.split("/").filter(Boolean);
+
+    if (cleanParts.length >= 4) {
+      return {
+        category: cleanParts[1],
+        town: cleanParts[2],
+        slug: cleanParts[3]
+      };
+    }
+  }
+
+  // 3️⃣ Query params (OG redirect)
   const categoryQP = url.searchParams.get("category");
   const townQP = url.searchParams.get("town");
   const slugQP = url.searchParams.get("slug");
@@ -44,8 +57,8 @@ function getBusinessParams() {
     };
   }
 
-  // 3️⃣ Pretty URL fallback
-  const parts = window.location.pathname.split("/").filter(Boolean);
+  // 4️⃣ Pretty URL fallback
+  const parts = url.pathname.split("/").filter(Boolean);
 
   if (parts.length >= 4) {
     return {
