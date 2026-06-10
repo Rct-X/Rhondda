@@ -265,7 +265,7 @@
 
 <script>
   // Scopes dynamic system path links cleanly
-  const url = window.location.href;
+const url = window.location.origin + window.location.pathname;
 
   document.getElementById("fbShare").href =
     `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
@@ -420,4 +420,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-</html>
+  </html>
