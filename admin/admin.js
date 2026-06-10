@@ -50,9 +50,7 @@ const loginMessage = document.getElementById("loginMessage");
     setupSidebarNavigation();
 
   } catch (err) {
-
     console.error(err);
-
     if (loginMessage) {
       loginMessage.textContent = "System error";
     }
@@ -74,11 +72,8 @@ function setupAuth() {
     loginMessage.textContent = "";
 
     try {
-
       await auth.signInWithEmailAndPassword(email, password);
-
     } catch (err) {
-
       console.error(err);
       loginMessage.textContent = "Invalid login";
     }
@@ -165,7 +160,7 @@ window.openSection = async function (section) {
   }
 
   // ===========================
-  // DASHBOARD (MODERATION ONLY)
+  // DASHBOARD
   // ===========================
 
   if (section === "dashboard") {
@@ -179,19 +174,23 @@ window.openSection = async function (section) {
   }
 
   // ===========================
-  // MARKETING
+  // MARKETING + FINDER
   // ===========================
 
   if (section === "marketing") {
 
-  const marketing = await import("./marketing.js");
+    const marketing = await import("./marketing.js");
 
-  await marketing.initMarketing({
-    db: window.db,
-    auth: window.auth
-  });
+    await marketing.initMarketing({
+      db: window.db,
+      auth: window.auth
+    });
 
-  const finder = await import("./finder.js");
+    // IMPORTANT: ensure finder is actually loaded + initialised
+    const finder = await import("./finder.js");
 
-  finder.initFinder?.(); // 👈 important
+    if (finder.initFinder) {
+      finder.initFinder({ db: window.db, auth: window.auth });
+    }
   }
+};
