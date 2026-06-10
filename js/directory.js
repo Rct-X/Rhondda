@@ -77,8 +77,9 @@ async function loadCategory(categorySlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug}…</p>`;
 
   const snap = await db.collection("businesses")
-    .where("categorySlug", "==", categorySlug)
-    .get();
+  .where("categorySlug", "==", categorySlug)
+  .where("status", "==", "approved")
+  .get();
 
   if (resultsMeta) {
     resultsMeta.innerHTML = `
@@ -102,9 +103,10 @@ async function loadCategoryTown(categorySlug, townSlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
 
   const snap = await db.collection("businesses")
-    .where("categorySlug", "==", categorySlug)
-    .where("townSlug", "==", townSlug)
-    .get();
+  .where("categorySlug", "==", categorySlug)
+  .where("townSlug", "==", townSlug)
+  .where("status", "==", "approved")
+  .get();
 
   if (resultsMeta) {
     resultsMeta.innerHTML = `
@@ -131,8 +133,9 @@ async function searchDirectory() {
   resultsGrid.innerHTML = `<p class="text-dim">Searching…</p>`;
 
   const snap = await db.collection("businesses")
-    .where("keywords", "array-contains", term)
-    .get();
+  .where("keywords", "array-contains", term)
+  .where("status", "==", "approved")
+  .get();
 
   if (resultsMeta) {
     const suggestions = `
