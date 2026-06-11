@@ -1,22 +1,50 @@
 // ======================================
-// SMART FINDER MODULE
+// SMART FINDER MODULE (MODULAR)
 // ======================================
 
-console.log("[FINDER] Loaded");
+let db;
+let auth;
+let container;
 
-// expose to admin.js + HTML
-window.findBusinesses = findBusinesses;
-window.autoSeedBusiness = autoSeedBusiness;
-window.refreshPlacesUsage = refreshPlacesUsage;
+console.log("[FINDER] Module loaded");
 
-// ======================================
-// INIT (called from admin.js)
-// ======================================
+export function initFinder({ db: _db, auth: _auth, container: _container }) {
+  db = _db;
+  auth = _auth;
+  container = _container;
 
-export function initFinder() {
   console.log("[FINDER] init");
 
+  bindFinderEvents();
   refreshPlacesUsage();
+}
+
+// ======================================
+// EVENT BINDING
+// ======================================
+
+function bindFinderEvents() {
+  const searchBtn = container.querySelector("#finderSearchBtn");
+  if (searchBtn) {
+    searchBtn.addEventListener("click", () => {
+      findBusinesses();
+    });
+  }
+
+  // event delegation for Auto-Add buttons
+  container.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action='auto-seed']");
+    if (!btn) return;
+
+    const name = btn.dataset.name;
+    const town = btn.dataset.town;
+    const category = btn.dataset.category;
+    const score = Number(btn.dataset.score || 0);
+    const email = btn.dataset.email || "";
+    const phone = btn.dataset.phone || "";
+
+    autoSeedBusiness(name, town, category, score, email, phone);
+  });
 }
 
 // ======================================
@@ -37,10 +65,11 @@ function slugify(str = "") {
 // ======================================
 
 async function findBusinesses() {
+  const category = container.querySelector("#finderCategory")?.value?.trim();
+  const town = container.querySelector("#finderTown")?.value?.trim();
+  const resultsBox = container.querySelector("#finderResults");
 
-  const category = document.getElementById("finderCategory")?.value?.trim();
-  const town = document.getElementById("finderTown")?.value?.trim();
-  const resultsBox = document.getElementById("finderResults");
+  if (!resultsBox) return;
 
   if (!category || !town) {
     resultsBox.innerHTML = `<div class="status error">Enter category and town.</div>`;
@@ -52,7 +81,6 @@ async function findBusinesses() {
   const query = `${category} ${town}`;
 
   try {
-
     const res = await fetch(
       `/.netlify/functions/placesProxy?query=${encodeURIComponent(query)}`
     );
@@ -74,14 +102,10 @@ async function findBusinesses() {
     let html = `<div class="finder-list">`;
 
     for (const biz of results) {
-
       const phone = biz.phone || "";
       const website = biz.website || "";
 
-      // ======================================
       // EMAIL SCRAPER
-      // ======================================
-
       let emailInfo = {
         emailFound: false,
         email: "",
@@ -101,12 +125,8 @@ async function findBusinesses() {
         }
       }
 
-      // ======================================
       // SCORE
-      // ======================================
-
       let score = scoreBusiness(biz);
-
       if (!emailInfo.emailFound) score += 20;
       else score -= 10;
 
@@ -130,14 +150,13 @@ async function findBusinesses() {
 
           <button
             class="btn btn-small"
-            onclick="autoSeedBusiness(
-              '${biz.name.replace(/'/g, "\\'")}',
-              '${town}',
-              '${slugify(category)}',
-              ${score},
-              '${emailInfo.email || ""}',
-              '${phone || ""}'
-            )"
+            data-action="auto-seed"
+            data-name="${biz.name.replace(/"/g, "&quot;")}"
+            data-town="${town}"
+            data-category="${slugify(category)}"
+            data-score="${score}"
+            data-email="${emailInfo.email || ""}"
+            data-phone="${phone || ""}"
           >
             Auto-Add
           </button>
@@ -162,7 +181,6 @@ async function findBusinesses() {
 // ======================================
 
 function scoreBusiness(biz) {
-
   let score = 0;
 
   if (!biz.website) score += 40;
@@ -181,7 +199,6 @@ function scoreBusiness(biz) {
 // ======================================
 
 async function autoSeedBusiness(name, town, category, score, email = "", phone = "") {
-
   if (score < 50) {
     alert("This business has too strong an online presence. Skipped.");
     return;
@@ -190,11 +207,9 @@ async function autoSeedBusiness(name, town, category, score, email = "", phone =
   const slug = slugify(name);
   const townSlug = slugify(town);
 
-  // IMPORTANT: fallback description (so it never breaks)
   const description = `${name} provides ${category.replace(/-/g, " ")} services in ${town}.`;
 
   try {
-
     const res = await fetch("/.netlify/functions/adminAddBusiness", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -232,12 +247,10 @@ async function autoSeedBusiness(name, town, category, score, email = "", phone =
 // ======================================
 
 async function refreshPlacesUsage() {
-
-  const box = document.getElementById("placesUsageBox");
+  const box = container.querySelector("#placesUsageBox");
   if (!box) return;
 
   try {
-
     const res = await fetch("/.netlify/functions/getPlacesUsage");
     const json = await res.json();
 
@@ -262,8 +275,3 @@ async function refreshPlacesUsage() {
     box.innerHTML = `<div class="status error">Error loading usage.</div>`;
   }
 }
-
-// auto init for safety
-document.addEventListener("DOMContentLoaded", () => {
-  refreshPlacesUsage();
-});
