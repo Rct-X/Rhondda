@@ -60,7 +60,6 @@ export async function initPending(services) {
   console.log("[PENDING] Initialising pending submissions module");
 
   // Cache DOM
-  dashboardTab = document.getElementById("dashboardTab");
   reviewPanel = document.getElementById("reviewPanel");
 
   reviewErrors = document.getElementById("reviewErrors");
@@ -219,8 +218,8 @@ function openReviewPanel(id, data) {
   currentPendingId = id;
   currentPendingData = data;
 
-  dashboardTab.style.display = "none";
-  reviewPanel.style.display = "block";
+  const reviewPanel = document.getElementById("reviewPanel");
+reviewPanel.style.display = "block";
 
   // Fill read-only info
   reviewName.textContent = data.name;
