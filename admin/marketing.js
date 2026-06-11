@@ -1,20 +1,32 @@
 // ======================================
-// MARKETING MODULE
+// MARKETING MODULE (MODULAR)
 // ======================================
 
-export async function initMarketing({ db, auth }) {
+let db;
+let auth;
+let container;
+
+export async function initMarketing({ db: _db, auth: _auth, container: _container }) {
+  db = _db;
+  auth = _auth;
+  container = _container;
 
   console.log("[MARKETING] init");
 
-  // expose main action for HTML button
-  window.addBusiness = addBusiness;
+  bindMarketingEvents();
+}
 
-  // optional: expose helpers if needed elsewhere
-  window.__marketing = {
-    addBusiness,
-    generateDescription,
-    slugify
-  };
+// ======================================
+// EVENT BINDING
+// ======================================
+
+function bindMarketingEvents() {
+  const submitBtn = container.querySelector("#addBusinessBtn");
+  if (submitBtn) {
+    submitBtn.addEventListener("click", () => {
+      addBusiness();
+    });
+  }
 }
 
 // ======================================
@@ -45,7 +57,6 @@ function formatCategory(category = "") {
 // ======================================
 
 function generateDescription(name, category, town) {
-
   const cat = formatCategory(category);
   const lower = cat.toLowerCase();
 
@@ -85,16 +96,17 @@ function generateDescription(name, category, town) {
 // ======================================
 
 async function addBusiness() {
+  const name = container.querySelector("#name")?.value?.trim();
+  const email = container.querySelector("#email")?.value?.trim();
+  const phone = container.querySelector("#phone")?.value?.trim();
+  const town = container.querySelector("#town")?.value?.trim();
+  const category = container.querySelector("#category")?.value;
+  const sendEmail = container.querySelector("#sendEmail")?.checked;
 
-  const name = document.getElementById("name")?.value?.trim();
-  const email = document.getElementById("email")?.value?.trim();
-  const phone = document.getElementById("phone")?.value?.trim();
-  const town = document.getElementById("town")?.value?.trim();
-  const category = document.getElementById("category")?.value;
-  const sendEmail = document.getElementById("sendEmail")?.checked;
+  const result = container.querySelector("#result");
+  const submitBtn = container.querySelector("#addBusinessBtn");
 
-  const result = document.getElementById("result");
-  const submitBtn = document.getElementById("addBusinessBtn");
+  if (!result || !submitBtn) return;
 
   if (!name || !town || !category) {
     result.innerHTML = `<div class="status error">Please complete all required fields.</div>`;
@@ -110,7 +122,6 @@ async function addBusiness() {
   const description = generateDescription(name, category, town);
 
   try {
-
     const res = await fetch("/.netlify/functions/adminAddBusiness", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -150,7 +161,7 @@ async function addBusiness() {
         <div class="result-actions">
           <a href="${listingUrl}" target="_blank" class="result-link">View Listing</a>
           <a href="${googleSearch}" target="_blank" class="result-link">Search Google</a>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('${fullUrl}')">
+          <button class="copy-btn">
             Copy Link
           </button>
         </div>
@@ -163,14 +174,20 @@ async function addBusiness() {
       </div>
     `;
 
-    document.getElementById("name").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("phone").value = "";
-    document.getElementById("town").value = "";
-    document.getElementById("category").value = "";
+    const copyBtn = result.querySelector(".copy-btn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(fullUrl);
+      });
+    }
+
+    container.querySelector("#name").value = "";
+    container.querySelector("#email").value = "";
+    container.querySelector("#phone").value = "";
+    container.querySelector("#town").value = "";
+    container.querySelector("#category").value = "";
 
   } catch (err) {
-
     console.error("[MARKETING] error", err);
 
     result.innerHTML = `
@@ -178,7 +195,6 @@ async function addBusiness() {
     `;
 
   } finally {
-
     submitBtn.disabled = false;
     submitBtn.textContent = "Add Business";
   }
