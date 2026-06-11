@@ -189,7 +189,44 @@
       <p><strong>Website:</strong> <span id="reviewWebsite"></span></p>
       <p><strong>Address:</strong> <span id="reviewAddress"></span></p>
     </div>
+<div class="review-section">
+  <h3>Keywords</h3>
 
+  <!-- Raw keywords -->
+  <p><strong>Submitted Keywords:</strong></p>
+  <p id="reviewKeywordsRaw" class="url-preview"></p>
+
+  <!-- Cleaned keywords -->
+  <div class="form-group">
+    <label for="reviewKeywordsClean">Cleaned Keywords</label>
+    <input type="text" id="reviewKeywordsClean">
+    <p class="hint">Lowercase, trimmed, no duplicates.</p>
+  </div>
+
+  <!-- Extra keywords you add -->
+  <div class="form-group">
+    <label for="reviewKeywordsExtra">Add Extra Keywords</label>
+    <input type="text" id="reviewKeywordsExtra" placeholder="Add more keywords…">
+    <p class="hint">Comma‑separated. These will be merged into the final list.</p>
+  </div>
+
+  <!-- Auto-generated keywords -->
+  <div class="form-group">
+    <label for="reviewKeywordsAuto">Suggested Keywords</label>
+    <input type="text" id="reviewKeywordsAuto">
+    <p class="hint">Generated from business name, category, and town.</p>
+  </div>
+
+  <button type="button" id="regenKeywordsBtn" class="btn btn-secondary">
+    Regenerate Keywords
+  </button>
+
+  <!-- Final merged keywords -->
+  <div class="form-group" style="margin-top:20px;">
+    <label>Final Keywords (Saved to Firestore)</label>
+    <p id="reviewKeywordsFinal" class="url-preview"></p>
+  </div>
+</div>
     <!-- SLUG EDITOR -->
     <div class="review-section">
       <h3>Slugs & URL</h3>
