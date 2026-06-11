@@ -27,7 +27,6 @@ async function verifyUser(event) {
 
   const decoded = await admin.auth().verifyIdToken(token);
 
-  // ONLY YOUR ADMIN EMAIL
   if (decoded.email !== "epickering45@googlemail.com") {
     throw new Error("Unauthorized");
   }
@@ -42,11 +41,15 @@ exports.handler = async (event) => {
   }
 
   try {
-
-    // VERIFY USER
     await verifyUser(event);
 
-    const { id } = JSON.parse(event.body || "{}");
+    const {
+      id,
+      categorySlug,
+      townSlug,
+      businessSlug,
+      keywords
+    } = JSON.parse(event.body || "{}");
 
     if (!id) {
       return {
@@ -55,10 +58,7 @@ exports.handler = async (event) => {
       };
     }
 
-    const doc = await db
-      .collection("pending_submissions")
-      .doc(id)
-      .get();
+    const doc = await db.collection("pending_submissions").doc(id).get();
 
     if (!doc.exists) {
       return {
@@ -69,39 +69,45 @@ exports.handler = async (event) => {
 
     const data = doc.data();
 
-    // MOVE TO BUSINESSES COLLECTION
-    await db.collection("businesses").add({
+    // Build final business object
+    const finalBusiness = {
       ...data,
       status: "approved",
       verified: false,
       ownerId: null,
-      approvedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
+      approvedAt: admin.firestore.FieldValue.serverTimestamp(),
 
-    // DELETE PENDING SUBMISSION
-    await db
-      .collection("pending_submissions")
-      .doc(id)
-      .delete();
+      // NEW FIELDS FROM ADMIN PANEL
+      categorySlug: categorySlug || data.categorySlug || null,
+      townSlug: townSlug || data.townSlug || null,
+      slug: businessSlug || data.slug || null,
+      keywords: keywords || data.keywords || []
+    };
 
-    // ============================================
-    // SEND EMAIL: "Your listing is live — claim it"
-    // ============================================
-    // Only send approval email if NOT seeded
-if (data.source !== "admin_seed") {
-  await fetch(process.env.URL + "/.netlify/functions/sendListingApprovedEmail", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: data.name,
-      email: data.email,
-      businessName: data.name,
-      slug: data.slug,
-      townSlug: data.townSlug,
-      categorySlug: data.categorySlug
-    })
-  });
-}
+    // Also store category for convenience
+    finalBusiness.category = finalBusiness.categorySlug;
+
+    // Save to businesses
+    await db.collection("businesses").add(finalBusiness);
+
+    // Delete pending submission
+    await db.collection("pending_submissions").doc(id).delete();
+
+    // Send email (only if not admin seeded)
+    if (data.source !== "admin_seed") {
+      await fetch(process.env.URL + "/.netlify/functions/sendListingApprovedEmail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          businessName: data.name,
+          slug: finalBusiness.slug,
+          townSlug: finalBusiness.townSlug,
+          categorySlug: finalBusiness.categorySlug
+        })
+      });
+    }
 
     return {
       statusCode: 200,
@@ -109,7 +115,6 @@ if (data.source !== "admin_seed") {
     };
 
   } catch (err) {
-
     console.error(err);
 
     return {
