@@ -1,16 +1,16 @@
 // ======================================
-// PENDING.JS
-// Handles Pending Submissions ONLY
+// PENDING.JS — Pending Submissions Module
 // ======================================
 
 let db = null;
 let auth = null;
 
-// DOM refs for review panel
-let reviewPanel;
+// DOM refs
 let dashboardTab;
+let reviewPanel;
 
 let reviewErrors;
+
 let reviewName;
 let reviewCategoryRaw;
 let reviewTown;
@@ -37,6 +37,14 @@ let urlStatus;
 let approveBtn;
 let rejectBtn;
 let backBtn;
+
+// Keyword fields
+let reviewKeywordsRaw;
+let reviewKeywordsClean;
+let reviewKeywordsExtra;
+let reviewKeywordsAuto;
+let reviewKeywordsFinal;
+let regenKeywordsBtn;
 
 let currentPendingId = null;
 let currentPendingData = null;
@@ -84,6 +92,14 @@ export async function initPending(services) {
   rejectBtn = document.getElementById("rejectBtn");
   backBtn = document.getElementById("backToDashboardBtn");
 
+  // Keyword refs
+  reviewKeywordsRaw = document.getElementById("reviewKeywordsRaw");
+  reviewKeywordsClean = document.getElementById("reviewKeywordsClean");
+  reviewKeywordsExtra = document.getElementById("reviewKeywordsExtra");
+  reviewKeywordsAuto = document.getElementById("reviewKeywordsAuto");
+  reviewKeywordsFinal = document.getElementById("reviewKeywordsFinal");
+  regenKeywordsBtn = document.getElementById("regenKeywordsBtn");
+
   // Bind events
   backBtn.addEventListener("click", closeReviewPanel);
   approveBtn.addEventListener("click", approveSubmission);
@@ -92,11 +108,29 @@ export async function initPending(services) {
   reviewCategorySelect.addEventListener("change", () => {
     reviewCategorySlug.value = reviewCategorySelect.value;
     validateAndPreview();
+    regenerateKeywords();
   });
 
-  reviewCategorySlug.addEventListener("input", validateAndPreview);
-  reviewTownSlug.addEventListener("input", validateAndPreview);
-  reviewBusinessSlug.addEventListener("input", validateAndPreview);
+  reviewCategorySlug.addEventListener("input", () => {
+    validateAndPreview();
+    regenerateKeywords();
+  });
+
+  reviewTownSlug.addEventListener("input", () => {
+    validateAndPreview();
+    regenerateKeywords();
+  });
+
+  reviewBusinessSlug.addEventListener("input", () => {
+    validateAndPreview();
+    regenerateKeywords();
+  });
+
+  regenKeywordsBtn.addEventListener("click", regenerateKeywords);
+
+  reviewKeywordsClean.addEventListener("input", updateFinalKeywords);
+  reviewKeywordsExtra.addEventListener("input", updateFinalKeywords);
+  reviewKeywordsAuto.addEventListener("input", updateFinalKeywords);
 
   // Load pending submissions
   await loadPendingSubmissions();
@@ -214,12 +248,57 @@ function openReviewPanel(id, data) {
   reviewBusinessSlug.value = data.slug || slugify(data.name);
   reviewCategorySlug.value = "";
 
+  // Keywords
+  reviewKeywordsRaw.textContent = (data.keywords || []).join(", ");
+  regenerateKeywords();
+
   validateAndPreview();
 }
 
 function closeReviewPanel() {
   reviewPanel.style.display = "none";
   dashboardTab.style.display = "block";
+}
+
+// ======================================
+// KEYWORD LOGIC
+// ======================================
+
+function regenerateKeywords() {
+  const raw = currentPendingData.keywords || [];
+
+  // Clean raw keywords
+  const cleaned = raw
+    .map(k => k.toLowerCase().trim())
+    .filter(k => k.length > 0);
+
+  const unique = [...new Set(cleaned)];
+
+  reviewKeywordsClean.value = unique.join(", ");
+
+  // Auto keywords from business info
+  const auto = [
+    slugify(currentPendingData.name).replace(/-/g, " "),
+    slugify(currentPendingData.town).replace(/-/g, " "),
+    slugify(reviewCategorySlug.value).replace(/-/g, " ")
+  ];
+
+  reviewKeywordsAuto.value = auto.join(", ");
+
+  updateFinalKeywords();
+}
+
+function updateFinalKeywords() {
+  const clean = reviewKeywordsClean.value.split(",").map(k => k.trim());
+  const extra = reviewKeywordsExtra.value.split(",").map(k => k.trim());
+  const auto = reviewKeywordsAuto.value.split(",").map(k => k.trim());
+
+  const merged = [...clean, ...extra, ...auto]
+    .filter(k => k.length > 0)
+    .map(k => k.toLowerCase())
+    .filter((k, i, arr) => arr.indexOf(k) === i);
+
+  reviewKeywordsFinal.textContent = merged.join(", ");
 }
 
 // ======================================
@@ -324,6 +403,11 @@ async function approveSubmission() {
   const townSlug = reviewTownSlug.value.trim();
   const businessSlug = reviewBusinessSlug.value.trim();
 
+  const finalKeywords = reviewKeywordsFinal.textContent
+    .split(",")
+    .map(k => k.trim())
+    .filter(k => k.length > 0);
+
   const finalUrl = `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${businessSlug}`;
 
   if (!confirm(`Publish this business?\n\n${finalUrl}`)) return;
@@ -340,7 +424,8 @@ async function approveSubmission() {
       id: currentPendingId,
       categorySlug,
       townSlug,
-      businessSlug
+      businessSlug,
+      keywords: finalKeywords
     })
   });
 
@@ -380,4 +465,4 @@ async function rejectSubmission() {
   alert("Submission rejected.");
   closeReviewPanel();
   loadPendingSubmissions();
-}
+  }
