@@ -44,17 +44,10 @@ const adminContainer = document.getElementById("adminContainer");
 const ROUTES = {
   dashboard: async () => {
     const mod = await import("./moderation.js");
-    await mod.initModeration({
-      db,
-      auth,
-      container: document.getElementById("dashboardTab")
-    });
+    await mod.initModeration({ db, auth, container: document.getElementById("dashboardTab") });
 
     const pending = await import("./pending.js");
-    await pending.initPending({
-      db,
-      auth
-    });
+    await pending.initPending({ db, auth });
   },
 
   marketing: async () => {
@@ -73,6 +66,11 @@ const ROUTES = {
         container: document.getElementById("marketingSection")
       });
     }
+  },
+
+  businesses: async () => {
+    const bm = await import("./business-manager.js");
+    await bm.initBusinessManager({ db, auth });
   }
 };
 
