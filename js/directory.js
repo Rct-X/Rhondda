@@ -7,7 +7,6 @@ const searchBtn = document.getElementById("searchBtn");
 const resultsMeta = document.getElementById("resultsMeta");
 
 let db;
-window.searchAliases = {}; // category + alias map
 
 // ===============================
 // FIREBASE INIT
@@ -21,25 +20,6 @@ async function loadFirebaseConfig() {
   const config = await loadFirebaseConfig();
   firebase.initializeApp(config);
   db = firebase.firestore();
-
-  // load category aliases once
-  try {
-    const aliasRes = await fetch("/.netlify/functions/getCategoryAliases");
-    const categoryAliases = await aliasRes.json();
-
-    Object.entries(categoryAliases).forEach(([category, aliases]) => {
-      const slug = category.toLowerCase();
-
-      window.searchAliases[category.toLowerCase()] = slug;
-
-      aliases.forEach(a => {
-        window.searchAliases[a.toLowerCase()] = slug;
-      });
-    });
-
-  } catch (err) {
-    console.error("Alias load failed", err);
-  }
 
   const page = detectPageType();
 
@@ -70,7 +50,7 @@ function detectPageType() {
 }
 
 // ===============================
-// RENDER CARD
+// CARD RENDERER
 // ===============================
 function renderBusinessCard(b) {
   const card = document.createElement("a");
@@ -91,17 +71,29 @@ function renderBusinessCard(b) {
 }
 
 // ===============================
-// LOAD CATEGORY (APPROVED ONLY)
+// LOAD CATEGORY
 // ===============================
 async function loadCategory(categorySlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug}…</p>`;
 
   const snap = await db.collection("businesses")
-    .where("categorySlug", "==", categorySlug)
-    .where("status", "==", "approved")
-    .get();
+  .where("categorySlug", "==", categorySlug)
+  .where("status", "==", "approved")
+  .get();
 
-  renderResults(snap, `${categorySlug}`);
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug}</strong></p>
+    `;
+  }
+
+  if (snap.empty) {
+    resultsGrid.innerHTML = `<p>No businesses found.</p>`;
+    return;
+  }
+
+  resultsGrid.innerHTML = "";
+  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
 }
 
 // ===============================
@@ -111,51 +103,57 @@ async function loadCategoryTown(categorySlug, townSlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
 
   const snap = await db.collection("businesses")
-    .where("categorySlug", "==", categorySlug)
-    .where("townSlug", "==", townSlug)
-    .where("status", "==", "approved")
-    .get();
+  .where("categorySlug", "==", categorySlug)
+  .where("townSlug", "==", townSlug)
+  .where("status", "==", "approved")
+  .get();
 
-  renderResults(snap, `${categorySlug} • ${townSlug}`);
+  if (resultsMeta) {
+    resultsMeta.innerHTML = `
+      <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug} • ${townSlug}</strong></p>
+    `;
+  }
+
+  if (snap.empty) {
+    resultsGrid.innerHTML = `<p>No businesses found in this area.</p>`;
+    return;
+  }
+
+  resultsGrid.innerHTML = "";
+  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
 }
 
 // ===============================
-// SEARCH (with alias + approved filter)
+// SEARCH
 // ===============================
 async function searchDirectory() {
-  const raw = searchInput.value.trim().toLowerCase();
-  if (!raw) return;
-
-  const mappedCategory = window.searchAliases[raw] || null;
+  const term = searchInput.value.trim().toLowerCase();
+  if (!term) return;
 
   resultsGrid.innerHTML = `<p class="text-dim">Searching…</p>`;
 
-  let query = db.collection("businesses")
-    .where("status", "==", "approved");
+  const snap = await db.collection("businesses")
+  .where("keywords", "array-contains", term)
+  .where("status", "==", "approved")
+  .get();
 
-  // If user typed category/alias → filter category
-  if (mappedCategory) {
-    query = query.where("categorySlug", "==", mappedCategory);
-  }
-
-  // If not category → keyword search
-  const snap = mappedCategory
-    ? await query.get()
-    : await db.collection("businesses")
-        .where("keywords", "array-contains", raw)
-        .where("status", "==", "approved")
-        .get();
-
-  renderResults(snap, raw);
-}
-
-// ===============================
-// RENDER SHARED
-// ===============================
-function renderResults(snap, label) {
   if (resultsMeta) {
+    const suggestions = `
+      <div style="margin-top:8px;font-size:0.9rem;">
+        Suggested:
+        <a href="/directory/plumbers">Plumbers</a> •
+        <a href="/directory/electricians">Electricians</a> •
+        <a href="/directory/builders">Builders</a> •
+        <a href="/directory/cleaners">Cleaners</a> •
+        <a href="/directory/roofers">Roofers</a>
+      </div>
+    `;
+
     resultsMeta.innerHTML = `
-      <p>Showing <strong>${snap.size}</strong> results for <strong>${label}</strong></p>
+      <p>
+        Showing <strong>${snap.size}</strong> results for <strong>${term}</strong>
+      </p>
+      ${suggestions}
     `;
   }
 
@@ -182,12 +180,12 @@ if (searchInput) {
 }
 
 // ===============================
-// PLACEHOLDER ROTATION
+// ROTATING PLACEHOLDER (HYBRID UX)
 // ===============================
 const placeholders = [
   "Find electricians in Pontypridd...",
   "Find plumbers in Tonypandy...",
-  "Find builders in Treorchy..."
+  "Find cleaners in Ferndale..."
 ];
 
 let i = 0;
@@ -196,4 +194,5 @@ setInterval(() => {
   if (!searchInput) return;
   searchInput.placeholder = placeholders[i];
   i = (i + 1) % placeholders.length;
-}, 2500);
+}, 2
+            4500);
