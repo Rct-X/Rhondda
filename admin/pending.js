@@ -341,15 +341,18 @@ function validateAndPreview() {
   const businessSlug = reviewBusinessSlug.value.trim();
 
   // CATEGORY SLUG
-  if (!categorySlug) {
-    errors.push("Category slug is required.");
-    categorySlugHint.textContent = "❌ Required.";
-  } else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(categorySlug)) {
-    errors.push("Category slug must be lowercase and hyphens only.");
-    categorySlugHint.textContent = "❌ Invalid format.";
-  } else {
-    categorySlugHint.textContent = "✔ Looks good.";
-  }
+if (!reviewCategorySelect.value) {
+  errors.push("You must select a category.");
+  categorySlugHint.textContent = "❌ Select a category.";
+} else if (!categorySlug) {
+  errors.push("Category slug is required.");
+  categorySlugHint.textContent = "❌ Required.";
+} else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(categorySlug)) {
+  errors.push("Category slug must be lowercase and hyphens only.");
+  categorySlugHint.textContent = "❌ Invalid format.";
+} else {
+  categorySlugHint.textContent = "✔ Looks good.";
+}
 
   // TOWN SLUG
   if (!townSlug) {
