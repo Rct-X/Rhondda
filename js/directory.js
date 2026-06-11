@@ -185,7 +185,7 @@ if (searchInput) {
 const placeholders = [
   "Find electricians in Pontypridd...",
   "Find plumbers in Tonypandy...",
-  "Find cleaners in Ferndale..."
+  "Find builders in Treorchy..."
 ];
 
 let i = 0;
@@ -194,5 +194,4 @@ setInterval(() => {
   if (!searchInput) return;
   searchInput.placeholder = placeholders[i];
   i = (i + 1) % placeholders.length;
-}, 2
-            4500);
+}, 2500);
