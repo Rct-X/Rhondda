@@ -20,7 +20,6 @@ export async function initModeration({ db: _db, auth: _auth, container: _contain
   bindEventDelegation();
 
   await Promise.all([
-    loadPending(),
     loadClaims(),
     loadPendingChanges()
   ]);
@@ -50,87 +49,6 @@ function bindEventDelegation() {
     if (actions[action]) actions[action]();
   });
 }
-
-// ======================================
-// LOAD PENDING SUBMISSIONS
-// ======================================
-
-async function loadPending() {
-  const list = container.querySelector("#pendingList");
-  if (!list || !db) return;
-
-  list.innerHTML = `<p>Loading submissions...</p>`;
-
-  try {
-    const snap = await db
-      .collection("pending_submissions")
-      .orderBy("createdAt", "desc")
-      .get();
-
-    if (snap.empty) {
-      list.innerHTML = `<p>No pending submissions.</p>`;
-      return;
-    }
-
-    list.innerHTML = "";
-
-    snap.forEach(doc => {
-      const b = doc.data();
-      const id = doc.id;
-
-      list.appendChild(renderPendingBusiness(b, id));
-    });
-
-  } catch (err) {
-    console.error("[PENDING] Failed:", err);
-    list.innerHTML = `<p>Error loading submissions.</p>`;
-  }
-}
-
-function renderPendingBusiness(b, id) {
-  const div = document.createElement("div");
-  div.className = "pending-item";
-
-  div.innerHTML = `
-    <div class="pending-top">
-      <div>
-        <h3>${b.name || "Unnamed Business"}</h3>
-        <div class="pending-meta">
-          <span>${b.category || "No category"}</span>
-          <span>${b.town || "No town"}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="pending-content">
-      <p><strong>Phone:</strong> ${b.phone || "N/A"}</p>
-      <p><strong>Website:</strong> ${
-        b.website
-          ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer">${b.website}</a>`
-          : "N/A"
-      }</p>
-      <p><strong>Address:</strong> ${b.address || "N/A"}</p>
-      <p><strong>Description:</strong><br>${b.description || "N/A"}</p>
-
-      ${b.wasteLicence ? `<p><strong>Waste Licence:</strong> ${b.wasteLicence}</p>` : ""}
-      ${b.keywords?.length ? `<p><strong>Keywords:</strong> ${b.keywords.join(", ")}</p>` : ""}
-
-      ${
-        b.createdAt
-          ? `<p class="pending-date">Submitted: ${new Date(b.createdAt.seconds * 1000).toLocaleString()}</p>`
-          : ""
-      }
-    </div>
-
-    <div class="pending-actions">
-      <button class="btn btn-success" data-action="approve-business" data-id="${id}">Approve</button>
-      <button class="btn btn-danger" data-action="reject-business" data-id="${id}">Reject</button>
-    </div>
-  `;
-
-  return div;
-}
-
 // ======================================
 // LOAD CLAIMS
 // ======================================
