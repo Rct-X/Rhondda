@@ -1,14 +1,18 @@
 // ======================================
+// ADMIN PANEL (FULLY MODULAR ROUTER)
+// ======================================
+
+let auth = null;
+let db = null;
+
+// ======================================
 // FIREBASE INIT
 // ======================================
 
 async function initFirebase() {
-
   const res = await fetch("/.netlify/functions/firebaseConfig");
 
-  if (!res.ok) {
-    throw new Error("Firebase config failed");
-  }
+  if (!res.ok) throw new Error("Firebase config failed");
 
   const config = await res.json();
 
@@ -22,40 +26,67 @@ async function initFirebase() {
   };
 }
 
-window.db = null;
-window.auth = null;
-
 // ======================================
-// ELEMENTS
+// DOM ELEMENTS
 // ======================================
 
 const loginSection = document.getElementById("loginSection");
 const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 
+const adminContainer = document.getElementById("adminContainer"); 
+// (wrap all admin sections inside this div)
+
+// ======================================
+// ROUTER MAP
+// ======================================
+
+const ROUTES = {
+  dashboard: async () => {
+    const mod = await import("./moderation.js");
+    await mod.initModeration({
+      db,
+      auth,
+      container: document.getElementById("dashboardTab")
+    });
+  },
+
+  marketing: async () => {
+    const marketing = await import("./marketing.js");
+    await marketing.initMarketing({
+      db,
+      auth,
+      container: document.getElementById("marketingTab")
+    });
+
+    const finder = await import("./finder.js");
+    if (finder.initFinder) {
+      finder.initFinder({
+        db,
+        auth,
+        container: document.getElementById("marketingTab")
+      });
+    }
+  }
+};
+
 // ======================================
 // INIT APP
 // ======================================
 
 (async () => {
-
   try {
-
     const services = await initFirebase();
-
-    window.auth = services.auth;
-    window.db = services.db;
+    auth = services.auth;
+    db = services.db;
 
     setupAuth();
     setupSidebarNavigation();
 
   } catch (err) {
     console.error(err);
-    if (loginMessage) {
-      loginMessage.textContent = "System error";
-    }
+    if (loginMessage) loginMessage.textContent = "System error";
   }
-
 })();
 
 // ======================================
@@ -63,9 +94,7 @@ const loginMessage = document.getElementById("loginMessage");
 // ======================================
 
 function setupAuth() {
-
   loginBtn?.addEventListener("click", async () => {
-
     const email = document.getElementById("adminEmail")?.value?.trim();
     const password = document.getElementById("adminPassword")?.value?.trim();
 
@@ -80,7 +109,6 @@ function setupAuth() {
   });
 
   auth.onAuthStateChanged(async (user) => {
-
     if (!user) {
       loginSection.style.display = "block";
       hideAllSections();
@@ -89,18 +117,51 @@ function setupAuth() {
 
     loginSection.style.display = "none";
 
-    await openSection("dashboard");
-    setActiveTab("dashboardTab");
+    await navigateTo("dashboard");
   });
 }
 
 // ======================================
-// TAB UI HELPERS
+// SIDEBAR NAVIGATION (EVENT DELEGATION)
+// ======================================
+
+function setupSidebarNavigation() {
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".admin-tab");
+    if (!btn) return;
+
+    const tab = btn.dataset.tab;
+    if (!tab) return;
+
+    await navigateTo(tab.replace("Tab", "").toLowerCase());
+  });
+}
+
+// ======================================
+// ROUTER
+// ======================================
+
+async function navigateTo(section) {
+  hideAllSections();
+  setActiveTab(section + "Tab");
+
+  const target =
+    document.getElementById(section + "Tab") ||
+    document.getElementById(section + "Section");
+
+  if (target) target.style.display = "block";
+
+  if (ROUTES[section]) {
+    await ROUTES[section]();
+  }
+}
+
+// ======================================
+// HELPERS
 // ======================================
 
 function hideAllSections() {
-
-  document
+  adminContainer
     .querySelectorAll(".admin-panel, .admin-panel-section")
     .forEach(section => {
       section.style.display = "none";
@@ -108,7 +169,6 @@ function hideAllSections() {
 }
 
 function setActiveTab(tabId) {
-
   document
     .querySelectorAll(".admin-tab")
     .forEach(btn => btn.classList.remove("active"));
@@ -117,80 +177,3 @@ function setActiveTab(tabId) {
     .querySelector(`[data-tab="${tabId}"]`)
     ?.classList.add("active");
 }
-
-// ======================================
-// SIDEBAR NAVIGATION
-// ======================================
-
-function setupSidebarNavigation() {
-
-  document.querySelectorAll(".admin-tab").forEach(btn => {
-
-    btn.addEventListener("click", async () => {
-
-      const tab = btn.dataset.tab;
-      if (!tab) return;
-
-      setActiveTab(tab);
-
-      const section = tab
-        .replace("Tab", "")
-        .replace("tab", "")
-        .toLowerCase();
-
-      await openSection(section);
-    });
-  });
-}
-
-// ======================================
-// ROUTER
-// ======================================
-
-window.openSection = async function (section) {
-
-  hideAllSections();
-
-  const target =
-    document.getElementById(section + "Tab") ||
-    document.getElementById(section + "Section");
-
-  if (target) {
-    target.style.display = "block";
-  }
-
-  // ===========================
-  // DASHBOARD
-  // ===========================
-
-  if (section === "dashboard") {
-
-    const mod = await import("./moderation.js");
-
-    await mod.initModeration({
-      db: window.db,
-      auth: window.auth
-    });
-  }
-
-  // ===========================
-  // MARKETING + FINDER
-  // ===========================
-
-  if (section === "marketing") {
-
-    const marketing = await import("./marketing.js");
-
-    await marketing.initMarketing({
-      db: window.db,
-      auth: window.auth
-    });
-
-    // IMPORTANT: ensure finder is actually loaded + initialised
-    const finder = await import("./finder.js");
-
-    if (finder.initFinder) {
-      finder.initFinder({ db: window.db, auth: window.auth });
-    }
-  }
-};
