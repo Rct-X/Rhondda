@@ -230,49 +230,35 @@
               >
             </div>
 
-            <!-- CATEGORY -->
-            <div class="form-group">
+      <!-- CATEGORY (free text) -->
+<div class="form-group">
+  <label for="category">Category *</label>
+  <input
+    type="text"
+    id="category"
+    required
+    placeholder="e.g. Gift Shop, Barber, Handyman"
+  >
+</div>
 
-              <label for="category">Category *</label>
+<!-- WASTE QUESTION -->
+<div class="form-group">
+  <label>Do you collect waste?</label>
 
-              <!-- Hidden real category value -->
-              <input type="hidden" id="category">
+  <div class="radio-row">
+    <label><input type="radio" name="collectsWaste" value="yes"> Yes</label>
+    <label><input type="radio" name="collectsWaste" value="no"> No</label>
+  </div>
+</div>
 
-              <!-- Search input -->
-              <input
-                type="text"
-                id="categorySearch"
-                placeholder="Start typing…"
-                autocomplete="off"
-                required
-              >
-
-              <div id="categorySuggestions" class="suggestions"></div>
-
-            </div>
-
-            <!-- WASTE LICENCE -->
-            <div
-              class="form-group"
-              id="wasteLicenceGroup"
-              style="display:none;"
-            >
-
-              <label for="wasteLicence">
-                Waste Carrier Licence Number *
-              </label>
-
-              <input
-                type="text"
-                id="wasteLicence"
-                placeholder="CBDU123456"
-              >
-
-              <p class="text-xs text-dim">
-                Required for waste collection, house clearance and rubbish removal businesses.
-              </p>
-
-            </div>
+<!-- WASTE LICENCE -->
+<div class="form-group" id="wasteLicenceGroup" style="display:none;">
+  <label for="wasteLicence">Waste Carrier Licence Number *</label>
+  <input type="text" id="wasteLicence" placeholder="CBDU123456">
+  <p class="text-xs text-dim">
+    Required only if you collect waste.
+  </p>
+</div>
 
             <!-- TOWN -->
             <div class="form-group">
@@ -469,4 +455,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 <script src="/js/rctx-tracker.js" defer></script>
 
 </body>
-              </html>
+</html>
