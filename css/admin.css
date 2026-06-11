@@ -671,3 +671,26 @@ grid-template-columns:1fr;
 #backToDashboardBtn {
   margin-bottom: 20px;
 }
+#businessesTab .pending-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+}
+
+#businessesTab .pending-item h3 {
+  margin: 0 0 4px;
+}
+
+#businessesTab .pending-item p {
+  margin: 0;
+  font-size: 14px;
+}
+
+#businessesTab .pending-item .btn {
+  align-self: flex-start;
+  margin-top: 6px;
+}
