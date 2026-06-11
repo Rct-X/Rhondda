@@ -13,6 +13,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// Slugify helper
 function slugify(str) {
   return str
     .toString()
@@ -37,17 +38,21 @@ exports.handler = async (event) => {
     const {
       name,
       email,
-      category,
+      categoryRaw,
+      collectsWaste,
+      wasteLicence,
       town,
       phone,
       website,
       address,
       description,
-      extraKeywords,
-      wasteLicence
+      extraKeywords
     } = body;
 
-    if (!name || !category || !town || !description) {
+    // ===============================
+    // REQUIRED FIELD VALIDATION
+    // ===============================
+    if (!name || !categoryRaw || !town || !description) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Missing required fields." })
@@ -57,97 +62,68 @@ exports.handler = async (event) => {
     // ===============================
     // WASTE LICENCE VALIDATION
     // ===============================
-    const wasteCategories = [
-      "Waste Collection",
-      "Removals",
-      "House Clearances"
-    ];
-
-    const requiresWasteLicence = wasteCategories.includes(category);
-
-    if (requiresWasteLicence && !wasteLicence) {
+    if (collectsWaste === "yes" && !wasteLicence) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          error: "Waste carrier licence number is required for this category."
+          error: "Waste carrier licence number is required if you collect waste."
         })
       };
     }
 
-    const categorySlug = slugify(category);
-    const townSlug = slugify(town);
+    // ===============================
+    // SLUGS
+    // ===============================
     const slug = slugify(name);
+    const townSlug = slugify(town);
 
     // ===============================
-// CATEGORY SEARCH ALIASES
-// ===============================
-const categoryAliases = require("./categoryAliases");
+    // BUILD KEYWORDS
+    // ===============================
+    const keywords = new Set();
 
-// ===============================
-// BUILD KEYWORDS
-// ===============================
-const keywords = new Set();
+    // Core searchable text
+    [name, categoryRaw, town, description].forEach(value => {
+      if (!value) return;
 
-// Core searchable text
-[
-  name,
-  category,
-  town,
-  description
-].forEach(value => {
-
-  if (!value) return;
-
-  value
-    .toLowerCase()
-    .split(/[\s,.-]+/)
-    .forEach(word => {
-
-      if (word.length > 1) {
-        keywords.add(word);
-      }
-
+      value
+        .toLowerCase()
+        .split(/[\s,.-]+/)
+        .forEach(word => {
+          if (word.length > 1) {
+            keywords.add(word);
+          }
+        });
     });
 
-});
+    // Full phrases
+    keywords.add(name.toLowerCase());
+    keywords.add(categoryRaw.toLowerCase());
+    keywords.add(town.toLowerCase());
+    keywords.add(`${categoryRaw.toLowerCase()} ${town.toLowerCase()}`);
 
-// Full phrases
-keywords.add(name.toLowerCase());
-keywords.add(category.toLowerCase());
-keywords.add(town.toLowerCase());
+    // Extra keywords
+    if (extraKeywords) {
+      extraKeywords
+        .split(",")
+        .map(k => k.trim().toLowerCase())
+        .filter(Boolean)
+        .forEach(k => keywords.add(k));
+    }
 
-keywords.add(
-  `${category.toLowerCase()} ${town.toLowerCase()}`
-);
-
-// Category aliases
-if (categoryAliases[category]) {
-
-  categoryAliases[category].forEach(alias => {
-    keywords.add(alias.toLowerCase());
-  });
-
-}
-
-// Extra keywords
-if (extraKeywords) {
-
-  extraKeywords
-    .split(",")
-    .map(k => k.trim().toLowerCase())
-    .filter(Boolean)
-    .forEach(k => keywords.add(k));
-
-}
-
+    // ===============================
+    // FIRESTORE DOCUMENT
+    // ===============================
     const doc = {
       name,
       slug,
-      category,
-      categorySlug,
+      categoryRaw,       // user typed category
+      category: null,    // you assign manually in admin
+      categorySlug: null, // you assign manually in admin
+
       town,
       townSlug,
-      
+
       email: email || null,
       phone: phone || null,
       website: website || null,
@@ -155,6 +131,7 @@ if (extraKeywords) {
 
       description,
 
+      collectsWaste: collectsWaste || "no",
       wasteLicence: wasteLicence || null,
 
       keywords: Array.from(keywords),
