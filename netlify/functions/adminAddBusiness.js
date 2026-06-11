@@ -60,9 +60,14 @@ function buildKeywords({ name, category, town, description = "" }) {
   keywords.add(`${category.toLowerCase()} ${town.toLowerCase()}`);
 
   // category aliases
-  const aliasKey = Object.keys(categoryAliases).find(
-    k => k.toLowerCase() === category.toLowerCase()
-  );
+  const normalizedCategory = category
+  .toLowerCase()
+  .trim()
+  .replace(/s$/, "");
+
+const aliasKey = Object.keys(categoryAliases).find(k =>
+  k.toLowerCase().replace(/s$/, "") === normalizedCategory
+);
 
   if (aliasKey) {
     categoryAliases[aliasKey].forEach(a => {
