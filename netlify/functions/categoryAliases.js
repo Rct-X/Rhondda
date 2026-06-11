@@ -416,7 +416,7 @@ module.exports = {
   // =========================
   // DRIVING SCHOOLS
   // =========================
-  "Driving Schools": [
+  "Driving Lessons": [
     "driving lessons",
     "driving instructor",
     "learn to drive",
