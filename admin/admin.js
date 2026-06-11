@@ -56,7 +56,7 @@ const ROUTES = {
     await marketing.initMarketing({
       db,
       auth,
-      container: document.getElementById("marketingTab")
+      container: document.getElementById("marketingSection")
     });
 
     const finder = await import("./finder.js");
@@ -64,7 +64,7 @@ const ROUTES = {
       finder.initFinder({
         db,
         auth,
-        container: document.getElementById("marketingTab")
+        container: document.getElementById("marketingSection")
       });
     }
   }
