@@ -38,8 +38,6 @@ function bindEventDelegation() {
     const id = btn.dataset.id;
 
     const actions = {
-      "approve-business": () => approveBusiness(id),
-      "reject-business": () => rejectBusiness(id),
       "approve-claim": () => approveClaim(id),
       "reject-claim": () => rejectClaim(id),
       "approve-changes": () => approvePendingChanges(id),
@@ -49,6 +47,7 @@ function bindEventDelegation() {
     if (actions[action]) actions[action]();
   });
 }
+
 // ======================================
 // LOAD CLAIMS
 // ======================================
@@ -177,52 +176,6 @@ function renderPendingChange(data, id) {
 // ACTIONS (NO GLOBALS)
 // ======================================
 
-async function approveBusiness(id) {
-  try {
-    const token = await auth.currentUser.getIdToken();
-
-    const res = await fetch("/.netlify/functions/approveBusiness", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ id })
-    });
-
-    if (!res.ok) throw new Error("Approve request failed");
-
-    await loadPending();
-
-  } catch (err) {
-    console.error(err);
-    alert("Failed to approve business");
-  }
-}
-
-async function rejectBusiness(id) {
-  try {
-    const token = await auth.currentUser.getIdToken();
-
-    const res = await fetch("/.netlify/functions/rejectBusiness", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ id })
-    });
-
-    if (!res.ok) throw new Error("Reject request failed");
-
-    await loadPending();
-
-  } catch (err) {
-    console.error(err);
-    alert("Failed to reject business");
-  }
-}
-
 async function approveClaim(id) {
   try {
     const token = await auth.currentUser.getIdToken();
@@ -313,4 +266,4 @@ async function rejectPendingChanges(id) {
     console.error(err);
     alert("Failed to reject changes");
   }
-      }
+}
