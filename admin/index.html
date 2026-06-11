@@ -150,6 +150,113 @@
          class="admin-panel active"
          style="display:none;">
 
+      <!-- REVIEW PANEL (hidden by default) -->
+<section
+  id="reviewPanel"
+  class="admin-panel"
+  style="display:none;"
+>
+  <div class="admin-card">
+
+    <button
+      type="button"
+      id="backToDashboardBtn"
+      class="btn btn-secondary"
+      style="margin-bottom:1rem;"
+    >
+      ← Back to Pending List
+    </button>
+
+    <h2>Review & Approve Business</h2>
+
+    <!-- Summary error box -->
+    <div
+      id="reviewErrors"
+      class="admin-message error"
+      style="display:none; margin-top:1rem;"
+    ></div>
+
+    <!-- BUSINESS INFO (READ ONLY) -->
+    <div class="review-section">
+      <h3>Business Info</h3>
+
+      <p><strong>Name:</strong> <span id="reviewName"></span></p>
+      <p><strong>Raw Category:</strong> <span id="reviewCategoryRaw"></span></p>
+      <p><strong>Town:</strong> <span id="reviewTown"></span></p>
+      <p><strong>Description:</strong> <span id="reviewDescription"></span></p>
+
+      <p><strong>Collects Waste:</strong> <span id="reviewCollectsWaste"></span></p>
+      <p><strong>Waste Licence:</strong> <span id="reviewWasteLicence"></span></p>
+
+      <p><strong>Email:</strong> <span id="reviewEmail"></span></p>
+      <p><strong>Phone:</strong> <span id="reviewPhone"></span></p>
+      <p><strong>Website:</strong> <span id="reviewWebsite"></span></p>
+      <p><strong>Address:</strong> <span id="reviewAddress"></span></p>
+    </div>
+
+    <!-- SLUG EDITOR -->
+    <div class="review-section">
+      <h3>Slugs & URL</h3>
+
+      <!-- CATEGORY -->
+      <div class="form-group">
+        <label for="reviewCategorySelect">Category</label>
+        <select id="reviewCategorySelect"></select>
+        <p class="hint">
+          Pick the correct category for this business.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="reviewCategorySlug">Category Slug</label>
+        <input type="text" id="reviewCategorySlug">
+        <p id="categorySlugHint" class="hint"></p>
+      </div>
+
+      <!-- TOWN SLUG -->
+      <div class="form-group">
+        <label for="reviewTownSlug">Town Slug</label>
+        <input type="text" id="reviewTownSlug">
+        <p id="townSlugHint" class="hint"></p>
+      </div>
+
+      <!-- BUSINESS SLUG -->
+      <div class="form-group">
+        <label for="reviewBusinessSlug">Business Slug</label>
+        <input type="text" id="reviewBusinessSlug">
+        <p id="businessSlugHint" class="hint"></p>
+      </div>
+
+      <!-- URL PREVIEW -->
+      <div class="form-group">
+        <label>Final Directory URL</label>
+        <p id="urlPreview" class="url-preview"></p>
+        <p id="urlStatus" class="hint"></p>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="review-actions">
+      <button
+        type="button"
+        id="rejectBtn"
+        class="btn btn-danger"
+      >
+        Reject Submission
+      </button>
+
+      <button
+        type="button"
+        id="approveBtn"
+        class="btn btn-primary"
+      >
+        Approve & Publish
+      </button>
+    </div>
+
+  </div>
+</section>
+
   <!-- Pending Submissions -->
   <div class="admin-card">
 
