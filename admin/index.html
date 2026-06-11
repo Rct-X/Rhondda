@@ -145,7 +145,151 @@
 <!-- =====================================
      DASHBOARD TAB
 ===================================== -->
+<!-- =====================================
+     BUSINESSES TAB
+===================================== -->
+<section
+  id="businessesTab"
+  class="admin-panel"
+  style="display:none;"
+>
+  <div class="admin-card">
+    <div class="section-head">
+      <div>
+        <h2>Businesses</h2>
+        <p>View and edit live directory listings.</p>
+      </div>
+      <span class="admin-badge">Directory</span>
+    </div>
 
+    <!-- Search + filters -->
+    <div class="form-grid" style="margin-bottom:1rem;">
+      <div class="field">
+        <label>Search</label>
+        <input id="bmSearch" placeholder="Name, town, category, keyword">
+      </div>
+      <div class="field">
+        <label>Town</label>
+        <input id="bmTownFilter" placeholder="Treorchy">
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <input id="bmCategoryFilter" placeholder="gift, baby, shops">
+      </div>
+    </div>
+
+    <!-- List -->
+    <div id="bmList" class="pending-list">
+      <p>Loading businesses…</p>
+    </div>
+  </div>
+
+  <!-- EDIT PANEL -->
+  <div id="bmEditPanel" class="admin-card" style="display:none; margin-top:1.5rem;">
+    <button
+      type="button"
+      id="bmBackBtn"
+      class="btn btn-secondary"
+      style="margin-bottom:1rem;"
+    >
+      ← Back to list
+    </button>
+
+    <h2>Edit Business</h2>
+    <p id="bmEditId" class="hint"></p>
+
+    <div id="bmEditErrors" class="admin-message error" style="display:none;"></div>
+
+    <div class="review-section">
+      <h3>Basic Info</h3>
+
+      <div class="form-group">
+        <label for="bmName">Name</label>
+        <input id="bmName">
+      </div>
+
+      <div class="form-group">
+        <label for="bmCategorySlug">Category Slug</label>
+        <input id="bmCategorySlug" placeholder="gift-shops, shops, baby-shops">
+      </div>
+
+      <div class="form-group">
+        <label for="bmTown">Town</label>
+        <input id="bmTown">
+      </div>
+
+      <div class="form-group">
+        <label for="bmTownSlug">Town Slug</label>
+        <input id="bmTownSlug" placeholder="treorchy">
+      </div>
+
+      <div class="form-group">
+        <label for="bmSlug">Business Slug</label>
+        <input id="bmSlug" placeholder="seren-fach-designs">
+      </div>
+
+      <div class="form-group">
+        <label>Directory URL</label>
+        <p id="bmUrlPreview" class="url-preview"></p>
+      </div>
+    </div>
+
+    <div class="review-section">
+      <h3>Description</h3>
+
+      <div class="form-group">
+        <label for="bmDescription">Description</label>
+        <textarea id="bmDescription" rows="4" style="width:100%;"></textarea>
+      </div>
+    </div>
+
+    <div class="review-section">
+      <h3>Keywords</h3>
+
+      <div class="form-group">
+        <label for="bmKeywords">Keywords (comma separated)</label>
+        <input id="bmKeywords">
+        <p class="hint">
+          Used for search. Include products, services, town, and variations (e.g. "baby clothes, baby shop, treorchy").
+        </p>
+      </div>
+
+      <button type="button" id="bmAutoKeywordsBtn" class="btn btn-secondary">
+        Auto-generate keywords
+      </button>
+    </div>
+
+    <div class="review-section">
+      <h3>Contact</h3>
+
+      <div class="form-group">
+        <label for="bmEmail">Email</label>
+        <input id="bmEmail">
+      </div>
+
+      <div class="form-group">
+        <label for="bmPhone">Phone</label>
+        <input id="bmPhone">
+      </div>
+
+      <div class="form-group">
+        <label for="bmWebsite">Website</label>
+        <input id="bmWebsite">
+      </div>
+
+      <div class="form-group">
+        <label for="bmAddress">Address</label>
+        <input id="bmAddress">
+      </div>
+    </div>
+
+    <div class="review-actions">
+      <button type="button" id="bmSaveBtn" class="btn btn-primary">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</section>
           <!-- REVIEW PANEL (hidden by default) -->
 <section
   id="reviewPanel"
