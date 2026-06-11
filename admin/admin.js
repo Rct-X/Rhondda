@@ -43,8 +43,12 @@ const adminContainer = document.getElementById("adminContainer");
 
 const ROUTES = {
   dashboard: async () => {
-    const mod = await import("./moderation.js");
-    await mod.initModeration({
+  const mod = await import("./moderation.js");
+  await mod.initModeration({ db, auth });
+
+  const pending = await import("./pending.js");
+  await pending.initPending({ db, auth });
+  }
       db,
       auth,
       container: document.getElementById("dashboardTab")
