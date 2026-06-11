@@ -1,18 +1,24 @@
 // ======================================
-// ADMIN PANEL (FULLY MODULAR ROUTER)
+// ADMIN PANEL (MODULAR ROUTER)
 // ======================================
 
 let auth = null;
 let db = null;
+
+// Prevent duplicate module initialisation
+const loadedModules = new Set();
 
 // ======================================
 // FIREBASE INIT
 // ======================================
 
 async function initFirebase() {
+
   const res = await fetch("/.netlify/functions/firebaseConfig");
 
-  if (!res.ok) throw new Error("Firebase config failed");
+  if (!res.ok) {
+    throw new Error("Firebase config failed");
+  }
 
   const config = await res.json();
 
@@ -24,6 +30,7 @@ async function initFirebase() {
     auth: firebase.auth(),
     db: firebase.firestore()
   };
+
 }
 
 // ======================================
@@ -31,56 +38,151 @@ async function initFirebase() {
 // ======================================
 
 const loginSection = document.getElementById("loginSection");
-const loginBtn = document.getElementById("loginBtn");
-const loginMessage = document.getElementById("loginMessage");
 
-const adminContainer = document.getElementById("adminContainer"); 
-// (wrap all admin sections inside this div)
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const adminContainer =
+  document.getElementById("adminContainer");
 
 // ======================================
-// ROUTER MAP
+// ROUTES
 // ======================================
 
 const ROUTES = {
+
+  // ====================================
+  // DASHBOARD
+  // ====================================
+
   dashboard: async () => {
-    const mod = await import("./moderation.js");
-    await mod.initModeration({ db, auth, container: document.getElementById("dashboardTab") });
 
-    const pending = await import("./pending.js");
-    await pending.initPending({ db, auth });
-  },
+    // Prevent duplicate listeners/rendering
+    if (!loadedModules.has("dashboard")) {
 
-  marketing: async () => {
-    const marketing = await import("./marketing.js");
-    await marketing.initMarketing({
-      db,
-      auth,
-      container: document.getElementById("marketingSection")
-    });
+      const moderation =
+        await import("./moderation.js");
 
-    const finder = await import("./finder.js");
-    if (finder.initFinder) {
-      finder.initFinder({
-        db,
-        auth,
-        container: document.getElementById("marketingSection")
-      });
+      if (moderation.initModeration) {
+
+        await moderation.initModeration({
+          db,
+          auth,
+          container: document.getElementById("dashboard")
+        });
+
+      }
+
+      const pending =
+        await import("./pending.js");
+
+      if (pending.initPending) {
+
+        await pending.initPending({
+          db,
+          auth
+        });
+
+      }
+
+      loadedModules.add("dashboard");
+
     }
+
   },
+
+  // ====================================
+  // BUSINESSES
+  // ====================================
 
   businesses: async () => {
-    const bm = await import("./business-manager.js");
-    await bm.initBusinessManager({ db, auth });
+
+    if (!loadedModules.has("businesses")) {
+
+      const businessManager =
+        await import("./business-manager.js");
+
+      if (businessManager.initBusinessManager) {
+
+        await businessManager.initBusinessManager({
+          db,
+          auth,
+          container: document.getElementById("businesses")
+        });
+
+      }
+
+      loadedModules.add("businesses");
+
+    }
+
+  },
+
+  // ====================================
+  // MARKETING
+  // ====================================
+
+  marketing: async () => {
+
+    if (!loadedModules.has("marketing")) {
+
+      const marketing =
+        await import("./marketing.js");
+
+      if (marketing.initMarketing) {
+
+        await marketing.initMarketing({
+          db,
+          auth,
+          container: document.getElementById("marketing")
+        });
+
+      }
+
+      const finder =
+        await import("./finder.js");
+
+      if (finder.initFinder) {
+
+        await finder.initFinder({
+          db,
+          auth,
+          container: document.getElementById("marketing")
+        });
+
+      }
+
+      loadedModules.add("marketing");
+
+    }
+
+  },
+
+  // ====================================
+  // SETTINGS
+  // ====================================
+
+  settings: async () => {
+
+    // Future settings module
+
   }
+
 };
 
 // ======================================
 // INIT APP
 // ======================================
 
-(async () => {
+(async function initApp() {
+
   try {
+
     const services = await initFirebase();
+
     auth = services.auth;
     db = services.db;
 
@@ -88,9 +190,16 @@ const ROUTES = {
     setupSidebarNavigation();
 
   } catch (err) {
-    console.error(err);
-    if (loginMessage) loginMessage.textContent = "System error";
+
+    console.error("[ADMIN INIT ERROR]", err);
+
+    if (loginMessage) {
+      loginMessage.textContent =
+        "System failed to initialise";
+    }
+
   }
+
 })();
 
 // ======================================
@@ -98,47 +207,112 @@ const ROUTES = {
 // ======================================
 
 function setupAuth() {
+
+  // ====================================
+  // LOGIN
+  // ====================================
+
   loginBtn?.addEventListener("click", async () => {
-    const email = document.getElementById("adminEmail")?.value?.trim();
-    const password = document.getElementById("adminPassword")?.value?.trim();
+
+    const email =
+      document.getElementById("adminEmail")
+      ?.value
+      ?.trim();
+
+    const password =
+      document.getElementById("adminPassword")
+      ?.value
+      ?.trim();
+
+    if (!email || !password) {
+
+      loginMessage.textContent =
+        "Enter email and password";
+
+      return;
+
+    }
 
     loginMessage.textContent = "";
 
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+
+      await auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+
     } catch (err) {
-      console.error(err);
-      loginMessage.textContent = "Invalid login";
+
+      console.error("[LOGIN ERROR]", err);
+
+      loginMessage.textContent =
+        "Invalid login credentials";
+
     }
+
   });
+
+  // ====================================
+  // AUTH STATE
+  // ====================================
 
   auth.onAuthStateChanged(async (user) => {
+
+    // NOT LOGGED IN
     if (!user) {
-      loginSection.style.display = "block";
+
+      if (loginSection) {
+        loginSection.style.display = "block";
+      }
+
+      if (adminContainer) {
+        adminContainer.style.display = "none";
+      }
+
       hideAllSections();
+
       return;
+
     }
 
-    loginSection.style.display = "none";
+    // LOGGED IN
+    if (loginSection) {
+      loginSection.style.display = "none";
+    }
+
+    if (adminContainer) {
+      adminContainer.style.display = "block";
+    }
 
     await navigateTo("dashboard");
+
   });
+
 }
 
 // ======================================
-// SIDEBAR NAVIGATION (EVENT DELEGATION)
+// SIDEBAR NAVIGATION
 // ======================================
 
 function setupSidebarNavigation() {
+
   document.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".admin-tab");
+
+    const btn =
+      e.target.closest(".admin-tab");
+
     if (!btn) return;
 
-    const tab = btn.dataset.tab;
+    const tab =
+      btn.dataset.tab;
+
     if (!tab) return;
 
-    await navigateTo(tab.replace("Tab", "").toLowerCase());
+    await navigateTo(tab);
+
   });
+
 }
 
 // ======================================
@@ -146,18 +320,48 @@ function setupSidebarNavigation() {
 // ======================================
 
 async function navigateTo(section) {
+
+  // Invalid route protection
+  if (!section) return;
+
+  // Hide all panels
   hideAllSections();
-  setActiveTab(section + "Tab");
 
+  // Set active nav button
+  setActiveTab(section);
+
+  // Show current panel
   const target =
-    document.getElementById(section + "Tab") ||
-    document.getElementById(section + "Section");
+    document.getElementById(section);
 
-  if (target) target.style.display = "block";
-
-  if (ROUTES[section]) {
-    await ROUTES[section]();
+  if (target) {
+    target.style.display = "block";
   }
+
+  // Run module
+  if (ROUTES[section]) {
+
+    try {
+
+      await ROUTES[section]();
+
+    } catch (err) {
+
+      console.error(
+        `[ROUTER ERROR] ${section}`,
+        err
+      );
+
+    }
+
+  }
+
+  // Scroll top on route change
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
 }
 
 // ======================================
@@ -165,19 +369,31 @@ async function navigateTo(section) {
 // ======================================
 
 function hideAllSections() {
+
   adminContainer
-    .querySelectorAll(".admin-panel, .admin-panel-section")
+    ?.querySelectorAll(".admin-panel")
     .forEach(section => {
+
       section.style.display = "none";
+
     });
+
 }
 
 function setActiveTab(tabId) {
-  document
-    .querySelectorAll(".admin-tab")
-    .forEach(btn => btn.classList.remove("active"));
 
   document
-    .querySelector(`[data-tab="${tabId}"]`)
+    .querySelectorAll(".admin-tab")
+    .forEach(btn => {
+
+      btn.classList.remove("active");
+
+    });
+
+  document
+    .querySelector(
+      `.admin-tab[data-tab="${tabId}"]`
+    )
     ?.classList.add("active");
+
 }
