@@ -6,17 +6,13 @@ let db = null;
 let auth = null;
 
 // DOM refs
-let dashboardTab;
 let reviewPanel;
-
 let reviewErrors;
 
 let reviewName;
 let reviewCategoryRaw;
 let reviewTown;
 let reviewDescription;
-let reviewCollectsWaste;
-let reviewWasteLicence;
 let reviewEmail;
 let reviewPhone;
 let reviewWebsite;
@@ -27,12 +23,7 @@ let reviewCategorySlug;
 let reviewTownSlug;
 let reviewBusinessSlug;
 
-let categorySlugHint;
-let townSlugHint;
-let businessSlugHint;
-
 let urlPreview;
-let urlStatus;
 
 let approveBtn;
 let rejectBtn;
@@ -68,8 +59,6 @@ export async function initPending(services) {
   reviewCategoryRaw = document.getElementById("reviewCategoryRaw");
   reviewTown = document.getElementById("reviewTown");
   reviewDescription = document.getElementById("reviewDescription");
-  reviewCollectsWaste = document.getElementById("reviewCollectsWaste");
-  reviewWasteLicence = document.getElementById("reviewWasteLicence");
   reviewEmail = document.getElementById("reviewEmail");
   reviewPhone = document.getElementById("reviewPhone");
   reviewWebsite = document.getElementById("reviewWebsite");
@@ -80,12 +69,7 @@ export async function initPending(services) {
   reviewTownSlug = document.getElementById("reviewTownSlug");
   reviewBusinessSlug = document.getElementById("reviewBusinessSlug");
 
-  categorySlugHint = document.getElementById("categorySlugHint");
-  townSlugHint = document.getElementById("townSlugHint");
-  businessSlugHint = document.getElementById("businessSlugHint");
-
   urlPreview = document.getElementById("urlPreview");
-  urlStatus = document.getElementById("urlStatus");
 
   approveBtn = document.getElementById("approveBtn");
   rejectBtn = document.getElementById("rejectBtn");
@@ -218,16 +202,13 @@ function openReviewPanel(id, data) {
   currentPendingId = id;
   currentPendingData = data;
 
-  const reviewPanel = document.getElementById("reviewPanel");
-reviewPanel.style.display = "block";
+  reviewPanel.style.display = "block";
 
   // Fill read-only info
   reviewName.textContent = data.name;
   reviewCategoryRaw.textContent = data.categoryRaw;
   reviewTown.textContent = data.town;
   reviewDescription.textContent = data.description;
-  reviewCollectsWaste.textContent = data.collectsWaste;
-  reviewWasteLicence.textContent = data.wasteLicence || "-";
   reviewEmail.textContent = data.email || "-";
   reviewPhone.textContent = data.phone || "-";
   reviewWebsite.textContent = data.website || "-";
@@ -256,7 +237,7 @@ reviewPanel.style.display = "block";
 
 function closeReviewPanel() {
   reviewPanel.style.display = "none";
-  dashboardTab.style.display = "block";
+  document.getElementById("dashboard").style.display = "block";
 }
 
 // ======================================
@@ -340,39 +321,26 @@ function validateAndPreview() {
   const businessSlug = reviewBusinessSlug.value.trim();
 
   // CATEGORY SLUG
-if (!reviewCategorySelect.value) {
-  errors.push("You must select a category.");
-  categorySlugHint.textContent = "❌ Select a category.";
-} else if (!categorySlug) {
-  errors.push("Category slug is required.");
-  categorySlugHint.textContent = "❌ Required.";
-} else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(categorySlug)) {
-  errors.push("Category slug must be lowercase and hyphens only.");
-  categorySlugHint.textContent = "❌ Invalid format.";
-} else {
-  categorySlugHint.textContent = "✔ Looks good.";
-}
+  if (!reviewCategorySelect.value) {
+    errors.push("You must select a category.");
+  } else if (!categorySlug) {
+    errors.push("Category slug is required.");
+  } else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(categorySlug)) {
+    errors.push("Category slug must be lowercase and hyphens only.");
+  }
 
   // TOWN SLUG
   if (!townSlug) {
     errors.push("Town slug is required.");
-    townSlugHint.textContent = "❌ Required.";
   } else if (!knownTowns.includes(townSlug)) {
     errors.push(`Town slug "${townSlug}" is not recognised.`);
-    townSlugHint.textContent = "❌ Not a valid RCT town.";
-  } else {
-    townSlugHint.textContent = "✔ Recognised town.";
   }
 
   // BUSINESS SLUG
   if (!businessSlug) {
     errors.push("Business slug is required.");
-    businessSlugHint.textContent = "❌ Required.";
   } else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(businessSlug)) {
     errors.push("Business slug must be lowercase and hyphens only.");
-    businessSlugHint.textContent = "❌ Invalid format.";
-  } else {
-    businessSlugHint.textContent = "✔ Looks good.";
   }
 
   // URL PREVIEW
@@ -382,12 +350,10 @@ if (!reviewCategorySelect.value) {
   if (errors.length) {
     reviewErrors.style.display = "block";
     reviewErrors.innerHTML = "❌ Errors found:<br>• " + errors.join("<br>• ");
-    urlStatus.textContent = "❌ URL invalid.";
     return false;
   }
 
   reviewErrors.style.display = "none";
-  urlStatus.textContent = "✔ URL looks valid.";
   return true;
 }
 
@@ -467,4 +433,4 @@ async function rejectSubmission() {
   alert("Submission rejected.");
   closeReviewPanel();
   loadPendingSubmissions();
-  }
+}
