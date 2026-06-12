@@ -1,5 +1,5 @@
 // ======================================
-// DIRECTORY PAGE SCRIPT (IMPROVED)
+// DIRECTORY PAGE SCRIPT (NO SUGGESTIONS)
 // ======================================
 
 // ===============================
@@ -9,7 +9,6 @@ const resultsGrid = document.getElementById("resultsGrid");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const resultsMeta = document.getElementById("resultsMeta");
-const unifiedSuggestions = document.getElementById("unifiedSuggestions");
 
 let db;
 
@@ -151,41 +150,6 @@ async function searchDirectory() {
 }
 
 // ===============================
-// LIVE SUGGESTIONS (Unified)
-// ===============================
-searchInput.addEventListener("input", async () => {
-  const value = searchInput.value.trim().toLowerCase();
-
-  unifiedSuggestions.innerHTML = "";
-  unifiedSuggestions.style.display = "none";
-
-  if (!value) return;
-
-  // Suggest categories
-  const catSnap = await db.collection("businesses")
-    .where("keywords", "array-contains", value)
-    .limit(5)
-    .get();
-
-  if (!catSnap.empty) {
-    catSnap.forEach(doc => {
-      const b = doc.data();
-      const div = document.createElement("div");
-      div.className = "suggestion-item";
-      div.textContent = `${b.name} (${b.category}, ${b.town})`;
-
-      div.addEventListener("click", () => {
-        window.location.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
-      });
-
-      unifiedSuggestions.appendChild(div);
-    });
-
-    unifiedSuggestions.style.display = "block";
-  }
-});
-
-// ===============================
 // EVENTS
 // ===============================
 searchBtn.addEventListener("click", searchDirectory);
@@ -200,9 +164,8 @@ searchInput.addEventListener("keydown", e => {
 const placeholders = [
   "Find electricians in Pontypridd...",
   "Find plumbers in Tonypandy...",
-  "Find shops in Treorchy...",
-  "Find cleaners in Ferndale...",
-  "Find gardeners in Aberdare..."
+  "Search shops in Treorchy...",
+  "Find cleaners in Ferndale..."
 ];
 
 let i = 0;
