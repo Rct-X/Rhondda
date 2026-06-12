@@ -31,9 +31,9 @@ function slugify(str = "") {
 }
 
 // ======================================
-// KEYWORD BUILDER (same as submitBusiness.js)
+// KEYWORD BUILDER (chip‑compatible)
 // ======================================
-function buildKeywords({ name, category, town, description = "" }) {
+function buildKeywords({ name, category, town, description = "", extraKeywords = [] }) {
 
   const keywords = new Set();
 
@@ -61,18 +61,26 @@ function buildKeywords({ name, category, town, description = "" }) {
 
   // category aliases
   const normalizedCategory = category
-  .toLowerCase()
-  .trim()
-  .replace(/s$/, "");
+    .toLowerCase()
+    .trim()
+    .replace(/s$/, "");
 
-const aliasKey = Object.keys(categoryAliases).find(k =>
-  k.toLowerCase().replace(/s$/, "") === normalizedCategory
-);
+  const aliasKey = Object.keys(categoryAliases).find(k =>
+    k.toLowerCase().replace(/s$/, "") === normalizedCategory
+  );
 
   if (aliasKey) {
     categoryAliases[aliasKey].forEach(a => {
       keywords.add(a.toLowerCase());
     });
+  }
+
+  // NEW: keyword chips
+  if (Array.isArray(extraKeywords)) {
+    extraKeywords
+      .map(k => k.trim().toLowerCase())
+      .filter(Boolean)
+      .forEach(k => keywords.add(k));
   }
 
   return Array.from(keywords);
@@ -103,7 +111,8 @@ exports.handler = async (event) => {
       website,
       address,
       description,
-      wasteLicence
+      wasteLicence,
+      extraKeywords // now an array
     } = data;
 
     if (!name || !town || !category) {
@@ -127,50 +136,49 @@ exports.handler = async (event) => {
       name,
       category,
       town,
-      description
+      description,
+      extraKeywords
     });
 
     // ======================================
-// DOCUMENT
-// ======================================
-const doc = {
-  name,
-  slug,
+    // DOCUMENT
+    // ======================================
+    const doc = {
+      name,
+      slug,
 
-  town,
-  townSlug,
+      town,
+      townSlug,
 
-  category,
-  categorySlug,
+      category,
+      categorySlug,
 
-  email: email || null,
-  phone: phone || null,
-  website: website || null,
-  address: address || town,
+      email: email || null,
+      phone: phone || null,
+      website: website || null,
+      address: address || town,
 
-  description: description || "",
-  wasteLicence: wasteLicence || null,
+      description: description || "",
+      wasteLicence: wasteLicence || null,
 
-  keywords,
+      keywords,
 
-  source: "admin_seed",
+      source: "admin_seed",
 
-  // ======================================
-  // AUTO APPROVE ADMIN SEEDED LISTINGS
-  // ======================================
-  status: "approved",
-  verified: false,
-  approvedAt: admin.firestore.FieldValue.serverTimestamp(),
+      // auto‑approve admin seeded listings
+      status: "approved",
+      verified: false,
+      approvedAt: admin.firestore.FieldValue.serverTimestamp(),
 
-  ownerId: null,
+      ownerId: null,
 
-  createdAt: admin.firestore.FieldValue.serverTimestamp()
-};
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    };
 
     await db.collection("businesses").add(doc);
 
     // ======================================
-    // EMAIL (UNCHANGED)
+    // EMAIL (unchanged)
     // ======================================
     if (email) {
       await fetch(
