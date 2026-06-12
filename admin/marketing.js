@@ -13,8 +13,45 @@ export async function initMarketing({ db, auth, container }) {
 
   console.log("[MARKETING] init");
 
-  bindMarketingEvents();
-  initKeywordChips();
+  await loadCategories();     // ⭐ FIXED — category dropdown now works
+  initKeywordChips();         // keyword chip UI
+  bindMarketingEvents();      // button events
+}
+
+// ======================================
+// LOAD CATEGORIES
+// ======================================
+
+async function loadCategories() {
+  const select = marketingContainer.querySelector("#category");
+  if (!select) return;
+
+  select.innerHTML = `<option value="">Loading...</option>`;
+
+  try {
+    const res = await fetch("/.netlify/functions/getCategories");
+    const json = await res.json();
+
+    if (!json.ok) {
+      select.innerHTML = `<option value="">Error loading categories</option>`;
+      return;
+    }
+
+    const categories = json.categories || [];
+
+    select.innerHTML = `<option value="">Select category</option>`;
+
+    categories.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat.slug;
+      opt.textContent = cat.name;
+      select.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error("[MARKETING] Category load error", err);
+    select.innerHTML = `<option value="">Error loading categories</option>`;
+  }
 }
 
 // ======================================
@@ -146,7 +183,7 @@ function getKeywordsFromChips(editor) {
 }
 
 function updateFinalKeywords() {
-  // Not needed — collected on submit
+  // collected on submit
 }
 
 // ======================================
