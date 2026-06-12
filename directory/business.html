@@ -217,15 +217,18 @@
 
 <section class="business-header">
   <div class="container">
+
     <img id="businessLogo"
-     class="biz-logo"
-     src="/images/placeholder-logo.webp"
-     alt=""
-     loading="lazy">
+         class="biz-logo"
+         src="/images/placeholder-logo.webp"
+         alt=""
+         loading="lazy">
+
     <h1 id="businessName">Business Name</h1>
-<p class="business-subtitle">
-  Local <span id="businessCategoryInline"></span> in <span id="businessTownInline"></span>
-</p>
+
+    <p class="business-subtitle">
+      Local <span id="businessCategoryInline"></span> in <span id="businessTownInline"></span>
+    </p>
 
     <p class="business-meta">
       <span id="businessCategory"></span>  
@@ -234,26 +237,33 @@
       <span id="verifiedBadge"></span>
       <span id="claimedBadge"></span>
     </p>
+
   </div>
 </section>
 
+
 <section class="business-content">
   <div class="container">
+
+    <!-- GALLERY -->
     <div id="galleryWrapper">
-  <div id="galleryScroller"></div>
-  <div id="galleryCounter"></div>
+      <div id="galleryScroller"></div>
+      <div id="galleryCounter"></div>
     </div>
-    
-    
-<div class="quick-actions">
-  <a id="businessPhoneBtn" class="qa-btn">Call</a>
-  <a id="businessWebsiteBtn" class="qa-btn" target="_blank">Website</a>
-</div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <a id="businessPhoneBtn" class="qa-btn">Call</a>
+      <a id="businessWebsiteBtn" class="qa-btn" target="_blank">Website</a>
+      <a id="whatsappShareBtn" class="qa-btn" target="_blank">WhatsApp</a>
+      <a class="qa-btn" onclick="copyBusinessLink()">Copy Link</a>
+    </div>
 
     <div class="business-info">
 
       <h2>About</h2>
       <p id="businessDescription">Loading…</p>
+
       <h3>Contact</h3>
       <ul class="business-contact">
         <li><strong>Phone:</strong> <span id="businessPhone"></span></li>
@@ -264,8 +274,16 @@
       <h3>Opening Hours</h3>
       <ul id="businessHours" class="business-hours"></ul>
 
+      <!-- OPTIONAL: People Also Search For -->
+      <div class="keyword-box">
+        <h3>People Also Search For</h3>
+        <div id="keywordTags"></div>
+      </div>
+
     </div>
+
     <aside class="business-sidebar">
+
       <div class="business-card">
         <h3>Location</h3>
         <p id="businessTownSidebar"></p>
@@ -281,38 +299,46 @@
         <h3>Claim This Business</h3>
         <a href="#" id="claimBtn" class="btn btn-primary">Claim Listing</a>
       </div>
+
+      <!-- OPTIONAL: Views counter -->
+      <div class="business-card" id="viewsCard" style="display:none;">
+        <h3>Popularity</h3>
+        <p id="viewCountText"></p>
+      </div>
+
     </aside>
-<div class="share-wow">
 
-  <div class="share-content">
-    <h3>✨ Help this business shine ✨</h3>
+    <!-- SHARE WOW SECTION -->
+    <div class="share-wow">
+      <div class="share-content">
 
-    <p>
-      Your quick share helps local businesses get discovered.
-    </p>
+        <h3>✨ Found Them on RCTX? ✨</h3>
 
-    <button class="share-wow-btn" onclick="shareBusiness()">
-      Share this business
-    </button>
+        <p>
+          Let the business know you discovered them here — it helps local businesses grow.
+        </p>
 
-    <div class="share-credit">
-      Powered by RCTX Web Design
+        <button class="share-wow-btn" onclick="shareBusiness()">
+          Share this business
+        </button>
+
+        <div class="share-credit">
+          Powered by RCTX Web Design
+        </div>
+
+      </div>
     </div>
 
   </div>
-</div>
-  </div>
 </section>
 
-</main>
+
 <section class="business-related">
   <div class="container">
     <h2>You May Also Like</h2>
     <p class="text-dim">Similar businesses in your area</p>
 
-    <div id="relatedGrid" class="related-grid">
-      <!-- JS will inject related businesses here -->
-    </div>
+    <div id="relatedGrid" class="related-grid"></div>
   </div>
 </section>
 
@@ -369,16 +395,7 @@
 
 <script defer src="/js/business.js?v=4"></script>
 <script defer src="/js/footer-nav-faq.js"></script>
-<!-- SHARE POPUP -->
-<div class="share-popup" id="sharePopup">
 
-  <h3>Support This Business</h3>
-
-  <p>
-    Share this local business with friends and family.
-  </p>
-
-</div>
   <script>
 window.RCTX_CLIENT_ID = "-MAIN SITE-";
 </script>
