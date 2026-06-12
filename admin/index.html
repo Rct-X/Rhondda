@@ -24,6 +24,50 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 </head>
+      <!-- =========================================
+     LOGIN SCREEN
+========================================= -->
+
+<section id="loginSection" class="login-screen">
+
+  <div class="login-card">
+
+    <h1>Admin Login</h1>
+
+    <div class="field">
+      <label for="adminEmail">Email</label>
+
+      <input
+        id="adminEmail"
+        type="email"
+        autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label for="adminPassword">Password</label>
+
+      <input
+        id="adminPassword"
+        type="password"
+        autocomplete="current-password">
+    </div>
+
+    <button
+      id="loginBtn"
+      class="btn btn-primary">
+
+      Login
+
+    </button>
+
+    <div
+      id="loginMessage"
+      class="admin-message error">
+    </div>
+
+  </div>
+
+</section>
 
 <body class="admin-page">
 
@@ -65,7 +109,10 @@
      PAGE WRAPPER
 ========================================= -->
 
-<div class="admin-shell">
+<div
+  class="admin-shell"
+  id="adminContainer"
+  style="display:none;">
 
   <!-- =========================================
        SIDEBAR
@@ -125,8 +172,7 @@
        MAIN CONTENT
   ========================================= -->
 
-  <main class="admin-main"
-        id="adminContainer">
+  <main class="admin-main">
 
     <!-- =========================================
          DASHBOARD
