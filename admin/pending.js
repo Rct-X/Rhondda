@@ -29,13 +29,10 @@ let approveBtn;
 let rejectBtn;
 let backBtn;
 
-// Keyword fields
+// Keyword chip system
 let reviewKeywordsRaw;
-let reviewKeywordsClean;
-let reviewKeywordsExtra;
-let reviewKeywordsAuto;
 let reviewKeywordsFinal;
-let regenKeywordsBtn;
+let addKeywordBtn;
 
 let currentPendingId = null;
 let currentPendingData = null;
@@ -75,13 +72,10 @@ export async function initPending(services) {
   rejectBtn = document.getElementById("rejectBtn");
   backBtn = document.getElementById("backToDashboardBtn");
 
-  // Keyword refs
+  // Keyword chip refs
   reviewKeywordsRaw = document.getElementById("reviewKeywordsRaw");
-  reviewKeywordsClean = document.getElementById("reviewKeywordsClean");
-  reviewKeywordsExtra = document.getElementById("reviewKeywordsExtra");
-  reviewKeywordsAuto = document.getElementById("reviewKeywordsAuto");
   reviewKeywordsFinal = document.getElementById("reviewKeywordsFinal");
-  regenKeywordsBtn = document.getElementById("regenKeywordsBtn");
+  addKeywordBtn = document.getElementById("addKeywordBtn");
 
   // Bind events
   backBtn.addEventListener("click", closeReviewPanel);
@@ -109,11 +103,12 @@ export async function initPending(services) {
     regenerateKeywords();
   });
 
-  regenKeywordsBtn.addEventListener("click", regenerateKeywords);
-
-  reviewKeywordsClean.addEventListener("input", updateFinalKeywords);
-  reviewKeywordsExtra.addEventListener("input", updateFinalKeywords);
-  reviewKeywordsAuto.addEventListener("input", updateFinalKeywords);
+  addKeywordBtn.addEventListener("click", () => {
+    const keywords = getKeywordsFromChips();
+    keywords.push("");
+    renderKeywordChips(keywords);
+    updateFinalKeywords();
+  });
 
   // Load pending submissions
   await loadPendingSubmissions();
@@ -241,43 +236,59 @@ function closeReviewPanel() {
 }
 
 // ======================================
-// KEYWORD LOGIC
+// KEYWORD CHIP SYSTEM
 // ======================================
+
+function renderKeywordChips(keywords) {
+  const container = document.getElementById("keywordEditor");
+  container.innerHTML = "";
+
+  keywords.forEach((kw, index) => {
+    const chip = document.createElement("div");
+    chip.className = "keyword-chip";
+
+    const input = document.createElement("input");
+    input.value = kw;
+    input.addEventListener("input", updateFinalKeywords);
+
+    const remove = document.createElement("span");
+    remove.className = "keyword-remove";
+    remove.textContent = "×";
+    remove.addEventListener("click", () => {
+      keywords.splice(index, 1);
+      renderKeywordChips(keywords);
+      updateFinalKeywords();
+    });
+
+    chip.appendChild(input);
+    chip.appendChild(remove);
+    container.appendChild(chip);
+  });
+}
+
+function getKeywordsFromChips() {
+  const inputs = document.querySelectorAll("#keywordEditor input");
+  return Array.from(inputs)
+    .map(i => i.value.trim().toLowerCase())
+    .filter(v => v.length > 0);
+}
 
 function regenerateKeywords() {
   const raw = currentPendingData.keywords || [];
 
-  // Clean raw keywords
   const cleaned = raw
     .map(k => k.toLowerCase().trim())
     .filter(k => k.length > 0);
 
   const unique = [...new Set(cleaned)];
 
-  reviewKeywordsClean.value = unique.join(", ");
-
-  // Auto keywords from business info
-  const auto = [
-    slugify(currentPendingData.name).replace(/-/g, " "),
-    slugify(currentPendingData.town).replace(/-/g, " "),
-    slugify(reviewCategorySlug.value).replace(/-/g, " ")
-  ];
-
-  reviewKeywordsAuto.value = auto.join(", ");
-
+  renderKeywordChips(unique);
   updateFinalKeywords();
 }
 
 function updateFinalKeywords() {
-  const clean = reviewKeywordsClean.value.split(",").map(k => k.trim());
-  const extra = reviewKeywordsExtra.value.split(",").map(k => k.trim());
-  const auto = reviewKeywordsAuto.value.split(",").map(k => k.trim());
-
-  const merged = [...clean, ...extra, ...auto]
-    .filter(k => k.length > 0)
-    .map(k => k.toLowerCase())
-    .filter((k, i, arr) => arr.indexOf(k) === i);
-
+  const chipKeywords = getKeywordsFromChips();
+  const merged = [...new Set(chipKeywords)];
   reviewKeywordsFinal.textContent = merged.join(", ");
 }
 
