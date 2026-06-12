@@ -526,63 +526,28 @@
         </div>
 
         <!-- KEYWORDS -->
-        <div class="review-section">
+<div class="review-section">
+  <h3>SEO Keywords</h3>
 
-          <h3>SEO Keywords</h3>
+  <div class="field full">
+    <label>Submitted Keywords</label>
+    <div id="reviewKeywordsRaw" class="url-preview"></div>
+  </div>
 
-          <div class="field full">
-            <label>
-              Submitted Keywords
-            </label>
+  <div class="field full">
+    <label>Editable Keywords</label>
+    <div id="keywordEditor" class="keyword-editor"></div>
 
-            <div id="reviewKeywordsRaw"
-                 class="url-preview"></div>
-          </div>
+    <button id="addKeywordBtn" class="btn btn-secondary" style="margin-top:10px;">
+      + Add Keyword
+    </button>
+  </div>
 
-          <div class="form-grid">
-
-            <div class="field">
-              <label for="reviewKeywordsClean">
-                Cleaned
-              </label>
-              <input id="reviewKeywordsClean">
-            </div>
-
-            <div class="field">
-              <label for="reviewKeywordsExtra">
-                Additional Keywords
-              </label>
-              <input id="reviewKeywordsExtra">
-            </div>
-
-            <div class="field">
-              <label for="reviewKeywordsAuto">
-                Suggested Keywords
-              </label>
-              <input id="reviewKeywordsAuto">
-            </div>
-
-          </div>
-
-          <button id="regenKeywordsBtn"
-                  class="btn btn-secondary">
-
-            Regenerate Keywords
-
-          </button>
-
-          <div class="field full">
-
-            <label>
-              Final Keywords
-            </label>
-
-            <div id="reviewKeywordsFinal"
-                 class="url-preview"></div>
-
-          </div>
-
-        </div>
+  <div class="field full">
+    <label>Final Keywords</label>
+    <div id="reviewKeywordsFinal" class="url-preview"></div>
+  </div>
+</div>
 
         <!-- URLS -->
         <div class="review-section">
