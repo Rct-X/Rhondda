@@ -1,5 +1,8 @@
 const admin = require("firebase-admin");
 
+// ======================================
+// FIREBASE INIT
+// ======================================
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
@@ -12,11 +15,10 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-// ===============================
-// VERIFY FIREBASE TOKEN
-// ===============================
+// ======================================
+// VERIFY ADMIN TOKEN
+// ======================================
 async function verifyUser(event) {
-
   const authHeader = event.headers.authorization || "";
 
   if (!authHeader.startsWith("Bearer ")) {
@@ -24,10 +26,8 @@ async function verifyUser(event) {
   }
 
   const token = authHeader.replace("Bearer ", "");
-
   const decoded = await admin.auth().verifyIdToken(token);
 
-  // ONLY YOUR ADMIN EMAIL
   if (decoded.email !== "eddyjohnpickering@gmail.com") {
     throw new Error("Unauthorized");
   }
@@ -35,15 +35,19 @@ async function verifyUser(event) {
   return decoded;
 }
 
+// ======================================
+// HANDLER
+// ======================================
 exports.handler = async (event) => {
-
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405 };
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" })
+    };
   }
 
   try {
-
-    // VERIFY USER
+    // Verify admin
     await verifyUser(event);
 
     const { id } = JSON.parse(event.body || "{}");
@@ -51,33 +55,24 @@ exports.handler = async (event) => {
     if (!id) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          error: "Missing submission id"
-        })
+        body: JSON.stringify({ error: "Missing submission id" })
       };
     }
 
-    await db
-      .collection("pending_submissions")
-      .doc(id)
-      .delete();
+    // Delete pending submission
+    await db.collection("pending_submissions").doc(id).delete();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        ok: true
-      })
+      body: JSON.stringify({ ok: true })
     };
 
   } catch (err) {
-
-    console.error(err);
+    console.error("[REJECT BUSINESS ERROR]", err);
 
     return {
       statusCode: 401,
-      body: JSON.stringify({
-        error: "Unauthorized"
-      })
+      body: JSON.stringify({ error: err.message || "Unauthorized" })
     };
   }
 };
