@@ -2,18 +2,19 @@
 // MARKETING MODULE (MODULAR)
 // ======================================
 
-let db;
-let auth;
-let container;
+let marketingDb;
+let marketingAuth;
+let marketingContainer;
 
-export async function initMarketing({ db: _db, auth: _auth, container: _container }) {
-  db = _db;
-  auth = _auth;
-  container = _container;
+export async function initMarketing({ db, auth, container }) {
+  marketingDb = db;
+  marketingAuth = auth;
+  marketingContainer = container;
 
   console.log("[MARKETING] init");
 
   bindMarketingEvents();
+  initKeywordChips();
 }
 
 // ======================================
@@ -21,11 +22,9 @@ export async function initMarketing({ db: _db, auth: _auth, container: _containe
 // ======================================
 
 function bindMarketingEvents() {
-  const submitBtn = container.querySelector("#addBusinessBtn");
+  const submitBtn = marketingContainer.querySelector("#addBusinessBtn");
   if (submitBtn) {
-    submitBtn.addEventListener("click", () => {
-      addBusiness();
-    });
+    submitBtn.addEventListener("click", addBusiness);
   }
 }
 
@@ -92,19 +91,81 @@ function generateDescription(name, category, town) {
 }
 
 // ======================================
+// KEYWORD CHIP SYSTEM
+// ======================================
+
+function initKeywordChips() {
+  const editor = marketingContainer.querySelector("#marketingKeywordEditor");
+  const addBtn = marketingContainer.querySelector("#marketingAddKeywordBtn");
+
+  if (!editor || !addBtn) return;
+
+  renderKeywordChips(editor, [""]);
+
+  addBtn.addEventListener("click", () => {
+    const keywords = getKeywordsFromChips(editor);
+    keywords.push("");
+    renderKeywordChips(editor, keywords);
+  });
+}
+
+function renderKeywordChips(editor, keywords) {
+  editor.innerHTML = "";
+
+  keywords.forEach((kw, index) => {
+    const chip = document.createElement("div");
+    chip.className = "keyword-chip";
+
+    const input = document.createElement("input");
+    input.value = kw;
+
+    input.addEventListener("input", () => {
+      updateFinalKeywords(editor);
+    });
+
+    const remove = document.createElement("span");
+    remove.className = "keyword-remove";
+    remove.textContent = "×";
+
+    remove.addEventListener("click", () => {
+      keywords.splice(index, 1);
+      renderKeywordChips(editor, keywords);
+      updateFinalKeywords(editor);
+    });
+
+    chip.appendChild(input);
+    chip.appendChild(remove);
+    editor.appendChild(chip);
+  });
+}
+
+function getKeywordsFromChips(editor) {
+  return Array.from(editor.querySelectorAll("input"))
+    .map(i => i.value.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function updateFinalKeywords() {
+  // Not needed — collected on submit
+}
+
+// ======================================
 // ADD BUSINESS
 // ======================================
 
 async function addBusiness() {
-  const name = container.querySelector("#name")?.value?.trim();
-  const email = container.querySelector("#email")?.value?.trim();
-  const phone = container.querySelector("#phone")?.value?.trim();
-  const town = container.querySelector("#town")?.value?.trim();
-  const category = container.querySelector("#category")?.value;
-  const sendEmail = container.querySelector("#sendEmail")?.checked;
+  const name = marketingContainer.querySelector("#name")?.value?.trim();
+  const email = marketingContainer.querySelector("#email")?.value?.trim();
+  const phone = marketingContainer.querySelector("#phone")?.value?.trim();
+  const town = marketingContainer.querySelector("#town")?.value?.trim();
+  const category = marketingContainer.querySelector("#category")?.value;
+  const sendEmail = marketingContainer.querySelector("#sendEmail")?.checked;
 
-  const result = container.querySelector("#result");
-  const submitBtn = container.querySelector("#addBusinessBtn");
+  const result = marketingContainer.querySelector("#result");
+  const submitBtn = marketingContainer.querySelector("#addBusinessBtn");
+
+  const keywordEditor = marketingContainer.querySelector("#marketingKeywordEditor");
+  const extraKeywords = getKeywordsFromChips(keywordEditor);
 
   if (!result || !submitBtn) return;
 
@@ -118,7 +179,6 @@ async function addBusiness() {
 
   const slug = slugify(name);
   const townSlug = slugify(town);
-
   const description = generateDescription(name, category, town);
 
   try {
@@ -135,15 +195,14 @@ async function addBusiness() {
         townSlug,
         sendEmail,
         source: "admin_seed",
-        description
+        description,
+        extraKeywords
       })
     });
 
     const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to add business");
-    }
+    if (!res.ok) throw new Error(data.error || "Failed to add business");
 
     const listingUrl = `/directory/${category}/${townSlug}/${slug}`;
     const fullUrl = `${window.location.origin}${listingUrl}`;
@@ -151,51 +210,37 @@ async function addBusiness() {
 
     result.innerHTML = `
       <div class="status success">
-
         <strong>Business added successfully 🎉</strong>
-
-        <p style="margin-top:8px;">
-          Listing is now live in the directory.
-        </p>
+        <p style="margin-top:8px;">Listing is now live in the directory.</p>
 
         <div class="result-actions">
           <a href="${listingUrl}" target="_blank" class="result-link">View Listing</a>
           <a href="${googleSearch}" target="_blank" class="result-link">Search Google</a>
-          <button class="copy-btn">
-            Copy Link
-          </button>
+          <button class="copy-btn">Copy Link</button>
         </div>
 
         <div class="link-preview">${fullUrl}</div>
-        <div class="email-status">
-          ${sendEmail ? "Email sent/scheduled ✉️" : "No email sent"}
-        </div>
-
+        <div class="email-status">${sendEmail ? "Email sent/scheduled ✉️" : "No email sent"}</div>
       </div>
     `;
 
-    const copyBtn = result.querySelector(".copy-btn");
-    if (copyBtn) {
-      copyBtn.addEventListener("click", () => {
-        navigator.clipboard.writeText(fullUrl);
-      });
-    }
+    result.querySelector(".copy-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(fullUrl);
+    });
 
-    container.querySelector("#name").value = "";
-    container.querySelector("#email").value = "";
-    container.querySelector("#phone").value = "";
-    container.querySelector("#town").value = "";
-    container.querySelector("#category").value = "";
+    marketingContainer.querySelector("#name").value = "";
+    marketingContainer.querySelector("#email").value = "";
+    marketingContainer.querySelector("#phone").value = "";
+    marketingContainer.querySelector("#town").value = "";
+    marketingContainer.querySelector("#category").value = "";
+
+    renderKeywordChips(keywordEditor, [""]);
 
   } catch (err) {
     console.error("[MARKETING] error", err);
-
-    result.innerHTML = `
-      <div class="status error">${err.message}</div>
-    `;
-
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Add Business";
+    result.innerHTML = `<div class="status error">${err.message}</div>`;
   }
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Add Business";
 }
