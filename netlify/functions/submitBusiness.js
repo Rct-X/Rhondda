@@ -46,7 +46,7 @@ exports.handler = async (event) => {
       website,
       address,
       description,
-      extraKeywords
+      extraKeywords // now an ARRAY from keyword chips
     } = body;
 
     // ===============================
@@ -78,7 +78,7 @@ exports.handler = async (event) => {
     const townSlug = slugify(town);
 
     // ===============================
-    // BUILD KEYWORDS
+    // BUILD KEYWORDS (clean + modern)
     // ===============================
     const keywords = new Set();
 
@@ -102,10 +102,9 @@ exports.handler = async (event) => {
     keywords.add(town.toLowerCase());
     keywords.add(`${categoryRaw.toLowerCase()} ${town.toLowerCase()}`);
 
-    // Extra keywords
-    if (extraKeywords) {
+    // Extra keywords (chip array)
+    if (Array.isArray(extraKeywords)) {
       extraKeywords
-        .split(",")
         .map(k => k.trim().toLowerCase())
         .filter(Boolean)
         .forEach(k => keywords.add(k));
@@ -117,9 +116,10 @@ exports.handler = async (event) => {
     const doc = {
       name,
       slug,
-      categoryRaw,       // user typed category
-      category: null,    // you assign manually in admin
-      categorySlug: null, // you assign manually in admin
+
+      categoryRaw,         // user typed category
+      category: null,      // admin assigns later
+      categorySlug: null,  // admin assigns later
 
       town,
       townSlug,
