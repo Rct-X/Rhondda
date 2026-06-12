@@ -1,3 +1,7 @@
+// ======================================
+// DIRECTORY PAGE SCRIPT (IMPROVED)
+// ======================================
+
 // ===============================
 // DOM ELEMENTS
 // ===============================
@@ -5,6 +9,7 @@ const resultsGrid = document.getElementById("resultsGrid");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const resultsMeta = document.getElementById("resultsMeta");
+const unifiedSuggestions = document.getElementById("unifiedSuggestions");
 
 let db;
 
@@ -50,11 +55,10 @@ function detectPageType() {
 }
 
 // ===============================
-// CARD RENDERER
+// BUSINESS CARD
 // ===============================
 function renderBusinessCard(b) {
   const card = document.createElement("a");
-
   card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
   card.className = "card-business";
 
@@ -77,15 +81,13 @@ async function loadCategory(categorySlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug}…</p>`;
 
   const snap = await db.collection("businesses")
-  .where("categorySlug", "==", categorySlug)
-  .where("status", "==", "approved")
-  .get();
+    .where("categorySlug", "==", categorySlug)
+    .where("status", "==", "approved")
+    .get();
 
-  if (resultsMeta) {
-    resultsMeta.innerHTML = `
-      <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug}</strong></p>
-    `;
-  }
+  resultsMeta.innerHTML = `
+    <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug}</strong></p>
+  `;
 
   if (snap.empty) {
     resultsGrid.innerHTML = `<p>No businesses found.</p>`;
@@ -103,16 +105,14 @@ async function loadCategoryTown(categorySlug, townSlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
 
   const snap = await db.collection("businesses")
-  .where("categorySlug", "==", categorySlug)
-  .where("townSlug", "==", townSlug)
-  .where("status", "==", "approved")
-  .get();
+    .where("categorySlug", "==", categorySlug)
+    .where("townSlug", "==", townSlug)
+    .where("status", "==", "approved")
+    .get();
 
-  if (resultsMeta) {
-    resultsMeta.innerHTML = `
-      <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug} • ${townSlug}</strong></p>
-    `;
-  }
+  resultsMeta.innerHTML = `
+    <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug} • ${townSlug}</strong></p>
+  `;
 
   if (snap.empty) {
     resultsGrid.innerHTML = `<p>No businesses found in this area.</p>`;
@@ -124,7 +124,7 @@ async function loadCategoryTown(categorySlug, townSlug) {
 }
 
 // ===============================
-// SEARCH
+// SEARCH DIRECTORY
 // ===============================
 async function searchDirectory() {
   const term = searchInput.value.trim().toLowerCase();
@@ -133,29 +133,13 @@ async function searchDirectory() {
   resultsGrid.innerHTML = `<p class="text-dim">Searching…</p>`;
 
   const snap = await db.collection("businesses")
-  .where("keywords", "array-contains", term)
-  .where("status", "==", "approved")
-  .get();
+    .where("keywords", "array-contains", term)
+    .where("status", "==", "approved")
+    .get();
 
-  if (resultsMeta) {
-    const suggestions = `
-      <div style="margin-top:8px;font-size:0.9rem;">
-        Suggested:
-        <a href="/directory/plumbers">Plumbers</a> •
-        <a href="/directory/electricians">Electricians</a> •
-        <a href="/directory/builders">Builders</a> •
-        <a href="/directory/cleaners">Cleaners</a> •
-        <a href="/directory/roofers">Roofers</a>
-      </div>
-    `;
-
-    resultsMeta.innerHTML = `
-      <p>
-        Showing <strong>${snap.size}</strong> results for <strong>${term}</strong>
-      </p>
-      ${suggestions}
-    `;
-  }
+  resultsMeta.innerHTML = `
+    <p>Showing <strong>${snap.size}</strong> results for <strong>${term}</strong></p>
+  `;
 
   if (snap.empty) {
     resultsGrid.innerHTML = `<p>No businesses found.</p>`;
@@ -167,31 +151,63 @@ async function searchDirectory() {
 }
 
 // ===============================
+// LIVE SUGGESTIONS (Unified)
+// ===============================
+searchInput.addEventListener("input", async () => {
+  const value = searchInput.value.trim().toLowerCase();
+
+  unifiedSuggestions.innerHTML = "";
+  unifiedSuggestions.style.display = "none";
+
+  if (!value) return;
+
+  // Suggest categories
+  const catSnap = await db.collection("businesses")
+    .where("keywords", "array-contains", value)
+    .limit(5)
+    .get();
+
+  if (!catSnap.empty) {
+    catSnap.forEach(doc => {
+      const b = doc.data();
+      const div = document.createElement("div");
+      div.className = "suggestion-item";
+      div.textContent = `${b.name} (${b.category}, ${b.town})`;
+
+      div.addEventListener("click", () => {
+        window.location.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+      });
+
+      unifiedSuggestions.appendChild(div);
+    });
+
+    unifiedSuggestions.style.display = "block";
+  }
+});
+
+// ===============================
 // EVENTS
 // ===============================
-if (searchBtn) {
-  searchBtn.addEventListener("click", searchDirectory);
-}
+searchBtn.addEventListener("click", searchDirectory);
 
-if (searchInput) {
-  searchInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") searchDirectory();
-  });
-}
+searchInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") searchDirectory();
+});
 
 // ===============================
-// ROTATING PLACEHOLDER (HYBRID UX)
+// ROTATING PLACEHOLDER
 // ===============================
 const placeholders = [
   "Find electricians in Pontypridd...",
   "Find plumbers in Tonypandy...",
-  "Find builders in Treorchy..."
+  "Find shops in Treorchy...",
+  "Find cleaners in Ferndale...",
+  "Find gardeners in Aberdare..."
 ];
 
 let i = 0;
 
 setInterval(() => {
-  if (!searchInput) return;
   searchInput.placeholder = placeholders[i];
   i = (i + 1) % placeholders.length;
 }, 2500);
