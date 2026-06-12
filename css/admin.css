@@ -892,3 +892,34 @@ select:focus{
   }
 
 }
+.keyword-editor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.keyword-chip {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.keyword-chip input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: auto;
+  min-width: 60px;
+}
+
+.keyword-remove {
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #dc2626;
+}
