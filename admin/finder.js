@@ -2,16 +2,16 @@
 // SMART FINDER MODULE (MODULAR)
 // ======================================
 
-let db;
-let auth;
-let container;
+let finderDb;
+let finderAuth;
+let finderContainer;
 
 console.log("[FINDER] Module loaded");
 
-export function initFinder({ db: _db, auth: _auth, container: _container }) {
-  db = _db;
-  auth = _auth;
-  container = _container;
+export function initFinder({ db, auth, container }) {
+  finderDb = db;
+  finderAuth = auth;
+  finderContainer = container;
 
   console.log("[FINDER] init");
 
@@ -24,26 +24,27 @@ export function initFinder({ db: _db, auth: _auth, container: _container }) {
 // ======================================
 
 function bindFinderEvents() {
-  const searchBtn = container.querySelector("#finderSearchBtn");
+  const searchBtn = finderContainer.querySelector("#finderSearchBtn");
+
   if (searchBtn) {
     searchBtn.addEventListener("click", () => {
       findBusinesses();
     });
   }
 
-  // event delegation for Auto-Add buttons
-  container.addEventListener("click", (e) => {
+  // Auto‑Add buttons (event delegation)
+  finderContainer.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-action='auto-seed']");
     if (!btn) return;
 
-    const name = btn.dataset.name;
-    const town = btn.dataset.town;
-    const category = btn.dataset.category;
-    const score = Number(btn.dataset.score || 0);
-    const email = btn.dataset.email || "";
-    const phone = btn.dataset.phone || "";
-
-    autoSeedBusiness(name, town, category, score, email, phone);
+    autoSeedBusiness(
+      btn.dataset.name,
+      btn.dataset.town,
+      btn.dataset.category,
+      Number(btn.dataset.score || 0),
+      btn.dataset.email || "",
+      btn.dataset.phone || ""
+    );
   });
 }
 
@@ -65,9 +66,9 @@ function slugify(str = "") {
 // ======================================
 
 async function findBusinesses() {
-  const category = container.querySelector("#finderCategory")?.value?.trim();
-  const town = container.querySelector("#finderTown")?.value?.trim();
-  const resultsBox = container.querySelector("#finderResults");
+  const category = finderContainer.querySelector("#finderCategory")?.value?.trim();
+  const town = finderContainer.querySelector("#finderTown")?.value?.trim();
+  const resultsBox = finderContainer.querySelector("#finderResults");
 
   if (!resultsBox) return;
 
@@ -247,7 +248,7 @@ async function autoSeedBusiness(name, town, category, score, email = "", phone =
 // ======================================
 
 async function refreshPlacesUsage() {
-  const box = container.querySelector("#placesUsageBox");
+  const box = finderContainer.querySelector("#placesUsageBox");
   if (!box) return;
 
   try {
