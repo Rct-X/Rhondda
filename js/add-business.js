@@ -1,3 +1,7 @@
+// ======================================
+// BUSINESS SIGN-UP — FRONTEND LOGIC
+// ======================================
+
 // ===============================
 // FORM ELEMENTS
 // ===============================
@@ -83,7 +87,7 @@ function slugify(str) {
 }
 
 // ===============================
-// SIMPLE WASTE LICENCE LOGIC
+// WASTE LICENCE LOGIC
 // ===============================
 const wasteLicenceGroup = document.getElementById("wasteLicenceGroup");
 const wasteLicenceInput = document.getElementById("wasteLicence");
@@ -100,6 +104,57 @@ document.querySelectorAll("input[name='collectsWaste']").forEach(radio => {
     }
   });
 });
+
+// ===============================
+// KEYWORD CHIP SYSTEM
+// ===============================
+
+function renderSignupKeywordChips(keywords) {
+  const container = document.getElementById("signupKeywordEditor");
+  container.innerHTML = "";
+
+  keywords.forEach((kw, index) => {
+    const chip = document.createElement("div");
+    chip.className = "keyword-chip";
+
+    const input = document.createElement("input");
+    input.value = kw;
+    input.addEventListener("input", updateSignupKeywords);
+
+    const remove = document.createElement("span");
+    remove.className = "keyword-remove";
+    remove.textContent = "×";
+    remove.addEventListener("click", () => {
+      keywords.splice(index, 1);
+      renderSignupKeywordChips(keywords);
+      updateSignupKeywords();
+    });
+
+    chip.appendChild(input);
+    chip.appendChild(remove);
+    container.appendChild(chip);
+  });
+}
+
+function getSignupKeywords() {
+  const inputs = document.querySelectorAll("#signupKeywordEditor input");
+  return Array.from(inputs)
+    .map(i => i.value.trim().toLowerCase())
+    .filter(v => v.length > 0);
+}
+
+function updateSignupKeywords() {
+  // Keywords are collected on submit
+}
+
+document.getElementById("signupAddKeywordBtn").addEventListener("click", () => {
+  const keywords = getSignupKeywords();
+  keywords.push("");
+  renderSignupKeywordChips(keywords);
+});
+
+// Start with one empty chip
+renderSignupKeywordChips([""]);
 
 // ===============================
 // FORM SUBMIT
@@ -127,7 +182,8 @@ if (form) {
 
     const address = document.getElementById("address").value.trim();
     const description = document.getElementById("description").value.trim();
-    const extraKeywords = document.getElementById("extraKeywords").value.trim();
+
+    const extraKeywords = getSignupKeywords();
 
     const collectsWaste = document.querySelector("input[name='collectsWaste']:checked")?.value || "no";
     const wasteLicence = document.getElementById("wasteLicence").value.trim();
@@ -209,16 +265,19 @@ if (form) {
       }
 
       formMessage.innerHTML = `
-        <strong>Thank you! Your business has been submitted for review.</strong>
-        <br><br>
-        Need a professional website for your business?
-        <br><br>
-        <a href="/pricing" class="inline-link">Websites from £30/month →</a>
-      `;
-
+  <strong>Thanks, your business has been submitted for review!</strong>
+  <br><br>
+  We’ll take a quick look and get it live as soon as possible.
+  <br><br>
+  If you ever want a simple, affordable website that helps bring in customers,
+  have a look at our options:
+  <br>
+  <a href="/pricing" class="inline-link">Websites from £30/month →</a>
+`;
       formMessage.classList.add("success");
       form.reset();
       wasteLicenceGroup.style.display = "none";
+      renderSignupKeywordChips([""]);
 
     } catch (err) {
       formMessage.textContent = err.message || "Something went wrong. Please try again.";
