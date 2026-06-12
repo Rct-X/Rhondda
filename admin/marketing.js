@@ -29,7 +29,7 @@ async function loadCategories() {
   select.innerHTML = `<option value="">Loading...</option>`;
 
   try {
-    const res = await fetch("/.netlify/functions/getCategories");
+    const res = await fetch("/.netlify/functions/categoryAliases");
     const json = await res.json();
 
     if (!json.ok) {
