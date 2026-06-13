@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Thank You | RCTX Web Design</title>
+
+<meta name="robots" content="noindex,follow" />
+<meta name="description" content="Thank you for contacting RCTX Web Design. Your message has been received." />
+
+<link rel="canonical" href="https://rctx.co.uk/thank-you" />
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --success:#16a34a;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Inter,system-ui,sans-serif;
+  background:
+  radial-gradient(circle at top,#dbeafe 0%,#f8fafc 45%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  color:var(--text);
+}
+
+.thankyou-card{
+  width:100%;
+  max-width:620px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:3rem 2rem;
+  text-align:center;
+  box-shadow:
+  0 10px 35px rgba(15,23,42,.08);
+  animation:fadeUp .6s ease;
+}
+
+.icon-wrap{
+  width:90px;
+  height:90px;
+  margin:auto auto 1.5rem;
+  border-radius:50%;
+  background:#dcfce7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:pulse 2.4s infinite;
+}
+
+.icon-wrap svg{
+  width:42px;
+  height:42px;
+  color:var(--success);
+}
+
+h1{
+  font-size:clamp(2rem,5vw,2.8rem);
+  line-height:1.1;
+  margin-bottom:1rem;
+  font-weight:800;
+}
+
+p{
+  color:var(--muted);
+  font-size:1.05rem;
+  line-height:1.7;
+  margin-bottom:1rem;
+}
+
+.highlight{
+  color:var(--primary);
+  font-weight:600;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  justify-content:center;
+  margin-top:2rem;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  padding:1rem 1.4rem;
+  border-radius:14px;
+  text-decoration:none;
+  font-weight:700;
+  transition:.25s ease;
+  min-width:210px;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+
+.btn-primary:hover{
+  background:var(--primary-dark);
+  transform:translateY(-2px);
+}
+
+.btn-secondary{
+  background:#fff;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
+.btn-secondary:hover{
+  background:#f8fafc;
+  transform:translateY(-2px);
+}
+
+.small{
+  margin-top:2rem;
+  font-size:.92rem;
+  color:#94a3b8;
+}
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes pulse{
+  0%{
+    box-shadow:0 0 0 0 rgba(22,163,74,.3);
+  }
+  70%{
+    box-shadow:0 0 0 18px rgba(22,163,74,0);
+  }
+  100%{
+    box-shadow:0 0 0 0 rgba(22,163,74,0);
+  }
+}
+
+@media(max-width:640px){
+
+  .thankyou-card{
+    padding:2.4rem 1.4rem;
+    border-radius:22px;
+  }
+
+  .btn{
+    width:100%;
+  }
+
+}
+</style>
+</head>
+<body>
+
+<div class="thankyou-card">
+
+  <div class="icon-wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round"
+      d="M5 13l4 4L19 7"/>
+    </svg>
+  </div>
+
+  <h1>Thank You!</h1>
+
+  <p>
+    Your message has been successfully sent to
+    <span class="highlight">RCTX Web Design</span>.
+  </p>
+
+  <p>
+    We’ll get back to you as soon as possible regarding your website,
+    quote request, or enquiry.
+  </p>
+
+  <div class="actions">
+
+    <a href="/" class="btn btn-primary">
+      Back To Homepage
+    </a>
+
+    <a href="/directory" class="btn btn-secondary">
+      Browse Businesses
+    </a>
+
+  </div>
+
+  <div class="small">
+    © 2026 RCTX Web Design
+  </div>
+
+</div>
+
+</body>
+</html>
