@@ -1,45 +1,17 @@
-// /.netlify/functions/manualResend.js
-
-const { Resend } = require("resend");
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-exports.handler = async () => {
-
-  try {
-
-    const html = `PASTE YOUR FULL HTML HERE`;
-
-    const response = await resend.emails.send({
-
-      from: "RCTX Directory <support@rctx.co.uk>",
-
-      to: "stephenprice.plumber@googlemail.com",
-
-      subject: "We've added Stephen Price Building & Plumbing Service to RCTX 👋",
-
-      html
-
-    });
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        response
-      })
-    };
-
-  } catch (err) {
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        success: false,
-        error: err.message
-      })
-    };
-
-  }
-
-};
+fetch("/.netlify/functions/sendSeededListingEmail", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name: "Purple Shoots Shop",
+    email: "shop@purpleshoots.co.uk",
+    businessName: "Purple Shoots Shop",
+    slug: "purple-shoots-shop",
+    townSlug: "pontypridd",
+    categorySlug: "shops"
+  })
+})
+.then(r => r.json())
+.then(console.log)
+.catch(console.error);
