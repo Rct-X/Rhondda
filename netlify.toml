@@ -1,3 +1,6 @@
+# =========================================
+# BUILD SETTINGS
+# =========================================
 [build]
   publish = "."
   functions = "netlify/functions"
@@ -5,63 +8,66 @@
 [functions]
   included_files = ["netlify/fonts/**"]
 
-# -----------------------------
+# =========================================
 # FUNCTION BUNDLING
-# -----------------------------
+# =========================================
 [functions."og-image"]
   node_bundler = "zisi"
 
 [functions."og-listing"]
   node_bundler = "zisi"
 
-# -----------------------------
-# HEADERS
-# -----------------------------
-[[headers]]
-  for = "/js/rctx-tracker.js"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-
-[[headers]]
-  for = "/og-image.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-    Content-Type = "image/jpeg"
-    Access-Control-Allow-Origin = "*"
-    Accept-Ranges = "none"
-
+# =========================================
+# SECURITY / ADMIN
+# =========================================
 [[headers]]
   for = "/admin/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 
-# -----------------------------
+# =========================================
+# TRACKING FILE
+# =========================================
+[[headers]]
+  for = "/js/rctx-tracker.js"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+# =========================================
+# STATIC OG IMAGE CACHE (if used)
+# =========================================
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# =========================================
 # SITEMAP
-# -----------------------------
+# =========================================
 [[redirects]]
   from = "/sitemap.xml"
   to = "/.netlify/functions/sitemap"
   status = 200
 
-# -----------------------------
+# =========================================
 # ROBOTS
-# -----------------------------
+# =========================================
 [[redirects]]
   from = "/robots.txt"
   to = "/robots.txt"
   status = 200
 
-# -----------------------------
-# BUSINESS PAGE ROUTE (MAIN)
-# -----------------------------
+# =========================================
+# BUSINESS PAGE (SPA ROUTE)
+# =========================================
 [[redirects]]
   from = "/directory/:category/:town/:slug"
   to = "/directory/business.html"
   status = 200
 
-# -----------------------------
+# =========================================
 # CATEGORY / DIRECTORY PAGES
-# -----------------------------
+# =========================================
 [[redirects]]
   from = "/directory/*"
   to = "/directory.html"
