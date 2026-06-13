@@ -1,21 +1,27 @@
 ///manual EMAILS////
-const failed = [
-  "stephenprice.plumber@googlemail.com",
-  "shop@purpleshoots.co.uk",
-  "fairytalesbabywear@hotmail.com",
-  "gemsfades@gmail.com",
-  "enquiries@freindsofanimalswales.org.uk",
-  "Support@rctx.co.uk"
-];
+const Resend = require("resend").Resend;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-failed.forEach(email => {
-  fetch("/.netlify/functions/send-claim-email", {
-    method: "POST",
-    body: JSON.stringify({
-      name: "Business Owner",
-      email,
-      businessName: "Your Business",
-      slug: "your-slug"
-    })
-  });
-});
+exports.handler = async (event) => {
+  try {
+    const { email, name, businessName, slug } = JSON.parse(event.body);
+
+    const result = await resend.emails.send({
+      from: "RCTX <support@rctx.co.uk>",
+      to: email,
+      subject: `Manual retry for ${businessName}`,
+      html: `<p>Hello ${name}, this is a manual retry for ${businessName} (${slug}).</p>`
+    });
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, result })
+    };
+
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: err.message })
+    };
+  }
+};
