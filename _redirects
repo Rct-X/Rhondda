@@ -1,42 +1,22 @@
-# =========================================
-# CANONICAL DOMAIN REDIRECTS
-# =========================================
-http://rctx.co.uk/*       https://rctx.co.uk/:splat   301!
-http://www.rctx.co.uk/*   https://rctx.co.uk/:splat   301!
-https://www.rctx.co.uk/*  https://rctx.co.uk/:splat   301!
+# -----------------------------------------
+# OG FUNCTION FOR BUSINESS PAGES ONLY
+# -----------------------------------------
 
-# =========================================
-# SITEMAP
-# =========================================
-/sitemap.xml   /.netlify/functions/sitemap   200
+/directory/:category/:town/:slug   /.netlify/functions/og-listing/:splat   200
 
-# =========================================
-# ROBOTS
-# =========================================
-/robots.txt    /robots.txt   200
 
-# =========================================
-# OG FUNCTION FOR BOTS ONLY
-# (Facebook, WhatsApp, LinkedIn, Twitter, Slack, Discord, Googlebot, Bingbot)
-# =========================================
-/directory/:category/:town/:slug  
-  /.netlify/functions/og-listing?category=:category&town=:town&slug=:slug  
-  200  
-  User-Agent=facebookexternalhit,Facebot,Slackbot,Twitterbot,LinkedInBot,WhatsApp,Discordbot,Googlebot,bingbot
+# -----------------------------------------
+# NORMAL USER ROUTING (SPA)
+# -----------------------------------------
 
-# OG IMAGE (BOTS ONLY)
-/og/:slug  
-  /.netlify/functions/og-image?slug=:slug  
-  200  
-  User-Agent=facebookexternalhit,Facebot
-
-# =========================================
-# HUMAN SPA ROUTES
-# =========================================
+# Business SPA page
 /directory/:category/:town/:slug   /directory/business.html   200
+
+# Category + town pages
 /directory/*                       /directory.html            200
 
-# =========================================
-# OTHER
-# =========================================
-/website-pricing.html   /pricing 301
+
+# -----------------------------------------
+# SITEMAP
+# -----------------------------------------
+/sitemap.xml   /.netlify/functions/sitemap   200
