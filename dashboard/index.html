@@ -2,109 +2,400 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-  <meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+
 <title>RCTX Analytics Dashboard</title>
 
 <style>
+
+/* =========================================
+   RESET
+========================================= */
+
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
-  padding:2rem;
-  background:#0b0f19;
-  color:white;
-  font-family:Arial, sans-serif;
+  font-family:Inter,Arial,sans-serif;
+  background:#f5f7fb;
+  color:#111827;
+}
+
+/* =========================================
+   LAYOUT
+========================================= */
+
+.dashboard{
+  max-width:1200px;
+  margin:auto;
+  padding:1rem;
+}
+
+.topbar{
+  margin-bottom:1.5rem;
 }
 
 h1{
-  margin-bottom:2rem;
+  margin:0;
+  font-size:1.8rem;
+  font-weight:800;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:1.5rem;
+.subtitle{
+  margin-top:.4rem;
+  color:#6b7280;
+  font-size:.95rem;
 }
 
-.card{
-  background:#111827;
-  border-radius:16px;
-  padding:1.5rem;
-}
+/* =========================================
+   FILTERS
+========================================= */
 
-.client{
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  padding:1rem 0;
-}
-
-.client:last-child{
-  border-bottom:none;
-}
-
-.stat{
-  color:#93c5fd;
-  margin:.3rem 0;
-}
-
-.small{
-  color:#9ca3af;
-  font-size:.9rem;
+.filters{
+  display:flex;
+  gap:.75rem;
+  margin:1.5rem 0 1rem;
+  flex-wrap:wrap;
 }
 
 .filters button{
-  margin-right:.5rem;
-  padding:.5rem 1rem;
   border:none;
-  border-radius:6px;
-  background:#1f2937;
-  color:white;
+  background:white;
+  border:1px solid #dbe3ee;
+  color:#374151;
+  padding:.8rem 1rem;
+  border-radius:12px;
+  font-weight:600;
   cursor:pointer;
+  transition:.2s;
+  flex:1;
+  min-width:90px;
 }
 
 .filters button.active{
   background:#2563eb;
+  color:white;
+  border-color:#2563eb;
 }
+
+/* =========================================
+   SUMMARY CARDS
+========================================= */
+
+.summary-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  margin-bottom:1.5rem;
+}
+
+.summary-card{
+  background:white;
+  border-radius:18px;
+  padding:1.25rem;
+  border:1px solid #e5e7eb;
+  box-shadow:0 4px 14px rgba(0,0,0,0.04);
+}
+
+.summary-label{
+  font-size:.9rem;
+  color:#6b7280;
+  margin-bottom:.5rem;
+}
+
+.summary-value{
+  font-size:2rem;
+  font-weight:800;
+}
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.analytics-actions{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:18px;
+  padding:1rem;
+  margin-bottom:1.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+
+.analytics-actions input{
+  width:100%;
+  padding:.9rem;
+  border-radius:12px;
+  border:1px solid #d1d5db;
+  font-size:1rem;
+}
+
+.action-buttons{
+  display:flex;
+  gap:.75rem;
+}
+
+.btn{
+  flex:1;
+  border:none;
+  padding:.9rem;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.btn-danger{
+  background:#ef4444;
+  color:white;
+}
+
+/* =========================================
+   BUSINESS LIST
+========================================= */
+
+.section-title{
+  margin:0 0 1rem;
+  font-size:1.25rem;
+  font-weight:800;
+}
+
+.business-list{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+/* =========================================
+   BUSINESS CARD
+========================================= */
+
+.business-card{
+  background:white;
+  border-radius:20px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+  box-shadow:0 4px 18px rgba(0,0,0,0.04);
+}
+
+.business-main{
+  padding:1.2rem;
+}
+
+.business-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:1rem;
+}
+
+.business-name{
+  font-size:1.05rem;
+  font-weight:800;
+  margin:0;
+  word-break:break-word;
+}
+
+.views-badge{
+  background:#eff6ff;
+  color:#2563eb;
+  font-weight:700;
+  padding:.45rem .8rem;
+  border-radius:999px;
+  font-size:.9rem;
+  white-space:nowrap;
+}
+
+.quick-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.75rem;
+  margin-top:1rem;
+}
+
+.stat-box{
+  background:#f8fafc;
+  border-radius:14px;
+  padding:.9rem;
+}
+
+.stat-label{
+  font-size:.8rem;
+  color:#6b7280;
+  margin-bottom:.25rem;
+}
+
+.stat-value{
+  font-weight:800;
+  font-size:1rem;
+}
+
+/* =========================================
+   EXPAND BUTTON
+========================================= */
+
+.expand-btn{
+  width:100%;
+  border:none;
+  background:#f9fafb;
+  border-top:1px solid #e5e7eb;
+  padding:1rem;
+  font-weight:700;
+  cursor:pointer;
+  color:#2563eb;
+}
+
+/* =========================================
+   EXPANDED DETAILS
+========================================= */
+
+.business-details{
+  display:none;
+  padding:1rem 1.2rem 1.5rem;
+  border-top:1px solid #f1f5f9;
+  background:#fcfcfd;
+}
+
+.business-details.open{
+  display:block;
+}
+
+.detail-group{
+  margin-bottom:1.25rem;
+}
+
+.detail-group:last-child{
+  margin-bottom:0;
+}
+
+.detail-title{
+  font-size:.9rem;
+  font-weight:800;
+  margin-bottom:.65rem;
+}
+
+.info-list{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+
+.info-item{
+  background:white;
+  border:1px solid #eef2f7;
+  border-radius:12px;
+  padding:.75rem .9rem;
+  font-size:.92rem;
+}
+
+/* =========================================
+   TABLET+
+========================================= */
+
+@media(min-width:768px){
+
+  .dashboard{
+    padding:2rem;
+  }
+
+  .summary-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .analytics-actions{
+    flex-direction:row;
+    align-items:center;
+  }
+
+  .analytics-actions input{
+    max-width:220px;
+  }
+
+  .action-buttons{
+    margin-left:auto;
+    width:auto;
+  }
+
+  .btn{
+    width:180px;
+    flex:none;
+  }
+
+  .quick-stats{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
 </style>
 </head>
+
 <body>
 
-<h1>RCTX Analytics Dashboard</h1>
+<div class="dashboard">
 
-<div class="filters">
-  <button onclick="setRange(1)" id="f1">Today</button>
-  <button onclick="setRange(7)" id="f7">7 Days</button>
-  <button onclick="setRange(30)" id="f30">30 Days</button>
-</div>
-
-<br>
-
-<div class="analytics-actions">
-
-  <input type="date" id="analyticsStart">
-  <input type="date" id="analyticsEnd">
-
-  <button class="btn btn-danger" onclick="deleteAnalyticsRange(false)">
-    Delete Range
-  </button>
-
-  <button class="btn btn-danger" onclick="deleteAnalyticsRange(true)">
-    Delete ALL
-  </button>
-
-</div>
-<div class="card">
-  <h2>Page Views</h2>
-  <div id="totalVisits">Loading...</div>
-</div>
-  <div class="card">
-    <h2>Total Clients</h2>
-    <div id="totalClients">Loading...</div>
+  <div class="topbar">
+    <h1>RCTX Analytics</h1>
+    <div class="subtitle">
+      Business traffic & conversion overview
+    </div>
   </div>
-</div>
 
-<br><br>
+  <!-- FILTERS -->
+  <div class="filters">
+    <button onclick="setRange(1)" id="f1">Today</button>
+    <button onclick="setRange(7)" id="f7">7 Days</button>
+    <button onclick="setRange(30)" id="f30">30 Days</button>
+  </div>
 
-<div class="card">
-  <h2>Client Analytics</h2>
-  <div id="clients"></div>
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+
+    <div class="summary-card">
+      <div class="summary-label">Total Views</div>
+      <div class="summary-value" id="totalVisits">0</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-label">Businesses</div>
+      <div class="summary-value" id="totalClients">0</div>
+    </div>
+
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="analytics-actions">
+
+    <input type="date" id="analyticsStart">
+    <input type="date" id="analyticsEnd">
+
+    <div class="action-buttons">
+
+      <button
+        class="btn btn-danger"
+        onclick="deleteAnalyticsRange(false)"
+      >
+        Delete Range
+      </button>
+
+      <button
+        class="btn btn-danger"
+        onclick="deleteAnalyticsRange(true)"
+      >
+        Delete ALL
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- BUSINESS LIST -->
+  <h2 class="section-title">Business Analytics</h2>
+
+  <div id="clients" class="business-list"></div>
+
 </div>
 
 <script type="module">
@@ -148,7 +439,7 @@ window.setRange = function(days){
 
   document
     .querySelectorAll(".filters button")
-    .forEach(b => b.classList.remove("active"));
+    .forEach(btn => btn.classList.remove("active"));
 
   document
     .getElementById("f" + days)
@@ -195,7 +486,7 @@ function getTimestamp(v){
 }
 
 // ======================================
-// DATE FILTER
+// FILTER DATE
 // ======================================
 
 function filterByDate(visits, days){
@@ -209,41 +500,50 @@ function filterByDate(visits, days){
 }
 
 // ======================================
-// DASHBOARD RENDER
+// TOGGLE DETAILS
+// ======================================
+
+window.toggleBusiness = function(id){
+
+  const el = document.getElementById(id);
+
+  if(!el) return;
+
+  el.classList.toggle("open");
+};
+
+// ======================================
+// RENDER
 // ======================================
 
 function renderDashboard(visits){
 
   visits = filterByDate(visits, RANGE);
 
-  const totalVisitsEl = document.getElementById("totalVisits");
-  const totalClientsEl = document.getElementById("totalClients");
-
-  if(totalVisitsEl) {
-    totalVisitsEl.innerText = visits.length;
-  }
+  document.getElementById("totalVisits").innerText =
+    visits.length;
 
   const clients = {};
 
   for(const v of visits){
 
-    const clientId = v.clientId || "unknown";
+    const clientId = v.clientId || "Unknown Business";
 
     if(!clients[clientId]){
 
       clients[clientId] = {
-        total: 0,
-        mobile: 0,
-        desktop: 0,
-        tablet: 0,
-        other: 0,
-        pages: {},
-        pageConversions: {},
-        sources: {},
-        events: {
-          whatsapp: 0,
-          phone: 0,
-          form: 0
+        total:0,
+        mobile:0,
+        desktop:0,
+        tablet:0,
+        other:0,
+        pages:{},
+        pageConversions:{},
+        sources:{},
+        events:{
+          whatsapp:0,
+          phone:0,
+          form:0
         }
       };
     }
@@ -267,14 +567,16 @@ function renderDashboard(visits){
 
     // SOURCE
     const source = detectSource(v.referrer);
-    c.sources[source] = (c.sources[source] || 0) + 1;
+
+    c.sources[source] =
+      (c.sources[source] || 0) + 1;
 
     // EVENTS
     if(v.event === "whatsapp_click") c.events.whatsapp++;
     if(v.event === "phone_tap") c.events.phone++;
     if(v.event === "form_submit") c.events.form++;
 
-    // CONVERSION ATTRIBUTION PER PAGE
+    // CONVERSIONS
     if(
       v.event === "whatsapp_click" ||
       v.event === "phone_tap" ||
@@ -285,29 +587,18 @@ function renderDashboard(visits){
     }
   }
 
-  if(totalClientsEl){
-    totalClientsEl.innerText = Object.keys(clients).length;
-  }
+  document.getElementById("totalClients").innerText =
+    Object.keys(clients).length;
 
   const wrap = document.getElementById("clients");
-  if(!wrap) return;
 
   wrap.innerHTML = "";
 
+  let index = 0;
+
   for(const [name, data] of Object.entries(clients)){
 
-    const topPage =
-      Object.entries(data.pages)
-        .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
-
-    const topConvertingPage =
-      Object.entries(data.pageConversions)
-        .sort((a,b)=>b[1]-a[1])[0]?.[0] || "N/A";
-
-    const mobilePercent =
-      data.total
-        ? Math.round((data.mobile / data.total) * 100)
-        : 0;
+    index++;
 
     const conversions =
       data.events.whatsapp +
@@ -319,53 +610,173 @@ function renderDashboard(visits){
         ? ((conversions / data.total) * 100).toFixed(1)
         : 0;
 
+    const topPage =
+      Object.entries(data.pages)
+      .sort((a,b)=>b[1]-a[1])[0]?.[0] || "/";
+
     const topSources =
       Object.entries(data.sources)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,5)
-        .map(([src,count]) => `<li>${src}: ${count}</li>`)
-        .join("");
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,5)
+      .map(([src,count]) => `
+        <div class="info-item">
+          ${src} — ${count}
+        </div>
+      `)
+      .join("");
 
-    const pageList = Object.entries(data.pages)
-  .sort((a,b)=>b[1]-a[1])
-  .map(([p,count]) => `<li>${p}: ${count}</li>`)
-  .join("");
+    const pageList =
+      Object.entries(data.pages)
+      .sort((a,b)=>b[1]-a[1])
+      .map(([page,count]) => `
+        <div class="info-item">
+          ${page} — ${count} views
+        </div>
+      `)
+      .join("");
 
     wrap.innerHTML += `
-      <div class="client">
 
-        <h3>${name}</h3>
+      <div class="business-card">
 
-        <div class="stat">${data.total} visits</div>
+        <div class="business-main">
 
-        <div class="stat">Most viewed page: ${topPage}</div>
+          <div class="business-top">
 
-<div class="stat">All page views:</div>
-<ul class="small">${pageList}</ul>
+            <div>
+              <h3 class="business-name">${name}</h3>
+            </div>
 
-        <div class="stat">Top converting page: ${topConvertingPage}</div>
+            <div class="views-badge">
+              ${data.total} Views
+            </div>
 
-        <div class="stat">${mobilePercent}% mobile users</div>
+          </div>
 
-        <div class="stat">📱 ${data.mobile} | 💻 ${data.desktop} | 📟 ${data.tablet} | ❓ ${data.other}</div>
+          <div class="quick-stats">
 
-        <div class="stat">WhatsApp leads: ${data.events.whatsapp}</div>
-        <div class="stat">Phone taps: ${data.events.phone}</div>
-        <div class="stat">Form submits: ${data.events.form}</div>
+            <div class="stat-box">
+              <div class="stat-label">Top Page</div>
+              <div class="stat-value">${topPage}</div>
+            </div>
 
-        <div class="stat">Conversions: ${conversions}</div>
-        <div class="stat">Conversion rate: ${conversionRate}%</div>
+            <div class="stat-box">
+              <div class="stat-label">Conversions</div>
+              <div class="stat-value">${conversions}</div>
+            </div>
 
-        <div class="stat">Top traffic sources:</div>
-        <ul class="small">${topSources}</ul>
+            <div class="stat-box">
+              <div class="stat-label">Mobile Users</div>
+              <div class="stat-value">${data.mobile}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Conv. Rate</div>
+              <div class="stat-value">${conversionRate}%</div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <button
+          class="expand-btn"
+          onclick="toggleBusiness('biz-${index}')"
+        >
+          Open Full Analytics
+        </button>
+
+        <div
+          class="business-details"
+          id="biz-${index}"
+        >
+
+          <div class="detail-group">
+
+            <div class="detail-title">
+              Device Breakdown
+            </div>
+
+            <div class="info-list">
+
+              <div class="info-item">
+                📱 Mobile: ${data.mobile}
+              </div>
+
+              <div class="info-item">
+                💻 Desktop: ${data.desktop}
+              </div>
+
+              <div class="info-item">
+                📟 Tablet: ${data.tablet}
+              </div>
+
+              <div class="info-item">
+                ❓ Other: ${data.other}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="detail-group">
+
+            <div class="detail-title">
+              Lead Events
+            </div>
+
+            <div class="info-list">
+
+              <div class="info-item">
+                WhatsApp Leads: ${data.events.whatsapp}
+              </div>
+
+              <div class="info-item">
+                Phone Taps: ${data.events.phone}
+              </div>
+
+              <div class="info-item">
+                Form Submits: ${data.events.form}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="detail-group">
+
+            <div class="detail-title">
+              Page Views
+            </div>
+
+            <div class="info-list">
+              ${pageList}
+            </div>
+
+          </div>
+
+          <div class="detail-group">
+
+            <div class="detail-title">
+              Traffic Sources
+            </div>
+
+            <div class="info-list">
+              ${topSources}
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
+
     `;
   }
 }
 
 // ======================================
-// DELETE ANALYTICS
+// DELETE
 // ======================================
 
 window.deleteAnalyticsRange = async function(all = false){
@@ -374,6 +785,7 @@ window.deleteAnalyticsRange = async function(all = false){
   const endEl = document.getElementById("analyticsEnd");
 
   const user = firebase.auth().currentUser;
+
   if(!user){
     alert("Not logged in");
     return;
@@ -389,7 +801,7 @@ window.deleteAnalyticsRange = async function(all = false){
     const end = endEl?.value;
 
     if(!start || !end){
-      alert("Please select start and end dates");
+      alert("Please select dates");
       return;
     }
 
@@ -406,12 +818,12 @@ window.deleteAnalyticsRange = async function(all = false){
     const res = await fetch(
       "/.netlify/functions/deleteAnalyticsRange",
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":`Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body:JSON.stringify(payload)
       }
     );
 
@@ -423,9 +835,10 @@ window.deleteAnalyticsRange = async function(all = false){
 
     alert(data.message || "Deleted");
 
-    window.location.reload();
+    location.reload();
 
   }catch(err){
+
     console.error(err);
     alert("Delete failed");
   }
@@ -444,13 +857,13 @@ async function init(){
     auth.onAuthStateChanged(async user => {
 
       if(!user){
-        window.location.href = "/admin";
+        location.href = "/admin";
         return;
       }
 
       if(user.email !== "epickering45@googlemail.com"){
         alert("Unauthorized");
-        window.location.href = "/";
+        location.href = "/";
         return;
       }
 
@@ -459,8 +872,8 @@ async function init(){
       const response = await fetch(
         "/.netlify/functions/getAnalytics",
         {
-          headers: {
-            Authorization: `Bearer ${token}`
+          headers:{
+            Authorization:`Bearer ${token}`
           }
         }
       );
@@ -475,18 +888,18 @@ async function init(){
 
       renderDashboard(visits);
 
-      document.getElementById("f30")?.classList.add("active");
+      document
+        .getElementById("f30")
+        ?.classList.add("active");
+
     });
 
   }catch(err){
 
     console.error(err);
 
-    const v = document.getElementById("totalVisits");
-    const c = document.getElementById("totalClients");
-
-    if(v) v.innerText = "Error";
-    if(c) c.innerText = "Error";
+    document.getElementById("totalVisits").innerText = "Error";
+    document.getElementById("totalClients").innerText = "Error";
   }
 }
 
