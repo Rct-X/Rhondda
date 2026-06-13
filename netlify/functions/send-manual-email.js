@@ -1,4 +1,4 @@
-await fetch("/.netlify/functions/sendListingApprovedEmail", {
+await fetch("/.netlify/functions/sendSeededListingEmail", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
