@@ -162,6 +162,34 @@ const ROUTES = {
   },
 
   // ====================================
+  // EMAILS
+  // ====================================
+
+  emails: async () => {
+
+    if (!loadedModules.has("emails")) {
+
+      const emails =
+        await import("./emails.js");
+
+      if (emails.initEmails) {
+
+        await emails.initEmails({
+          db,
+          auth,
+          container:
+            document.getElementById("emails")
+        });
+
+      }
+
+      loadedModules.add("emails");
+
+    }
+
+  },
+
+  // ====================================
   // SETTINGS
   // ====================================
 
