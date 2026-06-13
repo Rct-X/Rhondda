@@ -180,7 +180,7 @@ exports.handler = async (event) => {
     // ======================================
     // EMAIL (unchanged)
     // ======================================
-    if (email) {
+    if (email && data.sendEmail) {
       await fetch(
         `${process.env.URL}/.netlify/functions/sendSeededListingEmail`,
         {
