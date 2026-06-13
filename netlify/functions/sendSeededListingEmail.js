@@ -1,8 +1,38 @@
 import { Resend } from "resend";
+import admin from "firebase-admin";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ======================================
+// FIREBASE INIT
+// ======================================
+
+if (!admin.apps.length) {
+
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(
+        /\\n/g,
+        "\n"
+      )
+    })
+  });
+
+}
+
+const db = admin.firestore();
+
+// ======================================
+// RESEND
+// ======================================
+
+const resend = new Resend(
+  process.env.RESEND_API_KEY
+);
 
 export async function handler(event) {
+
+  let logRef = null;
 
   try {
 
@@ -27,7 +57,6 @@ export async function handler(event) {
 
     // ======================================
     // SAFE-HOUR SCHEDULING
-    // 9AM → 8PM
     // ======================================
 
     const now = new Date();
@@ -42,11 +71,56 @@ export async function handler(event) {
       sendTime.setHours(9, 0, 0, 0);
 
       if (hour >= 20) {
-        sendTime.setDate(sendTime.getDate() + 1);
+        sendTime.setDate(
+          sendTime.getDate() + 1
+        );
       }
 
-      scheduledAt = sendTime.toISOString();
+      scheduledAt =
+        sendTime.toISOString();
     }
+
+    // ======================================
+    // CREATE FIRESTORE LOG
+    // ======================================
+
+    logRef = await db
+      .collection("emailLogs")
+      .add({
+
+        type: "business-added",
+
+        status: scheduledAt
+          ? "scheduled"
+          : "sending",
+
+        createdAt:
+          admin.firestore.FieldValue.serverTimestamp(),
+
+        updatedAt:
+          admin.firestore.FieldValue.serverTimestamp(),
+
+        recipient: email,
+
+        name: name || "",
+
+        businessName:
+          businessName || "",
+
+        slug: slug || "",
+
+        townSlug:
+          townSlug || "",
+
+        categorySlug:
+          categorySlug || "",
+
+        listingUrl,
+
+        scheduledAt:
+          scheduledAt || null
+
+      });
 
     // ======================================
     // EMAIL TEMPLATE
@@ -480,6 +554,7 @@ body{
 </html>
 `;
 
+
     // ======================================
     // REPLACE VARIABLES
     // ======================================
@@ -510,21 +585,42 @@ body{
     // SEND EMAIL
     // ======================================
 
-    await resend.emails.send({
+    const resendResponse =
+      await resend.emails.send({
 
-      from:
-        "RCTX Directory <support@rctx.co.uk>",
+        from:
+          "RCTX Directory <support@rctx.co.uk>",
 
-      to: email,
+        to: email,
 
-      subject:
-        `We've added ${businessName} to RCTX 👋`,
+        subject:
+          `We've added ${businessName} to RCTX 👋`,
 
-      html: finalHtml,
+        html: finalHtml,
 
-      ...(scheduledAt && {
-        scheduled_at: scheduledAt
-      })
+        ...(scheduledAt && {
+          scheduled_at: scheduledAt
+        })
+
+      });
+
+    // ======================================
+    // UPDATE SUCCESS LOG
+    // ======================================
+
+    await logRef.update({
+
+      status: scheduledAt
+        ? "scheduled"
+        : "sent",
+
+      resendId:
+        resendResponse.data?.id || null,
+
+      resendResponse,
+
+      updatedAt:
+        admin.firestore.FieldValue.serverTimestamp()
 
     });
 
@@ -533,8 +629,16 @@ body{
       statusCode: 200,
 
       body: JSON.stringify({
+
         success: true,
-        message: "Email sent or scheduled"
+
+        message:
+          scheduledAt
+            ? "Email scheduled"
+            : "Email sent",
+
+        logId: logRef.id
+
       })
 
     };
@@ -546,13 +650,70 @@ body{
       err
     );
 
+    // ======================================
+    // UPDATE FAILED LOG
+    // ======================================
+
+    if (logRef) {
+
+      await logRef.update({
+
+        status: "failed",
+
+        error: err.message,
+
+        errorStack:
+          err.stack || null,
+
+        updatedAt:
+          admin.firestore.FieldValue.serverTimestamp()
+
+      });
+
+    } else {
+
+      // If logging failed before logRef existed
+      try {
+
+        await db
+          .collection("emailLogs")
+          .add({
+
+            type: "business-added",
+
+            status: "failed",
+
+            error: err.message,
+
+            errorStack:
+              err.stack || null,
+
+            createdAt:
+              admin.firestore.FieldValue.serverTimestamp()
+
+          });
+
+      } catch (firestoreErr) {
+
+        console.error(
+          "FIRESTORE LOG ERROR:",
+          firestoreErr
+        );
+
+      }
+
+    }
+
     return {
 
       statusCode: 500,
 
       body: JSON.stringify({
+
         success: false,
+
         error: err.message
+
       })
 
     };
