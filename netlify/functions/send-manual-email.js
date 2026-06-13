@@ -8,12 +8,12 @@ exports.handler = async () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        name: "Purple Shoots Shop",
-        email: "shop@purpleshoots.co.uk",
-        businessName: "Purple Shoots Shop",
-        slug: "purple-shoots-shop",
-        townSlug: "pontypridd",
-        categorySlug: "shops"
+        name: "Gems Fades Barber Shop",
+        email: "gemsfades@gmail.com",
+        businessName: "Gems Fades Barber Shop",
+        slug: "gems-fades-barber-shop",
+        townSlug: "ystrad",
+        categorySlug: "barbers"
       })
     }
   );
