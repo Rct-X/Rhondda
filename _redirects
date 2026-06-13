@@ -6,19 +6,6 @@ http://www.rctx.co.uk/*   https://rctx.co.uk/:splat   301!
 https://www.rctx.co.uk/*  https://rctx.co.uk/:splat   301!
 
 # =========================================
-# BOT-ONLY OG ROUTES
-# =========================================
-/directory/:category/:town/:slug  
-  /.netlify/functions/og-listing?category=:category&town=:town&slug=:slug  
-  200  
-  User-Agent=facebookexternalhit,Facebot,Slackbot,Twitterbot,LinkedInBot,WhatsApp,Discordbot,Googlebot,bingbot
-
-/og/:slug  
-  /.netlify/functions/og-image?slug=:slug  
-  200  
-  User-Agent=facebookexternalhit,Facebot
-
-# =========================================
 # SITEMAP
 # =========================================
 /sitemap.xml   /.netlify/functions/sitemap   200
@@ -27,6 +14,21 @@ https://www.rctx.co.uk/*  https://rctx.co.uk/:splat   301!
 # ROBOTS
 # =========================================
 /robots.txt    /robots.txt   200
+
+# =========================================
+# OG FUNCTION FOR BOTS ONLY
+# (Facebook, WhatsApp, LinkedIn, Twitter, Slack, Discord, Googlebot, Bingbot)
+# =========================================
+/directory/:category/:town/:slug  
+  /.netlify/functions/og-listing?category=:category&town=:town&slug=:slug  
+  200  
+  User-Agent=facebookexternalhit,Facebot,Slackbot,Twitterbot,LinkedInBot,WhatsApp,Discordbot,Googlebot,bingbot
+
+# OG IMAGE (BOTS ONLY)
+/og/:slug  
+  /.netlify/functions/og-image?slug=:slug  
+  200  
+  User-Agent=facebookexternalhit,Facebot
 
 # =========================================
 # HUMAN SPA ROUTES
