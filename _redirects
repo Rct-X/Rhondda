@@ -16,3 +16,5 @@ https://www.rctx.co.uk/*  https://rctx.co.uk/:splat   301!
 
 # Category + directory pages
 /directory/*   /directory.html   200
+
+/website-pricing.html   /pricing 301
