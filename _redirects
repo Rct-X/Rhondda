@@ -5,16 +5,36 @@ http://rctx.co.uk/*       https://rctx.co.uk/:splat   301!
 http://www.rctx.co.uk/*   https://rctx.co.uk/:splat   301!
 https://www.rctx.co.uk/*  https://rctx.co.uk/:splat   301!
 
-# Sitemap
+# =========================================
+# BOT-ONLY OG ROUTES
+# =========================================
+/directory/:category/:town/:slug  
+  /.netlify/functions/og-listing?category=:category&town=:town&slug=:slug  
+  200  
+  User-Agent=facebookexternalhit,Facebot,Slackbot,Twitterbot,LinkedInBot,WhatsApp,Discordbot,Googlebot,bingbot
+
+/og/:slug  
+  /.netlify/functions/og-image?slug=:slug  
+  200  
+  User-Agent=facebookexternalhit,Facebot
+
+# =========================================
+# SITEMAP
+# =========================================
 /sitemap.xml   /.netlify/functions/sitemap   200
 
-# Robots
+# =========================================
+# ROBOTS
+# =========================================
 /robots.txt    /robots.txt   200
 
-# Business page (SPA route)
+# =========================================
+# HUMAN SPA ROUTES
+# =========================================
 /directory/:category/:town/:slug   /directory/business.html   200
+/directory/*                       /directory.html            200
 
-# Category + directory pages
-/directory/*   /directory.html   200
-
+# =========================================
+# OTHER
+# =========================================
 /website-pricing.html   /pricing 301
