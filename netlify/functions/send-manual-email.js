@@ -1,14 +1,45 @@
-await fetch("/.netlify/functions/sendSeededListingEmail", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    name: business.name,
-    email: business.email,
-    businessName: business.businessName,
-    slug: business.slug,
-    townSlug: business.townSlug,
-    categorySlug: business.categorySlug
-  })
-});
+// /.netlify/functions/manualResend.js
+
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+exports.handler = async () => {
+
+  try {
+
+    const html = `PASTE YOUR FULL HTML HERE`;
+
+    const response = await resend.emails.send({
+
+      from: "RCTX Directory <support@rctx.co.uk>",
+
+      to: "stephenprice.plumber@googlemail.com",
+
+      subject: "We've added Stephen Price Building & Plumbing Service to RCTX 👋",
+
+      html
+
+    });
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        response
+      })
+    };
+
+  } catch (err) {
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        success: false,
+        error: err.message
+      })
+    };
+
+  }
+
+};
