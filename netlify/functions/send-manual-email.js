@@ -1,16 +1,34 @@
-///manual EMAILS////
 const Resend = require("resend").Resend;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.handler = async (event) => {
   try {
-    const { email, name, businessName, slug } = JSON.parse(event.body);
+    const {
+      name,
+      email,
+      businessName,
+      slug,
+      townSlug,
+      categorySlug
+    } = JSON.parse(event.body);
+
+    const listingUrl = `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${slug}`;
+    const unsubscribeUrl = `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
+
+    // Load your full HTML template here (same as original)
+    const htmlTemplate = `YOUR FULL TEMPLATE HERE`;
+
+    const finalHtml = htmlTemplate
+      .replace(/{{name}}/g, name || "Business Owner")
+      .replace(/{{businessName}}/g, businessName || "Your Business")
+      .replace(/{{listingUrl}}/g, listingUrl)
+      .replace(/{{unsubscribeUrl}}/g, unsubscribeUrl);
 
     const result = await resend.emails.send({
-      from: "RCTX <support@rctx.co.uk>",
+      from: "RCTX Directory <support@rctx.co.uk>",
       to: email,
-      subject: `Manual retry for ${businessName}`,
-      html: `<p>Hello ${name}, this is a manual retry for ${businessName} (${slug}).</p>`
+      subject: `We've added ${businessName} to RCTX 👋`,
+      html: finalHtml
     });
 
     return {
