@@ -1,0 +1,268 @@
+/* ======================================
+   EMAIL LOGS MODULE
+====================================== */
+
+.panel-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #111827;
+}
+
+/* ======================================
+   FILTERS
+====================================== */
+
+.email-filters {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.25rem;
+  scrollbar-width: none;
+}
+
+.email-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-btn {
+  border: none;
+  background: #f3f4f6;
+  color: #374151;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: #111827;
+  color: white;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.12);
+}
+
+/* ======================================
+   LIST
+====================================== */
+
+.email-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ======================================
+   ROW CARD
+====================================== */
+
+.email-row {
+  background: white;
+  border-radius: 18px;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.email-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+/* ======================================
+   MAIN INFO
+====================================== */
+
+.email-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.email-to {
+  font-size: 1rem;
+  color: #111827;
+  word-break: break-word;
+}
+
+.email-subject {
+  font-size: 0.92rem;
+  color: #6b7280;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.email-status {
+  margin-top: 0.25rem;
+}
+
+/* ======================================
+   BADGES
+====================================== */
+
+.email-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.38rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+/* COLORS */
+
+.email-badge.gray {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.email-badge.blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.email-badge.purple {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.email-badge.green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.email-badge.teal {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.email-badge.orange {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.email-badge.red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ======================================
+   META
+====================================== */
+
+.email-meta {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.email-meta strong {
+  color: #111827;
+}
+
+/* ======================================
+   ERROR
+====================================== */
+
+.email-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 0.8rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* ======================================
+   ACTIONS
+====================================== */
+
+.email-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.retry-btn {
+  border: none;
+  background: #111827;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+.retry-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.retry-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ======================================
+   EMPTY + LOADING
+====================================== */
+
+.empty,
+.loading {
+  background: white;
+  border: 1px dashed #d1d5db;
+  border-radius: 16px;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* ======================================
+   DESKTOP
+====================================== */
+
+@media (min-width: 768px) {
+
+  .email-row {
+    padding: 1.25rem;
+  }
+
+  .email-main {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .email-meta {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  }
