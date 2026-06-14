@@ -41,11 +41,13 @@
     transform: scale(0.95);
 }
 /* Word-by-word animation */
-.reveal-words span {
-    opacity: 0;
-    transform: translateY(6px);
-    display: inline-block;
-    animation: wordFade 0.45s forwards;
+.reveal-words span{
+    opacity:0;
+    transform:translateY(6px);
+    display:inline-block;
+
+    animation:wordFade .45s forwards;
+    animation-play-state:paused;
 }
 
 @keyframes wordFade {
