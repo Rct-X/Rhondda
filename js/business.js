@@ -1,10 +1,3 @@
-// ======================================
-// BUSINESS PAGE SCRIPT (IMPROVED)
-// ======================================
-
-// ===============================
-// FETCH FIREBASE CONFIG
-// ===============================
 async function loadFirebaseConfig() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
@@ -272,7 +265,7 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     `;
   }
 
-  if (b.ownerId) {
+  if (b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup") {
     document.getElementById("claimedBadge").innerHTML += `
       <span class="badge badge-claimed">Claimed</span>
     `;
