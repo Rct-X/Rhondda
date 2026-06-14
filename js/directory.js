@@ -65,7 +65,9 @@ function renderBusinessCard(b) {
     <h3>
       ${b.name}
       ${b.verified ? `<span class="badge badge-verified">Verified</span>` : ""}
-      ${b.ownerId ? `<span class="badge badge-claimed">Claimed</span>` : ""}
+      ${(b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup")
+        ? `<span class="badge badge-claimed">Claimed</span>`
+        : ""}
     </h3>
     <p class="text-dim">${b.category} • ${b.town}</p>
   `;
@@ -74,7 +76,7 @@ function renderBusinessCard(b) {
 }
 
 // ===============================
-// LOAD CATEGORY
+// LOAD CATEGORY (RANDOMISED)
 // ===============================
 async function loadCategory(categorySlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug}…</p>`;
@@ -93,12 +95,18 @@ async function loadCategory(categorySlug) {
     return;
   }
 
+  // Convert to array + shuffle
+  let results = [];
+  snap.forEach(doc => results.push(doc.data()));
+  results.sort(() => Math.random() - 0.5);
+
+  // Render
   resultsGrid.innerHTML = "";
-  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
+  results.forEach(b => resultsGrid.appendChild(renderBusinessCard(b)));
 }
 
 // ===============================
-// LOAD CATEGORY + TOWN
+// LOAD CATEGORY + TOWN (RANDOMISED)
 // ===============================
 async function loadCategoryTown(categorySlug, townSlug) {
   resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
@@ -118,12 +126,18 @@ async function loadCategoryTown(categorySlug, townSlug) {
     return;
   }
 
+  // Convert to array + shuffle
+  let results = [];
+  snap.forEach(doc => results.push(doc.data()));
+  results.sort(() => Math.random() - 0.5);
+
+  // Render
   resultsGrid.innerHTML = "";
-  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
+  results.forEach(b => resultsGrid.appendChild(renderBusinessCard(b)));
 }
 
 // ===============================
-// SEARCH DIRECTORY
+// SEARCH DIRECTORY (RANDOMISED)
 // ===============================
 async function searchDirectory() {
   const term = searchInput.value.trim().toLowerCase();
@@ -145,8 +159,14 @@ async function searchDirectory() {
     return;
   }
 
+  // Convert to array + shuffle
+  let results = [];
+  snap.forEach(doc => results.push(doc.data()));
+  results.sort(() => Math.random() - 0.5);
+
+  // Render
   resultsGrid.innerHTML = "";
-  snap.forEach(doc => resultsGrid.appendChild(renderBusinessCard(doc.data())));
+  results.forEach(b => resultsGrid.appendChild(renderBusinessCard(b)));
 }
 
 // ===============================
