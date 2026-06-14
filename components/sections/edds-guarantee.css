@@ -1,0 +1,56 @@
+.guarantee-section {
+    background: #f1f5f9;
+    padding: 80px 0;
+    text-align: center;
+}
+.quote-box {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    border-left: 4px solid #2563eb; /* Blue accent line */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.quote-text {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #0f172a; /* Dark slate text */
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+.quote-author {
+    font-weight: 700;
+    color: #64748b; /* Muted gray text */
+}
+/* Clickable mobile-friendly badge */
+.chat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+.chat-badge:active {
+    transform: scale(0.95);
+}
+/* Word-by-word animation */
+.reveal-words span {
+    opacity: 0;
+    transform: translateY(6px);
+    display: inline-block;
+    animation: wordFade 0.45s forwards;
+}
+
+@keyframes wordFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
