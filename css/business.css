@@ -328,3 +328,14 @@
     margin-top: 0;
   }
 }
+.claimed-note {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: #e8f7e8;
+  border-left: 4px solid #2ecc71;
+  color: #236b3f;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  border-radius: 4px;
+  font-weight: 500;
+}
