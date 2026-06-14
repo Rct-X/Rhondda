@@ -425,6 +425,8 @@ module.exports = {
     "driving school"
   ],
 
+  "Sweet Treats": [
+  ],
   // =========================
   // ELECTRICIANS
   // =========================
