@@ -935,12 +935,17 @@ async function loadGuaranteeSection(){
 
     document.getElementById("guarantee-snippet").innerHTML = html;
 
+    // LOAD JS AFTER HTML EXISTS
+    const script = document.createElement("script");
+
+    script.src = "/components/sections/edds-guarantee.js";
+
+    document.body.appendChild(script);
+
 }
 
 loadGuaranteeSection();
-</script>
-
-<script src="/components/sections/edds-guarantee.js" defer></script>
+ </script>
     <script>
 window.RCTX_CLIENT_ID = "-MAIN SITE-";
 </script>
