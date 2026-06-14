@@ -300,13 +300,13 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   // CLAIM BUTTON
   // ===============================
   const claimBtn = document.getElementById("claimBtn");
-  if (claimBtn) {
-    if (b.ownerId) {
-      claimBtn.style.display = "none";
-    } else {
-      claimBtn.href = `/claim-business?b=${b.slug}`;
-    }
+if (claimBtn) {
+  if (b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup") {
+    claimBtn.style.display = "none";
+  } else {
+    claimBtn.href = `/claim-business?b=${b.slug}`;
   }
+}
 
   // ===============================
   // RELATED BUSINESSES
