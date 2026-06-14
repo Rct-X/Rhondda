@@ -13,7 +13,9 @@ module.exports = {
     "vat return",
     "tax advisor"
   ],
-
+  
+  "Appliance Repairs": [
+  ],
   // =========================
   // AERIAL INSTALLERS
   // =========================
