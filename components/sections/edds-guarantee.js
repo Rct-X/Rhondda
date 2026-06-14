@@ -1,25 +1,37 @@
-document.addEventListener("DOMContentLoaded", () => {
+const el = document.querySelector(".reveal-words");
 
-    const el = document.querySelector(".reveal-words");
+if(el){
 
-    if(!el) return;
+    const originalText = el.innerText.trim();
 
-    const text = el.innerText.trim().split(" ");
+    const words = originalText.split(" ");
 
-    el.innerHTML = text.map((word, i) =>
+    el.innerHTML = words.map((word, i) =>
         `<span style="animation-delay:${i * 0.08}s">${word}&nbsp;</span>`
     ).join("");
 
-    const observer = new IntersectionObserver(entries => {
+    const spans = el.querySelectorAll("span");
+
+    spans.forEach(span => {
+        span.style.animationPlayState = "paused";
+    });
+
+    const observer = new IntersectionObserver((entries) => {
 
         if(entries[0].isIntersecting){
+
+            spans.forEach(span => {
+                span.style.animationPlayState = "running";
+            });
 
             observer.disconnect();
 
         }
 
+    }, {
+        threshold: 0.3
     });
 
     observer.observe(el);
 
-});
+}
