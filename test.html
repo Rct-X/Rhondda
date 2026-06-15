@@ -248,21 +248,31 @@ HERO
 ========================================= */
 
 .hero {
-  padding: 70px 0;
+  position: relative;
+  padding: 80px 0;
   text-align: center;
-  background: radial-gradient(circle at top right, #f0f7ff 0%, #fff 60%);
-  content-visibility: auto;
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,102,204,0.18), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(59,130,246,0.18), transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -200px;
+  background: radial-gradient(circle, rgba(0,102,204,0.12), transparent 60%);
+  animation: floatGlow 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
+
 .badge {
-  display: inline-block;
-  background: #e0f2fe;
-  color: #0369a1;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  border: 1px solid rgba(0,102,204,0.15);
+  box-shadow: 0 6px 18px rgba(0,102,204,0.08);
 }
 
 .hero h1 {
@@ -289,8 +299,13 @@ HERO
   display: inline-block;
   padding: 10px 18px;
   border-radius: var(--radius);
-  background: var(--bg-light);
-  border: 1px solid var(--secondary);
+
+  /* NEW GLASS STYLE */
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+
   margin-bottom: 28px;
 }
 
@@ -333,102 +348,10 @@ BUTTONS
   background: transparent;
 }
 
-/* =========================================
-TRUST BAR
-========================================= */
-
-.trust-bar {
-  background: var(--bg-light);
-  border-top: 1px solid var(--secondary);
-  border-bottom: 1px solid var(--secondary);
-  padding: 14px 0;
-}
-
-.checklist {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-/* =========================================
-ABOUT
-========================================= */
-
-.about-section {
-  padding: 70px 0;
-}
-
-.about-inner {
-  max-width: 800px;
-  margin-bottom: 30px;
-}
-
-.about-section h2 {
-  font-size: 2rem;
-  margin-bottom: 16px;
-}
-
-.about-section p {
-  color: var(--text-muted);
-}
-
-/* =========================================
-URGENCY CARD
-========================================= */
-
-.urgency-card {
-  max-width: 800px;
-  padding: 18px;
-  border-left: 4px solid var(--primary);
-  background: #f8fafc;
-  border-radius: 0 var(--radius) var(--radius) 0;
-}
-
-/* =========================================
-FEATURES SECTION (OPTIMISED MOBILE)
-========================================= */
-
-.features {
-  padding: 60px 0;
-  background: linear-gradient(180deg, #f8fafc, #fff);
-}
-
-.section-heading {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto 30px;
-}
-
-.section-badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #dbeafe;
-  color: #1e40af;
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
 
 
 
-/* CARD */
-.feature-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
-}
 
-/* disable heavy hover on mobile devices */
-@media (hover: hover) {
-  .feature-card:hover {
-    transform: translateY(-2px);
-    transition: 0.2s ease;
-  }
-}
 
 /* =========================================
 MOBILE OPTIMISATION (IMPORTANT)
@@ -1178,4 +1101,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-          </html>
+</html>
