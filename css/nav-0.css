@@ -1,4 +1,4 @@
-    /* =========================================
+/* =========================================
    NAVBAR
 ========================================= */
 
@@ -26,7 +26,7 @@
 }
 
 /* =========================================
-   LOGO
+   LOGO (Fixed Underline Bug & Enhanced Style)
 ========================================= */
 
 .logo-wrap {
@@ -38,6 +38,9 @@
 
   position: relative;
   z-index: 1002;
+  
+  /* Removes any accidental text underlines from parent anchor links */
+  text-decoration: none !important; 
 }
 
 .logo {
@@ -52,6 +55,10 @@
   letter-spacing: -0.05em;
 
   color: var(--text-main);
+  
+  /* Ensures no text underlines show beneath the logo text */
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 .logo span {
@@ -63,10 +70,13 @@
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  
+  /* Ensures gradient text doesn't accidentally inherit decoration styles */
+  text-decoration: none !important;
 }
 
 .logo-tag {
-  margin-top: 4px;
+  margin-top: 6px;
   padding-left: 2px;
 
   font-size: 0.68rem;
@@ -76,6 +86,9 @@
   text-transform: uppercase;
 
   color: var(--text-light);
+  
+  /* Keeps the sub-tag text clean */
+  text-decoration: none !important;
 }
 
 /* =========================================
@@ -163,6 +176,7 @@
   font-weight: 500;
 
   color: var(--text-main);
+  text-decoration: none;
 
   transition: all 0.15s ease;
 }
@@ -189,6 +203,7 @@
   font-weight: 500;
 
   color: var(--text-muted);
+  text-decoration: none;
 
   transition: color 0.2s ease;
 }
@@ -196,7 +211,8 @@
 .owner-login-link:hover {
   color: var(--primary);
 }
-    /* =========================================
+
+/* =========================================
    HAMBURGER
 ========================================= */
 
@@ -288,7 +304,7 @@
   }
 
   .logo-tag {
-    margin-top: 3px;
+    margin-top: 4px;
 
     font-size: 0.62rem;
     letter-spacing: 0.14em;
@@ -389,3 +405,4 @@
   .nav-cta .btn {
     width: 100%;
   }
+}
