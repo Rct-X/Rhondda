@@ -435,6 +435,7 @@ MOBILE — SWIPE CAROUSEL
     gap: 14px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     padding: 4px 20px 20px 20px;
     scrollbar-width: none;
@@ -448,7 +449,7 @@ MOBILE — SWIPE CAROUSEL
   .feature-card {
     flex: 0 0 80vw;
     min-width: 80vw;
-    scroll-snap-align: center;
+    scroll-snap-align: start;
     padding: 24px;
     border-radius: 18px;
   transform: translateZ(0);
@@ -463,4 +464,4 @@ MOBILE — SWIPE CAROUSEL
 @keyframes pulseArrow {
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(4px); }
-      }
+}
