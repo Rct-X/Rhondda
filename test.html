@@ -47,8 +47,17 @@
 <!-- Favicons -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/css/nav-0.css">
-<link rel="stylesheet" href="/css/main.css">
+<link
+  rel="preload"
+  href="/css/nav-0.css"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'"
+>
+
+<noscript>
+  <link rel="stylesheet" href="/css/nav-0.css">
+</noscript>
+<link rel="stylesheet" href="/css/main2.css">
 <link
   rel="preload"
   href="/components/sections/edds-guarantee.css"
@@ -192,200 +201,300 @@
 }
 </script>
 <style>
-    /* Global Reset & Variables */
+  /* =========================================
+GLOBAL RESET + VARIABLES
+========================================= */
+
 :root {
-    --primary: #0066cc;
-    --primary-hover: #0052a3;
-    --secondary: #e2e8f0;
-    --secondary-hover: #cbd5e1;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --bg-light: #f8fafc;
-    --white: #ffffff;
-    --radius: 8px;
-    --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --primary: #0066cc;
+  --primary-hover: #0052a3;
+
+  --secondary: #e2e8f0;
+  --secondary-hover: #cbd5e1;
+
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+
+  --bg-light: #f8fafc;
+  --white: #ffffff;
+
+  --radius: 10px;
+
+  --font: system-ui, -apple-system, BlinkMacSystemFont,
+           "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
+/* RESET */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
-    font-family: var(--font);
-    color: var(--text-main);
-    line-height: 1.6;
-    background-color: var(--white);
+  font-family: var(--font);
+  color: var(--text-main);
+  line-height: 1.6;
+  background: var(--white);
 }
+/* =========================================
+HERO
+========================================= */
 
-.container {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Hero Section */
 .hero {
-    padding: 80px 0;
-    background: radial-gradient(circle at top right, #f0f7ff 0%, var(--white) 60%);
-    text-align: center;
+  padding: 70px 0;
+  text-align: center;
+  background: radial-gradient(circle at top right, #f0f7ff 0%, #fff 60%);
+  content-visibility: auto;
 }
 
 .badge {
-    display: inline-block;
-    background-color: #e0f2fe;
-    color: #0369a1;
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 24px;
+  display: inline-block;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .hero h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 16px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
 }
 
 .hero h1 .sub-hd {
-    display: block;
-    color: var(--primary);
-    font-size: 2.25rem;
-    font-weight: 700;
+  display: block;
+  color: var(--primary);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 700;
 }
 
 .hero-lead {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    max-width: 700px;
-    margin: 0 auto 24px auto;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 16px auto 24px;
 }
 
 .hero-price {
-    font-size: 1.125rem;
-    color: var(--text-main);
-    background-color: var(--bg-light);
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: var(--radius);
-    margin-bottom: 32px;
-    border: 1px solid var(--secondary);
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  background: var(--bg-light);
+  border: 1px solid var(--secondary);
+  margin-bottom: 28px;
 }
 
-/* Buttons */
+/* =========================================
+BUTTONS
+========================================= */
+
 .hero-btns {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .btn {
-    display: inline-block;
-    padding: 12px 28px;
-    border-radius: var(--radius);
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    font-size: 1rem;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s ease;
 }
 
 .btn-primary {
-    background-color: var(--primary);
-    color: var(--white);
+  background: var(--primary);
+  color: #fff;
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
+  background: var(--primary-hover);
 }
 
 .btn-secondary {
-    background-color: var(--secondary);
-    color: var(--text-main);
-}
-
-.btn-secondary:hover {
-    background-color: var(--secondary-hover);
-    transform: translateY(-1px);
+  background: var(--secondary);
+  color: var(--text-main);
 }
 
 .btn-tertiary {
-    background-color: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
 }
 
-.btn-tertiary:hover {
-    background-color: #f0f7ff;
-}
+/* =========================================
+TRUST BAR
+========================================= */
 
-/* Trust Bar / Checklist */
 .trust-bar {
-    background-color: var(--bg-light);
-    border-top: 1px solid var(--secondary);
-    border-bottom: 1px solid var(--secondary);
-    padding: 16px 0;
+  background: var(--bg-light);
+  border-top: 1px solid var(--secondary);
+  border-bottom: 1px solid var(--secondary);
+  padding: 14px 0;
 }
 
 .checklist {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-    font-weight: 500;
-    color: #0f172a;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
 }
 
-/* About Section */
+/* =========================================
+ABOUT
+========================================= */
+
 .about-section {
-    padding: 80px 0;
+  padding: 70px 0;
 }
 
 .about-inner {
-    max-width: 800px;
-    margin-bottom: 40px;
+  max-width: 800px;
+  margin-bottom: 30px;
 }
 
 .about-section h2 {
-    font-size: 2.25rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: -0.02em;
+  font-size: 2rem;
+  margin-bottom: 16px;
 }
 
 .about-section p {
-    font-size: 1.125rem;
-    color: var(--text-muted);
+  color: var(--text-muted);
 }
 
-/* Urgency / Personal Bio Card */
+/* =========================================
+URGENCY CARD
+========================================= */
+
 .urgency-card {
-    background-color: #f8fafc;
-    border-left: 4px solid var(--primary);
-    padding: 20px;
-    border-radius: 0 var(--radius) var(--radius) 0;
-    max-width: 800px;
+  max-width: 800px;
+  padding: 18px;
+  border-left: 4px solid var(--primary);
+  background: #f8fafc;
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 
-.urgency-card p {
-    font-size: 1rem;
-    color: var(--text-main);
+/* =========================================
+FEATURES SECTION (OPTIMISED MOBILE)
+========================================= */
+
+.features {
+  padding: 60px 0;
+  background: linear-gradient(180deg, #f8fafc, #fff);
 }
 
-/* Responsive adjustments */
+.section-heading {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 30px;
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* GRID (desktop) */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* CARD */
+.feature-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+}
+
+/* disable heavy hover on mobile devices */
+@media (hover: hover) {
+  .feature-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s ease;
+  }
+}
+
+/* =========================================
+MOBILE OPTIMISATION (IMPORTANT)
+========================================= */
+
+.swipe-indicator {
+  display: none;
+}
+
 @media (max-width: 768px) {
-    .hero h1 { font-size: 2.25rem; }
-    .hero h1 .sub-hd { font-size: 1.75rem; }
-    .hero { padding: 48px 0; }
-    .checklist { flex-direction: column; gap: 12px; align-items: flex-start; }
-    .hero-btns { flex-direction: column; width: 100%; }
-    .btn { text-align: center; width: 100%; }
+
+  .hero { padding: 50px 0; }
+
+  /* IMPORTANT FIX: no container reset */
+  .container {
+    padding: 0 20px;
+  }
+}
+
+.projects-grid {
+  display: grid !important;
+  overflow: visible !important;
+  scroll-snap-type: none !important;
+}
+
+  .features-grid {
+    display: block;
+  }
+
+  .feature-card {
+    margin-bottom: 14px;
+  }
+
+  /* remove animation cost on mobile */
+  .fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* =========================================
+LIGHTWEIGHT ANIMATION (DESKTOP ONLY)
+========================================= */
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: 0.6s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+FOOTER SPACING SAFETY
+========================================= */
+
+footer {
+  margin-top: 20px;
 }
 </style>
 </head>
@@ -506,53 +615,19 @@ body {
         </div>
     </div>
 </section>
+<section class="mega-hero-tight reveal-section">
+  <div class="hero-bg"></div>
 
-<section id="pricing" class="pricing">
-  <div class="container">
+  <div class="hero-wrapper-tight">
+    <p class="fancy-reveal">Welcome to</p>
 
-    <div class="pricing-intro">
-      <h2>Simple Monthly Pricing</h2>
+    <h1 class="brand-reveal" id="revealTitle">rctx web design</h1>
 
-      <p>
-        No fuss, no jargon — just a tidy monthly plan that covers everything:
-        your design, hosting, updates, support and full setup handled for you.
-      </p>
-
-      <div class="who-for">
-        <strong>Perfect for:</strong>
-        <p>Barbers • Cafes • Trades • Local shops</p>
-        <p class="who-sub">
-          And spot‑on for holiday lets, Airbnb hosts and van services wanting more direct bookings.
-        </p>
-      </div>
-
-      <p class="mt-1 text-dim">
-        Built for local businesses across the Rhondda who want a proper, professional online presence.
-      </p>
-    </div>
-
-    <div class="local-note mb-2">
-      <strong>Simple pricing. No hidden costs.</strong><br><br>
-      ✔ £50 one‑time setup<br>
-      ✔ Hosting, domain & support included<br>
-      ✔ Monthly plan only starts once your site is live
-    </div>
-
-    <div class="pricing-preview">
-      <h3>From just £30/month</h3>
-      <p>
-        Affordable, local web design — built for small businesses across Rhondda Cynon Taf who want results without the agency price tag.
-      </p>
-      <a href="/pricing.html" class="btn btn-primary">View Full Pricing</a>
-    </div>
-
-    <div class="support-badge">
-      Supporting Local Businesses
-    </div>
-
+    <p class="mission-reveal">Helping the Rhondda get online</p>
   </div>
 </section>
-    <section class="features">
+
+<section class="features">
   <div class="container">
 
     <div class="section-heading">
@@ -751,6 +826,53 @@ body {
   </div>
 </section>
 
+<section id="pricing" class="pricing">
+  <div class="container">
+
+    <div class="pricing-intro">
+      <h2>Simple Monthly Pricing</h2>
+
+      <p>
+        No fuss, no jargon — just a tidy monthly plan that covers everything:
+        your design, hosting, updates, support and full setup handled for you.
+      </p>
+
+      <div class="who-for">
+        <strong>Perfect for:</strong>
+        <p>Barbers • Cafes • Trades • Local shops</p>
+        <p class="who-sub">
+          And spot‑on for holiday lets, Airbnb hosts and van services wanting more direct bookings.
+        </p>
+      </div>
+
+      <p class="mt-1 text-dim">
+        Built for local businesses across the Rhondda who want a proper, professional online presence.
+      </p>
+    </div>
+
+    <div class="local-note mb-2">
+      <strong>Simple pricing. No hidden costs.</strong><br><br>
+      ✔ £50 one‑time setup<br>
+      ✔ Hosting, domain & support included<br>
+      ✔ Monthly plan only starts once your site is live
+    </div>
+
+    <div class="pricing-preview">
+      <h3>From just £30/month</h3>
+      <p>
+        Affordable, local web design — built for small businesses across Rhondda Cynon Taf who want results without the agency price tag.
+      </p>
+      <a href="/pricing.html" class="btn btn-primary">View Full Pricing</a>
+    </div>
+
+    <div class="support-badge">
+      Supporting Local Businesses
+    </div>
+
+  </div>
+</section>
+
+
 <section class="directory-community">
   <div class="container">
 
@@ -759,15 +881,15 @@ body {
       <h2>Rhondda Local Business Directory</h2>
 
       <p class="directory-intro">
-        We’re putting together a simple, free directory to help people around the
-        Rhondda find trusted local businesses — from trades and cafés to man‑with‑a‑van
-        services, shops and holiday lets.
+        We’re putting together a simple, free directory to help people across the
+        Rhondda find proper local businesses — from trades and cafés to man‑with‑a‑van
+        services, shops and holiday lets. All the stuff people actually need day‑to‑day.
       </p>
 
       <p>
-        Whether you’re looking for someone local or you want your own business
-        to get seen more, the directory makes it easy for the community to find
-        and support the businesses that keep the Valleys moving.
+        Whether you’re looking for someone nearby or you want your own business
+        to get seen a bit more, the directory makes it easy for local people to
+        find, trust and support the businesses that keep the Valleys going.
       </p>
 
       <div class="directory-actions">
@@ -788,25 +910,7 @@ body {
 
 </section>
 
-    <section class="website-audit-promo">
-    <div class="container">
 
-        <span class="audit-badge">
-    FREE WEBSITE AUDIT
-        </span>
-
-        <h2>Free Website Health Check</h2>
-
-        <p>
-            Already have a website? Find out how it performs for SEO, speed and conversions.
-        </p>
-
-        <a href="/website-checker" class="btn btn-primary">
-            Check My Website
-        </a>
-
-    </div>
-    </section>
     <div id="guarantee-snippet"></div>
 
 <section id="faq" class="faq container">  
@@ -1060,53 +1164,7 @@ body {
     </div>
 
 </footer>
-<!-- STICKY CONTACT BAR -->
-  <div class="sticky-contact-label">
-  Need help? Contact Eddie today
-</div>
-<div class="sticky-contact-bar">
-    <a
-        href="tel:+447434745240"
-        class="sticky-btn call-btn"
-        aria-label="Call RCTX">
 
-        <svg class="sticky-icon" aria-hidden="true">
-            <use href="/assets/icons.svg#icon-phone"></use>
-        </svg>
-
-        Call
-
-    </a>
-
-    <!-- WHATSAPP -->
-    <a
-        href="https://wa.me/447434745240"
-        class="sticky-btn whatsapp-btn"
-        aria-label="Message RCTX on WhatsApp">
-
-        <svg class="sticky-icon whatsapp-icon" aria-hidden="true">
-            <use href="/assets/icons.svg#icon-whatsapp"></use>
-        </svg>
-
-        WhatsApp
-
-    </a>
-
-    <!-- EMAIL -->
-    <a
-        href="/contact"
-        class="sticky-btn email-btn"
-        aria-label="Go to enquiry form">
-
-        <svg class="sticky-icon" aria-hidden="true">
-            <use href="/assets/icons.svg#icon-email"></use>
-        </svg>
-
-        Enquire
-
-    </a>
-
-</div>
 <script defer src="/js/footer-nav-faq.js"></script>
 <script defer src="/components/sections/edds-guarantee.js"></script>
     <script>
@@ -1115,4 +1173,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-              </html>
+</html>
