@@ -383,8 +383,13 @@ FADE-UP ANIMATION
 
 .fade-up {
   opacity: 0;
-  transform: translateY(25px);
-  transition: opacity .8s ease, transform .8s ease;
+  transform: translate3d(0, 25px, 0);
+  transition:
+    opacity .8s ease,
+    transform .8s ease;
+
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .fade-up.visible {
@@ -433,6 +438,7 @@ MOBILE — SWIPE CAROUSEL
     -webkit-overflow-scrolling: touch;
     padding: 4px 20px 20px 20px;
     scrollbar-width: none;
+    contain: layout paint;
   }
 
   .features-grid::-webkit-scrollbar {
@@ -445,6 +451,7 @@ MOBILE — SWIPE CAROUSEL
     scroll-snap-align: center;
     padding: 24px;
     border-radius: 18px;
+  transform: translateZ(0);
   }
 
   .features-grid::after {
