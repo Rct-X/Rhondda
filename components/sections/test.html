@@ -50,9 +50,15 @@
 
 <link rel="stylesheet" href="/css/main.css">
 <link
-  rel="stylesheet"
+  rel="preload"
   href="/components/sections/edds-guarantee.css"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'"
 >
+
+<noscript>
+  <link rel="stylesheet" href="/components/sections/edds-guarantee.css">
+</noscript>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -349,7 +355,204 @@
 
   </div>
 </section>
-    <div id="extra-snippet"></div>
+    <section class="features">
+  <div class="container">
+
+    <div class="section-heading">
+      <span class="section-badge">Why Folks Choose Us</span>
+
+      <h2>
+        Clean websites.<br>
+        Quick help. Real results.
+      </h2>
+
+      <p>
+        We keep things simple — tidy websites, fast support, and proper tools
+        that help local businesses across the Rhondda look sharp online without
+        paying silly agency prices.
+      </p>
+    </div>
+
+    <div class="swipe-indicator" aria-hidden="true">
+      Swipe to view features <span>→</span>
+    </div>
+
+    <div class="features-grid">
+
+      <article class="feature-card fade-up">
+        <h3>No Annoying Cookie Popups</h3>
+        <p>
+          Nobody’s got time for those. Our sites run clean and privacy‑friendly,
+          so people can get straight to what they came for.
+        </p>
+      </article>
+
+    <article class="feature-card fade-up">
+        <h3>Simple, No‑Nonsense Stats</h3>
+        <p>
+          Want to see who’s visiting your site? You get a tidy dashboard that
+          shows the important bits — nothing confusing or over the top.
+        </p>
+      </article>
+
+<article class="feature-card feature-highlight">
+  <h3>Free Local Directory Listing</h3>
+  <p>
+    While your website’s being sorted, we’ll pop your business on our local
+    directory so people around the Valleys can find you sooner — complete with
+    your details, logo and photos, all ready for customers to get in touch.
+  </p>
+</article>
+
+      <article class="feature-card fade-up">
+        <h3>Quick Website Check‑Up</h3>
+        <p>
+          Already got a site? Test how fast it is, how it performs on Google,
+          and how it looks on phones — with simple tips to tidy things up.
+        </p>
+      </article>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="projects-section" id="projects">
+
+  <div class="container">
+
+    <div class="projects-head">
+
+      <h2>
+        Example Websites & Local Platforms
+      </h2>
+
+      <p>
+        Here’s a few modern demo sites we’ve built to show the kind of clean,
+        fast and professional websites we create for businesses across the
+        Rhondda Valleys and wider South Wales.
+      </p>
+
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- PROJECT -->
+      <article class="project-card fade-up">
+
+        <div class="project-image">
+       <img
+  src="/images/your-image.webp"
+  alt="Trades website demo Rhondda">
+        </div>
+
+        <div class="project-content">
+
+          <div class="project-top">
+            <span class="project-tag">
+              Trades Website
+            </span>
+
+            <h3>
+              Apex Tradesmen
+            </h3>
+          </div>
+
+          <p>
+            A tidy, mobile‑first website built for local trades — perfect for
+            plumbers, sparkies, builders and anyone wanting more enquiries from
+            Rhondda and surrounding areas.
+          </p>
+
+          <a href="#" class="project-link" target="_blank">
+            View Demo
+          </a>
+
+        </div>
+
+      </article>
+
+      <!-- PROJECT -->
+      <article class="project-card fade-up">
+
+        <div class="project-image">
+        <img
+  src="/images/your-image.webp"
+  alt="Trades website demo Rhondda">
+        </div>
+
+        <div class="project-content">
+
+          <div class="project-top">
+            <span class="project-tag">
+              Holiday Let
+            </span>
+
+            <h3>
+              Seabreeze Retreat
+            </h3>
+          </div>
+
+          <p>
+            A clean, booking‑focused layout ideal for holiday homes, Airbnbs and
+            short‑stay rentals across Wales looking to get more direct enquiries
+            without relying on booking sites.
+          </p>
+
+          <a href="#" class="project-link" target="_blank">
+            View Demo
+          </a>
+
+        </div>
+
+      </article>
+
+      <!-- PROJECT -->
+      <article class="project-card featured-project">
+
+        <div class="project-image">
+          <img
+            src="YOUR-RCTX-SCREENSHOT.jpg"
+            alt="RCTX Directory Platform Rhondda">
+        </div>
+
+        <div class="project-content">
+
+          <div class="project-top">
+            <span class="project-tag gold">
+              Local Platform
+            </span>
+
+            <h3>
+              RCTX Directory
+            </h3>
+          </div>
+
+        <p>
+  A growing local business directory built right here in the Rhondda — created
+  to help small businesses get found on Google and make it easier for local
+  people to discover trusted services. It’s one of the platforms we’ve built to
+  support the community and show what’s possible with clean, modern web design.
+</p>
+
+          <div class="project-actions">
+
+            <a href="/directory/"
+               class="project-btn primary"
+               target="_blank">
+              View Platform
+            </a>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </div>
+</section>
 
 <section class="directory-community">
   <div class="container">
@@ -708,30 +911,11 @@
 
 </div>
 <script defer src="/js/footer-nav-faq.js"></script>
-<script>
-async function loadGuaranteeSection(){
-  const res = await fetch("/components/sections/edds-guarantee.html");
-  const html = await res.text();
-  document.getElementById("guarantee-snippet").innerHTML = html;
-
-  const script = document.createElement("script");
-  script.src = "/components/sections/edds-guarantee.js";
-  document.body.appendChild(script);
-}
-
-async function loadExtraSection(){
-  const res = await fetch("/components/sections/homePage-extra.html");
-  const html = await res.text();
-  document.getElementById("extra-snippet").innerHTML = html;
-}
-
-loadGuaranteeSection();
-loadExtraSection();
-</script>
+<script defer src="/components/sections/edds-guarantee.js"></script>
     <script>
 window.RCTX_CLIENT_ID = "-MAIN SITE-";
 </script>
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-            </html>
+              </html>
