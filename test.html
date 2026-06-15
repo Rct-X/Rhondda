@@ -444,26 +444,18 @@ MOBILE OPTIMISATION (IMPORTANT)
 
 @media (max-width: 768px) {
 
-  .hero { padding: 50px 0; }
+  .hero {
+    padding: 50px 0;
+  }
 
-  /* IMPORTANT FIX: no container reset */
   .container {
     padding: 0 20px;
   }
-}
 
-.projects-grid {
-  display: grid !important;
-  overflow: visible !important;
-  scroll-snap-type: none !important;
-}
-
-  .features-grid {
-    display: block;
-  }
-
-  .feature-card {
-    margin-bottom: 14px;
+  .projects-grid {
+    display: grid !important;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
   }
 
   /* remove animation cost on mobile */
@@ -472,6 +464,7 @@ MOBILE OPTIMISATION (IMPORTANT)
     transform: none !important;
     transition: none !important;
   }
+
 }
 
 /* =========================================
@@ -1173,4 +1166,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-</html>
+          </html>
