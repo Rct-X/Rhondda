@@ -142,3 +142,20 @@ const yearSpan = document.getElementById("year");
 if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
 }
+// =========================
+// LAZY LOAD FOOTER CSS
+// =========================
+
+(function loadFooterCSS() {
+    const link = document.createElement("link");
+
+    link.rel = "stylesheet";
+    link.href = "/css/footer.css";
+    link.media = "print"; // prevents render blocking
+
+    link.onload = function () {
+        link.media = "all"; // activate after load
+    };
+
+    document.head.appendChild(link);
+})();
