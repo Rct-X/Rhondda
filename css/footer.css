@@ -1,0 +1,222 @@
+/* Base Section Styling - Clean & Bright */
+.features {
+    padding: 100px 0;
+    background: #ffffff; /* Bright, clean professional background */
+    overflow: hidden;
+}
+
+/* High-Status Corporate Grid Cards */
+.card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0; /* Crisp subtle border */
+    padding: 40px 32px;
+    border-radius: 16px;
+    color: #1e293b; /* Dark slate text for maximum readability */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Premium smooth transition */
+    position: relative;
+}
+
+/* Icon Wrapper with Royal Indigo Accents */
+.icon-wrapper {
+    width: 56px;
+    height: 56px;
+    background: #f0f5ff; /* Soft professional blue tint */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.icon {
+    width: 28px;
+    height: 28px;
+    color: #2563eb; /* Strong trust-building blue */
+}
+
+/* Premium Typography */
+.card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #0f172a; /* Deep charcoal header */
+    letter-spacing: -0.02em;
+}
+
+.card p {
+    color: #475569; /* Balanced slate description text */
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.card ul {
+    list-style: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.card li {
+    margin-bottom: 10px;
+    color: #334155;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card li::before {
+    content: "✓";
+    color: #10b981; /* High-converting green checkmarks */
+    font-weight: bold;
+}
+
+/* 🔥 Premium Hover Effects that scream "High Value" */
+.card:hover {
+    transform: translateY(-6px);
+    border-color: #cbd5e1;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
+.card:hover .icon-wrapper {
+    background: #2563eb;
+}
+
+.card:hover .icon {
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   🎬 ANIMATION PRESETS (JS targets these classes)
+   ========================================================================== */
+.card.slide-left {
+    opacity: 0;
+    transform: translateX(-60px); /* Toned down the slide for a classier entrance */
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card.slide-right {
+    opacity: 0;
+    transform: translateX(60px);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ==========================================================================
+   🏙️ CLEAN TRUSTED FOOTER STYLING
+   ========================================================================== */
+.site-footer {
+    background: #f8fafc; /* Clean, light off-white footer */
+    color: #475569;
+    padding: 80px 0 30px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  backdrop-filter: blur(2px);
+}
+
+.footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    gap: 40px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.footer-brand .footer-logo {
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: #0f172a;
+    letter-spacing: -0.05em;
+    margin-bottom: 16px;
+}
+
+.footer-brand .footer-logo span {
+    color: #2563eb;
+}
+
+.footer-brand p {
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+.footer-contact h3,
+.footer-links h3 {
+    color: #0f172a;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.footer-contact a,
+.footer-links a {
+    display: block;
+    color: #475569;
+    text-decoration: none;
+    margin-bottom: 12px;
+    transition: color 0.2s ease;
+    width: fit-content;
+}
+
+.footer-contact a:hover,
+.footer-links a:hover {
+    color: #2563eb;
+}
+
+/* High-Converting Corporate Contact Button */
+.footer-cta-mobile {
+    background: #2563eb;
+    color: #ffffff !important;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 16px;
+    display: inline-flex !important;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.footer-cta-mobile:hover {
+    background: #1d4ed8;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* 📱 Mobile Responsive Viewport Fixes */
+@media (max-width: 768px) {
+    .features {
+        padding: 60px 0;
+    }
+    .card.slide-left, .card.slide-right {
+        transform: translateY(40px); /* Fade up smoothly on phones instead of sideways */
+    }
+    .card.animate-in {
+        transform: translateY(0);
+    }
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        text-align: center;
+    }
+    .footer-brand p {
+        margin: 0 auto;
+    }
+    .footer-contact a,
+    .footer-links a {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
