@@ -9,6 +9,13 @@
   included_files = ["netlify/fonts/**"]
 
 # =========================================
+# EDGE FUNCTIONS
+# =========================================
+[[edge_functions]]
+  function = "hello"
+  path = "/hello"
+
+# =========================================
 # FUNCTION BUNDLING
 # =========================================
 [functions."og-image"]
@@ -34,7 +41,7 @@
     Access-Control-Allow-Origin = "*"
 
 # =========================================
-# STATIC OG IMAGE CACHE (if used)
+# STATIC OG IMAGE CACHE
 # =========================================
 [[headers]]
   for = "/images/*"
