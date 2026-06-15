@@ -890,6 +890,7 @@ footer {
 
   </div>
 </section>
+  <div id="guarantee-snippet"></div>
 
 <section id="features" class="features container">
 
@@ -1156,7 +1157,27 @@ footer {
 
 <script defer src="/js/footer-nav-faq.js"></script>
 <script defer src="/components/sections/edds-guarantee.js"></script>
-    <script>
+   <script>
+async function loadGuaranteeSection(){
+
+    const res = await fetch("/components/sections/edds-guarantee.html");
+
+    const html = await res.text();
+
+    document.getElementById("guarantee-snippet").innerHTML = html;
+
+    // LOAD JS AFTER HTML EXISTS
+    const script = document.createElement("script");
+
+    script.src = "/components/sections/edds-guarantee.js";
+
+    document.body.appendChild(script);
+
+}
+
+loadGuaranteeSection();
+   </script>
+  <script>
 window.RCTX_CLIENT_ID = "-MAIN SITE-";
 </script>
 
