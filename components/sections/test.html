@@ -832,7 +832,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loadFooter = async () => {
 
-    const res = await fetch("/components/footer.html");
+    const res = await fetch("/components/sections/footer");
     target.innerHTML = await res.text();
 
     import("/js/footer-nav-faq.js");
