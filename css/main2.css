@@ -1,21 +1,28 @@
-/* =========================================
-TRUST BAR
-========================================= */
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+footer {
+  margin-top: 20px;
+}
 
 .trust-bar {
   padding: 14px 0;
 
+  /* Rich blue gradient from deep to vibrant blue */
   background: linear-gradient(
     90deg,
-    rgba(0, 102, 204, 0.10),
-    rgba(59, 130, 246, 0.06),
-    rgba(0, 102, 204, 0.10)
+    #00244d 0%,
+    #0052a3 50%,
+    #00244d 100%
   );
 
-  border-top: 1px solid rgba(0, 102, 204, 0.12);
-  border-bottom: 1px solid rgba(0, 102, 204, 0.12);
+  /* Enhanced borders to match the solid background */
+  border-top: 1px solid #003366;
+  border-bottom: 1px solid #003366;
 
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .checklist {
@@ -30,38 +37,28 @@ TRUST BAR
   align-items: center;
   gap: 6px;
 
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
 
   background: #ffffff;
-  border: 1px solid rgba(0, 102, 204, 0.12);
+  border: 1px solid #004696;
 
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-main);
 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
 }
-
-/* =========================================
-ABOUT
-========================================= */
 
 .about-section {
-  padding: 70px 0;
-  background: radial-gradient(circle at top right, #eaf4ff 0%, #ffffff 65%);
-}
-
-.about-inner {
-  max-width: 800px;
-  margin: 0 auto 30px;
-  padding: 24px;
-  border-radius: 18px;
-
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 102, 204, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(6px);
+  padding: 18px 0;
+  /* Fades from the deep bar color into a solid, sophisticated slate-grey-blue */
+  background: linear-gradient(
+    180deg, 
+    #00244d 0%, 
+    #e2ecf5 15%, 
+    #edf3f8 100%
+  );
 }
 
 .about-section h2 {
@@ -77,20 +74,45 @@ ABOUT
   line-height: 1.7;
 }
 
-/* optional “premium highlight” card */
+.about-inner {
+  max-width: 800px;
+  margin: 0 auto 30px;
+  padding: 24px;
+  border-radius: 18px;
+
+  /* Increased opacity to pure white so it stands out against the slate background */
+  background: rgba(255, 255, 255, 0.95);
+  /* Darkened and sharpened the border for premium crispness */
+  border: 1px solid rgba(0, 36, 77, 0.14);
+  
+  /* Deepened the shadow slightly to lift the card off the darker floor */
+  box-shadow: 0 12px 32px rgba(0, 24, 77, 0.06);
+  backdrop-filter: blur(6px);
+}
+
 .about-section .urgency-card {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 18px 20px;
+  /* Centers the card on the page and adds vertical breathing room */
+  margin: 20px auto 0;
+  padding: 20px 24px;
 
   border-radius: 14px;
-  border-left: 4px solid var(--primary);
+  /* Shifted from border-left to border-top for a balanced, centered aesthetic */
+  border-top: 4px solid #0052a3;
 
-  background: linear-gradient(135deg, #f0f7ff, #ffffff);
+  /* Centers text inside the card for maximum readability and punchiness */
+  text-align: center;
+
+  /* Smooth gradient that aligns nicely with the centered layout */
+  background: linear-gradient(180deg, #f4f9ff, #ffffff);
+  
+  /* Added a precise border and soft shadow to make it feel integrated */
+  border-left: 1px solid rgba(0, 82, 163, 0.08);
+  border-right: 1px solid rgba(0, 82, 163, 0.08);
+  border-bottom: 1px solid rgba(0, 82, 163, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 24, 77, 0.03);
 }
-/* =========================================
-URGENCY CARD
-========================================= */
+
 
 .urgency-card {
   max-width: 800px;
@@ -100,34 +122,6 @@ URGENCY CARD
   border-radius: 0 var(--radius) var(--radius) 0;
 }
 
-/* =========================================
-FEATURES SECTION (OPTIMISED MOBILE)
-========================================= */
-
-.features {
-  padding: 60px 0;
-  background: linear-gradient(180deg, #f8fafc, #fff);
-}
-
-.section-heading {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto 30px;
-}
-
-.section-badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #dbeafe;
-  color: #1e40af;
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-
-
 /* CARD */
 .feature-card {
   background: #fff;
@@ -136,27 +130,26 @@ FEATURES SECTION (OPTIMISED MOBILE)
   padding: 24px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.04);
 }
-
-/* disable heavy hover on mobile devices */
-@media (hover: hover) {
-  .feature-card:hover {
-    transform: translateY(-2px);
-    transition: 0.2s ease;
-  }
-}
 /* =========================
 PROJECTS SECTION
 ========================= */
 
-.projects-section{
-    padding:2.5rem 0;
-    background:#f8fafc;
+.projects-section {
+  padding: 1.0rem 0;
+  /* Soft transition from light slate to a slightly crisp blue-grey */
+  background: linear-gradient(
+    135deg, 
+    #f4f7fa 0%, 
+    #eef3f8 50%, 
+    #f4f7fa 100%
+  );
 }
+
 
 .projects-head{
     text-align:center;
     max-width:680px;
-    margin:0 auto 2.5rem;
+    margin:0 auto 1.0rem;
 }
 
 .projects-head h2{
@@ -350,9 +343,6 @@ PROJECTS SECTION
 
 }
 
-  /* =========================================
-BASE
-========================================= */
 
 .features {
   padding: 70px 0;
@@ -369,13 +359,11 @@ BASE
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 10px;
   box-sizing: border-box;
 }
 
-/* =========================================
-HEADER
-========================================= */
+
 
 .section-heading {
   max-width: 720px;
@@ -411,9 +399,6 @@ HEADER
   color: #64748b;
 }
 
-/* =========================================
-DESKTOP GRID
-========================================= */
 
 .features-grid {
   display: grid;
@@ -425,23 +410,7 @@ DESKTOP GRID
   display: none;
 }
 
-/* =========================================
-CARD
-========================================= */
 
-.feature-card {
-  padding: 30px;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 6px 20px rgba(15,23,42,0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 32px rgba(15,23,42,0.08);
-}
 
 .feature-card h3 {
   margin-bottom: 10px;
@@ -456,18 +425,13 @@ CARD
   color: #64748b;
 }
 
-/* =========================================
-HIGHLIGHT CARD
-========================================= */
+
 
 .feature-highlight {
   background: linear-gradient(180deg, #ffffff, #eef4ff);
   border-color: rgba(37,99,235,0.18);
 }
 
-/* =========================================
-FADE-UP ANIMATION
-========================================= */
 
 .fade-up {
   opacity: 0;
@@ -475,13 +439,6 @@ FADE-UP ANIMATION
   transition: opacity .8s ease, transform .8s ease;
 }
 
-.fade-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-/* =========================================
-MOBILE — SWIPE CAROUSEL
-========================================= */
 
 @media (max-width: 768px) {
 
@@ -527,9 +484,10 @@ MOBILE — SWIPE CAROUSEL
     display: none;
   }
 
+  
   .feature-card {
-    flex: 0 0 80vw;
-    min-width: 80vw;
+    flex: 0 0 84vw;
+    min-width: 84vw;
     scroll-snap-align: center;
     padding: 24px;
     border-radius: 18px;
@@ -545,9 +503,7 @@ MOBILE — SWIPE CAROUSEL
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(4px); }
 }
-/* =========================================
-LOCAL DIRECTORY SECTION — TIGHT VERSION
-========================================= */
+
 
 .directory-community {
   position: relative;
@@ -597,9 +553,6 @@ LOCAL DIRECTORY SECTION — TIGHT VERSION
   pointer-events: none;
 }
 
-/* =========================================
-CONTENT BOX
-========================================= */
 
 .directory-content {
   position: relative;
@@ -624,9 +577,7 @@ CONTENT BOX
   text-align: center;
 }
 
-/* =========================================
-TITLE
-========================================= */
+
 
 .directory-content h2 {
   margin-bottom: 0.8rem;
@@ -639,9 +590,6 @@ TITLE
   color: #0f172a;
 }
 
-/* =========================================
-TEXT
-========================================= */
 
 .directory-content p {
   margin: 0 auto 0.9rem;
@@ -658,9 +606,6 @@ TEXT
   color: #334155 !important;
 }
 
-/* =========================================
-BUTTONS
-========================================= */
 
 .directory-actions {
   display: flex;
@@ -726,9 +671,6 @@ BUTTONS
   transform: translateY(-2px);
 }
 
-/* =========================================
-MOBILE
-========================================= */
 
 @media (max-width: 768px) {
 
@@ -761,245 +703,144 @@ MOBILE
     width: 100%;
   }
 }
-/* =========================================
-FAQ SECTION
-========================================= */
-
 .faq {
   padding: 2.8rem 0;
+  /* Premium radial spotlight gradient to anchor the FAQ section */
+  background: radial-gradient(circle at center, #f4f8fc 0%, #edf3f8 70%, #e2ecf5 100%);
 }
-
-/* =========================================
-INTRO
-========================================= */
-
 .faq-intro {
   text-align: center;
-
   max-width: 680px;
   margin: 0 auto 1.6rem;
 }
-
 .faq-intro h2 {
   margin-bottom: 0.55rem;
-
   font-size: clamp(2rem, 5vw, 3rem);
-
   line-height: 1.05;
   letter-spacing: -0.04em;
-
-  color: #0f172a;
+  /* Darkened to our deep theme color */
+  color: #00244d;
 }
-
 .faq-intro p {
   font-size: 1rem;
   line-height: 1.65;
-
-  color: #64748b;
+  /* Blended slate tone */
+  color: #334e68;
 }
-
-/* =========================================
-FAQ WRAPPER
-========================================= */
-
 .faq-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
-
   max-width: 860px;
   margin: 0 auto;
 }
-
-/* =========================================
-FAQ CARD
-========================================= */
-
 .card-faq {
   position: relative;
-
   overflow: hidden;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.96),
-      rgba(248,250,252,0.98)
-    );
-
-  border: 1px solid rgba(148,163,184,0.14);
-
+  /* Sharper solid card color to snap against the new background gradient */
+  background: #ffffff;
+  /* Integrated border color matching the site's dark blue tone */
+  border: 1px solid rgba(0, 36, 77, 0.12);
   border-radius: 20px;
-
-  box-shadow:
-    0 6px 22px rgba(15,23,42,0.04);
-
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease,
-    border-color .2s ease;
+  /* Slightly deeper shadow for modern card floating effect */
+  box-shadow: 0 8px 24px rgba(0, 24, 77, 0.05);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-
 .card-faq:hover {
   transform: translateY(-2px);
-
-  border-color: rgba(37,99,235,0.18);
-
-  box-shadow:
-    0 12px 30px rgba(15,23,42,0.06);
+  /* Hover state matches the active dark blue theme accent */
+  border-color: rgba(0, 82, 163, 0.3);
+  box-shadow: 0 14px 32px rgba(0, 24, 77, 0.08);
 }
-
-/* subtle glow */
 .card-faq::before {
   content: "";
-
   position: absolute;
   inset: 0;
-
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(59,130,246,0.05),
-      transparent 38%
-    );
-
+  /* Shifts the glow to use our specific brand blue */
+  background: radial-gradient(circle at top right, rgba(0, 82, 163, 0.06), transparent 38%);
   pointer-events: none;
 }
-
-/* =========================================
-QUESTION ROW
-========================================= */
-
 .faq-question {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 1rem;
-
   padding: 1.15rem 1.25rem;
-
   cursor: pointer;
 }
-
 .faq-question h3 {
   margin: 0;
-
   font-size: 1.03rem;
   font-weight: 700;
   line-height: 1.4;
-
-  color: #0f172a;
+  /* Darkened to match the page headings */
+  color: #00244d;
 }
-
-/* =========================================
-ICON
-========================================= */
-
 .faq-icon {
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 34px;
   height: 34px;
-
   border-radius: 999px;
-
-  background: #eff6ff;
-  color: #2563eb;
-
+  /* Themed soft blue background and bright blue text */
+  background: #eaf4ff;
+  color: #0052a3;
   font-size: 1.2rem;
   font-weight: 700;
-
-  transition:
-    transform .25s ease,
-    background .25s ease,
-    color .25s ease;
+  transition: transform .25s ease, background .25s ease, color .25s ease;
 }
-
-/* active state */
 .card-faq.active .faq-icon {
   transform: rotate(45deg);
-
-  background: #2563eb;
+  /* Fully switches to our brand accent blue when expanded */
+  background: #0052a3;
   color: #fff;
 }
-
-/* =========================================
-ANSWER
-========================================= */
-
 .faq-answer {
   max-height: 0;
   overflow: hidden;
-
-  transition:
-    max-height .35s ease,
-    padding .35s ease;
+  transition: max-height .35s ease, padding .35s ease;
 }
-
 .faq-answer p {
   padding: 0 1.25rem 1.2rem;
-
   margin: 0;
-
   font-size: 0.97rem;
   line-height: 1.7;
-
-  color: #475569;
+  /* Soft dark blue text tone for perfect readability */
+  color: #243b53;
 }
-
-/* expanded */
 .card-faq.active .faq-answer {
   max-height: 300px;
 }
-
-/* =========================================
-MOBILE
-========================================= */
-
 @media (max-width: 768px) {
-
   .faq {
     padding: 2rem 0;
   }
-
   .faq-intro {
     margin-bottom: 1.2rem;
   }
-
   .faq-intro h2 {
     font-size: clamp(1.8rem, 8vw, 2.5rem);
   }
-
   .faq-question {
     padding: 1rem;
   }
-
   .faq-question h3 {
     font-size: 0.98rem;
   }
-
   .faq-answer p {
-    padding:
-      0
-      1rem
-      1rem;
-
+    padding: 0 1rem 1rem;
     font-size: 0.94rem;
     line-height: 1.65;
   }
-
   .faq-icon {
     width: 30px;
     height: 30px;
-
     font-size: 1rem;
   }
 }
+
 /* =========================
 BASE SECTION
 ========================= */
@@ -1103,73 +944,61 @@ TEXT
   font-size: clamp(0.85rem, 2vw, 1.2rem);
   color: #1e293b;
 }
-
-
 /* =========================
 PRICING SECTION
 ========================= */
 
 .pricing {
+  position: relative;
+  overflow: hidden;
+
   padding: 70px 0;
-  background: linear-gradient(180deg, #ffffff, #f8fafc);
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59,130,246,0.16),
+      transparent 34%
+    ),
+
+    radial-gradient(
+      circle at bottom right,
+      rgba(37,99,235,0.12),
+      transparent 36%
+    ),
+
+    linear-gradient(
+      180deg,
+      #f8fbff 0%,
+      #eef5ff 45%,
+      #ffffff 100%
+    );
+
+  border-top: 1px solid rgba(37,99,235,0.08);
+  border-bottom: 1px solid rgba(37,99,235,0.08);
 }
 
-/* =========================
-INTRO
-========================= */
+/* subtle overlay glow */
+.pricing::before {
+  content: "";
 
-.pricing-intro {
-  max-width: 780px;
-  margin: 0 auto 30px;
-  text-align: center;
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      120deg,
+      rgba(255,255,255,0.35),
+      transparent 42%,
+      rgba(255,255,255,0.12)
+    );
 }
-
-.pricing-intro h2 {
-  font-size: clamp(2rem, 4vw, 2.6rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #0f172a;
-  margin-bottom: 12px;
+.pricing .container {
+  position: relative;
+  z-index: 2;
 }
-
-.pricing-intro p {
-  color: #64748b;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  margin-bottom: 16px;
-}
-
-/* =========================
-WHO IS IT FOR
-========================= */
-
-.who-for {
-  margin-top: 18px;
-  padding: 16px 18px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-}
-
-.who-for strong {
-  display: block;
-  margin-bottom: 8px;
-  color: #0f172a;
-  font-size: 0.95rem;
-}
-
-.who-for p {
-  margin: 0;
-  color: #475569;
-  font-size: 0.95rem;
-}
-
-.who-sub {
-  margin-top: 6px;
-  font-size: 0.9rem;
-  color: #64748b;
-}
-
 /* =========================
 LOCAL NOTE BOX
 ========================= */
@@ -1177,75 +1006,26 @@ LOCAL NOTE BOX
 .local-note {
   max-width: 720px;
   margin: 0 auto 20px;
+
   padding: 18px 20px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+
+  background: rgba(255,255,255,0.78);
+
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(37,99,235,0.10);
+
   border-left: 4px solid #2563eb;
-  border-radius: 14px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 30px rgba(15,23,42,0.05);
+
   color: #0f172a;
   line-height: 1.6;
   font-size: 0.95rem;
 }
-
-/* =========================
-PRICING CARD
-========================= */
-
-.pricing-preview {
-  max-width: 520px;
-  margin: 0 auto 20px;
-  text-align: center;
-
-  padding: 26px 22px;
-  border-radius: 18px;
-
-  background: linear-gradient(135deg, #ffffff, #f8fafc);
-  border: 1px solid rgba(37, 99, 235, 0.15);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-}
-
-.pricing-preview h3 {
-  font-size: 2rem;
-  font-weight: 900;
-  color: #0f172a;
-  margin-bottom: 10px;
-}
-
-.pricing-preview p {
-  color: #64748b;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-
-/* =========================
-BUTTON (inherits yours but refined spacing)
-========================= */
-
-.pricing .btn {
-  display: inline-block;
-  margin-top: 6px;
-}
-
-/* =========================
-BADGE
-========================= */
-
-.support-badge {
-  display: inline-block;
-  margin: 10px auto 0;
-  padding: 6px 14px;
-
-  font-size: 0.8rem;
-  font-weight: 700;
-
-  color: #1e40af;
-  background: #dbeafe;
-  border-radius: 999px;
-
-  text-align: center;
-}
-
 /* =========================
 UTILITY CLASSES (fix spacing consistency)
 ========================= */
@@ -1262,33 +1042,175 @@ UTILITY CLASSES (fix spacing consistency)
   margin-bottom: 18px;
 }
 
-/* =========================
-MOBILE FIXES
-========================= */
+/* Layout Structure */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3rem;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
 
+/* Left Column Styling */
+.pricing-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.pricing-intro h2 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  color: #00244d;
+  margin-bottom: 0.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.intro-lead {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #334e68;
+}
+.who-for {
+  background: rgba(0, 36, 77, 0.03);
+  padding: 1.25rem;
+  border-radius: 12px;
+  border-left: 3px solid #0052a3;
+}
+.who-list {
+  font-weight: 700;
+  color: #00244d;
+  margin: 0.25rem 0;
+}
+.who-sub {
+  font-size: 0.95rem;
+  color: #486581;
+}
+.local-trust-text {
+  font-size: 0.95rem;
+  color: #627d98;
+  font-style: italic;
+}
+.pricing-support-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  background: #eaf4ff;
+  color: #0052a3;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.pricing-footer-note {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+/* Right Column: Pricing Card Card (Premium Treatment) */
+.pricing-preview-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 36, 77, 0.12);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 20px 40px rgba(0, 24, 77, 0.06);
+  text-align: center;
+}
+.card-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #0052a3;
+  background: rgba(0, 82, 163, 0.06);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+.price-display {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  color: #00244d;
+  margin-bottom: 0.75rem;
+}
+.price-currency {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+.price-amount {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.price-period {
+  font-size: 1.1rem;
+  color: #486581;
+  align-self: flex-end;
+  margin-bottom: 0.75rem;
+  margin-left: 2px;
+}
+.price-subtext {
+  font-size: 0.95rem;
+  color: #486581;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* Bullet Points Inside Card */
+.local-note-list {
+  text-align: left;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 14px;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.note-item {
+  font-size: 0.95rem;
+  color: #243b53;
+}
+
+/* Button Scaling */
+.pricing-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-align: center;
+  background: #0052a3;
+  color: #ffffff;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.pricing-btn:hover {
+  background: #003c78;
+}
+
+/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
-  .pricing {
-    padding: 50px 0;
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1rem;
   }
-
-  .pricing-intro {
-    padding: 0 16px;
+  .pricing-support-badge {
+    align-self: center;
   }
-
-  .local-note,
-  .pricing-preview {
-    margin-left: 16px;
-    margin-right: 16px;
+  .pricing-info-col {
+    text-align: center;
   }
-
-  .pricing-preview {
-    padding: 22px 18px;
-  }
-
-  .pricing-preview h3 {
-    font-size: 1.7rem;
+  .who-for {
+    text-align: left;
   }
 }
+
 /* =========================
 ANIMATIONS
 ========================= */
@@ -1328,4 +1250,7 @@ REDUCED MOTION
     opacity: 1 !important;
     transform: none !important;
   }
+  }
+  .location-note-section {
+  padding: 10px 0;
   }
