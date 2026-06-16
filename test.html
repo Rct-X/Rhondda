@@ -546,6 +546,14 @@ FOOTER SPACING SAFETY
 footer {
   margin-top: 20px;
 }
+.hero-lcp {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
 </style>
 </head>
 <body class="home">
@@ -618,6 +626,12 @@ footer {
 
 <main>
 <header class="hero">
+    <img src="/components/images/home-hero.webp"
+         alt=""
+         class="hero-lcp"
+         width="1200"
+         height="750">
+
     <div class="container">
         <span class="badge">📍 Built in the Rhondda</span>
 
@@ -1239,4 +1253,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-  </html>
+</html>
