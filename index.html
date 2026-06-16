@@ -583,7 +583,15 @@ main {
         align-items: flex-end;
     }
 }
+.hero-lcp {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 
+  z-index: 0;
+}
 </style>
 <link rel="preload" href="/css/deferred.css" as="style" onload="this.rel='stylesheet'">
 <noscript>
@@ -805,32 +813,35 @@ main {
 
 <main>
 <header class="hero">
+<img
+  src="/components/images/home-hero.webp"
+  alt=""
+  class="hero-lcp"
+  width="1200"
+  height="750"
+  fetchpriority="high"
+  decoding="async">
     <div class="container">
-
-        <span class="badge">Built in the Rhondda</span>
+        <span class="badge">📍 Built in the Rhondda</span>
 
         <h1>
-        Web Design Rhondda Cynon Taf<br>
-            <span>for Small Businesses</span>
+            Web Design Rhondda Cynon Taf<br>
+            <span class="sub-hd">Crafted for Small Businesses</span>
         </h1>
 
-        <p>
-            We build modern websites for local businesses across Rhondda Cynon Taf — including hosting, support, updates, and setup.
+        <p class="hero-lead">
+            We build modern, fast websites for local businesses across Rhondda Cynon Taf. Your hosting, unlimited support, and weekly updates are completely handled.
         </p>
-<div class="hero-price">
-    From £30/month • £50 setup • No contracts
-</div>
-     
+
+        <div class="hero-price">
+            <strong>From £30/month</strong> • £50 setup • No long contracts
+        </div>
 
         <div class="hero-btns">
             <a href="/contact" class="btn btn-primary">Get My Website</a>
             <a href="/pricing" class="btn btn-secondary">View Pricing</a>
+            <a href="/directory" class="btn btn-tertiary">Browse Local Directory</a>
         </div>
- <div class="directory-actions">
-        <a href="/directory" class="btn btn-primary">
-          Browse Businesses
-        </a>
- </div>
     </div>
 </header>
 
@@ -1408,4 +1419,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
- </html>
+          </html>
