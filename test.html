@@ -40,7 +40,9 @@
 <meta name="ICBM" content="51.6546, -3.5102">
 
 <!-- Mobile / Browser -->
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 
 <!-- Favicons -->
 <link rel="icon" type="image/png" href="/favicon.png">
@@ -253,6 +255,7 @@ HERO
   overflow: hidden;
 
   background:
+    url('components/images/home-hero.webp') center/cover no-repeat,
     radial-gradient(circle at 20% 20%, rgba(0,102,204,0.18), transparent 45%),
     radial-gradient(circle at 80% 0%, rgba(59,130,246,0.18), transparent 50%),
     linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
@@ -549,13 +552,7 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
-
-  z-index: 0;
-}
-
-.hero .container {
-  position: relative;
-  z-index: 2;
+  z-index: -1;
 }
 </style>
 </head>
@@ -629,14 +626,12 @@ footer {
 
 <main>
 <header class="hero">
-<img
-  src="/components/images/home-hero.webp"
-  alt=""
-  class="hero-lcp"
-  width="1200"
-  height="750"
-  fetchpriority="high"
-  decoding="async">
+    <img src="/components/images/home-hero.webp"
+         alt=""
+         class="hero-lcp"
+         width="1200"
+         height="750">
+
     <div class="container">
         <span class="badge">📍 Built in the Rhondda</span>
 
@@ -1258,4 +1253,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-          </html>
+</html>
