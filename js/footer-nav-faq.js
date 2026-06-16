@@ -86,26 +86,33 @@ document.querySelectorAll(".nav-group-title").forEach(btn => {
 // FAQ ACCORDION
 // =========================
 
-document.querySelectorAll(".card-faq").forEach(item => {
-    const question = item.querySelector(".faq-question");
-    const icon = item.querySelector(".faq-icon");
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (!question) return;
+  const faqCards = document.querySelectorAll('.card-faq');
 
-    question.addEventListener("click", () => {
-        const isOpen = item.classList.contains("open");
+  faqCards.forEach(card => {
 
-        document.querySelectorAll(".card-faq").forEach(i => {
-            i.classList.remove("open");
-            const iIcon = i.querySelector(".faq-icon");
-            if (iIcon) iIcon.textContent = "+";
-        });
+    const question = card.querySelector('.faq-question');
+    const answer = card.querySelector('.faq-answer');
 
-        if (!isOpen) {
-            item.classList.add("open");
-            if (icon) icon.textContent = "–";
-        }
+    question.addEventListener('click', () => {
+
+      const isOpen = card.classList.contains('active');
+
+      faqCards.forEach(item => {
+        item.classList.remove('active');
+        item.querySelector('.faq-answer').style.maxHeight = null;
+      });
+
+      if (!isOpen) {
+        card.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+
     });
+
+  });
+
 });
 
 
