@@ -203,10 +203,6 @@
 }
 </script>
 <style>
-  /* =========================================
-GLOBAL RESET + VARIABLES
-========================================= */
-
 :root {
   --primary: #0066cc;
   --primary-hover: #0052a3;
@@ -244,13 +240,7 @@ body {
   line-height: 1.6;
   background: var(--white);
 }
-/* =========================================
-HERO
-========================================= */
 
-/* =========================================
-HERO
-========================================= */
 
 .hero {
   position: relative;
@@ -282,16 +272,6 @@ HERO
   z-index: 2;
 }
 
-/* HERO IMAGE */
-.hero-lcp {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
-}
-
 /* TEXT COLOURS */
 .hero h1 {
   font-size: clamp(2rem, 4vw, 3rem);
@@ -301,11 +281,13 @@ HERO
   text-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
-.hero h1 .sub-hd {
-  display: block;
-  color: #93c5fd;
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-  font-weight: 700;
+.hero-lcp {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .hero-lead {
@@ -315,14 +297,11 @@ HERO
   margin: 16px auto 24px;
 }
 
-/* BADGE */
 .badge {
-  background: rgba(255,255,255,0.1);
-  color: #ffffff;
-  border: 1px solid rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px);
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  border: 1px solid rgba(0,102,204,0.15);
+  box-shadow: 0 6px 18px rgba(0,102,204,0.08);
 }
-
 /* PRICE BOX */
 .hero-price {
   display: inline-block;
@@ -340,55 +319,6 @@ HERO
 
   margin-bottom: 28px;
 }
-
-  .hero::before {
-  pointer-events: none;
-  }
-  
-
-.badge {
-  background: linear-gradient(135deg, #dbeafe, #eff6ff);
-  border: 1px solid rgba(0,102,204,0.15);
-  box-shadow: 0 6px 18px rgba(0,102,204,0.08);
-}
-
-.hero h1 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-.hero h1 .sub-hd {
-  display: block;
-  color: var(--primary);
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-  font-weight: 700;
-}
-
-.hero-lead {
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  max-width: 700px;
-  margin: 16px auto 24px;
-}
-
-.hero-price {
-  display: inline-block;
-  padding: 10px 18px;
-  border-radius: var(--radius);
-
-  /* NEW GLASS STYLE */
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-
-  margin-bottom: 28px;
-}
-
-/* =========================================
-BUTTONS
-========================================= */
 
 .hero-btns {
   display: flex;
@@ -426,163 +356,6 @@ BUTTONS
 }
 
 
-
-/* =========================================
-TRUST BAR
-========================================= */
-
-.trust-bar {
-  padding: 14px 0;
-
-  background: linear-gradient(
-    90deg,
-    rgba(0, 102, 204, 0.10),
-    rgba(59, 130, 246, 0.06),
-    rgba(0, 102, 204, 0.10)
-  );
-
-  border-top: 1px solid rgba(0, 102, 204, 0.12);
-  border-bottom: 1px solid rgba(0, 102, 204, 0.12);
-
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
-}
-
-.checklist {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-
-.checklist span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  padding: 6px 12px;
-  border-radius: 999px;
-
-  background: #ffffff;
-  border: 1px solid rgba(0, 102, 204, 0.12);
-
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-main);
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-}
-
-/* =========================================
-ABOUT
-========================================= */
-
-.about-section {
-  padding: 70px 0;
-  background: radial-gradient(circle at top right, #eaf4ff 0%, #ffffff 65%);
-}
-
-.about-inner {
-  max-width: 800px;
-  margin: 0 auto 30px;
-  padding: 24px;
-  border-radius: 18px;
-
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 102, 204, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(6px);
-}
-
-.about-section h2 {
-  font-size: 2rem;
-  margin-bottom: 16px;
-  font-weight: 800;
-  color: var(--text-main);
-}
-
-.about-section p {
-  color: var(--text-muted);
-  font-size: 1.05rem;
-  line-height: 1.7;
-}
-
-/* optional “premium highlight” card */
-.about-section .urgency-card {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 18px 20px;
-
-  border-radius: 14px;
-  border-left: 4px solid var(--primary);
-
-  background: linear-gradient(135deg, #f0f7ff, #ffffff);
-}
-/* =========================================
-URGENCY CARD
-========================================= */
-
-.urgency-card {
-  max-width: 800px;
-  padding: 18px;
-  border-left: 4px solid var(--primary);
-  background: #f8fafc;
-  border-radius: 0 var(--radius) var(--radius) 0;
-}
-
-/* =========================================
-FEATURES SECTION (OPTIMISED MOBILE)
-========================================= */
-
-.features {
-  padding: 60px 0;
-  background: linear-gradient(180deg, #f8fafc, #fff);
-}
-
-.section-heading {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto 30px;
-}
-
-.section-badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #dbeafe;
-  color: #1e40af;
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-
-
-/* CARD */
-.feature-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
-}
-
-/* disable heavy hover on mobile devices */
-@media (hover: hover) {
-  .feature-card:hover {
-    transform: translateY(-2px);
-    transition: 0.2s ease;
-  }
-}
-
-
-/* =========================================
-MOBILE OPTIMISATION (IMPORTANT)
-========================================= */
-
-.swipe-indicator {
-  display: none;
-}
-
 @media (max-width: 768px) {
 
   .hero {
@@ -590,7 +363,7 @@ MOBILE OPTIMISATION (IMPORTANT)
   }
 
   .container {
-    padding: 0 20px;
+    padding: 0 10px;
   }
 
   .projects-grid {
@@ -606,37 +379,6 @@ MOBILE OPTIMISATION (IMPORTANT)
     transition: none !important;
   }
 
-}
-
-/* =========================================
-LIGHTWEIGHT ANIMATION (DESKTOP ONLY)
-========================================= */
-
-.fade-up {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: 0.6s ease;
-}
-
-.fade-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* =========================================
-FOOTER SPACING SAFETY
-========================================= */
-
-footer {
-  margin-top: 20px;
-}
-.hero-lcp {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
 }
 </style>
 </head>
@@ -716,7 +458,7 @@ footer {
      width="1200"
      height="750"
      fetchpriority="high"
-     decoding="async">
+     decoding="eager">
 
     <div class="container">
         <span class="badge">📍 Built in the Rhondda</span>
@@ -771,7 +513,7 @@ footer {
   <div class="hero-wrapper-tight">
     <p class="fancy-reveal">Welcome to</p>
 
-    <h1 class="brand-reveal" id="revealTitle">rctx web design</h1>
+    <h2 class="brand-reveal" id="revealTitle">rctx web design</h1>
 
     <p class="mission-reveal">Helping the Rhondda get online</p>
   </div>
@@ -977,50 +719,65 @@ footer {
 </section>
 
 <section id="pricing" class="pricing">
-  <div class="container">
+  <div class="container pricing-grid">
 
-    <div class="pricing-intro">
-      <h2>Simple Monthly Pricing</h2>
-
-      <p>
-        No fuss, no jargon — just a tidy monthly plan that covers everything:
-        your design, hosting, updates, support and full setup handled for you.
-      </p>
-
-      <div class="who-for">
-        <strong>Perfect for:</strong>
-        <p>Barbers • Cafes • Trades • Local shops</p>
-        <p class="who-sub">
-          And spot‑on for holiday lets, Airbnb hosts and van services wanting more direct bookings.
+    <!-- Left Column: Context & Trust -->
+    <div class="pricing-info-col">
+      <div class="pricing-intro">
+        <h2>Simple Monthly Pricing</h2>
+        <p class="intro-lead">
+          No fuss, no jargon — just a tidy monthly plan that covers everything: your design, hosting, updates, support, and full setup handled for you.
         </p>
       </div>
 
-      <p class="mt-1 text-dim">
+      <div class="who-for">
+        <strong>Perfect for:</strong>
+        <p class="who-list">Barbers • Cafes • Trades • Local shops</p>
+        <p class="who-sub">
+          And spot‑on for holiday lets, Airbnb hosts, and van services wanting more direct bookings.
+        </p>
+      </div>
+
+      <p class="local-trust-text">
         Built for local businesses across the Rhondda who want a proper, professional online presence.
       </p>
+      
+     <div class="pricing-support-badge">
+  No Hidden Fees • No Surprise Increases
+</div>
     </div>
 
-    <div class="local-note mb-2">
-      <strong>Simple pricing. No hidden costs.</strong><br><br>
-      ✔ £50 one‑time setup<br>
-      ✔ Hosting, domain & support included<br>
-      ✔ Monthly plan only starts once your site is live
-    </div>
+    <!-- Right Column: The Actionable Pricing Card -->
+    <div class="pricing-card-col">
+      <div class="pricing-preview-card">
+        <span class="card-tag">Rhondda Small Business Rate</span>
+        
+        <div class="price-display">
+          <span class="price-currency">£</span>
+          <span class="price-amount">30</span>
+          <span class="price-period">/month</span>
+        </div>
+        
+        <p class="price-subtext">
+          Affordable, local web design — built for small businesses across Rhondda Cynon Taf who want results without the agency price tag.
+        </p>
 
-    <div class="pricing-preview">
-      <h3>From just £30/month</h3>
-      <p>
-        Affordable, local web design — built for small businesses across Rhondda Cynon Taf who want results without the agency price tag.
-      </p>
-      <a href="/pricing.html" class="btn btn-primary">View Full Pricing</a>
-    </div>
+        <div class="local-note-list">
+          <div class="note-item">✔ <strong>£50</strong> one‑time setup</div>
+          <div class="note-item">✔ Hosting, domain & support included</div>
+          <div class="note-item">✔ Monthly plan only starts once live</div>
+        </div>
 
-    <div class="support-badge">
-      Supporting Local Businesses
+        <a href="/pricing.html" class="btn btn-primary pricing-btn">View Full Pricing</a>
+        <p class="pricing-footer-note">
+  Proudly helping small businesses across the Rhondda get online and get noticed.
+</p>
+      </div>
     </div>
 
   </div>
 </section>
+
 
 <section class="guarantee-section">
     <div class="container">
@@ -1068,7 +825,7 @@ footer {
   </div>
 </section>
 
-<section id="features" class="features container">
+<section class="location-note-section container">
 
     <p class="local-note">
         Based in Treorchy — working across Rhondda Cynon Taf including Tonypandy, Ferndale, Porth, Treherbert, and Pontypridd.
@@ -1175,111 +932,6 @@ footer {
 
     </div>
 </section>
-
-
-<section class="share-section" aria-label="Share this page">
-  <div class="container">
-
-    <div class="share-block">
-
-      <p class="share-title">
-        Know a local business that needs a website?
-      </p>
-
-      <p class="share-sub">
-        Share this with them — it could help them grow online.
-      </p>
-
-      <div class="share-icons">
-
-        <a class="share-btn facebook"
-           href="https://www.facebook.com/sharer/sharer.php?u=https://rctx.co.uk"
-           target="_blank"
-           rel="noopener"
-           aria-label="Share on Facebook">
-          <svg class="icon"><use href="/assets/icons.svg#icon-facebook"></use></svg>
-        </a>
-
-        <a class="share-btn whatsapp"
-           href="https://api.whatsapp.com/send?text=Check%20this%20out:%20https://rctx.co.uk"
-           target="_blank"
-           rel="noopener"
-           aria-label="Share on WhatsApp">
-          <svg class="icon"><use href="/assets/icons.svg#icon-whatsapp"></use></svg>
-        </a>
-
-        <a class="share-btn linkedin"
-           href="https://www.linkedin.com/sharing/share-offsite/?url=https://rctx.co.uk"
-           target="_blank"
-           rel="noopener"
-           aria-label="Share on LinkedIn">
-          <svg class="icon"><use href="/assets/icons.svg#icon-linkedin"></use></svg>
-        </a>
-
-        <a class="share-btn x"
-           href="https://twitter.com/intent/tweet?url=https://rctx.co.uk"
-           target="_blank"
-           rel="noopener"
-           aria-label="Share on X">
-          <svg class="icon"><use href="/assets/icons.svg#icon-x"></use></svg>
-        </a>
-
-      </div>
-
-    </div>
-
-  </div>
-</section>
-<section class="service-areas">
-  <div class="container">
-
-    <h2>Areas We Cover</h2>
-
-    <p class="text-dim mb-15">
-      We provide web design services across Rhondda Cynon Taf and surrounding valleys.
-    </p>
-
-    <div class="areas-grid">
-
-      <a href="/web-design-treorchy" class="area-card">
-        <svg class="area-icon" aria-hidden="true">
-          <use href="/assets/icons.svg#icon-location"></use>
-        </svg>
-        Treorchy
-      </a>
-
-      <a href="/web-design-tonypandy" class="area-card">
-        <svg class="area-icon" aria-hidden="true">
-          <use href="/assets/icons.svg#icon-location"></use>
-        </svg>
-        Tonypandy
-      </a>
-
-      <a href="/web-design-pontypridd" class="area-card">
-        <svg class="area-icon" aria-hidden="true">
-          <use href="/assets/icons.svg#icon-location"></use>
-        </svg>
-        Pontypridd
-      </a>
-
-      <a href="/web-design-ferndale" class="area-card">
-        <svg class="area-icon" aria-hidden="true">
-          <use href="/assets/icons.svg#icon-location"></use>
-        </svg>
-        Ferndale
-      </a>
-
-      <a href="/web-design-porth" class="area-card">
-        <svg class="area-icon" aria-hidden="true">
-          <use href="/assets/icons.svg#icon-location"></use>
-        </svg>
-        Porth
-      </a>
-
-    </div>
-
-  </div>
-</section>
 <footer class="site-footer">
 
     <div class="container footer-inner">
@@ -1339,4 +991,4 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
 </body>
-</html>
+  </html>
