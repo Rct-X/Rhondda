@@ -1003,7 +1003,7 @@ MOBILE
 /* =========================
 BASE SECTION
 ========================= */
-.mega-hero-tight {
+.brand-showcase {
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -1014,7 +1014,7 @@ BASE SECTION
 /* =========================
 BACKGROUND GLOW
 ========================= */
-.hero-bg {
+.brand-showcase-bg{
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -1310,7 +1310,7 @@ ANIMATIONS
 MOBILE SAFETY
 ========================= */
 @media (max-width: 768px) {
-  .mega-hero-tight {
+  .brand-showcase {
     padding: 1rem 0.8rem 1.4rem;
   }
 
