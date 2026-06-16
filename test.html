@@ -45,18 +45,17 @@
 <!-- Favicons -->
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" as="image" href="/components/images/home-hero.webp">
+
+<link rel="stylesheet" href="/css/nav-0.css">
 <link
   rel="preload"
-  href="/css/nav-0.css"
+  href="/css/main2.css"
   as="style"
-  onload="this.onload=null;this.rel='stylesheet'"
->
+  onload="this.onload=null;this.rel='stylesheet'">
 
 <noscript>
-  <link rel="stylesheet" href="/css/nav-0.css">
+  <link rel="stylesheet" href="/css/main2.css">
 </noscript>
-<link rel="stylesheet" href="/css/main2.css">
 <link
   rel="preload"
   href="/components/sections/edds-guarantee.css"
@@ -67,7 +66,11 @@
 <noscript>
   <link rel="stylesheet" href="/components/sections/edds-guarantee.css">
 </noscript>
-  <link rel="stylesheet" href="/css/footer.css" id="footerCSS" disabled>
+<link
+  rel="preload"
+  href="/css/footer.css"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -251,6 +254,7 @@ HERO
   padding: 80px 0;
   text-align: center;
   overflow: hidden;
+  min-height: 520px;
 
   background:
     radial-gradient(circle at 20% 20%, rgba(0,102,204,0.18), transparent 45%),
@@ -500,6 +504,7 @@ MOBILE OPTIMISATION (IMPORTANT)
 
   .hero {
     padding: 50px 0;
+    mmin-height: 460px;
   }
 
   .container {
@@ -782,8 +787,13 @@ footer {
       <article class="project-card fade-up">
 
         <div class="project-image">
-       <img
+<img
   src="/images/your-image.webp"
+  width="600"
+  height="400"
+  loading="lazy"
+  decoding="async"
+  alt="Trades website demo Rhondda">
   alt="Trades website demo Rhondda">
         </div>
 
@@ -817,8 +827,13 @@ footer {
       <article class="project-card fade-up">
 
         <div class="project-image">
-        <img
-  src="/images/your-image.webp"
+<img
+  src="/images/your-imag.webp"
+  width="600"
+  height="400"
+  loading="lazy"
+  decoding="async"
+  alt="Trades website demo Rhondda">
   alt="Trades website demo Rhondda">
         </div>
 
