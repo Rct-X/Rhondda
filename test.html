@@ -253,7 +253,8 @@ HERO
   padding: 80px 0;
   text-align: center;
   overflow: hidden;
-
+  position: relative;
+  
   background:
     url('components/images/home-hero.webp') center/cover no-repeat,
     radial-gradient(circle at 20% 20%, rgba(0,102,204,0.18), transparent 45%),
@@ -261,6 +262,10 @@ HERO
     linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
 }
 
+  .hero::before {
+  pointer-events: none;
+  }
+  
 
 .badge {
   background: linear-gradient(135deg, #dbeafe, #eff6ff);
