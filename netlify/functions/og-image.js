@@ -97,27 +97,39 @@ exports.handler = async (event) => {
       };
     }
 
-    // ================================
-    // FETCH FIREBASE DATA
-    // ================================
-    const url =
-      `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents/businesses`;
+// ================================
+// FIRESTORE (FILTERED QUERY - FIXED)
+// ================================
+const url =
+  `https://firestore.googleapis.com/v1/projects/${project}` +
+  `/databases/(default)/documents:runQuery`;
 
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (!data.documents) {
-      return {
-        statusCode: 404,
-        body: "No businesses found"
-      };
+const res = await fetch(url, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    structuredQuery: {
+      from: [{ collectionId: "businesses" }],
+      where: {
+        fieldFilter: {
+          field: { fieldPath: "slug" },
+          op: "EQUAL",
+          value: { stringValue: slug }
+        }
+      },
+      limit: 1
     }
+  })
+});
 
-    let business = null;
+const rows = await res.json();
+const doc = rows.find(r => r.document)?.document;
 
-    data.documents.forEach((doc) => {
+if (!doc?.fields) {
+  return { statusCode: 404, body: "Business not found" };
+}
 
-      const f = doc.fields;
+const f = doc.fields;
 
       if (f.slug?.stringValue === slug) {
 
