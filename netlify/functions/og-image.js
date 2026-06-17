@@ -60,7 +60,7 @@ exports.handler = async (event) => {
     }
 
     // ================================
-    // FIRESTORE QUERY (FAST + CLEAN)
+    // FIRESTORE QUERY
     // ================================
     const url =
       `https://firestore.googleapis.com/v1/projects/${project}` +
@@ -85,7 +85,6 @@ exports.handler = async (event) => {
     });
 
     const rows = await res.json();
-
     const doc = rows.find(r => r.document)?.document;
 
     if (!doc?.fields) {
@@ -115,9 +114,10 @@ exports.handler = async (event) => {
       };
 
     const lines = splitTitle(business.name);
+    const lineHeight = lines.length > 1 ? 105 : 0; 
 
     // ================================
-    // SVG
+    // SVG (Enhanced For Clickability)
     // ================================
     const svg = `
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
@@ -129,53 +129,80 @@ exports.handler = async (event) => {
   </linearGradient>
 
   <radialGradient id="glow">
-    <stop offset="0%" stop-color="${theme.glow}" stop-opacity="0.55"/>
+    <stop offset="0%" stop-color="${theme.glow}" stop-opacity="0.65"/>
     <stop offset="100%" stop-color="${theme.glow}" stop-opacity="0"/>
   </radialGradient>
 
   <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
     <stop offset="0%" stop-color="rgba(255,255,255,0.14)" />
-    <stop offset="100%" stop-color="rgba(255,255,255,0.04)" />
+    <stop offset="100%" stop-color="rgba(255,255,255,0.03)" />
   </linearGradient>
 
-  <filter id="blur"><feGaussianBlur stdDeviation="40"/></filter>
+  <linearGradient id="badge-bg" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="rgba(255,255,255,0.18)" />
+    <stop offset="100%" stop-color="rgba(255,255,255,0.08)" />
+  </linearGradient>
+
+  <filter id="blur"><feGaussianBlur stdDeviation="45"/></filter>
 
   <filter id="shadow">
-    <feDropShadow dx="0" dy="12" stdDeviation="24" flood-opacity="0.25"/>
+    <feDropShadow dx="0" dy="12" stdDeviation="24" flood-opacity="0.3" flood-color="#000000"/>
+  </filter>
+
+  <filter id="text-shadow">
+    <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.45"/>
   </filter>
 
   <filter id="noise">
-    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="2" stitchTiles="stitch"/>
     <feColorMatrix type="saturate" values="0"/>
     <feComponentTransfer>
-      <feFuncA type="table" tableValues="0 0.06"/>
+      <feFuncA type="table" tableValues="0 0.055"/>
     </feComponentTransfer>
   </filter>
 </defs>
 
+<!-- BACKGROUND -->
 <rect width="1200" height="630" fill="url(#bg)"/>
 
-<circle cx="980" cy="140" r="240" fill="url(#glow)" filter="url(#blur)"/>
-<circle cx="150" cy="560" r="180" fill="rgba(255,255,255,0.08)" filter="url(#blur)"/>
+<!-- GLOW EFFECTS -->
+<circle cx="1020" cy="150" r="260" fill="url(#glow)" filter="url(#blur)"/>
+<circle cx="200" cy="530" r="200" fill="rgba(255,255,255,0.06)" filter="url(#blur)"/>
 
-<rect width="1200" height="630" filter="url(#noise)" opacity="0.45"/>
+<!-- NOISE TEXTURE -->
+<rect width="1200" height="630" filter="url(#noise)" opacity="1"/>
 
-<rect x="40" y="40" width="1120" height="550" rx="34"
-fill="url(#glass)" stroke="rgba(255,255,255,0.12)" filter="url(#shadow)"/>
+<!-- GLASS CARD -->
+<rect x="40" y="40" width="1120" height="550" rx="36"
+fill="url(#glass)" stroke="rgba(255,255,255,0.14)" stroke-width="2" filter="url(#shadow)"/>
+
+<!-- CARD INNER ACCENT LINE -->
+<path d="M 40 290 L 1160 290" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+
+<!-- LOGO / WATERMARK BADGE -->
+<g transform="translate(1000, 95)" filter="url(#shadow)">
+  <circle cx="45" cy="45" r="50" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <text x="45" y="58" font-size="44" text-anchor="middle" fill="#FFFFFF">${theme.icon}</text>
+</g>
 
 <!-- TITLE -->
-<text x="70" y="240" font-family="Inter" font-size="92" font-weight="700" fill="#fff">
+<text x="75" y="220" font-family="Inter" font-size="88" font-weight="700" fill="#FFFFFF" filter="url(#text-shadow)" letter-spacing="-1">
   ${
     lines.map((l,i)=>`
-      <tspan x="70" dy="${i===0?0:102}">${escape(l)}</tspan>
+      <tspan x="75" dy="${i===0 ? 0 : lineHeight}">${escape(l)}</tspan>
     `).join("")
   }
 </text>
 
-<!-- SUBTITLE -->
-<text x="72" y="430" font-family="Inter" font-size="40" fill="rgba(255,255,255,0.84)">
-  ${escape(business.category)} • ${escape(business.town)}
-</text>
+<!-- CATEGORY AND TOWN BADGE -->
+<g transform="translate(75, 420)">
+  <!-- Capsule Background -->
+  <rect x="0" y="0" width="auto" height="60" rx="30" fill="url(#badge-bg)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <!-- Text inside Capsule -->
+  <text x="32" y="38" font-family="Inter" font-weight="600" font-size="24" fill="#FFFFFF" letter-spacing="0.5">
+    ${theme.icon}  <tspan font-weight="400" fill="rgba(255,255,255,0.95)">${escape(business.category)}</tspan>  <tspan fill="rgba(255,255,255,0.5)">•</tspan>  <tspan font-weight="500" fill="rgba(255,255,255,0.85)">${escape(business.town)}</tspan>
+  </text>
+</g>
 
 </svg>
 `;
