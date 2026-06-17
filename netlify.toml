@@ -18,16 +18,6 @@
   node_bundler = "zisi"
 
 # =========================
-# BOT‑ONLY OG ROUTING
-# =========================
-[[redirects]]
-  from = "/directory/:category/:town/:slug"
-  to = "/.netlify/functions/og-listing"
-  status = 200
-  force = true
-  conditions = {User-Agent = ["facebookexternalhit", "Facebot", "Twitterbot", "WhatsApp", "LinkedInBot", "Applebot"]}
-
-# =========================
 # SITEMAP / ROBOTS
 # =========================
 [[redirects]]
@@ -47,6 +37,23 @@
   from = "/directory/:category/:town/:slug"
   to = "/directory/business.html"
   status = 200
+
+# =========================
+# BOT‑ONLY OG ROUTING (MUST COME AFTER HUMAN RULE)
+# =========================
+[[redirects]]
+  from = "/directory/:category/:town/:slug"
+  to = "/.netlify/functions/og-listing"
+  status = 200
+  force = true
+  conditions = {User-Agent = [
+    "facebookexternalhit",
+    "Facebot",
+    "Twitterbot",
+    "WhatsApp",
+    "LinkedInBot",
+    "Applebot"
+  ]}
 
 # =========================
 # CATEGORY LISTING (HUMAN SPA)
