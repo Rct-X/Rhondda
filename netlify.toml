@@ -9,13 +9,23 @@
   included_files = ["netlify/fonts/**"]
 
 # =========================
-# OG IMAGE FUNCTION
+# OG IMAGE FUNCTIONS
 # =========================
 [functions."og-image"]
   node_bundler = "zisi"
 
 [functions."og-listing"]
   node_bundler = "zisi"
+
+# =========================
+# BOT‑ONLY OG ROUTING
+# =========================
+[[redirects]]
+  from = "/directory/:category/:town/:slug"
+  to = "/.netlify/functions/og-listing"
+  status = 200
+  force = true
+  conditions = {User-Agent = ["facebookexternalhit", "Facebot", "Twitterbot", "WhatsApp", "LinkedInBot", "Applebot"]}
 
 # =========================
 # SITEMAP / ROBOTS
@@ -39,7 +49,7 @@
   status = 200
 
 # =========================
-# CATEGORY LISTING
+# CATEGORY LISTING (HUMAN SPA)
 # =========================
 [[redirects]]
   from = "/directory/*"
