@@ -92,24 +92,6 @@ exports.handler = async (event) => {
     const finalUrl = `${base}${path}`;
 
     // ----------------------
-    // HUMAN VISITOR → REDIRECT TO REAL PAGE
-    // ----------------------
-    if (!isBot) {
-  return {
-    statusCode: 200,
-    headers: { "Content-Type": "text/html" },
-    body: `
-      <html>
-        <head>
-          <meta http-equiv="refresh" content="0; url=/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}">
-        </head>
-        <body></body>
-      </html>
-    `
-  };
-    }
-
-    // ----------------------
     // BOT → RETURN OG HTML
     // ----------------------
     return {
