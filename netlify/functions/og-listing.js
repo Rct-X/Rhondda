@@ -22,11 +22,13 @@ exports.handler = async (event) => {
     // ----------------------
     const ua = event.headers["user-agent"] || "";
     const isBot =
-      ua.includes("facebookexternalhit") ||
-      ua.includes("Twitterbot") ||
-      ua.includes("WhatsApp") ||
-      ua.includes("LinkedInBot") ||
-      ua.includes("Applebot");
+  ua.includes("facebookexternalhit") ||
+  ua.includes("Facebot") ||
+  ua.includes("facebookbot") ||
+  ua.includes("Twitterbot") ||
+  ua.includes("WhatsApp") ||
+  ua.includes("LinkedInBot") ||
+  ua.includes("Applebot");
 
     // ----------------------
     // Extract path
