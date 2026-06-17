@@ -10,7 +10,6 @@ function closeMenu() {
     btn.classList.remove("open");
     btn.setAttribute("aria-expanded", "false");
 
-    // also close all nav groups when menu closes
     document.querySelectorAll(".nav-group").forEach(g => {
         g.classList.remove("open");
     });
@@ -31,7 +30,6 @@ if (btn && menu) {
         isOpen ? closeMenu() : openMenu();
     });
 
-    // Close on outside click
     document.addEventListener("click", (e) => {
         const clickedInside = menu.contains(e.target) || btn.contains(e.target);
         if (!clickedInside && menu.classList.contains("open")) {
@@ -39,12 +37,10 @@ if (btn && menu) {
         }
     });
 
-    // ESC key closes everything
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeMenu();
     });
 
-    // Close menu when clicking normal links
     menu.querySelectorAll("a").forEach(link => {
         link.addEventListener("click", closeMenu);
     });
@@ -64,7 +60,6 @@ document.querySelectorAll(".nav-group-title").forEach(btn => {
 
         const isOpen = group.classList.contains("open");
 
-        // close other groups (accordion behaviour)
         document.querySelectorAll(".nav-group").forEach(g => {
             if (g !== group) {
                 g.classList.remove("open");
@@ -73,10 +68,7 @@ document.querySelectorAll(".nav-group-title").forEach(btn => {
             }
         });
 
-        // toggle current group
         group.classList.toggle("open", !isOpen);
-
-        // ARIA state update
         btn.setAttribute("aria-expanded", String(!isOpen));
     });
 });
@@ -88,30 +80,31 @@ document.querySelectorAll(".nav-group-title").forEach(btn => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const faqCards = document.querySelectorAll('.card-faq');
+    const faqCards = document.querySelectorAll('.card-faq');
 
-  faqCards.forEach(card => {
+    faqCards.forEach(card => {
 
-    const question = card.querySelector('.faq-question');
-    const answer = card.querySelector('.faq-answer');
+        const question = card.querySelector('.faq-question');
+        const answer = card.querySelector('.faq-answer');
 
-    question.addEventListener('click', () => {
+        question.addEventListener('click', () => {
 
-      const isOpen = card.classList.contains('active');
+            const isOpen = card.classList.contains('active');
 
-      faqCards.forEach(item => {
-        item.classList.remove('active');
-        item.querySelector('.faq-answer').style.maxHeight = null;
-      });
+            faqCards.forEach(item => {
+                item.classList.remove('active');
+                const ans = item.querySelector('.faq-answer');
+                if (ans) ans.style.maxHeight = null;
+            });
 
-      if (!isOpen) {
-        card.classList.add('active');
-        answer.style.maxHeight = answer.scrollHeight + 'px';
-      }
+            if (!isOpen) {
+                card.classList.add('active');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+            }
+
+        });
 
     });
-
-  });
 
 });
 
@@ -149,20 +142,46 @@ const yearSpan = document.getElementById("year");
 if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
 }
+
+
 // =========================
-// LAZY LOAD FOOTER CSS
+// FOOTER CSS LOAD (NON-BLOCKING)
 // =========================
 
 (function loadFooterCSS() {
     const link = document.createElement("link");
-
     link.rel = "stylesheet";
     link.href = "/css/footer.css";
-    link.media = "print"; // prevents render blocking
+    link.media = "print";
 
     link.onload = function () {
-        link.media = "all"; // activate after load
+        link.media = "all";
     };
 
     document.head.appendChild(link);
 })();
+
+
+// =========================
+// FOOTER HTML LOAD (THIS IS THE IMPORTANT PART)
+// =========================
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const container = document.getElementById("footer-container");
+    if (!container) return;
+
+    try {
+        const res = await fetch("/components/sections/footer.html");
+
+        if (!res.ok) {
+            console.error("Footer failed to load:", res.status);
+            return;
+        }
+
+        const html = await res.text();
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error("Footer load error:", err);
+    }
+});
