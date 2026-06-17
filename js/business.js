@@ -116,7 +116,6 @@ async function loadBusiness(categorySlug, townSlug, slug) {
 
   const b = snap.docs[0].data();
   window.currentBusiness = b;
-const slug = window.location.pathname.split("/").pop();
 
 document.querySelector('meta[property="og:image"]').setAttribute(
   "content",
