@@ -35,10 +35,10 @@
 # =========================
 # THIS IS YOUR CORE PAGE LOADER
 [[redirects]]
-from = "/directory/:category/:town/:slug"
-to = "/.netlify/functions/og-listing"
-status = 200
-query = {slug = ":slug"}
+  from = "/directory/:category/:town/:slug"
+  to = "/directory/business.html"
+  status = 200
+  force = true
 
 # =========================
 # DIRECTORY LISTING PAGES
