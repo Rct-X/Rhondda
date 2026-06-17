@@ -44,6 +44,11 @@
 # CATEGORY LISTING (HUMAN SPA)
 # =========================
 [[redirects]]
-  from = "/directory/*"
+  from = "/directory/:category/:town"
+  to = "/directory.html"
+  status = 200
+
+[[redirects]]
+  from = "/directory/:category"
   to = "/directory.html"
   status = 200
