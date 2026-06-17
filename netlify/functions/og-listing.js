@@ -96,10 +96,16 @@ exports.handler = async (event) => {
     // ----------------------
     if (!isBot) {
   return {
-    statusCode: 302,
-    headers: {
-      Location: `/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}`
-    }
+    statusCode: 200,
+    headers: { "Content-Type": "text/html" },
+    body: `
+      <html>
+        <head>
+          <meta http-equiv="refresh" content="0; url=/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}">
+        </head>
+        <body></body>
+      </html>
+    `
   };
     }
 
