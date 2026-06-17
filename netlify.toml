@@ -9,7 +9,7 @@
   included_files = ["netlify/fonts/**"]
 
 # =========================================
-# EDGE FUNCTIONS
+# EDGE FUNCTIONS (optional)
 # =========================================
 [[edge_functions]]
   function = "hello"
@@ -25,20 +25,12 @@
   node_bundler = "zisi"
 
 # =========================================
-# SECURITY / ADMIN
+# SECURITY
 # =========================================
 [[headers]]
   for = "/admin/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
-
-# =========================================
-# TRACKING FILE
-# =========================================
-[[headers]]
-  for = "/js/rctx-tracker.js"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
 
 # =========================================
 # STATIC ASSETS CACHE
@@ -65,7 +57,7 @@
   status = 200
 
 # =========================================
-# CRITICAL ROUTING FIX (OG-FIRST APPROACH)
+# ⭐ CRITICAL: OG ROUTING (THIS FIXES FACEBOOK)
 # =========================================
 # ALL directory pages go through OG function FIRST
 [[redirects]]
@@ -75,9 +67,8 @@
   force = true
 
 # =========================================
-# DIRECTORY SPA FALLBACK
+# SPA FALLBACK (HUMAN USERS)
 # =========================================
-# everything else in directory goes to SPA
 [[redirects]]
   from = "/directory/*"
   to = "/directory.html"
