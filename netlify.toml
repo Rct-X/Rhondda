@@ -31,6 +31,25 @@
   status = 200
 
 # =========================
+# BOT OG ROUTE (FACEBOOK, TWITTER, WHATSAPP, LINKEDIN)
+# =========================
+[[redirects]]
+  from = "/directory/:category/:town/:slug"
+  to = "/.netlify/functions/og-listing?slug=:slug"
+  status = 200
+  force = true
+  conditions = { UserAgent = [
+    "facebookexternalhit",
+    "facebot",
+    "facebookplatform",
+    "meta-externalagent",
+    "meta-externalfetcher",
+    "twitterbot",
+    "linkedinbot",
+    "whatsapp",
+    "applebot"
+  ] }
+# =========================
 # MAIN DIRECTORY ROUTE (HUMANS)
 # =========================
 # THIS IS YOUR CORE PAGE LOADER
