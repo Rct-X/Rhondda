@@ -386,6 +386,21 @@
     border-top: 1px solid var(--border);
   }
 
-  .nav-cta .btn {
-    width: 100%;
-  }
+  ..nav-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+.nav-cta-btn:hover {
+  background: var(--primary-hover);
+}
