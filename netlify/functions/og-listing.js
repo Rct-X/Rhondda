@@ -31,14 +31,16 @@ exports.handler = async (event) => {
     // ----------------------
     // Extract path
     // ----------------------
-    const fullUrl = event.rawUrl || "";
-    const match = fullUrl.match(/\/directory\/.*$/);
+    const fullPath =
+  event.path ||
+  event.rawUrl?.replace("https://rctx.co.uk", "") ||
+  event.rawUrl;
 
-    if (!match) {
-      return { statusCode: 400, body: "Invalid directory URL" };
-    }
+if (!fullPath || !fullPath.startsWith("/directory/")) {
+  return { statusCode: 400, body: "Invalid directory URL" };
+}
 
-    const path = match[0];
+const path = fullPath;
     const parts = path.split("/").filter(Boolean);
 
     const categorySlug = parts[1];
