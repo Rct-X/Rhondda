@@ -6,10 +6,8 @@ const btn = document.getElementById("hamburgerBtn");
 const menu = document.getElementById("mobileMenu");
 
 function closeMenu() {
-    if (!menu || !btn) return;
-
-    menu.classList.remove("show-menu");
-    btn.classList.remove("active");
+    menu.classList.remove("open");
+    btn.classList.remove("open");
     btn.setAttribute("aria-expanded", "false");
 
     document.querySelectorAll(".nav-group").forEach(g => {
@@ -18,10 +16,8 @@ function closeMenu() {
 }
 
 function openMenu() {
-    if (!menu || !btn) return;
-
-    menu.classList.add("show-menu");
-    btn.classList.add("active");
+    menu.classList.add("open");
+    btn.classList.add("open");
     btn.setAttribute("aria-expanded", "true");
 }
 
@@ -30,13 +26,13 @@ if (btn && menu) {
     btn.addEventListener("click", (e) => {
         e.stopPropagation();
 
-        const isOpen = menu.classList.contains("show-menu");
+        const isOpen = menu.classList.contains("open");
         isOpen ? closeMenu() : openMenu();
     });
 
     document.addEventListener("click", (e) => {
         const clickedInside = menu.contains(e.target) || btn.contains(e.target);
-        if (!clickedInside && menu.classList.contains("show-menu")) {
+        if (!clickedInside && menu.classList.contains("open")) {
             closeMenu();
         }
     });
@@ -90,8 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const question = card.querySelector('.faq-question');
         const answer = card.querySelector('.faq-answer');
-
-        if (!question || !answer) return;
 
         question.addEventListener('click', () => {
 
@@ -169,7 +163,7 @@ if (yearSpan) {
 
 
 // =========================
-// FOOTER HTML LOAD
+// FOOTER HTML LOAD (THIS IS THE IMPORTANT PART)
 // =========================
 
 document.addEventListener("DOMContentLoaded", async () => {
