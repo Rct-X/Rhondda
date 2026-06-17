@@ -1,13 +1,21 @@
+// ======================================================
+// RCTX BUSINESS PAGE — CLEAN, MODERN, PRODUCTION VERSION
+// ======================================================
+
+// Firebase
+let db;
+
+// ======================================================
+// LOAD FIREBASE CONFIG
+// ======================================================
 async function loadFirebaseConfig() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
 }
 
-let db;
-
-// ===============================
-// READ URL PATH PARAMETERS
-// ===============================
+// ======================================================
+// URL PARAM PARSER (supports FB wrapped, query params, paths)
+// ======================================================
 function getBusinessParams() {
   const url = new URL(window.location.href);
 
@@ -17,8 +25,8 @@ function getBusinessParams() {
     try {
       const real = new URL(decodeURIComponent(fbWrapped));
       return extractFromPath(real.pathname);
-    } catch (e) {
-      console.error("Facebook wrapped URL parse failed", e);
+    } catch (err) {
+      console.error("FB wrapped URL parse failed:", err);
     }
   }
 
@@ -39,9 +47,9 @@ function getBusinessParams() {
   return extractFromPath(url.pathname);
 }
 
-// ===============================
+// ======================================================
 // PATH EXTRACTOR
-// ===============================
+// ======================================================
 function extractFromPath(pathname) {
   const parts = pathname.split("/").filter(Boolean);
 
@@ -61,9 +69,9 @@ function extractFromPath(pathname) {
   };
 }
 
-// ===============================
-// INIT FIREBASE + LOAD BUSINESS
-// ===============================
+// ======================================================
+// INIT APP
+// ======================================================
 (async () => {
   try {
     const config = await loadFirebaseConfig();
@@ -74,27 +82,23 @@ function extractFromPath(pathname) {
 
     db = firebase.firestore();
 
-    const page = getBusinessParams();
-    if (!page) {
-      console.error("Missing business parameters");
+    const params = getBusinessParams();
+    if (!params) {
+      console.error("Invalid business URL");
+      document.getElementById("businessName").textContent = "Invalid Business URL";
       return;
     }
 
-    await loadBusiness(page.category, page.town, page.slug);
+    await loadBusiness(params.category, params.town, params.slug);
 
   } catch (err) {
     console.error("Init error:", err);
   }
 })();
 
-// ===============================
+// ======================================================
 // LOAD BUSINESS DATA
-// ===============================
-if (!categorySlug || !townSlug || !slug) {
-  console.error("Invalid URL params", { categorySlug, townSlug, slug });
-  document.getElementById("businessName").textContent = "Invalid Business URL";
-  return;
-}
+// ======================================================
 async function loadBusiness(categorySlug, townSlug, slug) {
   const q = db
     .collection("businesses")
@@ -113,9 +117,9 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   const b = snap.docs[0].data();
   window.currentBusiness = b;
 
-  // ===============================
+  // ======================================================
   // SEO
-  // ===============================
+  // ======================================================
   document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
 
   document.getElementById("seoDescription")?.setAttribute(
@@ -123,34 +127,24 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     `${b.name} in ${b.town}. Local ${b.category} serving Rhondda Cynon Taf.`
   );
 
-  document.getElementById("canonicalUrl")?.setAttribute(
-    "href",
-    window.location.href
-  );
+  document.getElementById("canonicalUrl")?.setAttribute("href", window.location.href);
+  document.getElementById("ogUrl")?.setAttribute("content", window.location.href);
 
-  document.getElementById("ogUrl")?.setAttribute(
-    "content",
-    window.location.href
-  );
-
-  // ===============================
+  // ======================================================
   // MAIN CONTENT
-  // ===============================
-  document.getElementById("businessName").textContent = b.name;
-  document.getElementById("businessCategory").textContent = b.category;
-  document.getElementById("businessTown").textContent = b.town;
+  // ======================================================
+  setText("businessName", b.name);
+  setText("businessCategory", b.category);
+  setText("businessTown", b.town);
 
-  const catInline = document.getElementById("businessCategoryInline");
-  if (catInline) catInline.textContent = b.category;
-
-  const townInline = document.getElementById("businessTownInline");
-  if (townInline) townInline.textContent = b.town;
+  setText("businessCategoryInline", b.category);
+  setText("businessTownInline", b.town);
 
   document.querySelector(".business-subtitle")?.classList.add("loaded");
 
-  // ===============================
+  // ======================================================
   // QUICK ACTION BUTTONS
-  // ===============================
+  // ======================================================
   const phoneBtn = document.getElementById("businessPhoneBtn");
   if (phoneBtn) phoneBtn.href = b.phone ? `tel:${b.phone}` : "#";
 
@@ -160,44 +154,35 @@ async function loadBusiness(categorySlug, townSlug, slug) {
       webBtn.style.display = "none";
     } else {
       webBtn.style.display = "inline-flex";
-      webBtn.href = b.website.startsWith("http")
-        ? b.website
-        : `https://${b.website}`;
+      webBtn.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
     }
   }
 
-  // ===============================
+  // ======================================================
   // ABOUT + CONTACT
-  // ===============================
-  document.getElementById("businessDescription").textContent =
-    b.description || "No description provided.";
-
-  document.getElementById("businessPhone").textContent =
-    b.phone || "Not provided";
-
-  document.getElementById("businessAddress").textContent =
-    b.address || "Not provided";
+  // ======================================================
+  setText("businessDescription", b.description || "No description provided.");
+  setText("businessPhone", b.phone || "Not provided");
+  setText("businessAddress", b.address || "Not provided");
 
   const websiteEl = document.getElementById("businessWebsite");
   if (b.website) {
     websiteEl.textContent = b.website;
-    websiteEl.href = b.website.startsWith("http")
-      ? b.website
-      : `https://${b.website}`;
+    websiteEl.href = b.website.startsWith("http") ? b.website : `https://${b.website}`;
   } else {
     websiteEl.textContent = "Not provided";
     websiteEl.removeAttribute("href");
   }
 
-  // ===============================
+  // ======================================================
   // SIDEBAR
-  // ===============================
-  document.getElementById("businessTownSidebar").textContent = b.town;
-  document.getElementById("businessCategorySidebar").textContent = b.category;
+  // ======================================================
+  setText("businessTownSidebar", b.town);
+  setText("businessCategorySidebar", b.category);
 
-  // ===============================
+  // ======================================================
   // LOGO
-  // ===============================
+  // ======================================================
   const logoEl = document.getElementById("businessLogo");
   if (logoEl) {
     if (b.logoUrl) {
@@ -208,139 +193,167 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     }
   }
 
-  // ===============================
+  // ======================================================
   // GALLERY
-  // ===============================
-  const galleryEl = document.getElementById("businessGallery");
-  if (galleryEl) {
-    galleryEl.innerHTML = "";
+  // ======================================================
+  renderGallery(b.gallery);
 
-    if (b.gallery?.length) {
-      b.gallery.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.className = "gallery-img";
-        img.loading = "lazy";
-        img.decoding = "async";
-        galleryEl.appendChild(img);
-      });
-    } else {
-      galleryEl.innerHTML = "<p>No photos added yet.</p>";
-    }
-  }
-
-  // ===============================
-  // GALLERY CAROUSEL
-  // ===============================
-  const scroller = document.getElementById("galleryScroller");
-  const counter = document.getElementById("galleryCounter");
-
-  if (scroller && counter) {
-    if (b.gallery?.length) {
-      scroller.innerHTML = "";
-      b.gallery.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.loading = "lazy";
-        img.decoding = "async";
-        scroller.appendChild(img);
-      });
-
-      let current = 1;
-      const total = b.gallery.length;
-      counter.textContent = `${current} / ${total}`;
-
-      scroller.addEventListener("scroll", () => {
-        const width = scroller.children[0].offsetWidth + 10;
-        current = Math.round(scroller.scrollLeft / width) + 1;
-        counter.textContent = `${current} / ${total}`;
-      });
-    } else {
-      scroller.innerHTML = "<p>No photos added yet.</p>";
-      counter.textContent = "";
-    }
-  }
-
-  // ===============================
+  // ======================================================
   // BADGES
-  // ===============================
+  // ======================================================
   if (b.verified) {
-    document.getElementById("verifiedBadge").innerHTML += `
-      <span class="badge badge-verified">Verified</span>
-    `;
+    appendBadge("verifiedBadge", `<span class="badge badge-verified">Verified</span>`);
   }
 
   if (b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup") {
-    document.getElementById("claimedBadge").innerHTML += `
-      <span class="badge badge-claimed">Claimed</span>
-    `;
-    document.getElementById("claimedMessage").textContent =
-      "This business listing has been claimed by the owner.";
+    appendBadge("claimedBadge", `<span class="badge badge-claimed">Claimed</span>`);
+    setText("claimedMessage", "This business listing has been claimed by the owner.");
   }
 
   if (b.wasteLicence) {
-    document.getElementById("verifiedBadge").innerHTML += `
-      <span class="badge badge-waste">♻️ Licensed Waste Carrier</span>
-    `;
+    appendBadge("verifiedBadge", `<span class="badge badge-waste">♻️ Licensed Waste Carrier</span>`);
   }
 
-  // ===============================
+  // ======================================================
   // HOURS
-  // ===============================
-  const hoursList = document.getElementById("businessHours");
-  if (hoursList) {
-    hoursList.innerHTML = "";
-    if (b.hours) {
-      Object.entries(b.hours).forEach(([day, hours]) => {
-        const li = document.createElement("li");
-        li.textContent = `${day}: ${hours}`;
-        hoursList.appendChild(li);
-      });
+  // ======================================================
+  renderHours(b.hours);
+
+  // ======================================================
+  // CLAIM BUTTON
+  // ======================================================
+  const claimBtn = document.getElementById("claimBtn");
+  if (claimBtn) {
+    if (b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup") {
+      claimBtn.style.display = "none";
     } else {
-      hoursList.innerHTML = "<li>No hours provided.</li>";
+      claimBtn.href = `/claim-business?b=${b.slug}`;
     }
   }
 
-  // ===============================
-  // CLAIM BUTTON
-  // ===============================
-  const claimBtn = document.getElementById("claimBtn");
-if (claimBtn) {
-  if (b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup") {
-    claimBtn.style.display = "none";
-  } else {
-    claimBtn.href = `/claim-business?b=${b.slug}`;
-  }
-}
-
-  // ===============================
+  // ======================================================
   // RELATED BUSINESSES
-  // ===============================
+  // ======================================================
   await loadRelated(b.categorySlug, b.townSlug, b.slug);
 
-  // ===============================
+  // ======================================================
   // WHATSAPP SHARE BUTTON
-  // ===============================
+  // ======================================================
   const waBtn = document.getElementById("whatsappShareBtn");
   if (waBtn) {
-    const text = encodeURIComponent(
-      `Check out this local business on RCTX:\n${window.location.href}`
-    );
+    const text = encodeURIComponent(`Check out this local business on RCTX:\n${window.location.href}`);
     waBtn.href = `https://wa.me/?text=${text}`;
   }
 }
 
-// ===============================
-// RELATED BUSINESSES
-// ===============================
-async function loadRelated(categorySlug, townSlug, currentSlug) {
-  const relatedGrid = document.getElementById("relatedGrid");
-  if (!relatedGrid) return;
+// ======================================================
+// HELPERS
+// ======================================================
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 
-  relatedGrid.innerHTML = `<p class="text-dim">Loading recommendations…</p>`;
+function appendBadge(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML += html;
+}
+
+// ======================================================
+// GALLERY
+// ======================================================
+function renderGallery(gallery) {
+  const galleryEl = document.getElementById("businessGallery");
+  if (!galleryEl) return;
+
+  galleryEl.innerHTML = "";
+
+  if (!gallery?.length) {
+    galleryEl.innerHTML = "<p>No photos added yet.</p>";
+    return;
+  }
+
+  gallery.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.className = "gallery-img";
+    img.loading = "lazy";
+    img.decoding = "async";
+    galleryEl.appendChild(img);
+  });
+
+  renderCarousel(gallery);
+}
+
+// ======================================================
+// GALLERY CAROUSEL
+// ======================================================
+function renderCarousel(gallery) {
+  const scroller = document.getElementById("galleryScroller");
+  const counter = document.getElementById("galleryCounter");
+
+  if (!scroller || !counter) return;
+
+  scroller.innerHTML = "";
+
+  if (!gallery?.length) {
+    scroller.innerHTML = "<p>No photos added yet.</p>";
+    counter.textContent = "";
+    return;
+  }
+
+  gallery.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.loading = "lazy";
+    img.decoding = "async";
+    scroller.appendChild(img);
+  });
+
+  let current = 1;
+  const total = gallery.length;
+  counter.textContent = `${current} / ${total}`;
+
+  scroller.addEventListener("scroll", () => {
+    const width = scroller.children[0].offsetWidth + 10;
+    current = Math.round(scroller.scrollLeft / width) + 1;
+    counter.textContent = `${current} / ${total}`;
+  });
+}
+
+// ======================================================
+// HOURS
+// ======================================================
+function renderHours(hours) {
+  const list = document.getElementById("businessHours");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  if (!hours) {
+    list.innerHTML = "<li>No hours provided.</li>";
+    return;
+  }
+
+  Object.entries(hours).forEach(([day, value]) => {
+    const li = document.createElement("li");
+    li.textContent = `${day}: ${value}`;
+    list.appendChild(li);
+  });
+}
+
+// ======================================================
+// RELATED BUSINESSES
+// ======================================================
+async function loadRelated(categorySlug, townSlug, currentSlug) {
+  const grid = document.getElementById("relatedGrid");
+  if (!grid) return;
+
+  grid.innerHTML = `<p class="text-dim">Loading recommendations…</p>`;
 
   let results = [];
 
+  // Same town
   const q1 = db
     .collection("businesses")
     .where("categorySlug", "==", categorySlug)
@@ -353,6 +366,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
     if (b.slug !== currentSlug) results.push(b);
   });
 
+  // Same category (fallback)
   if (results.length < 4) {
     const q2 = db
       .collection("businesses")
@@ -371,11 +385,11 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
   results = results.slice(0, 4);
 
   if (!results.length) {
-    relatedGrid.innerHTML = `<p>No similar businesses found.</p>`;
+    grid.innerHTML = `<p>No similar businesses found.</p>`;
     return;
   }
 
-  relatedGrid.innerHTML = "";
+  grid.innerHTML = "";
 
   results.forEach(b => {
     const card = document.createElement("a");
@@ -393,19 +407,17 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
       </div>
 
       <h3>${b.name}</h3>
-
       <p class="text-dim">${b.category} • ${b.town}</p>
-
       <span class="view-link">View Business →</span>
     `;
 
-    relatedGrid.appendChild(card);
+    grid.appendChild(card);
   });
 }
 
-// ===============================
-// SHARE POPUP (IMPROVED)
-// ===============================
+// ======================================================
+// SHARE POPUP
+// ======================================================
 let autoClose;
 
 setTimeout(() => {
@@ -420,9 +432,9 @@ setTimeout(() => {
 
 }, 6000);
 
-// ===============================
+// ======================================================
 // SHARE BUTTON
-// ===============================
+// ======================================================
 function shareBusiness() {
   const url = window.location.href;
   const title = document.title;
@@ -439,9 +451,9 @@ function shareBusiness() {
   }
 }
 
-// ===============================
-// COPY LINK (optional)
-// ===============================
+// ======================================================
+// COPY LINK
+// ======================================================
 function copyBusinessLink() {
   navigator.clipboard.writeText(window.location.href);
   alert("Link copied!");
