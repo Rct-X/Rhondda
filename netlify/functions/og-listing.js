@@ -94,6 +94,9 @@ exports.handler = async (event) => {
 
     const rows = await res.json();
 
+    console.log("SLUG LOOKUP:", cleanSlug);
+console.log(JSON.stringify(rows, null, 2));
+
     const doc =
       rows.find(r => r.document)?.document;
 
