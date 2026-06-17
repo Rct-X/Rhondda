@@ -94,7 +94,7 @@ exports.handler = async (event) => {
     const town =
       f.town?.stringValue || "";
 
-    const finalUrl = `${base}/directory/${cleanSlug}`;
+    const finalUrl = `${base}${path}`;
 
     const image =
       f.logo?.stringValue ||
