@@ -43,21 +43,21 @@ function getBusinessParams() {
 // PATH EXTRACTOR
 // ===============================
 function extractFromPath(pathname) {
-  const clean = pathname.replace(/\/+/g, "/").replace(/\/$/, "");
-  const parts = clean.split("/").filter(Boolean);
+  const parts = pathname.split("/").filter(Boolean);
 
-  const dirIndex = parts.indexOf("directory");
-  if (dirIndex === -1) return null;
-  if (parts.length < dirIndex + 4) return null;
+  const i = parts.indexOf("directory");
+  if (i === -1) return null;
+
+  const category = parts[i + 1];
+  const town = parts[i + 2];
+  const slug = parts[i + 3];
+
+  if (!category || !town || !slug) return null;
 
   return {
-    category: decodeURIComponent(parts[dirIndex + 1]).trim().toLowerCase(),
-    town: decodeURIComponent(parts[dirIndex + 2]).trim().toLowerCase(),
-    slug: decodeURIComponent(parts[dirIndex + 3])
-      .split("?")[0]
-      .split("&")[0]
-      .trim()
-      .toLowerCase()
+    category: decodeURIComponent(category).toLowerCase(),
+    town: decodeURIComponent(town).toLowerCase(),
+    slug: decodeURIComponent(slug).toLowerCase()
   };
 }
 
@@ -90,6 +90,11 @@ function extractFromPath(pathname) {
 // ===============================
 // LOAD BUSINESS DATA
 // ===============================
+if (!categorySlug || !townSlug || !slug) {
+  console.error("Invalid URL params", { categorySlug, townSlug, slug });
+  document.getElementById("businessName").textContent = "Invalid Business URL";
+  return;
+}
 async function loadBusiness(categorySlug, townSlug, slug) {
   const q = db
     .collection("businesses")
