@@ -21,22 +21,30 @@ exports.handler = async (event) => {
     const project = process.env.RN_FIREBASE_PROJECT_ID;
 
     // =======================
-    // GET SLUG (SOURCE OF TRUTH)
+    // GET SLUG
     // =======================
     const slug =
       event.queryStringParameters?.slug ||
       event.path?.split("/").filter(Boolean).pop();
 
     if (!slug) {
-      return { statusCode: 400, body: "Missing slug" };
+      return {
+        statusCode: 400,
+        body: "Missing slug"
+      };
     }
 
-    const cleanSlug = decodeURIComponent(slug).toLowerCase().trim();
+    const cleanSlug = decodeURIComponent(slug)
+      .toLowerCase()
+      .trim();
 
     // =======================
-    // BOT DETECTION (ROBUST)
+    // BOT DETECTION
     // =======================
-    const ua = (event.headers["user-agent"] || "").toLowerCase();
+    const ua = (
+      event.headers["user-agent"] ||
+      ""
+    ).toLowerCase();
 
     const isBot =
       ua.includes("facebookexternalhit") ||
@@ -50,23 +58,33 @@ exports.handler = async (event) => {
       ua.includes("applebot");
 
     // =======================
-    // FIRESTORE QUERY (FAST + RELIABLE)
+    // FIRESTORE QUERY
     // =======================
-    const url =
+    const firestoreUrl =
       `https://firestore.googleapis.com/v1/projects/${project}` +
       `/databases/(default)/documents:runQuery`;
 
-    const res = await fetch(url, {
+    const res = await fetch(firestoreUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         structuredQuery: {
-          from: [{ collectionId: "businesses" }],
+          from: [
+            {
+              collectionId: "businesses"
+            }
+          ],
           where: {
             fieldFilter: {
-              field: { fieldPath: "slug" },
+              field: {
+                fieldPath: "slug"
+              },
               op: "EQUAL",
-              value: { stringValue: cleanSlug }
+              value: {
+                stringValue: cleanSlug
+              }
             }
           },
           limit: 1
@@ -75,84 +93,101 @@ exports.handler = async (event) => {
     });
 
     const rows = await res.json();
-    const doc = rows.find((r) => r.document)?.document;
+
+    const doc =
+      rows.find(r => r.document)?.document;
 
     if (!doc?.fields) {
-      return { statusCode: 404, body: "Business not found" };
+      return {
+        statusCode: 404,
+        body: "Business not found"
+      };
     }
 
     const f = doc.fields;
 
-    const name = f.name?.stringValue || "Business";
+    // =======================
+    // BUSINESS DATA
+    // =======================
+    const name =
+      f.name?.stringValue ||
+      "Business";
+
     const description =
       f.description?.stringValue ||
       "Local business in Rhondda Cynon Taf";
 
-    const category =
-      f.category?.stringValue || "Local Business";
+    const categorySlug =
+      f.categorySlug?.stringValue || "";
 
-    const town =
-      f.town?.stringValue || "";
+    const townSlug =
+      f.townSlug?.stringValue || "";
 
-    const finalUrl = `${base}${path}`;
-
-    const image =
-      f.logo?.stringValue ||
-      f.image?.stringValue ||
-      `${base}/images/categories/default.webp`;
+    const finalUrl =
+      `${base}/directory/${categorySlug}/${townSlug}/${cleanSlug}`;
 
     // =======================
-    // HUMAN USERS → SPA REDIRECT
+    // HUMAN VISITOR
     // =======================
     if (!isBot) {
       return {
         statusCode: 200,
-        headers: { "Content-Type": "text/html" },
+        headers: {
+          "Content-Type": "text/html"
+        },
         body: `
 <!doctype html>
 <html>
 <head>
-  <meta http-equiv="refresh" content="0; url=/directory/business.html?slug=${cleanSlug}">
+<meta http-equiv="refresh"
+content="0; url=/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${cleanSlug}">
 </head>
 <body></body>
 </html>
-        `
+`
       };
     }
 
     // =======================
-    // BOT → OG TAGS
+    // BOT OG TAGS
     // =======================
     return {
       statusCode: 200,
-      headers: { "Content-Type": "text/html" },
+      headers: {
+        "Content-Type": "text/html"
+      },
       body: `
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
 
-  <title>${escapeHtml(name)}</title>
+<meta charset="utf-8">
 
-  <meta property="og:title" content="${escapeHtml(name)}">
-  <meta property="og:description" content="${escapeHtml(description)}">
-  <meta property="og:image" content="https://rctx.co.uk/.netlify/functions/og-image?slug=${cleanSlug}">
-  <meta property="og:url" content="${finalUrl}">
-  <meta property="og:type" content="website">
+<title>${escapeHtml(name)}</title>
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${escapeHtml(name)}">
-  <meta name="twitter:description" content="${escapeHtml(description)}">
-  <meta name="twitter:image" content="https://rctx.co.uk/.netlify/functions/og-image?slug=${cleanSlug}">
+<meta property="og:title" content="${escapeHtml(name)}">
+<meta property="og:description" content="${escapeHtml(description)}">
+<meta property="og:image" content="https://rctx.co.uk/.netlify/functions/og-image?slug=${cleanSlug}">
+<meta property="og:url" content="${finalUrl}">
+<meta property="og:type" content="website">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(name)}">
+<meta name="twitter:description" content="${escapeHtml(description)}">
+<meta name="twitter:image" content="https://rctx.co.uk/.netlify/functions/og-image?slug=${cleanSlug}">
+
 </head>
-
 <body></body>
 </html>
-      `
+`
     };
 
   } catch (err) {
     console.error(err);
-    return { statusCode: 500, body: "Server error" };
+
+    return {
+      statusCode: 500,
+      body: "Server error"
+    };
   }
 };
