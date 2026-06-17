@@ -113,9 +113,9 @@ exports.handler = async (event) => {
     // BOT → RETURN OG HTML
     // ----------------------
     return {
-      statusCode: 200,
-      headers: { "Content-Type": "text/html" },
-      body: `
+  statusCode: 200,
+  headers: { "Content-Type": "text/html" },
+  body: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -129,10 +129,15 @@ exports.handler = async (event) => {
 
 <meta name="twitter:card" content="summary_large_image">
 </head>
-<body></body>
+
+<body>
+  <script>
+    window.location.href = "/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}";
+  </script>
+</body>
 </html>
 `,
-    };
+};
   } catch (err) {
     return { statusCode: 500, body: "Server error" };
   }
