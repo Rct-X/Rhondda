@@ -1,5 +1,5 @@
 # =========================
-# BUILD
+# BUILD SETTINGS
 # =========================
 [build]
   publish = "."
@@ -9,7 +9,7 @@
   included_files = ["netlify/fonts/**"]
 
 # =========================
-# OG IMAGE FUNCTIONS
+# FUNCTIONS CONFIG
 # =========================
 [functions."og-image"]
   node_bundler = "zisi"
@@ -31,17 +31,17 @@
   status = 200
 
 # =========================
-# BUSINESS PAGE → ALWAYS GO TO OG-LISTING
-# (function decides bot vs human)
+# MAIN DIRECTORY ROUTE (HUMANS)
 # =========================
+# THIS IS YOUR CORE PAGE LOADER
 [[redirects]]
   from = "/directory/:category/:town/:slug"
-  to = "/.netlify/functions/og-listing"
+  to = "/directory/business.html"
   status = 200
   force = true
 
 # =========================
-# CATEGORY LISTING (HUMAN SPA)
+# DIRECTORY LISTING PAGES
 # =========================
 [[redirects]]
   from = "/directory/:category/:town"
