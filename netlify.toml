@@ -41,7 +41,7 @@
     Access-Control-Allow-Origin = "*"
 
 # =========================================
-# STATIC OG IMAGE CACHE
+# STATIC ASSETS CACHE
 # =========================================
 [[headers]]
   for = "/images/*"
@@ -65,17 +65,21 @@
   status = 200
 
 # =========================================
-# BUSINESS PAGE (SPA ROUTE)
+# CRITICAL ROUTING FIX (OG-FIRST APPROACH)
 # =========================================
+# ALL directory pages go through OG function FIRST
 [[redirects]]
   from = "/directory/:category/:town/:slug"
-  to = "/directory/business.html"
+  to = "/.netlify/functions/og-listing"
   status = 200
+  force = true
 
 # =========================================
-# CATEGORY / DIRECTORY PAGES
+# DIRECTORY SPA FALLBACK
 # =========================================
+# everything else in directory goes to SPA
 [[redirects]]
   from = "/directory/*"
   to = "/directory.html"
   status = 200
+  force = true
