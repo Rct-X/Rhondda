@@ -31,29 +31,14 @@
   status = 200
 
 # =========================
-# BUSINESS PAGE (HUMAN SPA ONLY)
-# =========================
-[[redirects]]
-  from = "/directory/:category/:town/:slug"
-  to = "/directory/business.html"
-  status = 200
-
-# =========================
-# BOT‑ONLY OG ROUTING (MUST COME AFTER HUMAN RULE)
+# BUSINESS PAGE → ALWAYS GO TO OG-LISTING
+# (function decides bot vs human)
 # =========================
 [[redirects]]
   from = "/directory/:category/:town/:slug"
   to = "/.netlify/functions/og-listing"
   status = 200
   force = true
-  conditions = {User-Agent = [
-    "facebookexternalhit",
-    "Facebot",
-    "Twitterbot",
-    "WhatsApp",
-    "LinkedInBot",
-    "Applebot"
-  ]}
 
 # =========================
 # CATEGORY LISTING (HUMAN SPA)
