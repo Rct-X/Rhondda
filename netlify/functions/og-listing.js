@@ -31,16 +31,14 @@ exports.handler = async (event) => {
     // ----------------------
     // Extract path
     // ----------------------
-    const fullPath =
-  event.path ||
-  event.rawUrl?.replace("https://rctx.co.uk", "") ||
-  event.rawUrl;
+    const fullUrl = event.rawUrl || "";
+    const match = fullUrl.match(/\/directory\/.*$/);
 
-if (!fullPath || !fullPath.startsWith("/directory/")) {
-  return { statusCode: 400, body: "Invalid directory URL" };
-}
+    if (!match) {
+      return { statusCode: 400, body: "Invalid directory URL" };
+    }
 
-const path = fullPath;
+    const path = match[0];
     const parts = path.split("/").filter(Boolean);
 
     const categorySlug = parts[1];
@@ -94,12 +92,30 @@ const path = fullPath;
     const finalUrl = `${base}${path}`;
 
     // ----------------------
+    // HUMAN VISITOR → REDIRECT TO REAL PAGE
+    // ----------------------
+    if (!isBot) {
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "text/html" },
+    body: `
+      <html>
+        <head>
+          <meta http-equiv="refresh" content="0; url=/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}">
+        </head>
+        <body></body>
+      </html>
+    `
+  };
+    }
+
+    // ----------------------
     // BOT → RETURN OG HTML
     // ----------------------
     return {
-  statusCode: 200,
-  headers: { "Content-Type": "text/html" },
-  body: `
+      statusCode: 200,
+      headers: { "Content-Type": "text/html" },
+      body: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -113,15 +129,10 @@ const path = fullPath;
 
 <meta name="twitter:card" content="summary_large_image">
 </head>
-
-<body>
-  <script>
-    window.location.href = "/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${businessSlug}";
-  </script>
-</body>
+<body></body>
 </html>
 `,
-};
+    };
   } catch (err) {
     return { statusCode: 500, body: "Server error" };
   }
