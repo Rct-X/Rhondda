@@ -98,12 +98,13 @@ if (
 ) {
 
   const recent = await db
-    .collection("analytics")
-    .where("sessionId", "==", data.sessionId)
-    .where("businessId", "==", data.businessId)
-    .where("event", "==", "page_view")
-    .limit(1)
-    .get();
+  .collection("analytics")
+  .where("sessionId", "==", data.sessionId)
+  .where("businessId", "==", data.businessId)
+  .where("event", "==", "page_view")
+  .orderBy("timestamp", "desc")
+  .limit(1)
+  .get();
 
   let duplicate = false;
 
