@@ -97,10 +97,9 @@ exports.handler = async (event) => {
       "headless"
     ];
 
-    const isBot =
-      botWords.some(word =>
-        userAgent.includes(word)
-      );
+    const isBot = botWords.some(word =>
+      userAgent.includes(word)
+    );
 
     if (isBot) {
       return {
@@ -113,22 +112,22 @@ exports.handler = async (event) => {
     }
 
     // =========================
-// PAGE VIEW DEDUPE
-// =========================
-if (
-  data.event === "page_view" &&
-  data.sessionId &&
-  data.page
-) {
+    // PAGE VIEW DEDUPE
+    // =========================
+    if (
+      data.event === "page_view" &&
+      data.sessionId &&
+      data.page
+    ) {
 
-  const recent = await db
-    .collection("analytics")
-    .where("sessionId", "==", data.sessionId)
-    .where("page", "==", data.page)
-    .where("event", "==", "page_view")
-    .orderBy("timestamp", "desc")
-    .limit(1)
-    .get();
+      const recent = await db
+        .collection("analytics")
+        .where("sessionId", "==", data.sessionId)
+        .where("page", "==", data.page)
+        .where("event", "==", "page_view")
+        .limit(10)
+        .get();
+
       let duplicate = false;
 
       recent.forEach(doc => {
@@ -165,13 +164,11 @@ if (
     // =========================
     // SAVE ANALYTICS
     // =========================
-    await db
-      .collection("analytics")
-      .add({
-        ...data,
-        timestamp:
-          admin.firestore.FieldValue.serverTimestamp()
-      });
+    await db.collection("analytics").add({
+      ...data,
+      timestamp:
+        admin.firestore.FieldValue.serverTimestamp()
+    });
 
     return {
       statusCode: 200,
