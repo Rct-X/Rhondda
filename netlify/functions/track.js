@@ -16,7 +16,7 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 // =========================
-// CORS HEADERS (REQUIRED)
+// CORS HEADERS
 // =========================
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -29,7 +29,9 @@ const headers = {
 // =========================
 exports.handler = async (event) => {
 
-  // Handle preflight OPTIONS request
+  // =========================
+  // OPTIONS PREFLIGHT
+  // =========================
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -38,127 +40,175 @@ exports.handler = async (event) => {
     };
   }
 
+  // =========================
   // ONLY ALLOW POST
+  // =========================
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
       headers,
-      body: JSON.stringify({ error: "Method Not Allowed" })
+      body: JSON.stringify({
+        error: "Method Not Allowed"
+      })
     };
-    const allowedEvents = [
-  "page_view",
-  "phone_tap",
-  "whatsapp_click",
-  "form_submit"
-];
-
-if (!allowedEvents.includes(data.event)) {
-
-  return {
-    statusCode: 400,
-    headers,
-    body: JSON.stringify({
-      error: "Invalid event"
-    })
-  }
   }
 
   try {
+
     const data = JSON.parse(event.body || "{}");
+
+    // =========================
+    // VALIDATE EVENT
+    // =========================
+    const allowedEvents = [
+      "page_view",
+      "phone_tap",
+      "whatsapp_click",
+      "form_submit"
+    ];
+
+    if (!allowedEvents.includes(data.event)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          error: "Invalid event"
+        })
+      };
+    }
 
     // =========================
     // BASIC BOT/SPAM FILTER
     // =========================
-    const ip = (event.headers["x-forwarded-for"] || "").split(",")[0].trim();
-    const userAgent = (event.headers["user-agent"] || "").toLowerCase();
+    const userAgent =
+      (event.headers["user-agent"] || "")
+        .toLowerCase();
 
     const botWords = [
-      "bot", "crawl", "spider", "preview",
-      "facebookexternalhit", "slurp", "curl",
-      "wget", "python", "headless"
+      "bot",
+      "crawl",
+      "spider",
+      "preview",
+      "facebookexternalhit",
+      "slurp",
+      "curl",
+      "wget",
+      "python",
+      "headless"
     ];
 
-    const isBot = botWords.some(word => userAgent.includes(word));
+    const isBot =
+      botWords.some(word =>
+        userAgent.includes(word)
+      );
 
     if (isBot) {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ ignored: "bot" })
+        body: JSON.stringify({
+          ignored: "bot"
+        })
       };
     }
 
-  // =========================
-// PAGE VIEW DEDUPE
-// =========================
-if (
-  data.event === "page_view" &&
-  data.sessionId &&
-  data.businessId
-) {
+    // =========================
+    // PAGE VIEW DEDUPE
+    // =========================
+    if (
+      data.event === "page_view" &&
+      data.sessionId &&
+      data.businessId
+    ) {
 
-  const recent = await db
-  .collection("analytics")
-  .where("sessionId", "==", data.sessionId)
-  .where("businessId", "==", data.businessId)
-  .where("event", "==", "page_view")
-  .orderBy("timestamp", "desc")
-  .limit(1)
-  .get();
+      const recent = await db
+        .collection("analytics")
+        .where(
+          "sessionId",
+          "==",
+          data.sessionId
+        )
+        .where(
+          "businessId",
+          "==",
+          data.businessId
+        )
+        .where(
+          "event",
+          "==",
+          "page_view"
+        )
+        .orderBy(
+          "timestamp",
+          "desc"
+        )
+        .limit(1)
+        .get();
 
-  let duplicate = false;
+      let duplicate = false;
 
-  recent.forEach(doc => {
+      recent.forEach(doc => {
 
-    const d = doc.data();
+        const d = doc.data();
 
-    if (!d.timestamp) return;
+        if (!d.timestamp) {
+          return;
+        }
 
-    const diff =
-      Date.now() -
-      d.timestamp.toMillis();
+        const diff =
+          Date.now() -
+          d.timestamp.toMillis();
 
-    if (diff < 1800000) {
-      duplicate = true;
+        // 30 minutes
+        if (diff < 1800000) {
+          duplicate = true;
+        }
+
+      });
+
+      if (duplicate) {
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            ignored: "duplicate"
+          })
+        };
+      }
+
     }
 
-  });
-
-  if (duplicate) {
+    // =========================
+    // SAVE ANALYTICS
+    // =========================
+    await db
+      .collection("analytics")
+      .add({
+        ...data,
+        timestamp:
+          admin.firestore.FieldValue.serverTimestamp()
+      });
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        ignored: "duplicate"
+        success: true
+      })
+    };
+
+  } catch (err) {
+
+    console.error(err);
+
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        error: err.message
       })
     };
 
   }
 
-}
-
-    // =========================
-    // SAVE ANALYTICS
-    // =========================
-    await db.collection("analytics").add({
-  ...data,
-  timestamp:
-    admin.firestore.FieldValue.serverTimestamp()
-});
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ success: true })
-    };
-
-  } catch (err) {
-    console.error(err);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: err.message })
-    };
-  }
 };
