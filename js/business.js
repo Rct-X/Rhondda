@@ -119,10 +119,9 @@ async function loadBusiness(categorySlug, townSlug, slug) {
 
   const mapBox = document.getElementById("mapBox");
 
-if (mapBox && b.address) {
-
+if (mapBox) {
   const loadMap = () => {
-    if (typeof initBusinessMap === "function") {
+    if (typeof initBusinessMap === "function" && b.address) {
       initBusinessMap({
         address: b.address,
         name: b.name
@@ -130,6 +129,12 @@ if (mapBox && b.address) {
     }
   };
 
+  // ALWAYS run once immediately if address exists
+  if (b.address) {
+    loadMap();
+  }
+
+  // ALSO keep lazy loading (optional enhancement)
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       loadMap();
@@ -138,12 +143,6 @@ if (mapBox && b.address) {
   });
 
   observer.observe(mapBox);
-
-  // fallback (IMPORTANT)
-  const rect = mapBox.getBoundingClientRect();
-  if (rect.top < window.innerHeight && rect.bottom > 0) {
-    loadMap();
-  }
 }
 
 document.querySelector('meta[property="og:image"]').setAttribute(
