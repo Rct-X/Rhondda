@@ -149,10 +149,12 @@ exports.handler = async (event) => {
 
       });
 console.log(
-  "PAGE DEDUPE",
-  data.page,
-  "duplicate:",
-  duplicate
+  "DEDUPE",
+  {
+    sessionId: data.sessionId,
+    page: data.page,
+    duplicate
+  }
 );
       if (duplicate) {
         return {
