@@ -123,9 +123,10 @@ if (mapBox) {
   const loadMap = () => {
     if (typeof initBusinessMap === "function" && b.address) {
       initBusinessMap({
-        address: b.address,
-        name: b.name
-      });
+  address: b.address,
+  name: b.name,
+  town: b.town
+});
     }
   };
 
