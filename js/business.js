@@ -119,18 +119,31 @@ async function loadBusiness(categorySlug, townSlug, slug) {
 
   const mapBox = document.getElementById("mapBox");
 
-if (mapBox) {
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
+if (mapBox && b.address) {
+
+  const loadMap = () => {
+    if (typeof initBusinessMap === "function") {
       initBusinessMap({
         address: b.address,
         name: b.name
       });
+    }
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      loadMap();
       observer.disconnect();
     }
   });
 
   observer.observe(mapBox);
+
+  // fallback (IMPORTANT)
+  const rect = mapBox.getBoundingClientRect();
+  if (rect.top < window.innerHeight && rect.bottom > 0) {
+    loadMap();
+  }
 }
 
 document.querySelector('meta[property="og:image"]').setAttribute(
