@@ -117,6 +117,22 @@ async function loadBusiness(categorySlug, townSlug, slug) {
   const b = snap.docs[0].data();
   window.currentBusiness = b;
 
+  const mapBox = document.getElementById("mapBox");
+
+if (mapBox) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      initBusinessMap({
+        address: b.address,
+        name: b.name
+      });
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(mapBox);
+}
+
 document.querySelector('meta[property="og:image"]').setAttribute(
   "content",
   `https://rctx.co.uk/.netlify/functions/og-image?slug=${slug}`
