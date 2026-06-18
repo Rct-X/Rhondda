@@ -8,7 +8,21 @@
 
   const ENDPOINT =
     "https://rctx.co.uk/.netlify/functions/track";
+// ============================
+// SESSION ID
+// ============================
+let sessionId =
+  sessionStorage.getItem("rctx_session");
 
+if (!sessionId) {
+
+  sessionId = crypto.randomUUID();
+
+  sessionStorage.setItem(
+    "rctx_session",
+    sessionId
+  );
+}
   // ============================
   // IGNORE TRACKING
   // ============================
@@ -165,6 +179,7 @@ function track(eventName = "page_view") {
 const biz = getBusinessContext();
 
 const payload = {
+  sessionId,
   clientId: CLIENT_ID,
   businessId: biz?.businessId || null,
   area: biz?.area || null,
