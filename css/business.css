@@ -339,3 +339,11 @@
   border-radius: 4px;
   font-weight: 500;
 }
+.map-box {
+  display: none;
+  margin-top: 20px;
+}
+
+.map-box.active {
+  display: block;
+}
