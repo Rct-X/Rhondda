@@ -113,38 +113,22 @@ exports.handler = async (event) => {
     }
 
     // =========================
-    // PAGE VIEW DEDUPE
-    // =========================
-    if (
-      data.event === "page_view" &&
-      data.sessionId &&
-      data.businessId
-    ) {
+// PAGE VIEW DEDUPE
+// =========================
+if (
+  data.event === "page_view" &&
+  data.sessionId &&
+  data.page
+) {
 
-      const recent = await db
-        .collection("analytics")
-        .where(
-          "sessionId",
-          "==",
-          data.sessionId
-        )
-        .where(
-          "businessId",
-          "==",
-          data.businessId
-        )
-        .where(
-          "event",
-          "==",
-          "page_view"
-        )
-        .orderBy(
-          "timestamp",
-          "desc"
-        )
-        .limit(1)
-        .get();
-
+  const recent = await db
+    .collection("analytics")
+    .where("sessionId", "==", data.sessionId)
+    .where("page", "==", data.page)
+    .where("event", "==", "page_view")
+    .orderBy("timestamp", "desc")
+    .limit(1)
+    .get();
       let duplicate = false;
 
       recent.forEach(doc => {
