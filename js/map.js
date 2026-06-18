@@ -13,7 +13,7 @@ function initBusinessMap({ address, name }) {
     return;
   }
 
-  mapBox.style.display = "block";
+  mapBox.classList.add("active");
 
   const query = encodeURIComponent(address);
 
