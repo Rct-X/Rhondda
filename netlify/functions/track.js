@@ -148,7 +148,12 @@ exports.handler = async (event) => {
         }
 
       });
-
+console.log(
+  "PAGE DEDUPE",
+  data.page,
+  "duplicate:",
+  duplicate
+);
       if (duplicate) {
         return {
           statusCode: 200,
