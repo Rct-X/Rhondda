@@ -45,6 +45,22 @@ exports.handler = async (event) => {
       headers,
       body: JSON.stringify({ error: "Method Not Allowed" })
     };
+    const allowedEvents = [
+  "page_view",
+  "phone_tap",
+  "whatsapp_click",
+  "form_submit"
+];
+
+if (!allowedEvents.includes(data.event)) {
+
+  return {
+    statusCode: 400,
+    headers,
+    body: JSON.stringify({
+      error: "Invalid event"
+    })
+  }
   }
 
   try {
@@ -72,44 +88,63 @@ exports.handler = async (event) => {
       };
     }
 
-    // =========================
-    // DUPLICATE REFRESH FILTER
-    // =========================
-    const recent = await db
-      .collection("analytics")
-      .where("ip", "==", ip)
-      .where("businessId", "==", data.businessId || null)
-      .where("event", "==", data.event)
-      .limit(5)
-      .get();
+  // =========================
+// PAGE VIEW DEDUPE
+// =========================
+if (
+  data.event === "page_view" &&
+  data.sessionId &&
+  data.businessId
+) {
 
-    let duplicate = false;
+  const recent = await db
+    .collection("analytics")
+    .where("sessionId", "==", data.sessionId)
+    .where("businessId", "==", data.businessId)
+    .where("event", "==", "page_view")
+    .limit(1)
+    .get();
 
-    recent.forEach(doc => {
-      const d = doc.data();
-      if (!d.timestamp) return;
+  let duplicate = false;
 
-      const diff = Date.now() - d.timestamp.toMillis();
-      if (diff < 30000) duplicate = true;
-    });
+  recent.forEach(doc => {
 
-    if (duplicate) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ ignored: "duplicate" })
-      };
+    const d = doc.data();
+
+    if (!d.timestamp) return;
+
+    const diff =
+      Date.now() -
+      d.timestamp.toMillis();
+
+    if (diff < 1800000) {
+      duplicate = true;
     }
+
+  });
+
+  if (duplicate) {
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        ignored: "duplicate"
+      })
+    };
+
+  }
+
+}
 
     // =========================
     // SAVE ANALYTICS
     // =========================
     await db.collection("analytics").add({
-      ...data,
-      ip,
-      userAgent,
-      timestamp: admin.firestore.FieldValue.serverTimestamp()
-    });
+  ...data,
+  timestamp:
+    admin.firestore.FieldValue.serverTimestamp()
+});
 
     return {
       statusCode: 200,
