@@ -1,139 +1,41 @@
-/* Base Section Styling - Clean & Bright */
-.features {
-    padding: 100px 0;
-    background: #ffffff; /* Bright, clean professional background */
-    overflow: hidden;
-}
-
-/* High-Status Corporate Grid Cards */
-.card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0; /* Crisp subtle border */
-    padding: 40px 32px;
-    border-radius: 16px;
-    color: #1e293b; /* Dark slate text for maximum readability */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Premium smooth transition */
-    position: relative;
-}
-
-/* Icon Wrapper with Royal Indigo Accents */
-.icon-wrapper {
-    width: 56px;
-    height: 56px;
-    background: #f0f5ff; /* Soft professional blue tint */
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 24px;
-    transition: all 0.3s ease;
-}
-
-.icon {
-    width: 28px;
-    height: 28px;
-    color: #2563eb; /* Strong trust-building blue */
-}
-
-/* Premium Typography */
-.card h3 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #0f172a; /* Deep charcoal header */
-    letter-spacing: -0.02em;
-}
-
-.card p {
-    color: #475569; /* Balanced slate description text */
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
-.card ul {
-    list-style: none;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #f1f5f9;
-}
-
-.card li {
-    margin-bottom: 10px;
-    color: #334155;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.card li::before {
-    content: "✓";
-    color: #10b981; /* High-converting green checkmarks */
-    font-weight: bold;
-}
-
-/* 🔥 Premium Hover Effects that scream "High Value" */
-.card:hover {
-    transform: translateY(-6px);
-    border-color: #cbd5e1;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-}
-
-.card:hover .icon-wrapper {
-    background: #2563eb;
-}
-
-.card:hover .icon {
-    color: #ffffff;
-}
-
 /* ==========================================================================
-   🎬 ANIMATION PRESETS (JS targets these classes)
-   ========================================================================== */
-.card.slide-left {
-    opacity: 0;
-    transform: translateX(-60px); /* Toned down the slide for a classier entrance */
-    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card.slide-right {
-    opacity: 0;
-    transform: translateX(60px);
-    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card.animate-in {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* ==========================================================================
-   🏙️ CLEAN TRUSTED FOOTER STYLING
+   Footer Base Styles
    ========================================================================== */
 .site-footer {
-    background: #f8fafc; /* Clean, light off-white footer */
-    color: #475569;
-    padding: 50px 0 20px;
+    background-color: #f8fafc;
+    color: #334155;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
     border-top: 1px solid #e2e8f0;
-    font-size: 0.95rem;
-  backdrop-filter: blur(2px);
+    margin-top: auto;
 }
 
-.footer-inner {
+.site-footer .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 45px 20px 30px;
+}
+
+/* ==========================================================================
+   Footer Inner Layout
+   ========================================================================== */
+.site-footer .footer-inner {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr;
-    gap: 40px;
-    padding-bottom: 25px;
-    border-bottom: 1px solid #e2e8f0;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 35px;
 }
 
+/* ==========================================================================
+   Brand & Logo
+   ========================================================================== */
 .footer-brand .footer-logo {
     font-weight: 800;
     font-size: 1.75rem;
     color: #0f172a;
     letter-spacing: -0.05em;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    line-height: 1;
 }
 
 .footer-brand .footer-logo span {
@@ -141,26 +43,34 @@
 }
 
 .footer-brand p {
-    line-height: 1.6;
-    max-width: 320px;
+    line-height: 1.5;
+    color: #64748b;
+    max-width: 280px;
+    margin: 0;
 }
 
+/* ==========================================================================
+   Headings & Link Lists
+   ========================================================================== */
 .footer-contact h3,
 .footer-links h3 {
-    color: #0f172a;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    color: #0f172a;
+    margin: 0 0 14px 0;
+}
+
+.footer-contact,
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .footer-contact a,
 .footer-links a {
-    display: block;
     color: #475569;
     text-decoration: none;
-    margin-bottom: 12px;
     transition: color 0.2s ease;
     width: fit-content;
 }
@@ -170,55 +80,62 @@
     color: #2563eb;
 }
 
-/* High-Converting Corporate Contact Button */
+/* ==========================================================================
+   WhatsApp CTA Button
+   ========================================================================== */
 .footer-cta-mobile {
-    background: #2563eb;
+    display: inline-block;
+    margin-top: 4px;
+    padding: 10px 16px;
+    background-color: #25d366;
     color: #ffffff !important;
-    padding: 12px 24px;
-    border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;
-    margin-top: 16px;
-    display: inline-flex !important;
-    align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    font-size: 0.85rem;
+    border-radius: 6px;
+    text-align: center;
+    transition: background-color 0.2s ease;
 }
 
 .footer-cta-mobile:hover {
-    background: #1d4ed8;
+    background-color: #128c7e;
 }
 
-.footer-bottom {
+/* ==========================================================================
+   Footer Bottom
+   ========================================================================== */
+.site-footer .footer-bottom {
+    border-top: 1px solid #e2e8f0;
+    padding: 20px 20px;
     text-align: center;
-    padding-top: 20px;
-    font-size: 0.85rem;
-    color: #94a3b8;
+    font-size: 0.8rem;
+    color: #64748b;
+    background-color: #ffffff;
 }
 
-/* 📱 Mobile Responsive Viewport Fixes */
-@media (max-width: 768px) {
-    .footer-inner {
-        grid-template-columns: 1fr;
-        gap: 18px; /* was 35px */
-        text-align: center;
-        padding-bottom: 15px; /* reduce height */
+/* ==========================================================================
+   Responsive Adjustments (Fixes Long Mobile View)
+   ========================================================================== */
+@media screen and (max-width: 650px) {
+    .site-footer .container {
+        padding: 30px 15px 20px;
     }
 
-    .site-footer {
-        padding: 35px 0 15px; /* was 50px 0 20px */
+    .site-footer .footer-inner {
+        grid-template-columns: 1fr 1fr; /* Splitting links side-by-side to save height */
+        gap: 25px 15px;
+        margin-bottom: 25px;
+    }
+    
+    .footer-brand {
+        grid-column: span 2; /* Brand section takes full top row */
     }
 
-    .footer-contact h3,
-    .footer-links h3 {
-        margin-bottom: 12px; /* was 20px */
-    }
-
-    .footer-contact a,
-    .footer-links a {
-        margin-bottom: 8px; /* was 12px */
+    .footer-brand p {
+        max-width: 100%;
     }
 
     .footer-cta-mobile {
-        margin-top: 10px; /* reduce spacing */
+        width: 100%;
+        box-sizing: border-box;
     }
 }
