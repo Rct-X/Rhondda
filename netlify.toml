@@ -8,13 +8,6 @@
 [functions]
   included_files = ["netlify/fonts/**"]
 
-[[redirects]]
-  from = "/directory/business.html"
-  to = "/directory/:category/:town/:slug"
-  query = {category = ":category", town = ":town", slug = ":slug"}
-  status = 301
-  force = true
-  
 # =========================
 # FUNCTIONS CONFIG
 # =========================
@@ -37,19 +30,28 @@
   to = "/robots.txt"
   status = 200
 
-# =========================
-# ALL DIRECTORY BUSINESS PAGES → OG FUNCTION
-# (Function decides bot vs human)
-# =========================
+# ============================================================
+# 1️⃣ UGLY URL → CLEAN URL (MUST COME FIRST)
+# ============================================================
+[[redirects]]
+  from = "/directory/business.html"
+  to = "/directory/:category/:town/:slug"
+  query = { category = ":category", town = ":town", slug = ":slug" }
+  status = 301
+  force = true
+
+# ============================================================
+# 2️⃣ CLEAN URL → OG FUNCTION (BOT/HUMAN DECIDER)
+# ============================================================
 [[redirects]]
   from = "/directory/:category/:town/:slug"
   to = "/.netlify/functions/og-listing?slug=:slug"
   status = 200
   force = true
 
-# =========================
-# DIRECTORY LISTING PAGES
-# =========================
+# ============================================================
+# 3️⃣ CATEGORY + TOWN PAGES
+# ============================================================
 [[redirects]]
   from = "/directory/:category/:town"
   to = "/directory.html"
