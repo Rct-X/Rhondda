@@ -134,20 +134,10 @@ console.log(JSON.stringify(rows, null, 2));
 // =======================
 if (!isBot) {
   return {
-    statusCode: 200,
+    statusCode: 302,
     headers: {
-      "Content-Type": "text/html"
-    },
-    body: `
-<!doctype html>
-<html>
-<head>
-<meta http-equiv="refresh"
-content="0; url=/directory/${categorySlug}/${townSlug}/${cleanSlug}">
-</head>
-<body></body>
-</html>
-`
+      Location: `/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${cleanSlug}`
+    }
   };
 }
 
