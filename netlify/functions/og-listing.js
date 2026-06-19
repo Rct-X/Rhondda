@@ -216,7 +216,7 @@ const BUSINESS_HTML = `
 <script defer src="/js/footer-nav-faq.js"></script>
 <script>window.RCTX_CLIENT_ID = "-MAIN SITE-";</script>
 <script src="/js/rctx-tracker.js" defer></script>
-
+<div id="toast" class="toast">Link copied!</div>
 </body>
 </html>
 `;
