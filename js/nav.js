@@ -49,14 +49,33 @@ document.addEventListener("DOMContentLoaded", () => {
     </nav>
   `;
 
+  // 1. Inject nav
   document.body.insertAdjacentHTML("afterbegin", navHTML);
 
-  // hamburger toggle
+  // 2. Hamburger toggle
   const btn = document.getElementById("hamburgerBtn");
   const menu = document.getElementById("mobileMenu");
 
   btn.addEventListener("click", () => {
     btn.classList.toggle("open");
     menu.classList.toggle("open");
+  });
+
+  // 3. Sub‑menu toggles (THIS is what was missing)
+  document.querySelectorAll(".nav-group-title").forEach(titleBtn => {
+    titleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      const group = titleBtn.closest(".nav-group");
+      const isOpen = group.classList.contains("open");
+
+      // close all other groups
+      document.querySelectorAll(".nav-group").forEach(g => {
+        if (g !== group) g.classList.remove("open");
+      });
+
+      // toggle this one
+      group.classList.toggle("open", !isOpen);
+    });
   });
 });
