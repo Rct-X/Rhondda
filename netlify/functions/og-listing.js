@@ -133,14 +133,20 @@ console.log(JSON.stringify(rows, null, 2));
 // HUMAN VISITOR
 // =======================
 if (!isBot) {
+  const fs = require("fs");
+  const path = require("path");
+
+  const filePath = path.join(__dirname, "../../directory/business.html");
+  const html = fs.readFileSync(filePath, "utf8");
+
   return {
-    statusCode: 302,
+    statusCode: 200,
     headers: {
-      Location: `/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${cleanSlug}`
-    }
+      "Content-Type": "text/html"
+    },
+    body: html
   };
 }
-
     // =======================
     // BOT OG TAGS
     // =======================
