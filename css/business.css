@@ -388,36 +388,3 @@
   position: relative;
   overflow: hidden;
 }
-
-/* Swirl background layer */
-.map-box::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 30%, #1e90ff, transparent 60%),
-              radial-gradient(circle at 80% 70%, #00bfff, transparent 60%),
-              radial-gradient(circle at 50% 50%, #0077ff, transparent 70%);
-  background-size: 200% 200%;
-  animation: swirl 8s ease-in-out infinite;
-  opacity: 1;
-  transition: opacity 1s ease;
-  z-index: 0;
-}
-
-/* Fade-out class */
-.map-box.loaded::before {
-  opacity: 0;
-}
-
-/* Swirl animation */
-@keyframes swirl {
-  0%   { background-position: 0% 0%; }
-  50%  { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-/* Ensure map sits above the swirl */
-#map {
-  position: relative;
-  z-index: 2;
-}
