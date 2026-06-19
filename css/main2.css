@@ -339,6 +339,31 @@ PROJECTS SECTION
 
 }
 
+/* PROJECT CARD ANIMATION */
+
+.project-card {
+    opacity: 0;
+    transition:
+      opacity .7s ease,
+      transform .7s ease;
+}
+
+/* Odd cards slide from left */
+.project-card:nth-child(odd) {
+    transform: translateX(-40px);
+}
+
+/* Even cards slide from right */
+.project-card:nth-child(even) {
+    transform: translateX(40px);
+}
+
+/* Visible state */
+.project-card.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
 
 .features {
   padding: 40px 0;
