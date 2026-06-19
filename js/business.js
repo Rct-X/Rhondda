@@ -470,7 +470,7 @@ function shareBusiness() {
     }).catch(() => {});
   } else {
     navigator.clipboard.writeText(url);
-    alert("Link copied to clipboard!");
+   showToast ("Link copied!");
   }
 }
 
@@ -494,6 +494,17 @@ async function copyBusinessLink() {
     document.execCommand("copy");
     temp.remove();
 
-    alert("Link copied!");
+ showToast("Link copied!");
   }
+}
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
