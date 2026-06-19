@@ -30,28 +30,18 @@
   to = "/robots.txt"
   status = 200
 
-# ============================================================
-# 1️⃣ UGLY URL → CLEAN URL (MUST COME FIRST)
-# ============================================================
-[[redirects]]
-  from = "/directory/business.html"
-  to = "/directory/:category/:town/:slug"
-  query = { category = ":category", town = ":town", slug = ":slug" }
-  status = 301
-  force = true
-
-# ============================================================
-# 2️⃣ CLEAN URL → OG FUNCTION (BOT/HUMAN DECIDER)
-# ============================================================
+# =========================
+# CLEAN URL → OG FUNCTION
+# =========================
 [[redirects]]
   from = "/directory/:category/:town/:slug"
   to = "/.netlify/functions/og-listing?slug=:slug"
   status = 200
   force = true
 
-# ============================================================
-# 3️⃣ CATEGORY + TOWN PAGES
-# ============================================================
+# =========================
+# DIRECTORY LISTING PAGES
+# =========================
 [[redirects]]
   from = "/directory/:category/:town"
   to = "/directory.html"
