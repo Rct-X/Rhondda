@@ -1,94 +1,15 @@
 // =========================
-// MOBILE MENU (HAMBURGER)
-// =========================
-
-const btn = document.getElementById("hamburgerBtn");
-const menu = document.getElementById("mobileMenu");
-
-function closeMenu() {
-    menu.classList.remove("open");
-    btn.classList.remove("open");
-    btn.setAttribute("aria-expanded", "false");
-
-    document.querySelectorAll(".nav-group").forEach(g => {
-        g.classList.remove("open");
-    });
-}
-
-function openMenu() {
-    menu.classList.add("open");
-    btn.classList.add("open");
-    btn.setAttribute("aria-expanded", "true");
-}
-
-if (btn && menu) {
-
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        const isOpen = menu.classList.contains("open");
-        isOpen ? closeMenu() : openMenu();
-    });
-
-    document.addEventListener("click", (e) => {
-        const clickedInside = menu.contains(e.target) || btn.contains(e.target);
-        if (!clickedInside && menu.classList.contains("open")) {
-            closeMenu();
-        }
-    });
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeMenu();
-    });
-
-    menu.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", closeMenu);
-    });
-}
-
-
-// =========================
-// MOBILE NAV GROUP TOGGLE
-// =========================
-
-document.querySelectorAll(".nav-group-title").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        const group = btn.closest(".nav-group");
-        if (!group) return;
-
-        const isOpen = group.classList.contains("open");
-
-        document.querySelectorAll(".nav-group").forEach(g => {
-            if (g !== group) {
-                g.classList.remove("open");
-                const otherBtn = g.querySelector(".nav-group-title");
-                if (otherBtn) otherBtn.setAttribute("aria-expanded", "false");
-            }
-        });
-
-        group.classList.toggle("open", !isOpen);
-        btn.setAttribute("aria-expanded", String(!isOpen));
-    });
-});
-
-
-// =========================
 // FAQ ACCORDION
 // =========================
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const faqCards = document.querySelectorAll('.card-faq');
 
     faqCards.forEach(card => {
-
         const question = card.querySelector('.faq-question');
         const answer = card.querySelector('.faq-answer');
 
         question.addEventListener('click', () => {
-
             const isOpen = card.classList.contains('active');
 
             faqCards.forEach(item => {
@@ -101,11 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.add('active');
                 answer.style.maxHeight = answer.scrollHeight + 'px';
             }
-
         });
-
     });
-
 });
 
 
@@ -163,7 +81,7 @@ if (yearSpan) {
 
 
 // =========================
-// FOOTER HTML LOAD (THIS IS THE IMPORTANT PART)
+// FOOTER HTML LOAD
 // =========================
 
 document.addEventListener("DOMContentLoaded", async () => {
