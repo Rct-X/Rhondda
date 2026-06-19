@@ -134,7 +134,7 @@ if (mapBox) {
   if (b.address) {
     loadMap();
   }
-
+document.getElementById("mapBox")?.classList.add("loaded");
   // ALSO keep lazy loading (optional enhancement)
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
