@@ -449,23 +449,6 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 }
 
 // ======================================================
-// SHARE POPUP
-// ======================================================
-let autoClose;
-
-setTimeout(() => {
-  const popup = document.getElementById("sharePopup");
-  if (!popup) return;
-
-  popup.classList.add("show");
-
-  autoClose = setTimeout(() => {
-    popup.classList.remove("show");
-  }, 5000);
-
-}, 6000);
-
-// ======================================================
 // SHARE BUTTON
 // ======================================================
 function shareBusiness() {
@@ -487,7 +470,23 @@ function shareBusiness() {
 // ======================================================
 // COPY LINK
 // ======================================================
-function copyBusinessLink() {
-  navigator.clipboard.writeText(window.location.href);
-  alert("Link copied!");
+async function copyBusinessLink() {
+  const cleanUrl = getCleanBusinessUrl();
+
+  try {
+    await navigator.clipboard.writeText(cleanUrl);
+    alert("Link copied!");
+  } catch (err) {
+    console.error("Clipboard failed:", err);
+
+    // Fallback for older browsers
+    const temp = document.createElement("input");
+    temp.value = cleanUrl;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    temp.remove();
+
+    alert("Link copied!");
+  }
 }
