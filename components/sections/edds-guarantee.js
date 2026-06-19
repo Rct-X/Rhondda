@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const originalText = el.textContent.trim();
     const words = originalText.split(" ");
 
-    // Build HTML in memory (no reflow)
     const frag = document.createDocumentFragment();
 
     words.forEach((word, i) => {
@@ -21,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
       frag.appendChild(span);
     });
 
-    // Single DOM write
     el.innerHTML = "";
     el.appendChild(frag);
 
@@ -36,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     wordObserver.observe(el);
   }
+
 
 
   /* ============================
@@ -54,14 +53,15 @@ document.addEventListener("DOMContentLoaded", () => {
       Array.from(text).forEach((char, i) => {
         const span = document.createElement("span");
         span.className = char === " " ? "space" : "char";
+
         if (char !== " ") {
           span.textContent = char;
           span.style.animationDelay = `${i * 0.04}s`;
         }
+
         frag.appendChild(span);
       });
 
-      // Single DOM write
       title.textContent = "";
       title.appendChild(frag);
 
@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
       revealObserver.observe(section);
     }
   }
+
 
 
   /* ============================
@@ -95,5 +96,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.2 });
 
   items.forEach(item => fadeObserver.observe(item));
+
+
+
+  /* ============================
+     PROJECT CARD ANIMATION
+  ============================ */
+
+  const projectCards = document.querySelectorAll(".project-card");
+
+  const projectObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          projectObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  projectCards.forEach((card) => projectObserver.observe(card));
 
 });
