@@ -134,11 +134,6 @@ const BUSINESS_HTML = `
 
       <h3>Opening Hours</h3>
       <ul id="businessHours" class="business-hours"></ul>
-
-      <div class="keyword-box">
-        <h3>People Also Search For</h3>
-        <div id="keywordTags"></div>
-      </div>
     </div>
 
     <div id="mapBox" class="map-box">
