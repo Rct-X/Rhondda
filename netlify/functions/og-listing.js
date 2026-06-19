@@ -37,7 +37,16 @@ const BUSINESS_HTML = `
 <meta name="twitter:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
 <meta name="twitter:image" content="https://rctx.co.uk/images/find-rctx.jpg">
 <meta name="prerender-status-code" content="200">
-<link rel="stylesheet" href="/css/site.css">
+<link
+  rel="preload"
+  href="/css/nav-0.css"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'"
+>
+
+<noscript>
+  <link rel="stylesheet" href="/css/nav-0.css">
+</noscript>
 <link rel="stylesheet" href="/css/business.css">
 <link rel="stylesheet" href="/website-checker/style.css">
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
