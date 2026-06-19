@@ -482,7 +482,7 @@ async function copyBusinessLink() {
 
   try {
     await navigator.clipboard.writeText(cleanUrl);
-    alert("Link copied!");
+   showToast("Link copied!");
   } catch (err) {
     console.error("Clipboard failed:", err);
 
