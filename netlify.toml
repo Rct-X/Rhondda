@@ -8,6 +8,13 @@
 [functions]
   included_files = ["netlify/fonts/**"]
 
+[[redirects]]
+  from = "/directory/business.html"
+  to = "/directory/:category/:town/:slug"
+  query = {category = ":category", town = ":town", slug = ":slug"}
+  status = 301
+  force = true
+  
 # =========================
 # FUNCTIONS CONFIG
 # =========================
