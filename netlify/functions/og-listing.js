@@ -130,26 +130,26 @@ console.log(JSON.stringify(rows, null, 2));
       `${base}/directory/${categorySlug}/${townSlug}/${cleanSlug}`;
 
     // =======================
-    // HUMAN VISITOR
-    // =======================
-    if (!isBot) {
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "text/html"
-        },
-        body: `
+// HUMAN VISITOR
+// =======================
+if (!isBot) {
+  return {
+    statusCode: 200,
+    headers: {
+      "Content-Type": "text/html"
+    },
+    body: `
 <!doctype html>
 <html>
 <head>
 <meta http-equiv="refresh"
-content="0; url=/directory/business.html?category=${categorySlug}&town=${townSlug}&slug=${cleanSlug}">
+content="0; url=/directory/${categorySlug}/${townSlug}/${cleanSlug}">
 </head>
 <body></body>
 </html>
 `
-      };
-    }
+  };
+}
 
     // =======================
     // BOT OG TAGS
