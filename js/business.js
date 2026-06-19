@@ -448,6 +448,13 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
   });
 }
 
+
+function getCleanBusinessUrl() {
+  const params = getBusinessParams();
+  if (!params) return window.location.href;
+
+  return `https://rctx.co.uk/directory/${params.category}/${params.town}/${params.slug}`;
+}
 // ======================================================
 // SHARE BUTTON
 // ======================================================
