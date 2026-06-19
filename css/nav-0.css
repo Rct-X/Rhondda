@@ -386,7 +386,7 @@
     border-top: 1px solid var(--border);
   }
 
-  ..nav-cta-btn {
+  .nav-cta-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
