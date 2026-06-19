@@ -40,8 +40,6 @@ const BUSINESS_HTML = `
 <link rel="stylesheet" href="/css/site.css">
 <link rel="stylesheet" href="/css/business.css">
 <link rel="stylesheet" href="/website-checker/style.css">
-<link rel="preload" href="/site/fonts/BricolageGrotesque-Bold.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/site/fonts/Poppins-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
