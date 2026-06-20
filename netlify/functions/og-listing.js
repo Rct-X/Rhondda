@@ -37,18 +37,9 @@ const BUSINESS_HTML = `
 <meta name="twitter:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
 <meta name="twitter:image" content="https://rctx.co.uk/images/find-rctx.jpg">
 <meta name="prerender-status-code" content="200">
-<link
-  rel="preload"
-  href="/css/nav-0.css"
-  as="style"
-  onload="this.onload=null;this.rel='stylesheet'"
->
 
-<noscript>
-  <link rel="stylesheet" href="/css/nav-0.css">
-</noscript>
 <link rel="stylesheet" href="/css/business.css">
-<link rel="stylesheet" href="/website-checker/style.css">
+<link rel="stylesheet" href="/css/nav.css">
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <style>
@@ -262,7 +253,7 @@ const BUSINESS_HTML = `
     © <span id="year"></span> RCTX • Web Design Rhondda Cynon Taf • All Rights Reserved
   </div>
 </footer>
-
+<script src="/js/nav.js"></script>
 <script src="/js/map.js"></script>
 <script defer src="/js/business.js?v=4"></script>
 <script defer src="/js/footer-nav-faq.js"></script>
