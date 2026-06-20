@@ -1,0 +1,548 @@
+:root {
+    /* Premium Color Engine */
+    --primary: #2563eb;          /* Trustworthy Slate Blue */
+    --primary-dark: #1d4ed8;
+    --primary-light: #eff6ff;
+    
+    /* Functional Status Tones */
+    --verified-green: #059669;   /* Safe, approved local service */
+    --verified-bg: #d1fae5;
+    --claimed-gold: #b45309;     /* Premium business dashboard claim */
+    --claimed-bg: #fef3c7;
+    
+    /* Text Tone System */
+    --text-main: #0f172a;        /* High density charcoal */
+    --text-muted: #334155;       /* Highly readable body tone */
+    --text-dim: #64748b;         /* Captioning meta */
+    
+    /* Surface Finishes */
+    --bg-white: #ffffff;
+    --bg-body: #f8fafc;          /* Light slate floor */
+    --border: #e2e8f0;           /* Soft elegant grid cuts */
+    
+    /* Spatial Metrics */
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.03);
+    --shadow-md: 0 12px 30px rgba(15, 23, 42, 0.06);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Document Structuring */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: min(1200px, 94%);
+    margin-inline: auto;
+}
+
+.text-dim { color: var(--text-dim); }
+
+/* =========================================
+   1. PREMIUM PROFILE HEADER SECTION
+   ========================================= */
+
+.business-header {
+    background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+    color: white;
+    padding: clamp(3rem, 6vw, 5rem) 0 clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.business-header .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Elegant circular mask framing business identity logo */
+.biz-logo {
+    width: clamp(90px, 15vw, 130px);
+    height: clamp(90px, 15vw, 130px);
+    object-fit: cover;
+    background-color: var(--bg-white);
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+.business-header h1 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: #ffffff;
+}
+
+.business-subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: #93c5fd; /* Vibrant sky link accent color */
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+/* Meta status tags containing area classifications and badges */
+.business-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+/* Premium System Status Badges */
+#verifiedBadge:not(:empty),
+#claimedBadge:not(:empty) {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+}
+
+#verifiedBadge { background: var(--verified-bg); color: var(--verified-green); }
+#claimedBadge { background: var(--claimed-gold-bg); color: var(--claimed-gold); }
+
+/* =========================================
+   2. PROFILE BODY GRID LAYOUT MATRIX
+   ========================================= */
+
+.business-content {
+    padding: 3rem 0 5rem;
+}
+
+/* Master Grid Structure: Two Columns (Main details left, sticky summary card right) */
+.business-content .container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* =========================================
+   3. HORIZONTAL IMAGE SWIPE GALLERY BLOCK
+   ========================================= */
+
+#galleryWrapper {
+    grid-column: span 2; /* Spans full screen horizontal width initially */
+    position: relative;
+    background: #0f172a;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+#galleryScroller {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Strips clunky standard desktop trackbars */
+}
+
+#galleryScroller::-webkit-scrollbar { display: none; }
+
+#galleryScroller img {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    scroll-snap-align: start;
+}
+
+#galleryCounter {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* =========================================
+   4. CONVERSION CONCENTRIC: QUICK ACTIONS
+   ========================================= */
+
+.quick-actions {
+    grid-column: span 2;
+    display: flex;
+    gap: 1rem;
+    background: var(--bg-white);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+
+.qa-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.qa-btn:hover {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Highlight primary phone conversion option visually */
+#businessPhoneBtn {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+#businessPhoneBtn:hover {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+/* =========================================
+   5. DETAILED INFORMATION CORE (LEFT SIDE)
+   ========================================= */
+
+.business-info {
+    background: var(--bg-white);
+    padding: clamp(2rem, 4vw, 3rem);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+
+.business-info h2, 
+.business-info h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+}
+
+.business-info h3 {
+    font-size: 1.3rem;
+    margin-top: 3rem;
+    border-top: 2px solid var(--bg-body);
+    padding-top: 2.5rem;
+}
+
+#businessDescription {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    line-height: 1.75;
+    text-wrap: pretty;
+}
+
+/* Elegant Icon-less list layout formatting */
+.business-contact {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.business-contact li {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+}
+
+.business-contact strong {
+    color: var(--text-main);
+    display: inline-block;
+    width: 90px;
+}
+
+.business-contact a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.business-contact a:hover { text-decoration: underline; }
+
+/* Beautiful Table Layout for Business Hours */
+.business-hours {
+    list-style: none;
+    max-width: 450px;
+    background: var(--bg-body);
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.business-hours li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.business-hours li:last-child { border-bottom: none; }
+
+/* Highlight current active calendar index element via your scripts */
+.business-hours li.today {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* MAP MODULE */
+.map-box {
+    margin-top: 3rem;
+    background: var(--bg-white);
+    padding: clamp(2rem, 4vw, 3rem);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+
+#map {
+    width: 100%;
+    height: 350px;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-body);
+    margin-top: 1.25rem;
+    border: 1px solid var(--border);
+}
+
+/* =========================================
+   6. STICKY INFORMATION ASIDE (RIGHT SIDE)
+   ========================================= */
+
+.business-sidebar {
+    position: sticky;
+    top: 2rem; /* Locks elements securely to top frame upon scroll */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.business-card {
+    background: var(--bg-white);
+    padding: 1.75rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+
+.business-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.business-card p {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Premium Primary Conversion Trigger for Unclaimed business rows */
+.business-card .btn-primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: var(--text-main);
+    color: white;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 0.75rem;
+    transition: var(--transition);
+}
+
+.business-card .btn-primary:hover {
+    background-color: var(--primary);
+}
+
+/* =========================================
+   7. THE SHARE WOW CALLOUT CARD
+   ========================================= */
+
+.share-wow {
+    grid-column: span 2;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 2px dashed var(--primary-light);
+    padding: 3rem 2rem;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.share-content h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+}
+
+.share-content p {
+    max-width: 550px;
+    margin: 0 auto 1.75rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.share-wow-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: 100px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    transition: var(--transition);
+}
+
+.share-wow-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.share-credit {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--primary);
+    letter-spacing: 0.05em;
+    margin-top: 1.5rem;
+}
+
+/* =========================================
+   8. RELATED DISCOVERY SECTION BLOCK
+   ========================================= */
+
+.business-related {
+    padding: 5rem 0;
+    background-color: var(--bg-white);
+    border-top: 1px solid var(--border);
+}
+
+.business-related h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Style mapping adjustments targeting standard client components injected via script */
+.related-grid .biz-card {
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: var(--transition);
+}
+
+.related-grid .biz-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    background: var(--bg-white);
+    border-color: var(--primary-light);
+}
+
+/* =========================================
+   9. MOBILE RESPONSIVE OPTIMIZATION LAYOUTS
+   ========================================= */
+
+@media (max-width: 968px) {
+    /* Main structural columns collapse cleanly into sequential order */
+    .business-content .container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    #galleryWrapper,
+    .quick-actions,
+    .share-wow {
+        grid-column: span 1;
+    }
+    
+    #galleryScroller img {
+        height: 300px; /* Reduced ceiling on mid viewports */
+    }
+
+    /* Pushes sidebar lower down beneath main about elements */
+    .business-sidebar {
+        position: static;
+        order: 3;
+    }
+}
+
+@media (max-width: 576px) {
+    /* MOBILE PRIORITY INTERFACE FLOW */
+    .quick-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 999; /* Sticky anchor strip fixed permanently above content */
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid var(--border);
+        padding: 12px;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+    }
+    
+    .business-content {
+        padding-bottom: 80px; /* Counteracts sticky footer layout overlap */
+    }
+
+    #galleryScroller img {
+        height: 230px;
+    }
+
+    .business-info {
+        padding: 1.5rem 1.2rem;
+    }
+  }
