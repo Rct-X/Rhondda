@@ -1,0 +1,418 @@
+/* =========================================
+   ADD BUSINESS PAGE DESIGN SYSTEM
+   ========================================= */
+
+:root {
+    /* Main Palettes */
+    --primary: #065f46;          /* Trusted Directory Forest Green */
+    --primary-dark: #044e3a;     /* Deep Emerald */
+    --primary-light: #f0fdf4;    /* Mint Tint Background */
+    --accent: #2563eb;           /* Professional Blue for active elements */
+    --accent-light: #eff6ff;     /* Soft Blue highlight */
+    
+    /* Text Tone System */
+    --text-main: #0f172a;        /* Deep Slate Charcoal */
+    --text-muted: #475569;       /* Easy to read grey text */
+    --text-dim: #64748b;         /* Helper/Hint text */
+    
+    /* Structure & Surfaces */
+    --bg-white: #ffffff;
+    --bg-body: #f8fafc;          /* Off-white canvas */
+    --border: #cbd5e1;           /* Crisp, visible grid lines */
+    --border-focus: #065f46;     /* Green active borders */
+    
+    /* UI Design Metrics */
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.04);
+    --shadow-bold: 0 20px 40px rgba(6, 95, 70, 0.08);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and Structural Foundation */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: min(1000px, 92%); /* Focused width specifically for optimal form layout */
+    margin-inline: auto;
+}
+
+/* Helper Text Classes */
+.text-dim { color: var(--text-dim); }
+.text-xs { font-size: 0.85rem; margin-top: 4px; }
+
+/* =========================================
+   HERO HEADER SECTION
+   ========================================= */
+
+.hero-small {
+    background: linear-gradient(135deg, #0f172a 0%, #065f46 100%);
+    color: white;
+    padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+    text-align: center;
+    position: relative;
+    border-bottom: 4px solid var(--accent);
+}
+
+.hero-small h1 {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    max-width: 850px;
+    margin-inline: auto;
+}
+
+.hero-small p {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    max-width: 700px;
+    margin: 1.25rem auto 2rem;
+    color: #cbd5e1;
+    text-wrap: pretty;
+}
+
+/* Punchy Grid for Selling Points */
+.hero-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    list-style: none;
+    max-width: 850px;
+    margin: 0 auto 2.5rem;
+    text-align: left;
+}
+
+.hero-points li {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+}
+
+/* Premium Call To Action Link */
+.hero-cta {
+    display: inline-block;
+    background: #ffffff;
+    color: var(--primary-dark);
+    padding: 16px 36px;
+    border-radius: 100px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: var(--transition);
+}
+
+.hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+    background: var(--primary-light);
+}
+
+/* =========================================
+   INTRO & TRUST BUILDING
+   ========================================= */
+
+.section {
+    padding: clamp(3rem, 6vw, 5rem) 0;
+}
+
+/* Notice Box highlighting manual checks */
+.verification-box {
+    background-color: var(--accent-light);
+    border-left: 5px solid var(--accent);
+    padding: 1.75rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 3.5rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.verification-box h3 {
+    color: var(--accent);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.verification-box p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.verification-box p:last-of-type { margin-bottom: 0; }
+
+.form-intro {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.form-intro h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.form-intro p {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* =========================================
+   THE INTERACTIVE FORM CARD
+   ========================================= */
+
+.form-card {
+    background: var(--bg-white);
+    padding: clamp(2rem, 5vw, 3.5rem);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-bold);
+    border: 1px solid var(--border);
+}
+
+.form-card h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 0.5rem;
+}
+
+/* Smooth Two Column Layout Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels with weight and readability */
+.form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    color: var(--text-main);
+}
+
+/* Input Fields Style Transformation */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background-color: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    background-color: var(--bg-white);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* Make full-width textareas break free from grid rows */
+.form-group:has(textarea),
+.form-group:has(.keyword-editor) {
+    grid-column: span 2;
+    margin-top: 0.5rem;
+}
+
+/* Modernized Radio Button Rows */
+.radio-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 4px;
+}
+
+.radio-row label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-body);
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.radio-row label:hover {
+    border-color: var(--primary);
+}
+
+.radio-row input[type="radio"] {
+    accent-color: var(--primary);
+    width: 18px;
+    height: 18px;
+}
+
+/* Towns Search Dropdown Container */
+.suggestions {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    box-shadow: var(--shadow-soft);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Custom interactive layout for Keywords generator */
+.keyword-editor {
+    min-height: 48px;
+    background: var(--bg-body);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Styled inline items inside keyword editor */
+.keyword-badge {
+    background: var(--primary);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.keyword-badge .remove-keyword {
+    cursor: pointer;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* Legal T&C Checkbox Block styling */
+.checkbox-group {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--primary-light);
+    border-radius: var(--radius-sm);
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* =========================================
+   BUTTON ACTIONS SYSTEM
+   ========================================= */
+
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    width: auto;
+}
+
+.btn-primary {
+    color: white;
+    background: var(--primary);
+    box-shadow: 0 4px 12px rgba(6, 95, 70, 0.2);
+    width: 100%; /* Spans full card length on mobile for conversion priority */
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 6px 18px rgba(6, 95, 70, 0.35);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    padding: 8px 16px;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+/* Feedback messages container layout wrapper */
+.form-message {
+    margin-bottom: 1.5rem;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    display: none; /* Controlled via app script */
+}
+
+/* =========================================
+   MOBILE ADAPTIVE VIEWPORTS
+   ========================================= */
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* Stack columns completely */
+        gap: 1.25rem;
+    }
+    
+    .form-group:has(textarea),
+    .form-group:has(.keyword-editor) {
+        grid-column: span 1;
+    }
+    
+    .form-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .hero-points {
+        grid-template-columns: 1fr;
+    }
+}
