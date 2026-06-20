@@ -47,7 +47,7 @@
 }
 
 .about-section {
-  padding: 18px 0;
+  padding: 28px 0;
   /* Fades from the deep bar color into a solid, sophisticated slate-grey-blue */
   background: linear-gradient(
     180deg, 
@@ -131,7 +131,7 @@ PROJECTS SECTION
 ========================= */
 
 .projects-section {
-  padding: 1.0rem 0;
+  padding: 1.75rem 0;
   /* Soft transition from light slate to a slightly crisp blue-grey */
   background: linear-gradient(
     135deg, 
@@ -1273,5 +1273,5 @@ REDUCED MOTION
   }
   }
   .location-note-section {
-  padding: 10px 0;
+  padding: 18px 0;
   }
