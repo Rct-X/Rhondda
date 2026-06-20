@@ -40,31 +40,9 @@ const BUSINESS_HTML = `
 
 <link rel="stylesheet" href="/css/business.css">
 <link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/mainBusiness.css">
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<style>
-:root {
-  --primary: #0066cc;
-  --primary-hover: #0052a3;
-
-  --secondary: #e2e8f0;
-  --secondary-hover: #cbd5e1;
-
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --text-light: #9ca3af;
-  --border: rgba(226, 232, 240, 0.8);
-  --shadow-md: 0 10px 25px rgba(0,0,0,0.08);
-
-  --bg-light: #f8fafc;
-  --white: #ffffff;
-
-  --radius: 10px;
-
-  --font: system-ui, -apple-system, BlinkMacSystemFont,
-           "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-</style>
 </head>
 
 <body class="business-page">
