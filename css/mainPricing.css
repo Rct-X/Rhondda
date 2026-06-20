@@ -57,15 +57,14 @@ p {
    ========================================= */
 
 .hero {
-    background:
-        linear-gradient(
-            rgba(5, 8, 15, 0.85),
-            rgba(11, 15, 25, 0.80)
-        ),
-        url('/components/images/priceHero.webp');
-
-    background-size: cover;
-    background-position: center center;
+    position: relative;
+    overflow: hidden;
+    padding: clamp(5rem, 10vw, 8rem) 0;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(-45deg, #0f172a, #1e3a8a, #2563eb, #3b82f6);
+    background-size: 400% 400%;
+    animation: heroGradient 14s ease infinite;
 }
 
 /* Hardware accelerated animations */
