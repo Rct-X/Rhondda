@@ -56,7 +56,6 @@ const BUSINESS_HTML = `
     <h1 id="businessName">Business Name</h1>
     <p class="business-subtitle">Local <span id="businessCategoryInline"></span> in <span id="businessTownInline"></span></p>
     <p class="business-meta">
-      <span id="businessCategory"></span> • <span id="businessTown"></span>
       <span id="verifiedBadge"></span>
       <span id="claimedBadge"></span>
     </p>
@@ -120,7 +119,7 @@ const BUSINESS_HTML = `
         <p id="viewCountText"></p>
       </div>
     </aside>
-
+    </div>
     <div class="share-wow">
       <div class="share-content">
         <h3>✨ Found Them on RCTX? ✨</h3>
@@ -128,7 +127,6 @@ const BUSINESS_HTML = `
         <button class="share-wow-btn" onclick="shareBusiness()">Share this business</button>
         <div class="share-credit">Powered by RCTX Web Design</div>
       </div>
-    </div>
 
   </div>
 </section>
@@ -139,7 +137,9 @@ const BUSINESS_HTML = `
     <p class="text-dim">Similar businesses in your area</p>
     <div id="relatedGrid" class="related-grid"></div>
   </div>
+
 </section>
+
 
 <footer class="site-footer">
   <div class="container footer-inner">
