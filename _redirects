@@ -1,0 +1,2 @@
+# Redirect all old directory URLs to new local URLs
+/directory/*  /local/:splat  301!
