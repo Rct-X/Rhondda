@@ -272,7 +272,7 @@ if (form) {
   If you ever want a simple, affordable website that helps bring in customers,
   have a look at our options:
   <br>
-  <a href="/pricing" class="inline-link">Websites from £30/month →</a>
+  <a href="/pricing" class="inline-link">Websites £30/month →</a>
 `;
       formMessage.classList.add("success");
       form.reset();
