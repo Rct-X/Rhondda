@@ -269,7 +269,7 @@ transition:transform .25s ease,opacity .25s ease;
 /* ===== MOBILE ===== */
 @media (max-width:768px){
 
-.navbar .container{
+.container{
     padding-inline:1rem;
 }
 
