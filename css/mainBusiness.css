@@ -476,7 +476,7 @@ body {
 }
 
 /* Style mapping adjustments targeting standard client components injected via script */
-.related-grid .biz-card {
+.related-card {
     background: var(--bg-body);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -484,13 +484,44 @@ body {
     transition: var(--transition);
 }
 
-.related-grid .biz-card:hover {
+.related-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
     background: var(--bg-white);
     border-color: var(--primary-light);
 }
 
+.related-card h3 {
+    padding: 1rem 1rem 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.related-card p {
+    padding: 0 1rem;
+    font-size: 0.95rem;
+}
+
+.view-link {
+    display: block;
+    padding: 1rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.related-thumb {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.related-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
 /* =========================================
    9. MOBILE RESPONSIVE OPTIMIZATION LAYOUTS
    ========================================= */
