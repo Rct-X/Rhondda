@@ -1,4 +1,14 @@
-  /* HERO */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+/* HERO */
 .hero {
   padding: 2.5rem 0 2.5rem;
   text-align: center;
