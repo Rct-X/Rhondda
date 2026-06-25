@@ -19,7 +19,7 @@
     --radius-lg: 20px;
     --radius-md: 12px;
     --radius-sm: 8px;
-    --shadow: 0 15px 40px rgba(15, 23, 42, 0.05);
+    --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
     --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -114,7 +114,7 @@ body {
 }
 
 .contact-form-section .container {
-    max-width: 850px; /* Slimmer max-width creates a balanced reading grid */
+    max-width: 1200px;
 }
 
 .contact-form-section h2 {
@@ -126,7 +126,7 @@ body {
 /* Premium Container Framing for Form */
 #contactForm {
     background: var(--bg-white);
-    padding: clamp(2rem, 5vw, 3.5rem);
+    padding: clamp(2.5rem, 6vw, 4rem);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
@@ -152,9 +152,9 @@ body {
 }
 
 .field label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 10px;
     color: var(--text-main);
 }
 
@@ -166,7 +166,8 @@ body {
 #contactForm select,
 #contactForm textarea {
     width: 100%;
-    padding: 12px 16px;
+    padding: 16px 18px;
+    min-height: 58px;
     font-size: 1rem;
     font-family: inherit;
     color: var(--text-main);
@@ -205,8 +206,7 @@ body {
 
 /* Textarea Layout Defaults */
 #contactForm textarea {
-    resize: vertical;
-    line-height: 1.5;
+    min-height: 180px;
 }
 
 /* Absolute Security: Bulletproof Anti-Spam Honeypot Handling */
@@ -417,8 +417,8 @@ body {
 
 .btn {
     display: inline-block;
-    padding: 14px 36px;
-    font-size: 1.05rem;
+    padding: 18px 36px;
+    font-size: 1.1rem;
     font-weight: 700;
     text-align: center;
     text-decoration: none;
@@ -487,9 +487,24 @@ body {
     
     #contactForm {
         padding: 1.75rem 1.25rem;
+        position: relative;
+        overflow: hidden;
     }
-    
+    #contactForm::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+
+    background: linear-gradient(
+        90deg,
+        #2563eb,
+        #3b82f6
+    );
+}
     .benefits-grid article {
         padding: 1.75rem;
     }
-  }
+        }
