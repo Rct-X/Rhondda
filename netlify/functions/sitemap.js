@@ -30,7 +30,7 @@ exports.handler = async () => {
     "",
     "/pricing",
     "/about",
-    "/directory",
+    "/local",
     "/add-business",
     "/contact",
     "/website-checker",
@@ -51,7 +51,7 @@ exports.handler = async () => {
     if (!b.categorySlug || !b.townSlug || !b.slug) return;
 
     urls.push({
-      loc: `${base}/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`,
+      loc: `${base}/local/${b.categorySlug}/${b.townSlug}/${b.slug}`,
       lastmod: b.updatedAt || new Date().toISOString()
     });
   });
