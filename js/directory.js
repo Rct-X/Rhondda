@@ -42,11 +42,11 @@ async function loadFirebaseConfig() {
 function detectPageType() {
   const parts = window.location.pathname.split("/").filter(Boolean);
 
-  if (parts.length === 2 && parts[0] === "directory") {
+  if (parts.length === 2 && parts[0] === "local") {
     return { type: "category", category: parts[1] };
   }
 
-  if (parts.length === 3 && parts[0] === "directory") {
+  if (parts.length === 3 && parts[0] === "local") {
     return { type: "categoryTown", category: parts[1], town: parts[2] };
   }
 
@@ -58,7 +58,7 @@ function detectPageType() {
 // ===============================
 function renderBusinessCard(b) {
   const card = document.createElement("a");
-  card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+  card.href = `/local/${b.categorySlug}/${b.townSlug}/${b.slug}`;
   card.className = "card-business";
 
   card.innerHTML = `
@@ -139,7 +139,7 @@ async function loadCategoryTown(categorySlug, townSlug) {
 // ===============================
 // SEARCH DIRECTORY (RANDOMISED)
 // ===============================
-async function searchDirectory() {
+async function searchLocal() {
   const term = searchInput.value.trim().toLowerCase();
   if (!term) return;
 
@@ -172,10 +172,10 @@ async function searchDirectory() {
 // ===============================
 // EVENTS
 // ===============================
-searchBtn.addEventListener("click", searchDirectory);
+searchBtn.addEventListener("click", searchLocal);
 
 searchInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") searchDirectory();
+  if (e.key === "Enter") searchLocal();
 });
 
 // ===============================
