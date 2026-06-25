@@ -1,10 +1,3 @@
-// ======================================
-// DIRECTORY PAGE SCRIPT (NO SUGGESTIONS)
-// ======================================
-
-// ===============================
-// DOM ELEMENTS
-// ===============================
 const resultsGrid = document.getElementById("resultsGrid");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
@@ -16,7 +9,7 @@ let db;
 // FIREBASE INIT
 // ===============================
 async function loadFirebaseConfig() {
-  const res = await fetch("/.netlify/functions/firebaseConfig");
+  const res = await fetch("//.netlify/functions/firebaseConfig");
   return res.json();
 }
 
@@ -53,11 +46,21 @@ function detectPageType() {
   return { type: "home" };
 }
 
+// Helper utility to turn hyphens into readable, clean capital text strings
+function cleanString(str) {
+  if (!str) return "";
+  return str
+    .split("-")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 // ===============================
-// BUSINESS CARD
+// BUSINESS CARD COMPONENT
 // ===============================
 function renderBusinessCard(b) {
   const card = document.createElement("a");
+  // Updated URL mapping architecture coordinates securely to the /local/ directory paths
   card.href = `/local/${b.categorySlug}/${b.townSlug}/${b.slug}`;
   card.className = "card-business";
 
@@ -79,15 +82,20 @@ function renderBusinessCard(b) {
 // LOAD CATEGORY (RANDOMISED)
 // ===============================
 async function loadCategory(categorySlug) {
-  resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug}…</p>`;
+  resultsGrid.innerHTML = `<p class="text-dim">Loading ${cleanString(categorySlug)}…</p>`;
 
   const snap = await db.collection("businesses")
     .where("categorySlug", "==", categorySlug)
     .where("status", "==", "approved")
     .get();
 
+  const humanCategory = cleanString(categorySlug);
+  
+  // Dynamic SEO Injection (Updates browser tab strings instantly)
+  document.title = `${humanCategory} in Rhondda Cynon Taf | RCTX Local`;
+
   resultsMeta.innerHTML = `
-    <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug}</strong></p>
+    <p>Showing <strong>${snap.size}</strong> businesses in <strong>${humanCategory}</strong></p>
   `;
 
   if (snap.empty) {
@@ -95,12 +103,10 @@ async function loadCategory(categorySlug) {
     return;
   }
 
-  // Convert to array + shuffle
   let results = [];
   snap.forEach(doc => results.push(doc.data()));
   results.sort(() => Math.random() - 0.5);
 
-  // Render
   resultsGrid.innerHTML = "";
   results.forEach(b => resultsGrid.appendChild(renderBusinessCard(b)));
 }
@@ -109,7 +115,10 @@ async function loadCategory(categorySlug) {
 // LOAD CATEGORY + TOWN (RANDOMISED)
 // ===============================
 async function loadCategoryTown(categorySlug, townSlug) {
-  resultsGrid.innerHTML = `<p class="text-dim">Loading ${categorySlug} in ${townSlug}…</p>`;
+  const humanCategory = cleanString(categorySlug);
+  const humanTown = cleanString(townSlug);
+
+  resultsGrid.innerHTML = `<p class="text-dim">Loading ${humanCategory} in ${humanTown}…</p>`;
 
   const snap = await db.collection("businesses")
     .where("categorySlug", "==", categorySlug)
@@ -117,8 +126,11 @@ async function loadCategoryTown(categorySlug, townSlug) {
     .where("status", "==", "approved")
     .get();
 
+  // Dynamic SEO Injection
+  document.title = `${humanCategory} in ${humanTown} | RCTX Local`;
+
   resultsMeta.innerHTML = `
-    <p>Showing <strong>${snap.size}</strong> businesses in <strong>${categorySlug} • ${townSlug}</strong></p>
+    <p>Showing <strong>${snap.size}</strong> businesses in <strong>${humanCategory} • ${humanTown}</strong></p>
   `;
 
   if (snap.empty) {
@@ -126,18 +138,16 @@ async function loadCategoryTown(categorySlug, townSlug) {
     return;
   }
 
-  // Convert to array + shuffle
   let results = [];
   snap.forEach(doc => results.push(doc.data()));
   results.sort(() => Math.random() - 0.5);
 
-  // Render
   resultsGrid.innerHTML = "";
   results.forEach(b => resultsGrid.appendChild(renderBusinessCard(b)));
 }
 
 // ===============================
-// SEARCH DIRECTORY (RANDOMISED)
+// SEARCH NETWORK ACTION
 // ===============================
 async function searchLocal() {
   const term = searchInput.value.trim().toLowerCase();
@@ -151,26 +161,27 @@ async function searchLocal() {
     .get();
 
   resultsMeta.innerHTML = `
-    <p>Showing <strong>${snap.size}</strong> results for <strong>${term}</strong></p>
+    <p>Showing <strong>${snap.size}</strong> results for "<strong>${term}</strong>"</p>
   `;
 
   if (snap.empty) {
-    resultsGrid.innerHTML = `<p>No businesses found.</p>`;
+    resultsGrid.innerHTML = `<p>No businesses found matching that term.</p>`;
     return;
   }
 
-  // Convert to array + shuffle
   let results = [];
   snap.forEach(doc => results.push(doc.data()));
   results.sort(() => Math.random() - 0.5);
 
-  // Render
   resultsGrid.innerHTML = "";
   results.forEach(b => resultsGrid.appendChild(renderBusinessCard(b)));
+  
+  // Smoothly scrolls user frame downwards into results view panel once search finishes
+  resultsGrid.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // ===============================
-// EVENTS
+// GLOBAL EVENT LISTENERS
 // ===============================
 searchBtn.addEventListener("click", searchLocal);
 
@@ -179,18 +190,19 @@ searchInput.addEventListener("keydown", e => {
 });
 
 // ===============================
-// ROTATING PLACEHOLDER
+// ROTATING TIMED PLACEHOLDERS
 // ===============================
 const placeholders = [
+  "Find waste collectors in Treorchy...",
   "Find electricians in Pontypridd...",
-  "Find plumbers in Tonypandy...",
-  "Search shops in Treorchy...",
-  "Find cleaners in Ferndale..."
+  "Search shops in Tonypandy...",
+  "Find cleaners in Ferndale...",
+  "Search plumbers in Aberdare..."
 ];
 
-let i = 0;
+let placeholderIndex = 0;
 
 setInterval(() => {
-  searchInput.placeholder = placeholders[i];
-  i = (i + 1) % placeholders.length;
-}, 2500);
+  searchInput.placeholder = placeholders[placeholderIndex];
+  placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+}, 3000); // Shifted slightly to 3s for perfect human pacing reading times
