@@ -22,18 +22,18 @@ const BUSINESS_HTML = `
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RCTX Business Network | Rhondda</title>
-<meta name="description" content="View trusted local business information on the RCTX Directory.">
+<meta name="description" content="View trusted local business information on the RCTX Local Network.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" id="canonicalUrl" href="">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RCTX Local">
-<meta property="og:title" content="Local Business | RCTX Directory">
+<meta property="og:title" content="RCTX Local Business | Network">
 <meta property="og:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
 <meta property="og:url" id="ogUrl" content="">
 <meta property="og:image" id="ogImage" content="https://rctx.co.uk/images/find-rctx.jpg">
-<meta property="og:image:alt" content="Find local services in Rhondda Cynon Taf on the RCTX Directory">
+<meta property="og:image:alt" content="Find local services in Rhondda Cynon Taf on RCTX Local">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Local Business | RCTX Directory">
+<meta name="twitter:title" content="RCTX Local Business | Network">
 <meta name="twitter:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
 <meta name="twitter:image" content="https://rctx.co.uk/images/find-rctx.jpg">
 <meta name="prerender-status-code" content="200">
