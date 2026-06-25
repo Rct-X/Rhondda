@@ -9,7 +9,7 @@ let db;
 // FIREBASE INIT
 // ===============================
 async function loadFirebaseConfig() {
-  const res = await fetch("//.netlify/functions/firebaseConfig");
+  const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
 }
 
