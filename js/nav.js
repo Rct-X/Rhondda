@@ -78,4 +78,28 @@ document.addEventListener("DOMContentLoaded", () => {
       group.classList.toggle("open", !isOpen);
     });
   });
+
+  // 4. Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+      btn.classList.remove("open");
+      menu.classList.remove("open");
+    }
+  });
+
+  // 5. Close on ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      btn.classList.remove("open");
+      menu.classList.remove("open");
+    }
+  });
+
+  // 6. Close menu when clicking any link
+  menu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      btn.classList.remove("open");
+      menu.classList.remove("open");
+    });
+  });
 });
