@@ -35,23 +35,9 @@
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<!-- Font Asset Preloading (Kept intact for performance layout shifts) -->
-<link rel="preload"
-      href="/site/fonts/BricolageGrotesque-Bold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin>
-
-<link rel="preload"
-      href="/site/fonts/Poppins-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin>
-
 <!-- Stylesheets -->
-<link rel="stylesheet" href="/css/site.css">
-<link rel="stylesheet" href="/css/nav.css">
 <link rel="stylesheet" href="/css/directory.css">
+<link rel="stylesheet" href="/css/nav.css">
 
 <!-- Unified Network Schema Graph -->
 <script type="application/ld+json">
@@ -60,8 +46,8 @@
   "@graph": [
     {
       "@type": "CollectionPage",
-      "@id": "https://rctx.co.uk",
-      "name": "Rhondda Cynon Taf Local Business Network",
+      "@id": "https://rctx.co.uk/local#collection",
+   "name": "Find Trusted Local Businesses in Rhondda Cynon Taf",
       "url": "https://rctx.co.uk/local",
       "description": "Browse and search verified local businesses, tradespeople, and independent services across Rhondda Cynon Taf.",
       "isPartOf": {
@@ -72,7 +58,7 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://rctx.co.uk",
+      "@id": "https://rctx.co.uk/local#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -106,12 +92,12 @@
   <div class="container">
 
     <h1 class="fade-in">
-      Find Trusted Local Businesses<br>
-      <span>Across Rhondda Cynon Taf</span>
+      Find Trusted Local Businesses in Rhondda Cynon Taf<br>
+      <span>RCTX Network</span>
     </h1>
 
     <p class="fade-in delay-1">
-      Search verified independent businesses, professional trades, and services across the Rhondda.
+      Discover trusted tradespeople, independent businesses and professional services near you.
     </p>
 
     <div class="directory-search">
@@ -123,17 +109,8 @@
         aria-label="Search local businesses">
 
       <button id="searchBtn" class="btn btn-primary" type="button">
-        Search
+        Search RCTX Network
       </button>
-    </div>
-
-    <!-- ⭐ Popular quick chips (Optimized to new URL pattern paths) -->
-    <div class="quick-chips">
-      <span>Popular:</span>
-      <a href="/local/waste-collection">Waste Clearance</a>
-      <a href="/local/plumbers">Plumbers</a>
-      <a href="/local/electricians">Electricians</a>
-      <a href="/local/cleaners">Cleaners</a>
     </div>
 
   </div>
@@ -154,7 +131,7 @@
       The RCTX Local Network helps residents instantly connect with verified independent businesses, professional tradespeople, and essential services throughout Rhondda Cynon Taf.
     </p>
     <p>
-      Local businesses can claim or create a free profile showcasing custom workspace photography, service coverage boundaries, verified operating hours, direct contact details.
+      Local businesses can claim or create a free profile featuring images, service areas, verified opening hours and direct contact details.
     </p>
   </div>
 </section>
