@@ -1,101 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Find Local Businesses in Rhondda Cynon Taf | Trades, Services & Shops Directory</title>
+<title>Find Trusted Local Businesses in RCT | Trades & Services Network</title>
 
-<meta name="description" content="Discover local businesses across Rhondda Cynon Taf. Find plumbers, electricians, builders, cafes, barbers, shops, tradespeople and services. Browse verified local business listings, reviews, contact details and websites.">
+<meta name="description" content="Discover verified local services across Rhondda Cynon Taf. Find reliable waste collectors, plumbers, electricians, builders, cafes, and shops in the Valleys. Browse verified local business listings and contact details.">
 
 <meta name="robots" content="index,follow,max-image-preview:large">
-
-<meta name="author" content="RCTX Directory">
-
-<link rel="canonical" href="https://rctx.co.uk/directory">
-
+<meta name="author" content="RCTX Local Network">
+<link rel="canonical" href="https://rctx.co.uk/local">
 <meta name="theme-color" content="#0b0f19">
 
-<!-- Open Graph -->
+<!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Rhondda Cynon Taf Business Directory | Find Local Businesses">
-<meta property="og:description" content="Search local businesses, trades and services across Rhondda Cynon Taf. Discover verified listings, contact details, websites, reviews and local recommendations.">
-<meta property="og:url" content="https://rctx.co.uk/directory">
+<meta property="og:title" content="Rhondda Cynon Taf Local Business Network | Find Local Services">
+<meta property="og:description" content="Search local businesses, trades, and services across Rhondda Cynon Taf. Discover verified listings, direct contact details, and independent valleys businesses.">
+<meta property="og:url" content="https://rctx.co.uk/local">
 <meta property="og:image" content="https://rctx.co.uk/images/find-rctx.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Rhondda Cynon Taf Business Directory">
-<meta property="og:site_name" content="RCTX Directory">
+<meta property="og:image:alt" content="Rhondda Cynon Taf Local Business Network">
+<meta property="og:site_name" content="RCTX Local">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Rhondda Cynon Taf Business Directory">
-<meta name="twitter:description" content="Find trusted local businesses, tradespeople and services throughout Rhondda Cynon Taf.">
+<meta name="twitter:title" content="Rhondda Cynon Taf Local Business Network">
+<meta name="twitter:description" content="Find trusted local businesses, tradespeople, and services throughout Rhondda Cynon Taf.">
 <meta name="twitter:image" content="https://rctx.co.uk/images/find-rctx.jpg">
-<meta name="twitter:image:alt" content="Rhondda Cynon Taf Business Directory">
+<meta name="twitter:image:alt" content="Rhondda Cynon Taf Local Business Network">
 
 <!-- Favicons -->
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<!-- Styles -->
-  <link rel="stylesheet" href="/css/site.css">
-<link rel="stylesheet" href="/css/nav.css">
-
-<link rel="stylesheet" href="/css/directory.css">
-
-<!-- Directory Schema -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"WebPage",
-  "name":"Rhondda Cynon Taf Business Directory",
-  "url":"https://rctx.co.uk/directory",
-  "description":"Directory of local businesses, tradespeople and services across Rhondda Cynon Taf.",
-  "isPartOf":{
-    "@type":"WebSite",
-    "name":"RCTX Directory",
-    "url":"https://rctx.co.uk"
-  }
-}
-</script>
-
-<!-- ItemList Schema -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"CollectionPage",
-  "name":"Rhondda Cynon Taf Business Directory",
-  "description":"Browse local businesses, trades and services across Rhondda Cynon Taf.",
-  "url":"https://rctx.co.uk/directory"
-}
-</script>
-
-<!-- Breadcrumb Schema -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"BreadcrumbList",
-  "itemListElement":[
-    {
-      "@type":"ListItem",
-      "position":1,
-      "name":"Home",
-      "item":"https://rctx.co.uk"
-    },
-    {
-      "@type":"ListItem",
-      "position":2,
-      "name":"Directory",
-      "item":"https://rctx.co.uk/directory"
-    }
-  ]
-}
-</script>
-  <!-- Firebase v8 compat (matches your code) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
- <link rel="preload"
+<!-- Font Asset Preloading (Kept intact for performance layout shifts) -->
+<link rel="preload"
       href="/site/fonts/BricolageGrotesque-Bold.woff2"
       as="font"
       type="font/woff2"
@@ -106,6 +47,54 @@
       as="font"
       type="font/woff2"
       crossorigin>
+
+<!-- Stylesheets -->
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/directory.css">
+
+<!-- Unified Network Schema Graph -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://rctx.co.uk",
+      "name": "Rhondda Cynon Taf Local Business Network",
+      "url": "https://rctx.co.uk/local",
+      "description": "Browse and search verified local businesses, tradespeople, and independent services across Rhondda Cynon Taf.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "RCTX Local",
+        "url": "https://rctx.co.uk"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://rctx.co.uk",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://rctx.co.uk"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Local Network",
+          "item": "https://rctx.co.uk/local"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<!-- Firebase v8 compat layers (Kept completely untouched) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 </head>
 
@@ -122,14 +111,14 @@
     </h1>
 
     <p class="fade-in delay-1">
-      Search local businesses, trades and services across the Rhondda.
+      Search verified independent businesses, professional trades, and services across the Rhondda.
     </p>
 
     <div class="directory-search">
       <input
         id="searchInput"
         type="text"
-        placeholder="Search plumbers, electricians, cafés…"
+        placeholder="Search waste collectors, plumbers, cafés…"
         autocomplete="off"
         aria-label="Search local businesses">
 
@@ -138,17 +127,18 @@
       </button>
     </div>
 
-    <!-- ⭐ Popular quick chips -->
+    <!-- ⭐ Popular quick chips (Optimized to new URL pattern paths) -->
     <div class="quick-chips">
       <span>Popular:</span>
-      <a href="/directory/plumber">Plumbers</a>
-      <a href="/directory/electricians">Electricians</a>
-      <a href="/directory/cleaners">Cleaners</a>
-      <a href="/directory/insurance-brokers">Insurance</a>
+      <a href="/local/waste-collection">Waste Clearance</a>
+      <a href="/local/plumbers">Plumbers</a>
+      <a href="/local/electricians">Electricians</a>
+      <a href="/local/cleaners">Cleaners</a>
     </div>
 
   </div>
 </section>
+
 
 <section class="results">
   <div class="container">
@@ -161,23 +151,24 @@
 <section class="directory-content">
   <div class="container">
     <p>
-      The RCTX Directory helps residents discover trusted local businesses, tradespeople and services throughout Rhondda Cynon Taf.
+      The RCTX Local Network helps residents instantly connect with verified independent businesses, professional tradespeople, and essential services throughout Rhondda Cynon Taf.
     </p>
     <p>
-      Businesses can create a free listing including business descriptions, service areas, opening hours, website links, social media profiles and customer reviews.
+      Local businesses can claim or create a free profile showcasing custom workspace photography, service coverage boundaries, verified operating hours, direct contact details.
     </p>
   </div>
 </section>
 
 <section class="add-business">
   <div class="container">
-    <h2>Add Your Business</h2>
-    <p>Add your business listing for free and help local customers find your services online.</p>
-    <a href="/add-business" class="Abtn">Add Your Business Listing</a>
+    <h2>List Your Business Free</h2>
+    <p>Get your business onto the network in under 2 minutes. Gain local search visibility, drive customer telephone inquiries, and review your live traffic analytics completely free.</p>
+    <a href="/add-business" class="btn btn-primary">Join The Local Network</a>
   </div>
 </section>
 
 </main>
+
 
 <footer class="site-footer">
 
