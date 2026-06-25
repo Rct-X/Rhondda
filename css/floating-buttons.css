@@ -1,0 +1,49 @@
+  .floating-actions {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+}
+
+.floating-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #2563eb;
+    color: #fff;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}
+
+.floating-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+}
+
+.contact-btn {
+    background: #10b981;
+}
+
+.scroll-top {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: .3s;
+}
+
+.scroll-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
