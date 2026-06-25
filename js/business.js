@@ -1,13 +1,4 @@
-// ======================================================
-// RCTX BUSINESS PAGE — CLEAN, MODERN, PRODUCTION VERSION
-// ======================================================
-
-// Firebase
 let db;
-
-// ======================================================
-// LOAD FIREBASE CONFIG
-// ======================================================
 async function loadFirebaseConfig() {
   const res = await fetch("/.netlify/functions/firebaseConfig");
   return res.json();
@@ -53,7 +44,7 @@ function getBusinessParams() {
 function extractFromPath(pathname) {
   const parts = pathname.split("/").filter(Boolean);
 
-  const i = parts.indexOf("directory");
+  const i = parts.indexOf("local");
   if (i === -1) return null;
 
   const category = parts[i + 1];
@@ -153,7 +144,7 @@ document.querySelector('meta[property="og:image"]').setAttribute(
   // ======================================================
   // SEO
   // ======================================================
-  document.title = `${b.name} | ${b.town} ${b.category} | RCTX Directory`;
+  document.title = `${b.name} | ${b.town} ${b.category} | RCTX Local Network`;
 
   document.getElementById("seoDescription")?.setAttribute(
     "content",
@@ -426,7 +417,7 @@ async function loadRelated(categorySlug, townSlug, currentSlug) {
 
   results.forEach(b => {
     const card = document.createElement("a");
-    card.href = `/directory/${b.categorySlug}/${b.townSlug}/${b.slug}`;
+    card.href = `/local/${b.categorySlug}/${b.townSlug}/${b.slug}`;
     card.className = "related-card";
 
     const thumb =
@@ -453,7 +444,7 @@ function getCleanBusinessUrl() {
   const params = getBusinessParams();
   if (!params) return window.location.href;
 
-  return `https://rctx.co.uk/directory/${params.category}/${params.town}/${params.slug}`;
+  return `https://rctx.co.uk/local/${params.category}/${params.town}/${params.slug}`;
 }
 // ======================================================
 // SHARE BUTTON
@@ -507,4 +498,4 @@ function showToast(message) {
   setTimeout(() => {
     toast.classList.remove("show");
   }, 2500);
-      }
+                         }
