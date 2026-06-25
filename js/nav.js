@@ -25,10 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </li>
 
             <li class="nav-group">
-              <button class="nav-group-title" type="button">Directory</button>
+              <button class="nav-group-title" type="button">Local Network</button>
               <ul class="nav-sub">
-                <li><a href="/directory">Find Businesses</a></li>
-                <li><a href="/add-business">Add Your Business</a></li>
+                <li><a href="/local">Find Local Services</a></li>
+                <li><a href="/add-business">List Your Business</a></li>
               </ul>
             </li>
 
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </li>
 
             <li class="nav-cta">
-              <p>Business websites from £30/month</p>
+              <p>Managed websites for just £30/month</p>
               <a href="/pricing" class="nav-cta-btn">View Pricing</a>
             </li>
           </ul>
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     menu.classList.toggle("open");
   });
 
-  // 3. Sub‑menu toggles (THIS is what was missing)
+  // 3. Sub‑menu toggles
   document.querySelectorAll(".nav-group-title").forEach(titleBtn => {
     titleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
