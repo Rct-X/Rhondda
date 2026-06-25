@@ -34,7 +34,7 @@
 # CLEAN URL → OG FUNCTION
 # =========================
 [[redirects]]
-  from = "/directory/:category/:town/:slug"
+  from = "/local/:category/:town/:slug"
   to = "/.netlify/functions/og-listing?slug=:slug"
   status = 200
   force = true
@@ -43,11 +43,11 @@
 # DIRECTORY LISTING PAGES
 # =========================
 [[redirects]]
-  from = "/directory/:category/:town"
-  to = "/directory.html"
+  from = "/local/:category/:town"
+  to = "/local.html"
   status = 200
 
 [[redirects]]
-  from = "/directory/:category"
-  to = "/directory.html"
+  from = "/local/:category"
+  to = "/local.html"
   status = 200
