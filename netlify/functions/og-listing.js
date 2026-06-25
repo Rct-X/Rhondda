@@ -21,12 +21,12 @@ const BUSINESS_HTML = `
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Local Business | RCTX Directory</title>
+<title>RCTX Business Network | Rhondda</title>
 <meta name="description" content="View trusted local business information on the RCTX Directory.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" id="canonicalUrl" href="">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="RCTX Directory">
+<meta property="og:site_name" content="RCTX Local">
 <meta property="og:title" content="Local Business | RCTX Directory">
 <meta property="og:description" content="Find trusted local businesses across Rhondda Cynon Taf.">
 <meta property="og:url" id="ogUrl" content="">
@@ -253,7 +253,7 @@ exports.handler = async (event) => {
     const categorySlug = f.categorySlug?.stringValue || "";
     const townSlug = f.townSlug?.stringValue || "";
 
-    const finalUrl = `${base}/directory/${categorySlug}/${townSlug}/${cleanSlug}`;
+    const finalUrl = `${base}/local/${categorySlug}/${townSlug}/${cleanSlug}`;
 
     // =======================
     // HUMAN VISITOR
