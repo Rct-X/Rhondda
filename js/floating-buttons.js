@@ -17,16 +17,53 @@ document.addEventListener("DOMContentLoaded", () => {
       </button>
 
     </div>
+
+    <div id="contactOverlay" class="contact-overlay">
+
+      <div class="contact-header">
+        <h2>Contact RCTX</h2>
+
+        <button id="closeContactOverlay" class="contact-close">
+          ✕
+        </button>
+      </div>
+
+      <div class="contact-content">
+
+        <a href="https://wa.me/447434745240"
+           class="contact-option whatsapp"
+           target="_blank">
+           💬 WhatsApp Eddie
+        </a>
+
+        <a href="tel:+447434745240"
+           class="contact-option">
+           📞 Call
+        </a>
+
+        <a href="mailto:support@rctx.co.uk"
+           class="contact-option">
+           ✉️ Email
+        </a>
+
+        <a href="/contact"
+           class="contact-option">
+           📝 Contact Form
+        </a>
+
+      </div>
+
+    </div>
   `);
 
   const scrollBtn = document.getElementById("scrollTopBtn");
+  const contactBtn = document.getElementById("contactBtn");
+  const overlay = document.getElementById("contactOverlay");
+  const closeBtn = document.getElementById("closeContactOverlay");
 
+  // Scroll button
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 400) {
-      scrollBtn.classList.add("show");
-    } else {
-      scrollBtn.classList.remove("show");
-    }
+    scrollBtn.classList.toggle("show", window.scrollY > 400);
   });
 
   scrollBtn.addEventListener("click", () => {
@@ -34,6 +71,17 @@ document.addEventListener("DOMContentLoaded", () => {
       top: 0,
       behavior: "smooth"
     });
+  });
+
+  // Contact overlay
+  contactBtn.addEventListener("click", () => {
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.remove("show");
+    document.body.style.overflow = "";
   });
 
 });
