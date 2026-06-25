@@ -245,3 +245,19 @@ main {
   color: #f59e0b;
   border: 1px solid rgba(245, 158, 11, 0.25);
     }
+.results {
+  padding: 3rem 0;
+}
+
+.results h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: .5rem;
+}
+
+.results-meta {
+  font-size: 1rem;
+  color: #475569;
+  margin-bottom: 1.5rem;
+}
