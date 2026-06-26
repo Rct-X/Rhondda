@@ -60,19 +60,32 @@ function cleanString(str) {
 // ===============================
 function renderBusinessCard(b) {
   const card = document.createElement("a");
-  // Updated URL mapping architecture coordinates securely to the /local/ directory paths
   card.href = `/local/${b.categorySlug}/${b.townSlug}/${b.slug}`;
   card.className = "card-business";
 
   card.innerHTML = `
-    <h3>
-      ${b.name}
-      ${b.verified ? `<span class="badge badge-verified">Verified</span>` : ""}
-      ${(b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup")
-        ? `<span class="badge badge-claimed">Claimed</span>`
-        : ""}
-    </h3>
-    <p class="text-dim">${b.category} • ${b.town}</p>
+    <div class="card-header">
+      <h3>
+        ${b.name}
+        ${b.verified ? '<span class="badge badge-verified">Verified</span>' : ""}
+        ${(b.ownerId || b.ownerEmail || b.ownerStatus === "pending_signup")
+          ? '<span class="badge badge-claimed">Claimed</span>'
+          : ""}
+      </h3>
+    </div>
+
+    <p class="card-description">
+      ${b.description || `Professional ${b.category} services.`}
+    </p>
+
+    <div class="card-info">
+      <p>📍 ${b.town}</p>
+      <p>🛠 ${b.services || b.category}</p>
+    </div>
+
+    <span class="view-business">
+      View Business →
+    </span>
   `;
 
   return card;
