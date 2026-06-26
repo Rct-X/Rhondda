@@ -506,7 +506,7 @@ function updateUrlPreview() {
     .trim();
 
   bmUrlPreview.textContent =
-    `https://rctx.co.uk/directory/${category}/${town}/${slug}`;
+    `https://rctx.co.uk/local/${category}/${town}/${slug}`;
 
 }
 
@@ -817,4 +817,4 @@ function escapeHtml(str = "") {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 
-}
+          }
