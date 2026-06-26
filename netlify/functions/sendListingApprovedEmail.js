@@ -20,7 +20,7 @@ export async function handler(event) {
     // ======================================
 
     const listingUrl =
-      `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${slug}`;
+      `https://rctx.co.uk/local/${categorySlug}/${townSlug}/${slug}`;
 
     const unsubscribeUrl =
       `https://rctx.co.uk/unsubscribe?email=${encodeURIComponent(email)}`;
@@ -284,7 +284,7 @@ body{
       <p>
         Your business has been approved
         and is now visible on the
-        RCTX Directory.
+        RCTX Local Network.
       </p>
 
     </div>
@@ -301,7 +301,7 @@ body{
         <strong>{{businessName}}</strong>
         has officially been approved
         and published on the
-        RCTX Directory.
+        RCTX Network.
       </p>
 
       <p class="text">
@@ -367,7 +367,7 @@ body{
     <div class="footer">
 
       <p>
-        <strong>RCTX Directory</strong><br>
+        <strong>RCTX Local Network</strong><br>
         Helping local businesses grow online.
       </p>
 
@@ -381,11 +381,11 @@ body{
       <p class="small">
         You received this email because
         your business listing was approved
-        on the RCTX Directory.
+        on the RCTX Local Network.
       </p>
 
       <p class="small">
-        © 2026 RCTX Directory.
+        © 2026 RCTX Web Design & Local Network.
         All rights reserved.
       </p>
 
@@ -438,7 +438,7 @@ body{
     await resend.emails.send({
 
       from:
-        "RCTX Directory <support@rctx.co.uk>",
+        "RCTX Local <support@rctx.co.uk>",
 
       to: email,
 
