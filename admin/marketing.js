@@ -241,7 +241,7 @@ async function addBusiness() {
 
     if (!res.ok) throw new Error(data.error || "Failed to add business");
 
-    const listingUrl = `/directory/${category}/${townSlug}/${slug}`;
+    const listingUrl = `/local/${category}/${townSlug}/${slug}`;
     const fullUrl = `${window.location.origin}${listingUrl}`;
     const googleSearch = `https://www.google.com/search?q=${encodeURIComponent(name + " " + town)}`;
 
@@ -280,4 +280,4 @@ async function addBusiness() {
 
   submitBtn.disabled = false;
   submitBtn.textContent = "Add Business";
-}
+                                                       }
