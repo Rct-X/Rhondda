@@ -64,7 +64,7 @@ export async function handler(event) {
     // Rebuild listing URL if missing
     const finalListingUrl =
       listingUrl ||
-      `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${slug}`;
+      `https://rctx.co.uk/local/${categorySlug}/${townSlug}/${slug}`;
 
     // --------------------------------------
     // LOAD TEMPLATE (same as original)
@@ -105,7 +105,7 @@ export async function handler(event) {
     // SEND EMAIL AGAIN
     // --------------------------------------
     const resendResponse = await resend.emails.send({
-      from: "RCTX Directory <support@rctx.co.uk>",
+      from: "RCTX Local <support@rctx.co.uk>",
       to: recipient,
       subject,
       html: finalHtml
@@ -149,4 +149,4 @@ export async function handler(event) {
       })
     };
   }
-      }
+}
