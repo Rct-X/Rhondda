@@ -1,11 +1,4 @@
 /* =========================
-   NAVBAR ISOLATION LAYER
-========================= */
-.navbar * {
-    all: revert;
-    box-sizing: border-box;
-}
-/* =========================
    NAVBAR (UNCHANGED)
 ========================= */
 .navbar{
