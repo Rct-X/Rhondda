@@ -355,7 +355,7 @@ function validateAndPreview() {
   }
 
   // URL PREVIEW
-  const url = `https://rctx.co.uk/directory/${categorySlug || "{category}"}/${townSlug || "{town}"}/${businessSlug || "{slug}"}`;
+  const url = `https://rctx.co.uk/local/${categorySlug || "{category}"}/${townSlug || "{town}"}/${businessSlug || "{slug}"}`;
   urlPreview.textContent = url;
 
   if (errors.length) {
@@ -387,7 +387,7 @@ async function approveSubmission() {
     .map(k => k.trim())
     .filter(k => k.length > 0);
 
-  const finalUrl = `https://rctx.co.uk/directory/${categorySlug}/${townSlug}/${businessSlug}`;
+  const finalUrl = `https://rctx.co.uk/local/${categorySlug}/${townSlug}/${businessSlug}`;
 
   if (!confirm(`Publish this business?\n\n${finalUrl}`)) return;
 
@@ -444,4 +444,4 @@ async function rejectSubmission() {
   alert("Submission rejected.");
   closeReviewPanel();
   loadPendingSubmissions();
-}
+  }
