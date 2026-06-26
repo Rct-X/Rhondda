@@ -1,7 +1,3 @@
-/* =========================================
-   ADD BUSINESS PAGE DESIGN SYSTEM
-   ========================================= */
-
 :root {
     /* Main Palettes */
     --primary: #065f46;          /* Trusted Directory Forest Green */
@@ -58,17 +54,21 @@ body {
    HERO HEADER SECTION
    ========================================= */
 
+/* =========================================
+   HERO HEADER SECTION
+   ========================================= */
+
 .hero-small {
     background: linear-gradient(135deg, #0f172a 0%, #065f46 100%);
     color: white;
-    padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+    padding: clamp(3.5rem, 8vw, 5.5rem) 1.25rem; /* Added side padding for mobile */
     text-align: center;
     position: relative;
     border-bottom: 4px solid var(--accent);
 }
 
 .hero-small h1 {
-    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-size: clamp(1.85rem, 4vw, 3.25rem); /* Slightly smaller start for small screens */
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -77,54 +77,83 @@ body {
 }
 
 .hero-small p {
-    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
     max-width: 700px;
-    margin: 1.25rem auto 2rem;
+    margin: 1.25rem auto 2.5rem;
     color: #cbd5e1;
     text-wrap: pretty;
 }
 
-/* Punchy Grid for Selling Points */
+/* Highly Responsive Mobile-Optimised Grid */
 .hero-points {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: 1fr; /* Stacks cleanly on mobile devices */
+    gap: 0.85rem;
     list-style: none;
     max-width: 850px;
     margin: 0 auto 2.5rem;
     text-align: left;
+    padding: 0;
+}
+
+/* Grid splits into two clean rows on devices larger than phones */
+@media (min-width: 640px) {
+    .hero-points {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
 }
 
 .hero-points li {
-    background: rgba(255, 255, 255, 0.08);
-    padding: 0.85rem 1.25rem;
-    border-radius: var(--radius-sm);
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-sm, 8px);
+    font-weight: 500; /* Regular weight for descriptions */
     font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #f8fafc;
+    line-height: 1.4;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Aligns icons perfectly with multi-line text */
+    gap: 0.75rem;
+}
+
+/* Custom Highlight Color for Key Selling Points */
+.highlight-text {
+    color: #60a5fa; /* Bright Emerald/Mint Green for trust and high visibility */
+    font-weight: 700;
+}
+
+/* Scalable Check Icon Alignment */
+.check-icon {
+    color: #34d399;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem; /* Aligns smoothly with the first line of text */
 }
 
 /* Premium Call To Action Link */
 .hero-cta {
     display: inline-block;
     background: #ffffff;
-    color: var(--primary-dark);
+    color: var(--primary-dark, #0f172a);
     padding: 16px 36px;
     border-radius: 100px;
     font-weight: 700;
     text-decoration: none;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    transition: var(--transition);
+    transition: var(--transition, all 0.2s ease-in-out);
+    max-width: 100%; /* Prevents text overflow on narrow displays */
+    box-sizing: border-box;
 }
 
 .hero-cta:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-    background: var(--primary-light);
+    background: var(--primary-light, #f8fafc);
 }
+
 
 /* =========================================
    INTRO & TRUST BUILDING
@@ -133,31 +162,6 @@ body {
 .section {
     padding: clamp(3rem, 6vw, 5rem) 0;
 }
-
-/* Notice Box highlighting manual checks */
-.verification-box {
-    background-color: var(--accent-light);
-    border-left: 5px solid var(--accent);
-    padding: 1.75rem;
-    border-radius: var(--radius-md);
-    margin-bottom: 3.5rem;
-    box-shadow: var(--shadow-soft);
-}
-
-.verification-box h3 {
-    color: var(--accent);
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.verification-box p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-}
-
-.verification-box p:last-of-type { margin-bottom: 0; }
 
 .form-intro {
     text-align: center;
@@ -415,4 +419,39 @@ body {
     .hero-points {
         grid-template-columns: 1fr;
     }
+}
+/* =========================================
+   FIX THIN INPUTS (LIVE OVERRIDE PATCH)
+   ========================================= */
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    display: block;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+}
+
+/* Fix grid shrink behaviour */
+.form-grid .form-group {
+    min-width: 0;
+}
+
+/* Prevent inherited flex/grid compression */
+.form-group input,
+.form-group textarea {
+    min-height: 44px;
+}
+
+/* Ensure no parent is shrinking them */
+.form-grid {
+    align-items: stretch;
+}
+
+/* Specific safety net for “thin fields” bug */
+.form-group {
+    width: 100%;
 }
