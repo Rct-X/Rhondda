@@ -386,7 +386,7 @@ img{
               <div class="footer-inner">
 
                 <p class="footer-text">
-                  — <strong>The RCTX Directory Team</strong>
+                  — <strong>The RCTX Local Network Team</strong>
                 </p>
 
                 <p class="footer-text">
@@ -396,10 +396,10 @@ img{
                 <p class="footer-small">
                   You received this operational email
                   because your business ownership claim
-                  was approved on RCTX Directory.
+                  was approved on RCTX Local Network.
                   <br><br>
 
-                  © 2026 RCTX Directory.
+                  © 2026 RCTX Web Design & Local Network.
                   All rights reserved.
                   <br>
 
