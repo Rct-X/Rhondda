@@ -1,32 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
   const navHTML = `
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="container">
-        <div class="nav-flex">
+    <nav class="rctx-nav" aria-label="Main navigation">
+      <div class="rctx-nav-container">
+        <div class="rctx-nav-flex">
 
-          <a href="/" class="logo-wrap" aria-label="RCTX Home">
-            <div class="logo">RCT<span>X</span></div>
-            <div class="logo-tag">Web Design</div>
+          <a href="/" class="rctx-logo-wrap" aria-label="RCTX Home">
+            <div class="rctx-logo">RCT<span>X</span></div>
+            <div class="rctx-logo-tag">Web Design</div>
           </a>
 
-          <button class="hamburger" id="hamburgerBtn" type="button"
+          <button class="rctx-hamburger" id="hamburgerBtn" type="button"
             aria-label="Open navigation menu" aria-expanded="false"
             aria-controls="mobileMenu">
             <span></span><span></span><span></span>
           </button>
 
-          <ul class="nav-links" id="mobileMenu">
-            <li class="nav-group">
-              <button class="nav-group-title" type="button">Web Design</button>
-              <ul class="nav-sub">
+          <ul class="rctx-nav-links" id="mobileMenu">
+            <li class="rctx-nav-group">
+              <button class="rctx-nav-group-title" type="button">Web Design</button>
+              <ul class="rctx-nav-sub">
                 <li><a href="/pricing">View Pricing</a></li>
                 <li><a href="/about">About RCTX</a></li>
               </ul>
             </li>
 
-            <li class="nav-group">
-              <button class="nav-group-title" type="button">Local Network</button>
-              <ul class="nav-sub">
+            <li class="rctx-nav-group">
+              <button class="rctx-nav-group-title" type="button">Local Network</button>
+              <ul class="rctx-nav-sub">
                 <li><a href="/local">Find Local Services</a></li>
                 <li><a href="/add-business">List Your Business</a></li>
               </ul>
@@ -34,13 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <li><a href="/contact">Get in Touch</a></li>
 
-            <li class="owner-login">
-              <a href="/owner-login" class="owner-login-link">Business Login</a>
+            <li class="rctx-owner-login">
+              <a href="/owner-login" class="rctx-owner-login-link">Business Login</a>
             </li>
 
-            <li class="nav-cta">
+            <li class="rctx-nav-cta">
               <p>Managed websites for just £30/month</p>
-              <a href="/pricing" class="nav-cta-btn">View Pricing</a>
+              <a href="/pricing" class="rctx-nav-cta-btn">View Pricing</a>
             </li>
           </ul>
 
@@ -61,16 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
     menu.classList.toggle("open");
   });
 
-  // 3. Sub‑menu toggles
-  document.querySelectorAll(".nav-group-title").forEach(titleBtn => {
+  // 3. Sub-menu toggles
+  document.querySelectorAll(".rctx-nav-group-title").forEach(titleBtn => {
     titleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
 
-      const group = titleBtn.closest(".nav-group");
+      const group = titleBtn.closest(".rctx-nav-group");
       const isOpen = group.classList.contains("open");
 
       // close all other groups
-      document.querySelectorAll(".nav-group").forEach(g => {
+      document.querySelectorAll(".rctx-nav-group").forEach(g => {
         if (g !== group) g.classList.remove("open");
       });
 
