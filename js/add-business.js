@@ -1,17 +1,17 @@
 // ======================================
-// BUSINESS SIGN-UP — FRONTEND LOGIC
+// BUSINESS SIGN-UP — FRONTEND LOGIC (CLEAN BUILD)
 // ======================================
 
-// ===============================
-// FORM ELEMENTS
-// ===============================
 const form = document.getElementById("addBusinessForm");
 const formMessage = document.getElementById("formMessage");
 const submitBtn = document.getElementById("submitBtn");
 
-// ===============================
+// safety guard
+let isSubmitting = false;
+
+// ======================================
 // TOWN AUTOCOMPLETE
-// ===============================
+// ======================================
 const towns = [
   "Aberaman","Abercwmboi","Abercynon","Aberdare","Abernant","Beddau",
   "Blaenrhondda","Blaenclydach","Blaencwm","Blaenllechau","Brynna",
@@ -34,50 +34,52 @@ const towns = [
 const townInput = document.getElementById("town");
 const suggestions = document.getElementById("townSuggestions");
 
-townInput.addEventListener("input", () => {
-  const value = townInput.value.toLowerCase();
-  suggestions.innerHTML = "";
+if (townInput && suggestions) {
+  townInput.addEventListener("input", () => {
+    const value = townInput.value.toLowerCase().trim();
+    suggestions.innerHTML = "";
 
-  if (!value) {
-    suggestions.style.display = "none";
-    return;
-  }
-
-  const matches = towns.filter(town =>
-    town.toLowerCase().includes(value)
-  );
-
-  if (!matches.length) {
-    suggestions.style.display = "none";
-    return;
-  }
-
-  matches.forEach(match => {
-    const div = document.createElement("div");
-    div.className = "suggestion-item";
-    div.textContent = match;
-
-    div.addEventListener("click", () => {
-      townInput.value = match;
+    if (!value) {
       suggestions.style.display = "none";
+      return;
+    }
+
+    const matches = towns.filter(t =>
+      t.toLowerCase().includes(value)
+    );
+
+    if (!matches.length) {
+      suggestions.style.display = "none";
+      return;
+    }
+
+    matches.forEach(match => {
+      const div = document.createElement("div");
+      div.className = "suggestion-item";
+      div.textContent = match;
+
+      div.addEventListener("click", () => {
+        townInput.value = match;
+        suggestions.style.display = "none";
+      });
+
+      suggestions.appendChild(div);
     });
 
-    suggestions.appendChild(div);
+    suggestions.style.display = "block";
   });
 
-  suggestions.style.display = "block";
-});
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("#townSuggestions") && !e.target.closest("#town")) {
+      suggestions.style.display = "none";
+    }
+  });
+}
 
-document.addEventListener("click", (e) => {
-  if (!e.target.closest(".form-group")) {
-    suggestions.style.display = "none";
-  }
-});
-
-// ===============================
+// ======================================
 // SLUGIFY
-// ===============================
-function slugify(str) {
+// ======================================
+function slugify(str = "") {
   return str
     .toLowerCase()
     .trim()
@@ -86,15 +88,15 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");
 }
 
-// ===============================
+// ======================================
 // WASTE LICENCE LOGIC
-// ===============================
+// ======================================
 const wasteLicenceGroup = document.getElementById("wasteLicenceGroup");
 const wasteLicenceInput = document.getElementById("wasteLicence");
 
 document.querySelectorAll("input[name='collectsWaste']").forEach(radio => {
-  radio.addEventListener("change", () => {
-    if (radio.value === "yes") {
+  radio.addEventListener("change", (e) => {
+    if (e.target.value === "yes") {
       wasteLicenceGroup.style.display = "block";
       wasteLicenceInput.required = true;
     } else {
@@ -105,12 +107,20 @@ document.querySelectorAll("input[name='collectsWaste']").forEach(radio => {
   });
 });
 
-// ===============================
-// KEYWORD CHIP SYSTEM
-// ===============================
+// ======================================
+// KEYWORD SYSTEM
+// ======================================
+function getSignupKeywords() {
+  const inputs = document.querySelectorAll("#signupKeywordEditor input");
+  return Array.from(inputs)
+    .map(i => i.value.trim().toLowerCase())
+    .filter(Boolean);
+}
 
 function renderSignupKeywordChips(keywords) {
   const container = document.getElementById("signupKeywordEditor");
+  if (!container) return;
+
   container.innerHTML = "";
 
   keywords.forEach((kw, index) => {
@@ -119,15 +129,18 @@ function renderSignupKeywordChips(keywords) {
 
     const input = document.createElement("input");
     input.value = kw;
-    input.addEventListener("input", updateSignupKeywords);
+    input.addEventListener("input", () => {
+      // live update only
+    });
 
     const remove = document.createElement("span");
     remove.className = "keyword-remove";
     remove.textContent = "×";
+
     remove.addEventListener("click", () => {
-      keywords.splice(index, 1);
-      renderSignupKeywordChips(keywords);
-      updateSignupKeywords();
+      const updated = getSignupKeywords();
+      updated.splice(index, 1);
+      renderSignupKeywordChips(updated);
     });
 
     chip.appendChild(input);
@@ -136,82 +149,79 @@ function renderSignupKeywordChips(keywords) {
   });
 }
 
-function getSignupKeywords() {
-  const inputs = document.querySelectorAll("#signupKeywordEditor input");
-  return Array.from(inputs)
-    .map(i => i.value.trim().toLowerCase())
-    .filter(v => v.length > 0);
+const addKeywordBtn = document.getElementById("signupAddKeywordBtn");
+if (addKeywordBtn) {
+  addKeywordBtn.addEventListener("click", () => {
+    const current = getSignupKeywords();
+    current.push("");
+    renderSignupKeywordChips(current);
+  });
 }
 
-function updateSignupKeywords() {
-  // Keywords are collected on submit
-}
-
-document.getElementById("signupAddKeywordBtn").addEventListener("click", () => {
-  const keywords = getSignupKeywords();
-  keywords.push("");
-  renderSignupKeywordChips(keywords);
-});
-
-// Start with one empty chip
+// init
 renderSignupKeywordChips([""]);
 
-// ===============================
+// ======================================
 // FORM SUBMIT
-// ===============================
+// ======================================
 if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    if (isSubmitting) return;
+    isSubmitting = true;
+
+    // reset UI message
     formMessage.textContent = "";
+    formMessage.innerHTML = "";
     formMessage.className = "form-message";
+    formMessage.style.display = "none";
 
-    // ===============================
-    // GET FORM VALUES
-    // ===============================
-    const name = document.getElementById("name").value.trim();
-    const categoryRaw = document.getElementById("category").value.trim();
-    const town = document.getElementById("town").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Submitting <span class='spinner'></span>";
 
-    let website = document.getElementById("website").value.trim();
-    if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
-      website = `https://${website}`;
-    }
-
-    const address = document.getElementById("address").value.trim();
-    const description = document.getElementById("description").value.trim();
-
-    const extraKeywords = getSignupKeywords();
-
-    const collectsWaste = document.querySelector("input[name='collectsWaste']:checked")?.value || "no";
-    const wasteLicence = document.getElementById("wasteLicence").value.trim();
-
-    const consent = document.getElementById("consent").checked;
-
-    const slug = slugify(name);
-    const townSlug = slugify(town);
-
-    // ===============================
-    // VALIDATION
-    // ===============================
-    if (!name || !categoryRaw || !town || !description || !consent) {
-      formMessage.textContent = "Please fill in all required fields.";
-      formMessage.classList.add("error");
-      return;
-    }
-
-    if (collectsWaste === "yes" && !wasteLicence) {
-      formMessage.textContent = "Please enter your waste carrier licence number.";
-      formMessage.classList.add("error");
-      return;
-    }
-
-    // ===============================
-    // CHECK IF BUSINESS EXISTS
-    // ===============================
     try {
+      // ======================================
+      // COLLECT VALUES
+      // ======================================
+      const name = document.getElementById("name").value.trim();
+      const categoryRaw = document.getElementById("category").value.trim();
+      const town = document.getElementById("town").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      let website = document.getElementById("website").value.trim();
+      if (website && !website.startsWith("http")) {
+        website = `https://${website}`;
+      }
+
+      const address = document.getElementById("address").value.trim();
+      const description = document.getElementById("description").value.trim();
+
+      const extraKeywords = getSignupKeywords();
+
+      const collectsWaste =
+        document.querySelector("input[name='collectsWaste']:checked")?.value || "no";
+
+      const wasteLicence = document.getElementById("wasteLicence").value.trim();
+      const consent = document.getElementById("consent").checked;
+
+      const slug = slugify(name);
+
+      // ======================================
+      // VALIDATION
+      // ======================================
+      if (!name || !categoryRaw || !town || !description || !consent) {
+        throw new Error("Please fill in all required fields.");
+      }
+
+      if (collectsWaste === "yes" && !wasteLicence) {
+        throw new Error("Please enter your waste carrier licence number.");
+      }
+
+      // ======================================
+      // CHECK EXISTENCE
+      // ======================================
       const checkRes = await fetch("/.netlify/functions/checkBusinessExists", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -221,23 +231,12 @@ if (form) {
       const checkData = await checkRes.json();
 
       if (checkData.exists) {
-        formMessage.textContent = "This business is already listed or awaiting approval.";
-        formMessage.classList.add("error");
-        return;
+        throw new Error("This business is already listed or pending approval.");
       }
-    } catch (err) {
-      formMessage.textContent = "Could not verify business. Please try again.";
-      formMessage.classList.add("error");
-      return;
-    }
 
-    // ===============================
-    // SUBMIT BUSINESS
-    // ===============================
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting…";
-
-    try {
+      // ======================================
+      // SUBMIT
+      // ======================================
       const res = await fetch("/.netlify/functions/submitBusiness", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -248,7 +247,6 @@ if (form) {
           collectsWaste,
           wasteLicence,
           town,
-          townSlug,
           slug,
           phone,
           website,
@@ -261,30 +259,38 @@ if (form) {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong.");
+        throw new Error(data.error || "Submission failed.");
       }
 
+      // ======================================
+      // SUCCESS STATE
+      // ======================================
       formMessage.innerHTML = `
-  <strong>Thanks, your business has been submitted for review!</strong>
-  <br><br>
-  We’ll take a quick look and get it live as soon as possible.
-  <br><br>
-  If you ever want a simple, affordable website that helps bring in customers,
-  have a look at our options:
-  <br>
-  <a href="/pricing" class="inline-link">Websites £30/month →</a>
-`;
+        <strong>Thanks — your business has been submitted!</strong>
+        <br><br>
+        We’ll review it and get it live shortly.
+        <br><br>
+        Want more customers? We also build simple websites:
+        <br>
+        <a href="/pricing" class="inline-link">View Website Options →</a>
+      `;
+
       formMessage.classList.add("success");
+      formMessage.style.display = "block";
+
       form.reset();
       wasteLicenceGroup.style.display = "none";
       renderSignupKeywordChips([""]);
 
     } catch (err) {
-      formMessage.textContent = err.message || "Something went wrong. Please try again.";
+      formMessage.textContent = err.message || "Something went wrong.";
       formMessage.classList.add("error");
+      formMessage.style.display = "block";
+
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = "Submit Business";
+      isSubmitting = false;
     }
   });
-}
+    }
