@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
   const navHTML = `
     <nav class="rctx-nav" aria-label="Main navigation">
       <div class="rctx-nav-container">
