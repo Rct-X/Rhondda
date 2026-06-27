@@ -189,21 +189,7 @@ const ROUTES = {
 
   },
 
-  property: async () => {
-
-  if (!loadedModules.has("property")) {
-
-    const mod = await import("./property-editor.js");
-
-    await mod.initPropertyEditor({
-      db,
-      auth,
-      container: document.getElementById("property")
-    });
-
-    loadedModules.add("property");
-  }
-},
+  
 
   propertyJson: async () => {
 
