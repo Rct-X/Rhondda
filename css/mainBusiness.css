@@ -530,3 +530,13 @@ body.business-page {
 .related-card span {
     text-decoration: none;
 }
+.typing {
+  border-right: 2px solid #0ea5e9;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
