@@ -3,7 +3,12 @@
 // ======================================================
 
 function initBusinessMap({ address, name, town }) {
-  const mapBox = document.getElementById("mapBox");
+
+  // Support both the old and new layouts
+  const mapBox =
+    document.getElementById("mapBox") ||
+    document.querySelector(".map-section");
+
   const map = document.getElementById("map");
   const locationTitle = document.getElementById("locationTitle");
   const locationSubtext = document.getElementById("locationSubtext");
@@ -38,6 +43,8 @@ function initBusinessMap({ address, name, town }) {
       : "Serving customers across the local area.";
   }
 
+  // Show the map section
+  mapBox.style.display = "";
   mapBox.classList.add("active");
 
   const query = encodeURIComponent(address);
