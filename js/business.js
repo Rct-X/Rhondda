@@ -115,10 +115,34 @@ async function loadBusiness(categorySlug, townSlug, slug) {
     }
   }
 
-  setText("businessDescription", b.description || "No description provided.");
+  const descEl = document.getElementById("businessDescription");
+if (descEl) {
+  const text = b.description || "No description provided.";
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      typeText(descEl, text, 40);
+      observer.disconnect();
+    }
+  });
+  observer.observe(descEl);
+}
   setText("businessPhone", b.phone || "Not provided");
   setText("businessAddress", b.address || "Not provided");
 
+  function typeText(el, text, speed = 40) {
+  el.classList.add("typing");
+  el.textContent = "";
+  let i = 0;
+  const interval = setInterval(() => {
+    el.textContent += text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(interval);
+      el.classList.remove("typing");
+    }
+  }, speed);
+  }
+  
   const websiteEl = document.getElementById("businessWebsite");
   if (b.website) {
     websiteEl.textContent = b.website;
