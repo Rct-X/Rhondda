@@ -1,3 +1,7 @@
+.input-row input {
+  flex: 1;
+  min-width: 0;
+}
 /* --- Global Styles & Variables --- */
 :root {
   --primary: #0066cc;
