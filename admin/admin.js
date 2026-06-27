@@ -205,6 +205,21 @@ const ROUTES = {
   }
 },
 
+  propertyJson: async () => {
+
+  if (!loadedModules.has("propertyJson")) {
+
+    const mod = await import("./property-json-editor.js");
+
+    await mod.initPropertyJsonEditor({
+      db,
+      auth,
+      container: document.getElementById("dashboard")
+    });
+
+    loadedModules.add("propertyJson");
+  }
+  }
   
   // ====================================
   // SETTINGS
