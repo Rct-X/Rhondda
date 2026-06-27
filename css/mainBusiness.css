@@ -348,6 +348,7 @@ body.business-page {
     background: linear-gradient(135deg, #eff6ff, #dbeafe);
     border: 2px dashed var(--primary-light);
     padding: 1rem 0.75rem;
+    margin-top: 2rem;
     border-radius: var(--radius-lg);
     text-align: center;
     box-shadow: var(--shadow-sm);
