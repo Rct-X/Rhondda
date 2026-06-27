@@ -484,3 +484,27 @@ body.business-page {
 .business-info > * + * {
     margin-top: 1.5rem;
     }
+.claimed-message {
+    /* Layout & Spacing */
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    /* Typography */
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--verified-green);
+    letter-spacing: -0.01em;
+
+    /* Visual Polish */
+    background-color: rgba(var(--verified-green-rgb, 16, 185, 129), 0.08);
+    border: 1px solid rgba(var(--verified-green-rgb, 16, 185, 129), 0.16);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+    /* Animation for Premium Feel */
+    animation: fadeIn 0.3s ease-out;
+}
