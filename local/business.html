@@ -114,17 +114,12 @@
 </head>
 
 <body class="business-page">
-
 <main>
 
 <section class="business-header">
   <div class="container">
 
-    <img id="businessLogo"
-         class="biz-logo"
-         src="/images/placeholder-logo.webp"
-         alt=""
-         loading="lazy">
+    <img id="businessLogo" class="biz-logo" src="/images/placeholder-logo.webp" alt="" loading="lazy">
 
     <h1 id="businessName">Business Name</h1>
 
@@ -133,9 +128,6 @@
     </p>
 
     <p class="business-meta">
-      <span id="businessCategory"></span>  
-      •  
-      <span id="businessTown"></span>
       <span id="verifiedBadge"></span>
       <span id="claimedBadge"></span>
     </p>
@@ -160,6 +152,7 @@
       <a class="qa-btn" onclick="copyBusinessLink()">Copy Link</a>
     </div>
 
+    <!-- MAIN INFO -->
     <div class="business-info">
 
       <h2>About</h2>
@@ -175,60 +168,35 @@
       <h3>Opening Hours</h3>
       <ul id="businessHours" class="business-hours"></ul>
 
-
-    </div>
-
-    <div id="mapBox" class="map-box">
-<h3 id="locationTitle">Visit Us</h3>
-<p id="locationSubtext"></p>  
-  <div id="map"></div>
+      <!-- MAP DIRECTLY UNDER HOURS -->
+     <div class="map-section">
+    <h3 id="locationTitle">Visit Us</h3>
+    <p id="locationSubtext"></p>
+    <div id="map"></div>
 </div>
-    <aside class="business-sidebar">
 
-      <div class="business-card">
-        <h3>Location</h3>
-        <p id="businessTownSidebar"></p>
+      <!-- CLAIM -->
+      <div class="claim-box">
+        <h3>Claim This Business</h3>
+        <a href="#" id="claimBtn" class="btn btn-primary">Claim Listing</a>
+        <p id="claimedMessage" class="claimed-message"></p>
       </div>
 
-      <div class="business-card">
-        <h3>Category</h3>
-        <p id="businessCategorySidebar"></p>
-      </div>
-
-      <div class="business-card">
-  <h3>Claim This Business</h3>
-
-  <a href="#" id="claimBtn" class="btn btn-primary">Claim Listing</a>
-
-  <p id="claimedMessage" class="claimed-message"></p>
-      </div>
-
-      <!-- OPTIONAL: Views counter -->
-      <div class="business-card" id="viewsCard" style="display:none;">
+      <!-- VIEWS -->
+      <div class="views-box" id="viewsCard" style="display:none;">
         <h3>Popularity</h3>
         <p id="viewCountText"></p>
       </div>
 
-    </aside>
+    </div>
 
-    <!-- SHARE WOW SECTION -->
+    <!-- SHARE -->
     <div class="share-wow">
       <div class="share-content">
-
         <h3>✨ Found Them on RCTX? ✨</h3>
-
-        <p>
-          Let the business know you discovered them here — it helps local businesses grow.
-        </p>
-
-        <button class="share-wow-btn" onclick="shareBusiness()">
-          Share this business
-        </button>
-
-        <div class="share-credit">
-          Powered by RCTX Web Design
-        </div>
-
+        <p>Let the business know you discovered them here — it helps local businesses grow.</p>
+        <button class="share-wow-btn" onclick="shareBusiness()">Share this business</button>
+        <div class="share-credit">Powered by RCTX Web Design</div>
       </div>
     </div>
 
@@ -240,10 +208,11 @@
   <div class="container">
     <h2>You May Also Like</h2>
     <p class="text-dim">Similar businesses in your area</p>
-
     <div id="relatedGrid" class="related-grid"></div>
   </div>
 </section>
+
+</main>
 
 <footer class="site-footer">
 
@@ -306,5 +275,10 @@ window.RCTX_CLIENT_ID = "-MAIN SITE-";
 
 <script src="/js/rctx-tracker.js" defer></script>
   <div id="toast" class="toast">Link copied!</div>
+  
+  <div id="lightbox" class="lightbox">
+  <span class="lightbox-close">&times;</span>
+  <img id="lightboxImg" class="lightbox-img" src="">
+</div>
 </body>
-  </html>
+</html>
