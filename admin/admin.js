@@ -189,8 +189,6 @@ const ROUTES = {
 
   },
 
-  
-
   propertyJson: async () => {
 
   if (!loadedModules.has("propertyJson")) {
@@ -205,7 +203,8 @@ const ROUTES = {
 
     loadedModules.add("propertyJson");
   }
-  }
+      }
+
   
   // ====================================
   // SETTINGS
