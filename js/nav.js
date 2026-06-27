@@ -21,6 +21,7 @@
               <ul class="rctx-nav-sub">
                 <li><a href="/pricing">View Pricing</a></li>
                 <li><a href="/about">About RCTX</a></li>
+                <li><a href="/website-checker/">Website Checkup</a></li>
               </ul>
             </li>
 
