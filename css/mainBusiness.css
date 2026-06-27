@@ -509,3 +509,24 @@ body.business-page {
     /* Animation for Premium Feel */
     animation: fadeIn 0.3s ease-out;
 }
+/* Remove underline from buttons */
+.qa-btn,
+.qa-btn:link,
+.qa-btn:visited {
+    text-decoration: none;
+}
+
+/* Remove underline from related cards */
+.related-card,
+.related-card:link,
+.related-card:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Ensure card contents don't underline */
+.related-card h3,
+.related-card p,
+.related-card span {
+    text-decoration: none;
+}
