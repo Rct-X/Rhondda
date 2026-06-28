@@ -203,7 +203,7 @@ const ROUTES = {
 
     loadedModules.add("propertyJson");
   }
-      }
+      },
 
   
   // ====================================
