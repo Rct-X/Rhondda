@@ -57,7 +57,46 @@ exports.handler = async (event) => {
       ownerName: name || "",
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
+await fetch("https://api.resend.com/emails", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    from: "RCTX <no-reply@rctx.co.uk>",
+    to: email,
+    subject: "Your Holiday Let Owner Login",
+    html: `
+      <div style="font-family:Arial;padding:20px">
+        <h2>Your Owner Account is Ready</h2>
 
+        <p>Hi ${name || "there"},</p>
+
+        <p>Your owner dashboard has been created.</p>
+
+        <hr>
+
+        <p><strong>Login details:</strong></p>
+        <p>Email: ${email}</p>
+        <p>Password: ${password}</p>
+
+        <hr>
+
+        <p>
+          Login here:
+          <a href="https://rctx.co.uk/owner">
+            https://rctx.co.uk/owner
+          </a>
+        </p>
+
+        <p style="color:#777;font-size:12px">
+          Please change your password after login.
+        </p>
+      </div>
+    `
+  })
+});
     // -----------------------------
     // 4. OPTIONAL EMAIL (placeholder)
     // -----------------------------
