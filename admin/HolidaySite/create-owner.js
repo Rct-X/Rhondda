@@ -2,7 +2,8 @@ import {
   initCreateOwnerModal,
   openOwnerModal,
   closeOwnerModal,
-  getCurrentPropertyId
+  getCurrentPropertyId,
+  setOwnerModalDB
 } from "./create-owner-modal.js";
 
 let db;
@@ -13,6 +14,8 @@ export function initOwnerSystem({ db: firestore, container: el }) {
 
   db = firestore;
   container = el;
+
+  setOwnerModalDB(db);
 
   initCreateOwnerModal();
   bindEvents();
