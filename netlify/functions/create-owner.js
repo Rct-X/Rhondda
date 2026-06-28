@@ -109,8 +109,8 @@ exports.handler = async (event) => {
 
             <p>
               Login here:
-              <a href="${domain}/owner">
-                ${domain}/owner
+              <a href="${siteDomain}/owner">
+                ${siteDomain}/owner
               </a>
             </p>
 
@@ -126,7 +126,7 @@ exports.handler = async (event) => {
     return res(200, {
       ok: true,
       uid,
-      domain
+      siteDomain
     });
 
   } catch (err) {
