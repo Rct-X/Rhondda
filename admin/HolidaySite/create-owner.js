@@ -1,3 +1,5 @@
+async function createOwner() {
+  console.log("🔥 createOwner FUNCTION STARTED");
 import {
   initCreateOwnerModal,
   openOwnerModal,
