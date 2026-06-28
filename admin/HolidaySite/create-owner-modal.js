@@ -1,3 +1,9 @@
+let db = null;
+
+export function setOwnerModalDB(firestore) {
+  db = firestore;
+}
+
 let currentPropertyId = null;
 
 export function initCreateOwnerModal() {
