@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
 
-// Prevent re-init in Netlify
+// Init
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault()
@@ -18,21 +18,15 @@ exports.handler = async (event) => {
 
   try {
 
-    const body = JSON.parse(event.body || "{}");
-
-    const {
-      propertyId,
-      name,
-      email,
-      password
-    } = body;
+    const { propertyId, name, email, password } =
+      JSON.parse(event.body || "{}");
 
     if (!propertyId || !email || !password) {
       return res(400, { error: "Missing fields" });
     }
 
     // -----------------------------
-    // 1. Create Firebase Auth user
+    // 1. Create Auth user
     // -----------------------------
     const user = await auth.createUser({
       email,
@@ -43,27 +37,32 @@ exports.handler = async (event) => {
     const uid = user.uid;
 
     // -----------------------------
-    // 2. Update property
+    // 2. Create USER PROFILE (IMPORTANT)
     // -----------------------------
-    await db.collection("properties")
-      .doc(propertyId)
-      .update({
-        ownerId: uid,
-        ownerEmail: email,
-        ownerName: name || "",
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
-      });
-
-    // -----------------------------
-    // 3. Optional: create owner profile doc
-    // -----------------------------
-    await db.collection("owners").doc(uid).set({
+    await db.collection("users").doc(uid).set({
       uid,
       email,
       name: name || "",
+      role: "owner",
       propertyId,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
+
+    // -----------------------------
+    // 3. Update property link
+    // -----------------------------
+    await db.collection("properties").doc(propertyId).update({
+      ownerId: uid,
+      ownerEmail: email,
+      ownerName: name || "",
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    // -----------------------------
+    // 4. OPTIONAL EMAIL (placeholder)
+    // -----------------------------
+    console.log("Send email to:", email);
+    console.log("Temp password:", password);
 
     return res(200, {
       ok: true,
@@ -77,8 +76,6 @@ exports.handler = async (event) => {
   }
 };
 
-// -----------------------------
-// helper
 // -----------------------------
 function res(statusCode, body) {
   return {
