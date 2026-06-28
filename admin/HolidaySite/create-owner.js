@@ -6,25 +6,21 @@ import {
 } from "./create-owner-modal.js";
 
 let db;
+let container;
 
-export function initOwnerSystem({ db: firestore, container }) {
-
+export function initOwnerSystem({ db: firestore, container: el }) {
   db = firestore;
+  container = el;
 
   initCreateOwnerModal();
-
   bindEvents();
-
-  loadProperties(container);
-
+  loadProperties();
 }
 
-// ======================================
-// LOAD PROPERTIES (UI LIST)
-// ======================================
-
-async function loadProperties(container) {
-
+// ===============================
+// LOAD PROPERTIES
+// ===============================
+async function loadProperties() {
   container.innerHTML = `
     <div class="page-header">
       <h1>Owners</h1>
@@ -37,87 +33,62 @@ async function loadProperties(container) {
   const wrap = document.getElementById("ownersList");
 
   const snap = await db.collection("properties").get();
-
   wrap.innerHTML = "";
 
   snap.forEach(doc => {
-
     const p = doc.data();
 
     wrap.innerHTML += `
       <div class="owner-card">
-
         <h2>${p.hero?.title || "Untitled"}</h2>
 
-        <p>
-          <strong>Owner:</strong>
-          ${p.ownerEmail || "Not assigned"}
-        </p>
+        <p><strong>Owner:</strong> ${p.ownerEmail || "Not assigned"}</p>
 
-        <button
-          class="btn btn-primary assign-owner-btn"
-          data-id="${doc.id}">
-
+        <button class="btn btn-primary assign-owner-btn"
+                data-id="${doc.id}">
           ${p.ownerId ? "Change Owner" : "Create Owner"}
-
         </button>
-
       </div>
     `;
-
   });
-
 }
 
-// ======================================
+// ===============================
 // EVENTS
-// ======================================
-
+// ===============================
 function bindEvents() {
 
-  document.addEventListener("click", async (e) => {
+  container.addEventListener("click", async (e) => {
 
-    // OPEN MODAL
-    if (e.target.classList.contains("assign-owner-btn")) {
-
-      const propertyId = e.target.dataset.id;
-
-      openOwnerModal(propertyId);
-
+    const assignBtn = e.target.closest(".assign-owner-btn");
+    if (assignBtn) {
+      openOwnerModal(assignBtn.dataset.id);
+      return;
     }
 
-    // CANCEL MODAL
     if (e.target.id === "cancelOwnerBtn") {
       closeOwnerModal();
+      return;
     }
 
-    // CREATE OWNER
     if (e.target.id === "createOwnerBtn") {
-
       await createOwner();
-
+      return;
     }
 
   });
-
 }
 
-// ======================================
-// CREATE OWNER (CORE LOGIC)
-// ======================================
-
+// ===============================
+// CREATE OWNER
+// ===============================
 async function createOwner() {
 
   const propertyId = getCurrentPropertyId();
 
-  const name =
-    document.getElementById("ownerName").value.trim();
-
-  const email =
-    document.getElementById("ownerEmail").value.trim();
-
-  const password =
-    document.getElementById("ownerPassword").value.trim();
+  const name = document.getElementById("ownerName").value.trim();
+  const email = document.getElementById("ownerEmail").value.trim();
+  const password = document.getElementById("ownerPassword").value.trim();
 
   if (!propertyId || !email || !password) {
     alert("Missing required fields");
@@ -128,15 +99,8 @@ async function createOwner() {
 
     const res = await fetch("/.netlify/functions/create-owner", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        propertyId,
-        name,
-        email,
-        password
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ propertyId, name, email, password })
     });
 
     const data = await res.json();
@@ -146,18 +110,12 @@ async function createOwner() {
       return;
     }
 
-    alert("Owner created successfully");
-
     closeOwnerModal();
 
-    // refresh list
-    location.reload();
+    await loadProperties(); // NO reload
 
   } catch (err) {
-
     console.error(err);
     alert("Server error creating owner");
-
   }
-
-      }
+}
