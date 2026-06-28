@@ -14,6 +14,11 @@ export function initCreateOwnerModal() {
           <label>Owner Name</label>
           <input id="ownerName" type="text" placeholder="John Smith">
         </div>
+        
+<div class="field">
+  <label>Domain</label>
+  <input id="ownerDomain" type="text" disabled>
+</div>
 
         <div class="field">
           <label>Email</label>
