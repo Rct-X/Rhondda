@@ -9,24 +9,18 @@ let db;
 let container;
 
 export function initOwnerSystem({ db: firestore, container: el }) {
-  console.log("🟦 initOwnerSystem() START");
-
   db = firestore;
   container = el;
 
   initCreateOwnerModal();
   bindEvents();
   loadProperties();
-
-  console.log("🟩 initOwnerSystem() COMPLETE");
 }
 
 // ===============================
 // LOAD PROPERTIES
 // ===============================
 async function loadProperties() {
-  console.log("📥 loadProperties() START");
-
   container.innerHTML = `
     <div class="page-header">
       <h1>Owners</h1>
@@ -39,14 +33,10 @@ async function loadProperties() {
   const wrap = document.getElementById("ownersList");
 
   const snap = await db.collection("properties").get();
-  console.log(`📄 Loaded ${snap.size} properties`);
-
   wrap.innerHTML = "";
 
   snap.forEach(doc => {
     const p = doc.data();
-
-    console.log(`➡️ Rendering property: ${doc.id} (${p.hero?.title || "Untitled"})`);
 
     wrap.innerHTML += `
       <div class="owner-card">
@@ -55,14 +45,13 @@ async function loadProperties() {
         <p><strong>Owner:</strong> ${p.ownerEmail || "Not assigned"}</p>
 
         <button class="btn btn-primary assign-owner-btn"
-                data-id="${doc.id}">
+                data-id="${doc.id}"
+                data-domain="${p.siteDomain || ""}">
           ${p.ownerId ? "Change Owner" : "Create Owner"}
         </button>
       </div>
     `;
   });
-
-  console.log("📤 loadProperties() COMPLETE");
 }
 
 // ===============================
@@ -70,87 +59,67 @@ async function loadProperties() {
 // ===============================
 function bindEvents() {
 
-  document.addEventListener("click", async (e) => {
+  container.addEventListener("click", async (e) => {
 
-    // OPEN MODAL
     const assignBtn = e.target.closest(".assign-owner-btn");
     if (assignBtn) {
-      console.log("🟢 OPEN MODAL for:", assignBtn.dataset.id);
       openOwnerModal(assignBtn.dataset.id);
       return;
     }
 
-    // CANCEL MODAL
-    if (e.target.closest("#cancelOwnerBtn")) {
+    if (e.target.id === "cancelOwnerBtn") {
       closeOwnerModal();
       return;
     }
 
-    // CREATE OWNER (FIXED)
-    if (e.target.closest("#createOwnerBtn")) {
-
-      console.log("🟣 CREATE BUTTON CLICKED");
-
+    if (e.target.id === "createOwnerBtn") {
       await createOwner();
-
       return;
     }
 
   });
-
-  console.log("🟩 bindEvents() COMPLETE");
 }
 
 // ===============================
 // CREATE OWNER
 // ===============================
 async function createOwner() {
-  console.log("🔥 createOwner() START");
 
   const propertyId = getCurrentPropertyId();
-  const name = document.getElementById("ownerName").value.trim();
-  const email = document.getElementById("ownerEmail").value.trim();
-  const password = document.getElementById("ownerPassword").value.trim();
 
-  console.log("📌 Form Data:", { propertyId, name, email });
+  const name = document.getElementById("ownerName")?.value?.trim() || "";
+  const email = document.getElementById("ownerEmail")?.value?.trim() || "";
+  const password = document.getElementById("ownerPassword")?.value?.trim() || "";
 
   if (!propertyId || !email || !password) {
-    console.warn("⚠️ Missing required fields");
     alert("Missing required fields");
     return;
   }
 
   try {
-    console.log("📤 Sending request to Netlify function…");
-
     const res = await fetch("/.netlify/functions/create-owner", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ propertyId, name, email, password })
+      body: JSON.stringify({
+        propertyId,
+        name,
+        email,
+        password
+      })
     });
 
-    console.log("📥 Response received:", res.status);
-
     const data = await res.json();
-    console.log("📄 Response JSON:", data);
 
     if (!data.ok) {
-      console.error("❌ Owner creation failed:", data.error);
       alert(data.error || "Failed to create owner");
       return;
     }
 
-    console.log("🟩 Owner created successfully");
-
     closeOwnerModal();
-
-    console.log("🔄 Reloading properties…");
     await loadProperties();
 
-    console.log("🟩 createOwner() COMPLETE");
-
   } catch (err) {
-    console.error("🔥 ERROR in createOwner():", err);
+    console.error("createOwner error:", err);
     alert("Server error creating owner");
   }
 }
