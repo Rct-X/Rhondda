@@ -193,7 +193,7 @@ const ROUTES = {
 
   if (!loadedModules.has("propertyJson")) {
 
-    const mod = await import("./property-json-editor.js");
+    const mod = await import("./HolidaySite/property-json-editor.js");
 
     await mod.initPropertyJsonEditor({
       db,
@@ -209,7 +209,7 @@ const ROUTES = {
 
     if (!loadedModules.has("owners")) {
 
-        const mod = await import("./owners-Js.js");
+        const mod = await import("./HolidaySite/owners-Js.js");
 
         await mod.initOwners({
             db,
