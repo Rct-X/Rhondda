@@ -64,6 +64,7 @@ exports.handler = async (event) => {
       name: name || "",
       role: "owner",
       propertyId,
+      mustChangePassword: true,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
