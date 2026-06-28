@@ -205,6 +205,23 @@ const ROUTES = {
   }
 },
 
+  owners: async () => {
+
+    if (!loadedModules.has("owners")) {
+
+        const mod = await import("./owners.js");
+
+        await mod.initOwners({
+            db,
+            auth,
+            container: document.getElementById("owners")
+        });
+
+        loadedModules.add("owners");
+
+    }
+
+},
   
   // ====================================
   // SETTINGS
