@@ -209,7 +209,7 @@ const ROUTES = {
 
     if (!loadedModules.has("owners")) {
 
-        const mod = await import("/admin/HolidaySite/create-js.js");
+        const mod = await import("/admin/HolidaySite/create-owner.js");
 
         await mod.initOwnersSystem({
             db,
