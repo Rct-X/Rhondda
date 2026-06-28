@@ -1,5 +1,3 @@
-async function createOwner() {
-  console.log("🔥 createOwner FUNCTION STARTED");
 import {
   initCreateOwnerModal,
   openOwnerModal,
@@ -17,6 +15,45 @@ export function initOwnerSystem({ db: firestore, container: el }) {
   initCreateOwnerModal();
   bindEvents();
   loadProperties();
+}
+
+// ===============================
+// CREATE OWNER
+// ===============================
+async function createOwner() {
+  console.log("🔥 createOwner FUNCTION STARTED");
+
+  const propertyId = getCurrentPropertyId();
+  const name = document.getElementById("ownerName").value.trim();
+  const email = document.getElementById("ownerEmail").value.trim();
+  const password = document.getElementById("ownerPassword").value.trim();
+
+  if (!propertyId || !email || !password) {
+    alert("Missing required fields");
+    return;
+  }
+
+  try {
+    const res = await fetch("/.netlify/functions/create-owner", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ propertyId, name, email, password })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      alert(data.error || "Failed to create owner");
+      return;
+    }
+
+    closeOwnerModal();
+    await loadProperties();
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error creating owner");
+  }
 }
 
 // ===============================
