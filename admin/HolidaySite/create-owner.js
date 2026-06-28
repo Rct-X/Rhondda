@@ -69,26 +69,30 @@ async function loadProperties() {
 // EVENTS
 // ===============================
 function bindEvents() {
-  console.log("🟦 bindEvents() SETUP");
 
-  container.addEventListener("click", async (e) => {
+  document.addEventListener("click", async (e) => {
 
+    // OPEN MODAL
     const assignBtn = e.target.closest(".assign-owner-btn");
     if (assignBtn) {
-      console.log(`🟩 assign-owner-btn CLICKED for property: ${assignBtn.dataset.id}`);
+      console.log("🟢 OPEN MODAL for:", assignBtn.dataset.id);
       openOwnerModal(assignBtn.dataset.id);
       return;
     }
 
-    if (e.target.id === "cancelOwnerBtn") {
-      console.log("❌ cancelOwnerBtn CLICKED");
+    // CANCEL MODAL
+    if (e.target.closest("#cancelOwnerBtn")) {
       closeOwnerModal();
       return;
     }
 
-    if (e.target.id === "createOwnerBtn") {
-      console.log("🟧 createOwnerBtn CLICKED");
+    // CREATE OWNER (FIXED)
+    if (e.target.closest("#createOwnerBtn")) {
+
+      console.log("🟣 CREATE BUTTON CLICKED");
+
       await createOwner();
+
       return;
     }
 
