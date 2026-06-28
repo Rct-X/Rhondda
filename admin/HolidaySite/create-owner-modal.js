@@ -1,5 +1,6 @@
 let db = null;
 
+// Allow main system to pass Firestore into this module
 export function setOwnerModalDB(firestore) {
   db = firestore;
 }
@@ -20,11 +21,11 @@ export function initCreateOwnerModal() {
           <label>Owner Name</label>
           <input id="ownerName" type="text" placeholder="John Smith">
         </div>
-        
-<div class="field">
-  <label>Domain</label>
-  <input id="ownerDomain" type="text" disabled>
-</div>
+
+        <div class="field">
+          <label>Domain</label>
+          <input id="ownerDomain" type="text" disabled>
+        </div>
 
         <div class="field">
           <label>Email</label>
@@ -48,8 +49,17 @@ export function initCreateOwnerModal() {
   document.getElementById("cancelOwnerBtn").onclick = closeOwnerModal;
 }
 
-export function openOwnerModal(propertyId) {
+export async function openOwnerModal(propertyId) {
   currentPropertyId = propertyId;
+
+  // Load property from Firestore
+  const snap = await db.collection("properties").doc(propertyId).get();
+  const p = snap.data();
+
+  // Fill domain field
+  document.getElementById("ownerDomain").value =
+    p.siteDomain || "No domain set";
+
   document.getElementById("ownerModal").style.display = "flex";
 }
 
