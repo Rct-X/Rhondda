@@ -209,7 +209,7 @@ const ROUTES = {
 
     if (!loadedModules.has("owners")) {
 
-        const mod = await import("./owners.js");
+        const mod = await import("./ownersJs.js");
 
         await mod.initOwners({
             db,
