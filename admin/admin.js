@@ -211,7 +211,7 @@ const ROUTES = {
 
         const mod = await import("/admin/HolidaySite/create-owner.js");
 
-        await mod.initOwnersSystem({
+        await mod.initOwnerSystem({
             db,
             auth,
             container: document.getElementById("owners")
