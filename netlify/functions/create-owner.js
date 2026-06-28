@@ -126,7 +126,8 @@ exports.handler = async (event) => {
     return res(200, {
       ok: true,
       uid,
-      siteDomain
+      siteDomain,
+      mustChangePassword: true
     });
 
   } catch (err) {
