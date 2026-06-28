@@ -3,7 +3,7 @@ import {
   openOwnerModal,
   closeOwnerModal,
   getCurrentPropertyId
-} from "./create-owner-modal.js";
+} from "/create-owner-modal.js";
 
 let db;
 
