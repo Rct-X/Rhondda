@@ -198,12 +198,12 @@ const ROUTES = {
     await mod.initPropertyJsonEditor({
       db,
       auth,
-      container: document.getElementById("dashboard")
+      container: document.getElementById("propertyJson")
     });
 
     loadedModules.add("propertyJson");
   }
-      },
+},
 
   
   // ====================================
