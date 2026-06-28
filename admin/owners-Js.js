@@ -3,6 +3,7 @@ let db;
 // ======================================
 // INIT
 // ======================================
+
 export function initOwners({ db: firestore, container }) {
 
     db = firestore;
@@ -10,28 +11,32 @@ export function initOwners({ db: firestore, container }) {
     container.innerHTML = `
 
         <div class="page-header">
-            <h1>Owners</h1>
-            <p>Manage holiday let owners.</p>
+
+            <h1>Property Owners</h1>
+
+            <p>
+                Create and manage owner accounts for every holiday let.
+            </p>
+
         </div>
 
         <div id="ownersList" class="owners-list">
 
-            <div class="loading">
-                Loading owners...
-            </div>
+            Loading properties...
 
         </div>
 
     `;
 
-    loadOwners();
+    loadProperties();
 
 }
 
 // ======================================
-// LOAD OWNERS
+// LOAD PROPERTIES
 // ======================================
-async function loadOwners() {
+
+async function loadProperties() {
 
     const wrap =
         document.getElementById("ownersList");
@@ -40,59 +45,100 @@ async function loadOwners() {
 
     const snap =
         await db
-            .collection("users")
-            .orderBy("email")
+            .collection("properties")
+            .orderBy("hero.title")
             .get();
 
     if (snap.empty) {
 
-        wrap.innerHTML =
-            "<p>No owners have logged in yet.</p>";
+        wrap.innerHTML = `
+            <p>No properties found.</p>
+        `;
 
         return;
 
     }
 
-    for (const doc of snap.docs) {
+    snap.forEach(doc => {
 
-        const owner = doc.data();
+        const property = doc.data();
 
-        const propertySnap =
-            await db
-                .collection("properties")
-                .where("ownerId", "==", owner.uid)
-                .limit(1)
-                .get();
-
-        const property =
-            propertySnap.empty
-                ? "No property assigned"
-                : propertySnap.docs[0].data().hero.title;
+        const assigned =
+            property.ownerId ? true : false;
 
         wrap.innerHTML += `
 
             <div class="owner-card">
 
-                <h3>${owner.displayName}</h3>
+                <h2>
 
-                <p>${owner.email}</p>
+                    ${property.hero?.title || "Untitled Property"}
+
+                </h2>
 
                 <p>
-                    <strong>Property:</strong>
-                    ${property}
+
+                    <strong>Status:</strong>
+
+                    ${assigned
+                        ? "🟢 Owner Assigned"
+                        : "🔴 No Owner"}
+
                 </p>
 
-                <button
-                    class="btn btn-primary assign-btn"
-                    data-uid="${owner.uid}"
-                >
-                    Assign Property
-                </button>
+                <p>
+
+                    <strong>Email:</strong>
+
+                    ${property.ownerEmail || "-"}
+
+                </p>
+
+                <p>
+
+                    <strong>UID:</strong>
+
+                    ${property.ownerId || "-"}
+
+                </p>
+
+                ${
+                    assigned
+
+                    ?
+
+                    `
+
+                    <button
+                        class="btn btn-secondary manage-owner"
+                        data-id="${doc.id}">
+
+                        Manage Owner
+
+                    </button>
+
+                    `
+
+                    :
+
+                    `
+
+                    <button
+                        class="btn btn-primary create-owner"
+                        data-id="${doc.id}">
+
+                        Create Owner
+
+                    </button>
+
+                    `
+
+                }
 
             </div>
 
         `;
 
-    }
+    });
 
 }
