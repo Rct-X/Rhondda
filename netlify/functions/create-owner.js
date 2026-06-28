@@ -3,8 +3,12 @@ const admin = require("firebase-admin");
 // Init
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.applicationDefault()
-  });
+  credential: admin.credential.cert({
+    projectId: process.env.RN_FIREBASE_PROJECT_ID,
+    clientEmail: process.env.RN_FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.RN_FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+  })
+});
 }
 
 const db = admin.firestore();
