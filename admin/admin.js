@@ -222,6 +222,23 @@ const ROUTES = {
     }
 
 },
+
+  propertyBuilder: async () => {
+
+  if (!loadedModules.has("propertyBuilder")) {
+
+    const mod = await import("/admin/HolidaySite/property-builder.js");
+
+    await mod.initPropertyBuilder({
+      db,
+      auth,
+      container: document.getElementById("propertyBuilder")
+    });
+
+    loadedModules.add("propertyBuilder");
+  }
+
+},
   
   // ====================================
   // SETTINGS
