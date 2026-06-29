@@ -583,3 +583,240 @@ renderCurrentStep = function () {
   restoreStepData();
 
 };
+
+
+
+// ======================================
+// VALIDATION ENGINE
+// ======================================
+
+const REQUIRED_FIELDS = {
+
+  Basic: ["hero.title", "id"],
+
+  Hero: [],
+
+  Welcome: ["welcome.title", "welcome.lead"],
+
+  About: ["about.title", "about.text"],
+
+  Experience: ["experience.title", "experience.text"],
+
+  Details: ["details.town", "details.postcode"],
+
+  Features: [],
+
+  Gallery: ["gallery.images"],
+
+  Park: [],
+
+  Location: ["location.postcode"],
+
+  Reviews: [],
+
+  SEO: ["seo.title", "seo.description"],
+
+  Contact: ["contact.email"],
+
+  Footer: []
+
+};
+
+// ======================================
+// GET VALUE BY PATH
+// ======================================
+
+function getValue(path, obj = property) {
+
+  return path.split(".").reduce((acc, key) => {
+
+    return acc ? acc[key] : undefined;
+
+  }, obj);
+
+}
+
+// ======================================
+// VALIDATE STEP
+// ======================================
+
+function validateStep(stepName) {
+
+  const required =
+    REQUIRED_FIELDS[stepName] || [];
+
+  const errors = [];
+
+  required.forEach(field => {
+
+    const value = getValue(field);
+
+    if (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+      errors.push(field);
+    }
+
+  });
+
+  return errors;
+
+}
+
+// ======================================
+// SHOW VALIDATION UI
+// ======================================
+
+function renderValidation(errors) {
+
+  const box =
+    document.getElementById("builderContent");
+
+  if (!errors.length) return;
+
+  const html = errors.map(e => {
+
+    return `<div style="
+      padding:10px;
+      margin:5px 0;
+      background:#ffe6e6;
+      border:1px solid #ff5c5c;
+      border-radius:6px;
+      font-size:14px;
+    ">
+      Missing: ${e}
+    </div>`;
+
+  }).join("");
+
+  box.innerHTML += `
+
+    <div class="validation-box">
+
+      <h3>Fix required fields</h3>
+
+      ${html}
+
+    </div>
+
+  `;
+
+}
+
+// ======================================
+// PATCH NEXT STEP (VALIDATION)
+// ======================================
+
+const oldNextStep = nextStep;
+
+nextStep = function () {
+
+  const stepName = STEPS[currentStep];
+
+  const errors = validateStep(stepName);
+
+  if (errors.length > 0) {
+
+    renderValidation(errors);
+
+    return; // BLOCK progression
+
+  }
+
+  if (currentStep >= STEPS.length - 1) return;
+
+  currentStep++;
+
+  renderProgress();
+  renderCurrentStep();
+  restoreStepData();
+
+};
+
+// ======================================
+// COMPLETION SCORE (PROGRESS UPGRADE)
+// ======================================
+
+function calculateCompletion() {
+
+  let totalFields = 0;
+  let filledFields = 0;
+
+  Object.keys(REQUIRED_FIELDS).forEach(step => {
+
+    REQUIRED_FIELDS[step].forEach(path => {
+
+      totalFields++;
+
+      const value = getValue(path);
+
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        (!Array.isArray(value) || value.length > 0)
+      ) {
+        filledFields++;
+      }
+
+    });
+
+  });
+
+  return Math.round((filledFields / totalFields) * 100);
+
+}
+
+// ======================================
+// PATCH PROGRESS RENDER
+// ======================================
+
+const oldRenderProgress = renderProgress;
+
+renderProgress = function () {
+
+  const percent =
+    Math.round(
+      ((currentStep + 1) / STEPS.length) * 100
+    );
+
+  const completion = calculateCompletion();
+
+  document.getElementById("builderProgress").innerHTML = `
+
+<div class="builder-progress">
+
+  <div>
+
+    Step ${currentStep + 1} of ${STEPS.length}
+
+  </div>
+
+  <div>
+
+    ${STEPS[currentStep]}
+
+  </div>
+
+  <div class="progress-bar">
+
+    <div class="progress-fill"
+         style="width:${percent}%">
+    </div>
+
+  </div>
+
+  <div style="margin-top:6px;font-size:13px;opacity:0.8;">
+
+    Completion: ${completion}%
+
+  </div>
+
+</div>
+
+`;
+
+};
