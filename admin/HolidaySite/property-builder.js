@@ -977,3 +977,280 @@ handleClicks = function (e) {
   }
 
 };
+
+
+// ======================================
+// REVIEW + PUBLISH SYSTEM
+// ======================================
+
+function renderReviewStep() {
+
+  const box = document.getElementById("builderContent");
+
+  const missing = validateAll();
+
+  const sections = buildReviewSections();
+
+  box.innerHTML = `
+
+<div class="builder-card">
+
+  <h2>Review Property</h2>
+
+  <p>Check everything before publishing.</p>
+
+  ${missing.length ? renderMissingBlock(missing) : ""}
+
+  ${sections}
+
+</div>
+
+`;
+
+}
+
+// ======================================
+// VALIDATE ALL FIELDS
+// ======================================
+
+function validateAll() {
+
+  const allErrors = [];
+
+  Object.keys(REQUIRED_FIELDS).forEach(step => {
+
+    const errors = validateStep(step);
+
+    if (errors.length) {
+
+      allErrors.push({
+        step,
+        errors
+      });
+
+    }
+
+  });
+
+  return allErrors;
+
+}
+
+// ======================================
+// MISSING BLOCK UI
+// ======================================
+
+function renderMissingBlock(missing) {
+
+  let html = `
+
+<div style="
+  background:#ffe6e6;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:15px;
+">
+
+<h3>Missing Required Fields</h3>
+
+`;
+
+  missing.forEach(m => {
+
+    html += `
+
+<div style="margin-top:8px;">
+
+<strong>${m.step}</strong>
+
+<ul>
+
+${m.errors.map(e => `<li>${e}</li>`).join("")}
+
+</ul>
+
+</div>
+
+`;
+
+  });
+
+  html += `</div>`;
+
+  return html;
+
+}
+
+// ======================================
+// BUILD REVIEW SECTIONS
+// ======================================
+
+function buildReviewSections() {
+
+  return `
+
+<div class="review-section">
+
+<h3>Basic</h3>
+
+<p><strong>ID:</strong> ${property.id || "-"}</p>
+
+<p><strong>Status:</strong> ${property.status}</p>
+
+<p><strong>Domain:</strong> ${property.siteDomain || "-"}</p>
+
+</div>
+
+<div class="review-section">
+
+<h3>Hero</h3>
+
+<p>${property.hero?.title || "-"}</p>
+
+</div>
+
+<div class="review-section">
+
+<h3>Details</h3>
+
+<p>
+Town: ${property.details?.town || "-"}<br>
+Postcode: ${property.details?.postcode || "-"}<br>
+Sleeps: ${property.details?.sleeps || "-"}<br>
+Bedrooms: ${property.details?.bedrooms || "-"}
+</p>
+
+</div>
+
+<div class="review-section">
+
+<h3>SEO</h3>
+
+<p>${property.seo?.title || "-"}</p>
+
+</div>
+
+<div class="review-section">
+
+<h3>Gallery</h3>
+
+<p>${property.gallery?.images?.length || 0} images</p>
+
+</div>
+
+<div class="review-section">
+
+<h3>Reviews</h3>
+
+<p>${property.reviews?.items?.length || 0} reviews</p>
+
+</div>
+
+<div class="review-section">
+
+<h3>Features</h3>
+
+<p>${property.features?.length || 0} items</p>
+
+</div>
+
+`;
+
+}
+
+// ======================================
+// PUBLISH PROPERTY
+// ======================================
+
+async function publishProperty() {
+
+  const missing = validateAll();
+
+  if (missing.length) {
+
+    alert("Fix missing fields before publishing");
+
+    renderReviewStep();
+
+    return;
+
+  }
+
+  await saveDraft();
+
+  showSaveState("Publishing...");
+
+  try {
+
+    const ref = db.collection("properties").doc(property.id);
+
+    await ref.set({
+
+      ...property,
+
+      status: "live",
+
+      publishedAt: firebase.firestore.FieldValue.serverTimestamp()
+
+    }, { merge: true });
+
+    showSaveState("Published ✓");
+
+    // OPTIONAL HOOK → OWNER SYSTEM
+    if (window.openOwnerModal) {
+
+      setTimeout(() => {
+
+        window.openOwnerModal(property.id);
+
+      }, 600);
+
+    }
+
+  } catch (err) {
+
+    console.error("Publish failed:", err);
+
+    showSaveState("Publish failed ❌");
+
+  }
+
+}
+
+// ======================================
+// PATCH NAVIGATION (ADD REVIEW STEP)
+// ======================================
+
+const oldNextStepP5 = nextStep;
+
+nextStep = function () {
+
+  if (STEPS[currentStep] === "Review") {
+
+    publishProperty();
+
+    return;
+
+  }
+
+  oldNextStepP5();
+
+};
+
+// ======================================
+// RENDER REVIEW STEP HOOK
+// ======================================
+
+const oldRenderCurrentStepP5 = renderCurrentStep;
+
+renderCurrentStep = function () {
+
+  oldRenderCurrentStepP5();
+
+  if (STEPS[currentStep] === "Review") {
+
+    renderReviewStep();
+
+  }
+
+};
