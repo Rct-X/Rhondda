@@ -52,8 +52,8 @@ export function initPropertyBuilder({
   container = element;
 
   render();
-
-  bindEvents();
+bindEvents();
+bindStepInputs();
 
 }
 
@@ -399,41 +399,187 @@ function handleClicks(e) {
 }
 
 // ======================================
-// NEXT STEP
+// NEXT PREVIOUS STEP
 // ======================================
 
 function nextStep() {
 
-  if (currentStep >= STEPS.length - 1) {
-
-    return;
-
-  }
+  if (currentStep >= STEPS.length - 1) return;
 
   currentStep++;
 
   renderProgress();
-
   renderCurrentStep();
+  restoreStepData();
 
 }
 
-// ======================================
-// PREVIOUS STEP
-// ======================================
-
 function previousStep() {
 
-  if (currentStep <= 0) {
-
-    return;
-
-  }
+  if (currentStep <= 0) return;
 
   currentStep--;
 
   renderProgress();
-
   renderCurrentStep();
+  restoreStepData();
+
+}
+
+
+
+// ======================================
+// INPUT BINDING + DATA SYNC
+// ======================================
+
+function bindStepInputs() {
+
+  document.addEventListener("input", (e) => {
+
+    // BASIC STEP INPUTS
+    if (STEPS[currentStep] === "Basic") {
+
+      if (e.target.id === "propertyName") {
+
+        const name = e.target.value;
+
+        property.hero.title = name;
+
+        // auto-generate ID if empty or unchanged
+        const slug = slugify(name);
+
+        const idInput =
+          document.getElementById("propertyId");
+
+        if (idInput && !idInput.dataset.locked) {
+
+          idInput.value = slug;
+
+          property.id = slug;
+
+        }
 
       }
+
+      if (e.target.id === "propertyId") {
+
+        property.id = e.target.value;
+
+        e.target.dataset.locked = "true";
+
+      }
+
+      if (e.target.id === "propertyStatus") {
+
+        property.status = e.target.value;
+
+      }
+
+      if (e.target.id === "siteDomain") {
+
+        property.siteDomain = e.target.value;
+
+      }
+
+    }
+
+  });
+
+}
+
+// ======================================
+// SLUGIFY
+// ======================================
+
+function slugify(text) {
+
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+}
+
+// ======================================
+// STEP STATE RESTORE
+// ======================================
+
+function restoreStepData() {
+
+  if (STEPS[currentStep] === "Basic") {
+
+    const name =
+      document.getElementById("propertyName");
+
+    const id =
+      document.getElementById("propertyId");
+
+    const status =
+      document.getElementById("propertyStatus");
+
+    const domain =
+      document.getElementById("siteDomain");
+
+    if (name && property.hero?.title) {
+      name.value = property.hero.title;
+    }
+
+    if (id && property.id) {
+      id.value = property.id;
+      id.dataset.locked = "true";
+    }
+
+    if (status && property.status) {
+      status.value = property.status;
+    }
+
+    if (domain && property.siteDomain) {
+      domain.value = property.siteDomain;
+    }
+
+  }
+
+}
+
+// ======================================
+// FIRESTORE ID CHECK (SAFE)
+// ======================================
+
+async function checkPropertyExists(id) {
+
+  if (!db || !id) return false;
+
+  try {
+
+    const snap =
+      await db.collection("properties")
+        .doc(id)
+        .get();
+
+    return snap.exists;
+
+  } catch (err) {
+
+    console.error("ID check failed:", err);
+
+    return false;
+
+  }
+
+}
+
+// ======================================
+// PATCH RENDER CURRENT STEP
+// ======================================
+
+// override existing function safely
+const oldRenderCurrentStep = renderCurrentStep;
+
+renderCurrentStep = function () {
+
+  oldRenderCurrentStep();
+
+  restoreStepData();
+
+};
