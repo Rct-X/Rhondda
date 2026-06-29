@@ -820,3 +820,160 @@ renderProgress = function () {
 `;
 
 };
+
+
+// ======================================
+// FIRESTORE SAVE SYSTEM
+// ======================================
+
+let isSaving = false;
+
+// ======================================
+// SAVE DRAFT BUTTON (ADD TO FOOTER LATER)
+// ======================================
+
+async function saveDraft() {
+
+  if (!db) return;
+
+  if (!property.id) {
+    alert("Property ID missing");
+    return;
+  }
+
+  if (isSaving) return;
+
+  isSaving = true;
+
+  showSaveState("Saving draft...");
+
+  try {
+
+    const exists = await checkPropertyExists(property.id);
+
+    const ref = db.collection("properties").doc(property.id);
+
+    const payload = {
+
+      ...property,
+
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+
+    };
+
+    // CREATE OR UPDATE
+    if (exists) {
+
+      await ref.set(payload, { merge: true });
+
+    } else {
+
+      await ref.set(payload);
+
+    }
+
+    showSaveState("Saved ✓");
+
+  } catch (err) {
+
+    console.error("Save failed:", err);
+
+    showSaveState("Save failed ❌");
+
+  } finally {
+
+    isSaving = false;
+
+  }
+
+}
+
+// ======================================
+// SHOW SAVE STATE (MOBILE FRIENDLY)
+// ======================================
+
+function showSaveState(text) {
+
+  let el = document.getElementById("saveStateBox");
+
+  if (!el) {
+
+    el = document.createElement("div");
+
+    el.id = "saveStateBox";
+
+    el.style.cssText = `
+
+      position: fixed;
+      bottom: 80px;
+      left: 10px;
+      right: 10px;
+      background: #111;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      z-index: 9999;
+      text-align: center;
+
+    `;
+
+    document.body.appendChild(el);
+
+  }
+
+  el.textContent = text;
+
+}
+
+// ======================================
+// INTEGRATE SAVE INTO FOOTER
+// ======================================
+
+const oldRenderFooter = renderFooter;
+
+renderFooter = function () {
+
+  document.getElementById("builderFooter").innerHTML = `
+
+<div class="builder-footer">
+
+  <button id="builderPrev" class="btn btn-secondary">
+    Previous
+  </button>
+
+  <button id="saveDraftBtn" class="btn btn-outline">
+    Save Draft
+  </button>
+
+  <button id="builderNext" class="btn btn-primary">
+    Next
+  </button>
+
+</div>
+
+`;
+
+};
+
+// ======================================
+// PATCH CLICK HANDLER
+// ======================================
+
+const oldHandleClicks = handleClicks;
+
+handleClicks = function (e) {
+
+  if (e.target.id === "saveDraftBtn") {
+
+    saveDraft();
+
+    return;
+
+  }
+
+  if (oldHandleClicks) {
+    oldHandleClicks(e);
+  }
+
+};
