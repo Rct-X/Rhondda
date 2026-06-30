@@ -1,3 +1,4 @@
+
 // ======================================
 // ADMIN PANEL (MODULAR ROUTER)
 // ======================================
@@ -189,17 +190,21 @@ const ROUTES = {
 
   },
 
-  property: async () => {
-  if (!loadedModules.has("property")) {
-    const mod = await import("./property-editor.js");
-    await mod.initPropertyEditor({
+  propertyJson: async () => {
+
+  if (!loadedModules.has("propertyJson")) {
+
+    const mod = await import("/admin/HolidaySite/property-json-editor.js");
+
+    await mod.initPropertyJsonEditor({
       db,
       auth,
-      container: document.getElementById("property")
+      container: document.getElementById("propertyJson")
     });
-    loadedModules.add("property");
+
+    loadedModules.add("propertyJson");
   }
-      }
+},
 
   owners: async () => {
 
@@ -218,6 +223,18 @@ const ROUTES = {
     }
 
 },
+
+  property: async () => {
+  if (!loadedModules.has("property")) {
+    const mod = await import("./property-editor.js");
+    await mod.initPropertyEditor({
+      db,
+      auth,
+      container: document.getElementById("property")
+    });
+    loadedModules.add("property");
+  }
+  }
   
   // ====================================
   // SETTINGS
