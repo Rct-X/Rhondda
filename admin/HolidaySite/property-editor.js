@@ -1,7 +1,3 @@
-// property-editor.js
-
-import { ICONS } from "./icons.js"; // only if you want live icon preview (optional)
-
 // ===============================
 // ICON MAPPING FOR FEATURES
 // ===============================
