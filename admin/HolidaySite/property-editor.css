@@ -1,0 +1,127 @@
+/* =========================================
+   PROPERTY EDITOR — FULL CSS
+   ========================================= */
+
+/* Layout */
+#propFormWrap {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+}
+
+/* Headings */
+#propFormWrap h2 {
+  margin-top: 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+/* Fields */
+.field {
+  margin: 15px 0;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #fafafa;
+  transition: border-color 0.2s ease;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  background: #fff;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #555;
+  color: #fff;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  font-size: 26px;
+  margin-bottom: 5px;
+}
+
+.page-header p {
+  color: #666;
+}
+
+/* Status */
+#propStatus {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f7f7f7;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Actions */
+.actions {
+  margin-top: 30px;
+}
+
+/* Textareas */
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Section spacing */
+#propFormWrap .field + h2 {
+  margin-top: 40px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  #propFormWrap {
+    padding: 15px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
