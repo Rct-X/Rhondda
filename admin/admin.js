@@ -234,7 +234,7 @@ const ROUTES = {
     });
     loadedModules.add("property");
   }
-  }
+  },
   
   // ====================================
   // SETTINGS
