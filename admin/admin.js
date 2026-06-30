@@ -189,21 +189,17 @@ const ROUTES = {
 
   },
 
-  propertyJson: async () => {
-
-  if (!loadedModules.has("propertyJson")) {
-
-    const mod = await import("/admin/HolidaySite/property-json-editor.js");
-
-    await mod.initPropertyJsonEditor({
+  property: async () => {
+  if (!loadedModules.has("property")) {
+    const mod = await import("./property-editor.js");
+    await mod.initPropertyEditor({
       db,
       auth,
-      container: document.getElementById("propertyJson")
+      container: document.getElementById("property")
     });
-
-    loadedModules.add("propertyJson");
+    loadedModules.add("property");
   }
-},
+      }
 
   owners: async () => {
 
