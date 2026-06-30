@@ -235,6 +235,21 @@ const ROUTES = {
     loadedModules.add("property");
   }
   },
+
+  propertyCreate: async () => {
+  if (!loadedModules.has("propertyCreate")) {
+
+    const mod = await import("/admin/HolidaySite/property-create.js");
+
+    await mod.initPropertyCreator({
+      db,
+      auth,
+      container: document.getElementById("propertyCreate")
+    });
+
+    loadedModules.add("propertyCreate");
+  }
+},
   
   // ====================================
   // SETTINGS
