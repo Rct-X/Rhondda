@@ -226,7 +226,7 @@ const ROUTES = {
 
   property: async () => {
   if (!loadedModules.has("property")) {
-    const mod = await import("./property-editor.js");
+    const mod = await import("/admin/HolidaySite/property-editor.js");
     await mod.initPropertyEditor({
       db,
       auth,
