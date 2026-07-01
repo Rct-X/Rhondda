@@ -3,6 +3,7 @@
 // ===============================
 const FEATURE_ICONS = {
   "Sleeps 6": "family",
+  "Sleeps 5": "family",
   "Sleeps 4": "family",
   "Sleeps 2": "family",
   "3 Bedrooms": "bed",
@@ -10,7 +11,8 @@ const FEATURE_ICONS = {
   "1 Bedroom": "bed",
   "Free Wi-Fi": "wifi",
   "Wi-Fi": "wifi",
-  "Wifi": "wifi"
+  "Wifi": "wifi",
+  "Tv": "tv"
 };
 
 function processFeatures(list) {
