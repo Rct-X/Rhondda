@@ -2,17 +2,24 @@
 // ICON MAPPING FOR FEATURES
 // ===============================
 const FEATURE_ICONS = {
-  "Sleeps 6": "family",
-  "Sleeps 5": "family",
-  "Sleeps 4": "family",
-  "Sleeps 2": "family",
-  "3 Bedrooms": "bed",
-  "2 Bedrooms": "bed",
-  "1 Bedroom": "bed",
-  "Free Wi-Fi": "wifi",
-  "Wi-Fi": "wifi",
-  "Wifi": "wifi",
-  "Tv": "tv"
+  "sleeps 6": "family",
+  "sleeps 5": "family",
+  "sleeps 4": "family",
+  "sleeps 2": "family",
+
+  "3 bedrooms": "bed",
+  "2 bedrooms": "bed",
+  "1 bedroom": "bed",
+
+  "free wi-fi": "wifi",
+  "wi-fi": "wifi",
+  "wifi": "wifi",
+
+  "tv": "tv",
+  "t.v": "tv",
+  "television": "tv",
+  "smart tv": "tv",
+  "flat screen tv": "tv"
 };
 
 function processFeatures(list) {
@@ -20,7 +27,8 @@ function processFeatures(list) {
     .map(f => f.trim())
     .filter(f => f.length > 0)
     .map(f => {
-      const icon = FEATURE_ICONS[f];
+      const key = f.toLowerCase();
+const icon = FEATURE_ICONS[key];
       return icon ? { text: f, icon } : f;
     });
 }
