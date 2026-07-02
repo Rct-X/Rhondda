@@ -24,15 +24,6 @@ const FEATURE_ICONS = {
   "Smart Tv": "tv",
   "Flat-Screen TV": "tv",
   "Flat-Screen Tv": "tv",
-
-  // Dogs / Pets
-  "Dogs Welcome": "paw",
-  "Dog Friendly": "paw",
-  "Pets Allowed": "paw",
-  "Pet Friendly": "paw",
-  "Pets Welcome": "paw",
-  "1 Dog Allowed": "paw",
-  "2 Dogs Allowed": "paw"
 };
 
 function processFeatures(list) {
@@ -127,6 +118,19 @@ function renderShell() {
         <label>Postcode</label>
         <input id="detailsPostcode">
       </div>
+      <div class="field">
+  <label>
+    <input id="detailsAnimalsAllowed" type="checkbox">
+    Animals Allowed
+  </label>
+</div>
+
+<div class="field">
+  <label>
+    <input id="detailsDogsOnly" type="checkbox">
+    Dogs Only
+  </label>
+</div>
 
       <h2>Gallery</h2>
       <div class="field">
@@ -335,6 +339,8 @@ async function handleLoad() {
   document.getElementById("detailsSleeps").value = p.details?.sleeps ?? "";
   document.getElementById("detailsTown").value = p.details?.town || "";
   document.getElementById("detailsPostcode").value = p.details?.postcode || "";
+  document.getElementById("detailsAnimalsAllowed").checked = p.details?.animalsAllowed || false;
+  document.getElementById("detailsDogsOnly").checked = p.details?.dogsOnly || false;
 
   // Gallery
   document.getElementById("galleryTitle").value = p.gallery?.title || "";
@@ -451,13 +457,16 @@ async function handleSave() {
     },
 
     details: {
-      park: document.getElementById("detailsPark").value.trim(),
-      type: document.getElementById("detailsType").value.trim(),
-      bedrooms: Number(document.getElementById("detailsBedrooms").value) || 0,
-      sleeps: Number(document.getElementById("detailsSleeps").value) || 0,
-      town: document.getElementById("detailsTown").value.trim(),
-      postcode: document.getElementById("detailsPostcode").value.trim()
-    },
+  park: document.getElementById("detailsPark").value.trim(),
+  type: document.getElementById("detailsType").value.trim(),
+  bedrooms: Number(document.getElementById("detailsBedrooms").value) || 0,
+  sleeps: Number(document.getElementById("detailsSleeps").value) || 0,
+  town: document.getElementById("detailsTown").value.trim(),
+  postcode: document.getElementById("detailsPostcode").value.trim(),
+
+  animalsAllowed: document.getElementById("detailsAnimalsAllowed").checked,
+  dogsOnly: document.getElementById("detailsDogsOnly").checked
+},
 
     features: processFeatures(featureLines),
 
