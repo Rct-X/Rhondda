@@ -11,7 +11,7 @@ const FEATURE_ICONS = {
   "Free Wi-Fi": "wifi",
   "Wi-Fi": "wifi",
   "Wifi": "wifi",
-  "Tv":   "Flat-Screen Tv"
+  "Flat-Screen Tv":   "tv"
 };
 
 function processFeatures(list) {
