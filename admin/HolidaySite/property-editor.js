@@ -10,7 +10,8 @@ const FEATURE_ICONS = {
   "1 Bedroom": "bed",
   "Free Wi-Fi": "wifi",
   "Wi-Fi": "wifi",
-  "Wifi": "wifi"
+  "Wifi": "wifi",
+  "Tv":   "Flat-Screen Tv"
 };
 
 function processFeatures(list) {
