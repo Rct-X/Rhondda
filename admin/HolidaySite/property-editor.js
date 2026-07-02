@@ -5,13 +5,21 @@ const FEATURE_ICONS = {
   "Sleeps 6": "family",
   "Sleeps 4": "family",
   "Sleeps 2": "family",
+
   "3 Bedrooms": "bed",
   "2 Bedrooms": "bed",
   "1 Bedroom": "bed",
+
   "Free Wi-Fi": "wifi",
   "Wi-Fi": "wifi",
   "Wifi": "wifi",
-  "Flat-Screen Tv":   "tv"
+
+  "TV": "tv",
+  "Tv": "tv",
+  "Smart TV": "tv",
+  "Smart Tv": "tv",
+  "Flat-Screen TV": "tv",
+  "Flat-Screen Tv": "tv"
 };
 
 function processFeatures(list) {
