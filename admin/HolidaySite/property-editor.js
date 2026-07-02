@@ -2,24 +2,37 @@
 // ICON MAPPING FOR FEATURES
 // ===============================
 const FEATURE_ICONS = {
+  // Sleeps
   "Sleeps 6": "family",
   "Sleeps 4": "family",
   "Sleeps 2": "family",
 
+  // Bedrooms
   "3 Bedrooms": "bed",
   "2 Bedrooms": "bed",
   "1 Bedroom": "bed",
 
+  // WiFi
   "Free Wi-Fi": "wifi",
   "Wi-Fi": "wifi",
   "Wifi": "wifi",
 
+  // TV
   "TV": "tv",
   "Tv": "tv",
   "Smart TV": "tv",
   "Smart Tv": "tv",
   "Flat-Screen TV": "tv",
-  "Flat-Screen Tv": "tv"
+  "Flat-Screen Tv": "tv",
+
+  // Dogs / Pets
+  "Dogs Welcome": "paw",
+  "Dog Friendly": "paw",
+  "Pets Allowed": "paw",
+  "Pet Friendly": "paw",
+  "Pets Welcome": "paw",
+  "1 Dog Allowed": "paw",
+  "2 Dogs Allowed": "paw"
 };
 
 function processFeatures(list) {
